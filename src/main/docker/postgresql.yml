@@ -1,0 +1,11 @@
+version: '2'
+services:
+    new_local-postgresql:
+        image: postgres:10.4
+        # volumes:
+        #     - ~/volumes/jhipster/New_Local/postgresql/:/var/lib/postgresql/data/
+        environment:
+            - POSTGRES_USER=New_Local
+            - POSTGRES_PASSWORD=
+        ports:
+            - 5432:5432

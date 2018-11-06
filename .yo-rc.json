@@ -1,0 +1,41 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.newlocal",
+      "nativeLanguage": "fr"
+    },
+    "jhipsterVersion": "5.5.0",
+    "applicationType": "monolith",
+    "baseName": "New_Local",
+    "packageName": "com.newlocal",
+    "packageFolder": "com/newlocal",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": "elasticsearch",
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "NWFiODU5ODY5YTI2M2YxMDZlMjVkNDM2N2YxNTY5ZTdlNjY2NzNhMTA1YjQyMzhhYmQ1YWI2ZDc3M2YyNmM3OGYzMTY3YzA1YzQ0YTk2Yzg4YjhhZDk3MTg3ZGU5NDhhMDY3NDM1ZDZjOWRiMjIxNWE5Y2I5NDM2ZDEzMDI0NGE=",
+    "clientFramework": "angularX",
+    "useSass": false,
+    "clientPackageManager": "npm",
+    "testFrameworks": [
+      "gatling",
+      "protractor"
+    ],
+    "jhiPrefix": "jhi",
+    "enableTranslation": true,
+    "nativeLanguage": "fr",
+    "languages": [
+      "fr",
+      "en"
+    ]
+  }
+}
