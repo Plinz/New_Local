@@ -36,6 +36,8 @@
     "languages": [
       "fr",
       "en"
-    ]
+    ],
+    "herokuAppName": "new-local",
+    "herokuDeployType": "jar"
   }
 }
