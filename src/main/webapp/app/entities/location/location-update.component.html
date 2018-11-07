@@ -1,0 +1,61 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-location-heading" jhiTranslate="newLocalApp.location.home.createOrEditLabel">Create or edit a Location</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!location.id">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="location.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.location.city" for="field_city">City</label>
+                    <input type="text" class="form-control" name="city" id="field_city"
+                        [(ngModel)]="location.city" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.location.country" for="field_country">Country</label>
+                    <input type="text" class="form-control" name="country" id="field_country"
+                        [(ngModel)]="location.country" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.location.zip" for="field_zip">Zip</label>
+                    <input type="text" class="form-control" name="zip" id="field_zip"
+                        [(ngModel)]="location.zip" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.location.address" for="field_address">Address</label>
+                    <input type="text" class="form-control" name="address" id="field_address"
+                        [(ngModel)]="location.address" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.location.lon" for="field_lon">Lon</label>
+                    <input type="number" class="form-control" name="lon" id="field_lon"
+                        [(ngModel)]="location.lon" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.location.lat" for="field_lat">Lat</label>
+                    <input type="number" class="form-control" name="lat" id="field_lat"
+                        [(ngModel)]="location.lat" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.location.person" for="field_person">Person</label>
+                    <select class="form-control" id="field_person" name="person" [(ngModel)]="location.person" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="personOption.id === location.person?.id ? location.person : personOption" *ngFor="let personOption of people; trackBy: trackPersonById">{{personOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

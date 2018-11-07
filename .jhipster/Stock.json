@@ -1,0 +1,61 @@
+{
+    "name": "Stock",
+    "fields": [
+        {
+            "fieldName": "quantityInit",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "quantityRemaining",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "priceUnit",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "image",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "image"
+        },
+        {
+            "fieldName": "onSaleDate",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "expiryDate",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "bio",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "available",
+            "fieldType": "Boolean"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "productType",
+            "otherEntityName": "productType",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "person",
+            "otherEntityName": "person",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20181107090806",
+    "entityTableName": "stock",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

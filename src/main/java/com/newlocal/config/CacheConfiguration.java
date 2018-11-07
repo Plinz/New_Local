@@ -38,6 +38,20 @@ public class CacheConfiguration {
             cm.createCache(com.newlocal.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(com.newlocal.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(com.newlocal.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.PurchaseDone.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.PurchasePending.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Grade.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Category.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.ProductType.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.ProductType.class.getName() + ".grades", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Location.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Stock.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Person.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Person.class.getName() + ".stocks", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Person.class.getName() + ".grades", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Person.class.getName() + ".purchasePendings", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Person.class.getName() + ".purchaseDones", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Person.class.getName() + ".locations", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

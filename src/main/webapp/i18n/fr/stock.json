@@ -1,0 +1,32 @@
+
+{
+    "newLocalApp": {
+        "stock" : {
+            "home": {
+                "title": "Stocks",
+                "createLabel": "Créer un nouveau Stock",
+                "createOrEditLabel": "Créer ou éditer un Stock",
+                "search": "Recherche pour Stock"
+            },
+            "created": "Un nouveau Stock a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Stock avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Stock avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Stock {{ id }} ?"
+            },
+            "detail": {
+                "title": "Stock"
+            },
+            "quantityInit": "Quantity Init",
+            "quantityRemaining": "Quantity Remaining",
+            "priceUnit": "Price Unit",
+            "image": "Image",
+            "onSaleDate": "On Sale Date",
+            "expiryDate": "Expiry Date",
+            "bio": "Bio",
+            "available": "Available",
+            "productType": "Product Type",
+            "person": "Person"
+        }
+    }
+}

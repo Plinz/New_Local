@@ -7,6 +7,14 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entities",
+                "purchaseDone": "Purchase Done",
+                "purchasePending": "Purchase Pending",
+                "grade": "Grade",
+                "category": "Category",
+                "productType": "Product Type",
+                "location": "Location",
+                "stock": "Stock",
+                "person": "Person",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

@@ -1,0 +1,26 @@
+
+{
+    "newLocalApp": {
+        "purchaseDone" : {
+            "home": {
+                "title": "Purchase Dones",
+                "createLabel": "Create a new Purchase Done",
+                "createOrEditLabel": "Create or edit a Purchase Done",
+                "search": "Search for Purchase Done"
+            },
+            "created": "A new Purchase Done is created with identifier {{ param }}",
+            "updated": "A Purchase Done is updated with identifier {{ param }}",
+            "deleted": "A Purchase Done is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Purchase Done {{ id }}?"
+            },
+            "detail": {
+                "title": "Purchase Done"
+            },
+            "saleDate": "Sale Date",
+            "quantity": "Quantity",
+            "stock": "Stock",
+            "person": "Person"
+        }
+    }
+}

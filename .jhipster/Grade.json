@@ -1,0 +1,35 @@
+{
+    "name": "Grade",
+    "fields": [
+        {
+            "fieldName": "grade",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "person",
+            "otherEntityName": "person",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "productType",
+            "otherEntityName": "productType",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20181107090802",
+    "entityTableName": "grade",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

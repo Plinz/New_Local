@@ -1,0 +1,82 @@
+entity PurchaseDone {
+	saleDate Instant,
+    quantity Integer required 
+}
+
+entity PurchasePending {
+	quantity Integer required
+}
+
+entity Grade {
+	grade Integer required
+}
+
+entity Category {
+	name String,
+    description String,
+    image ImageBlob
+}
+
+entity ProductType {
+	name String,
+    description String,
+    image ImageBlob
+}
+
+entity Location {
+	city String,
+    country String,
+    zip String,
+    address String,
+    lon Double,
+    lat Double
+}
+
+entity Stock {
+	quantityInit Integer,
+    quantityRemaining Integer,
+    priceUnit Double,
+    image ImageBlob,
+    onSaleDate Instant,
+    expiryDate Instant,
+    bio Boolean,
+    available Boolean
+}
+
+entity Person {
+}
+
+relationship OneToOne {
+	Person to User
+}
+
+relationship OneToMany {
+	Person to Stock,
+    Person to Grade,
+    Person to PurchasePending,
+    Person to PurchaseDone,
+    Person to Location,
+    ProductType to Grade
+}
+
+relationship ManyToOne {
+	ProductType{category} to Category,
+    Category{categoryParent} to Category,
+    PurchasePending{stock} to Stock,
+    PurchaseDone{stock} to Stock,
+    Stock{productType} to ProductType
+}
+
+
+// Set pagination options
+paginate Stock with pagination
+//paginate Grade with pagination
+
+// Use Data Transfert Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+//service all with serviceImpl except Stock
+
+// Set an angular suffix
+// angularSuffix * with mySuffix

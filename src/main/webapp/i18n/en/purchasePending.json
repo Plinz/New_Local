@@ -1,0 +1,25 @@
+
+{
+    "newLocalApp": {
+        "purchasePending" : {
+            "home": {
+                "title": "Purchase Pendings",
+                "createLabel": "Create a new Purchase Pending",
+                "createOrEditLabel": "Create or edit a Purchase Pending",
+                "search": "Search for Purchase Pending"
+            },
+            "created": "A new Purchase Pending is created with identifier {{ param }}",
+            "updated": "A Purchase Pending is updated with identifier {{ param }}",
+            "deleted": "A Purchase Pending is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Purchase Pending {{ id }}?"
+            },
+            "detail": {
+                "title": "Purchase Pending"
+            },
+            "quantity": "Quantity",
+            "stock": "Stock",
+            "person": "Person"
+        }
+    }
+}

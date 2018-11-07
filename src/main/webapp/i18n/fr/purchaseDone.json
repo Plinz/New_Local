@@ -1,0 +1,26 @@
+
+{
+    "newLocalApp": {
+        "purchaseDone" : {
+            "home": {
+                "title": "PurchaseDones",
+                "createLabel": "Créer un nouveau Purchase Done",
+                "createOrEditLabel": "Créer ou éditer un Purchase Done",
+                "search": "Recherche pour Purchase Done"
+            },
+            "created": "Un nouveau Purchase Done a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Purchase Done avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Purchase Done avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Purchase Done {{ id }} ?"
+            },
+            "detail": {
+                "title": "Purchase Done"
+            },
+            "saleDate": "Sale Date",
+            "quantity": "Quantity",
+            "stock": "Stock",
+            "person": "Person"
+        }
+    }
+}

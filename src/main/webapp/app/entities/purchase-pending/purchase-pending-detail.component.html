@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="purchasePending">
+            <h2><span jhiTranslate="newLocalApp.purchasePending.detail.title">Purchase Pending</span> {{purchasePending.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="newLocalApp.purchasePending.quantity">Quantity</span></dt>
+                <dd>
+                    <span>{{purchasePending.quantity}}</span>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.purchasePending.stock">Stock</span></dt>
+                <dd>
+                    <div *ngIf="purchasePending.stock">
+                        <a [routerLink]="['/stock', purchasePending.stock?.id, 'view']">{{purchasePending.stock?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.purchasePending.person">Person</span></dt>
+                <dd>
+                    <div *ngIf="purchasePending.person">
+                        <a [routerLink]="['/person', purchasePending.person?.id, 'view']">{{purchasePending.person?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/purchase-pending', purchasePending.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

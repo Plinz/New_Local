@@ -1,0 +1,32 @@
+
+{
+    "newLocalApp": {
+        "stock" : {
+            "home": {
+                "title": "Stocks",
+                "createLabel": "Create a new Stock",
+                "createOrEditLabel": "Create or edit a Stock",
+                "search": "Search for Stock"
+            },
+            "created": "A new Stock is created with identifier {{ param }}",
+            "updated": "A Stock is updated with identifier {{ param }}",
+            "deleted": "A Stock is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Stock {{ id }}?"
+            },
+            "detail": {
+                "title": "Stock"
+            },
+            "quantityInit": "Quantity Init",
+            "quantityRemaining": "Quantity Remaining",
+            "priceUnit": "Price Unit",
+            "image": "Image",
+            "onSaleDate": "On Sale Date",
+            "expiryDate": "Expiry Date",
+            "bio": "Bio",
+            "available": "Available",
+            "productType": "Product Type",
+            "person": "Person"
+        }
+    }
+}
