@@ -48,14 +48,9 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             this.reverse = data.pagingParams.ascending;
             this.predicate = data.pagingParams.predicate;
         });
-        this.currentSearch = this.activatedRoute.snapshot.queryParams['search'];
-        // this.activatedRoute.queryParams.subscribe( params => {
-        //     this.currentSearch = params['search'];
-        // });
-        // this.currentSearch =
-        //     this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
-        //         ? this.activatedRoute.snapshot.params['search']
-        //         : '';
+        this.activatedRoute.queryParams.subscribe(params => {
+            this.currentSearch = params['search'];
+        });
     }
 
     loadAll() {
