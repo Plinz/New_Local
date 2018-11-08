@@ -9,6 +9,12 @@
         </a>
     </div>
     <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed" [ngSwitch]="isAuthenticated()">
+        <form class="form-inline my-2 my-lg-0">
+            <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'newLocalApp.mainSearch.search' | translate }}">
+            <button class="input-group-append btn btn-info" (click)="search(currentSearch)" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                <fa-icon [icon]="'search'"></fa-icon>
+            </button>
+        </form>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">

@@ -15,6 +15,7 @@ import { NewLocalSharedModule } from 'app/shared';
 import { NewLocalCoreModule } from 'app/core';
 import { NewLocalAppRoutingModule } from './app-routing.module';
 import { NewLocalHomeModule } from './home/home.module';
+import { NewLocalMainSearchModule } from './mainSearch/mainSearch.module';
 import { NewLocalAccountModule } from './account/account.module';
 import { NewLocalEntityModule } from './entities/entity.module';
 import * as moment from 'moment';
@@ -29,6 +30,7 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
         NewLocalSharedModule,
         NewLocalCoreModule,
         NewLocalHomeModule,
+        NewLocalMainSearchModule,
         NewLocalAccountModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
         NewLocalEntityModule

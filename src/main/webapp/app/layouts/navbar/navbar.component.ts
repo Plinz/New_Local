@@ -20,6 +20,7 @@ export class NavbarComponent implements OnInit {
     swaggerEnabled: boolean;
     modalRef: NgbModalRef;
     version: string;
+    currentSearch: string;
 
     constructor(
         private loginService: LoginService,
@@ -33,6 +34,10 @@ export class NavbarComponent implements OnInit {
     ) {
         this.version = VERSION ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
+    }
+
+    search(currentSearch) {
+        this.router.navigate(['/mainSearch'], { queryParams: { search: currentSearch } });
     }
 
     ngOnInit() {
