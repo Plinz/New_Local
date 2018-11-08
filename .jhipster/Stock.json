@@ -2,6 +2,14 @@
     "name": "Stock",
     "fields": [
         {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "String"
+        },
+        {
             "fieldName": "quantityInit",
             "fieldType": "Integer"
         },
@@ -40,6 +48,12 @@
             "relationshipType": "many-to-one",
             "relationshipName": "productType",
             "otherEntityName": "productType",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "holding",
+            "otherEntityName": "holding",
             "otherEntityField": "id"
         },
         {

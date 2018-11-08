@@ -39,6 +39,12 @@
             "relationshipName": "location",
             "otherEntityName": "location",
             "otherEntityRelationshipName": "person"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "holding",
+            "otherEntityName": "holding",
+            "otherEntityRelationshipName": "person"
         }
     ],
     "changelogDate": "20181107090807",

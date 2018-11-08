@@ -33,6 +33,8 @@ entity Location {
 }
 
 entity Stock {
+	name String,
+	description String,
 	quantityInit Integer,
     quantityRemaining Integer,
     priceUnit Double,
@@ -41,6 +43,12 @@ entity Stock {
     expiryDate Instant,
     bio Boolean,
     available Boolean
+}
+
+entity Holding {
+	name String,
+	description String,
+	image ImageBlob	
 }
 
 entity Person {
@@ -56,7 +64,8 @@ relationship OneToMany {
     Person to PurchasePending,
     Person to PurchaseDone,
     Person to Location,
-    ProductType to Grade
+    ProductType to Grade,
+    Person to Holding
 }
 
 relationship ManyToOne {
@@ -64,7 +73,9 @@ relationship ManyToOne {
     Category{categoryParent} to Category,
     PurchasePending{stock} to Stock,
     PurchaseDone{stock} to Stock,
-    Stock{productType} to ProductType
+    Stock{productType} to ProductType,
+    Holding{location} to Location,
+    Stock{holding} to Holding
 }
 
 
