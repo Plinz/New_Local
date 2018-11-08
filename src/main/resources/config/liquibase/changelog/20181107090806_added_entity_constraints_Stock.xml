@@ -14,6 +14,12 @@
                                  referencedColumnNames="id"
                                  referencedTableName="product_type"/>
 
+        <addForeignKeyConstraint baseColumnNames="holding_id"
+                                 baseTableName="stock"
+                                 constraintName="fk_stock_holding_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="holding"/>
+
         <addForeignKeyConstraint baseColumnNames="person_id"
                                  baseTableName="stock"
                                  constraintName="fk_stock_person_id"

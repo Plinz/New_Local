@@ -17,6 +17,8 @@
             "detail": {
                 "title": "Stock"
             },
+            "name": "Name",
+            "description": "Description",
             "quantityInit": "Quantity Init",
             "quantityRemaining": "Quantity Remaining",
             "priceUnit": "Price Unit",
@@ -26,6 +28,7 @@
             "bio": "Bio",
             "available": "Available",
             "productType": "Product Type",
+            "holding": "Holding",
             "person": "Person"
         }
     }

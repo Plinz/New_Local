@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory
 import scala.concurrent.duration._
 
 /**
- * Performance test for the Stock entity.
+ * Performance test for the Holding entity.
  */
-class StockGatlingTest extends Simulation {
+class HoldingGatlingTest extends Simulation {
 
     val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
     // Log all HTTP requests
@@ -43,7 +43,7 @@ class StockGatlingTest extends Simulation {
         "Authorization" -> "${access_token}"
     )
 
-    val scn = scenario("Test the Stock entity")
+    val scn = scenario("Test the Holding entity")
         .exec(http("First unauthenticated request")
         .get("/api/account")
         .headers(headers_http)
@@ -62,38 +62,31 @@ class StockGatlingTest extends Simulation {
         .check(status.is(200)))
         .pause(10)
         .repeat(2) {
-            exec(http("Get all stocks")
-            .get("/api/stocks")
+            exec(http("Get all holdings")
+            .get("/api/holdings")
             .headers(headers_http_authenticated)
             .check(status.is(200)))
             .pause(10 seconds, 20 seconds)
-            .exec(http("Create new stock")
-            .post("/api/stocks")
+            .exec(http("Create new holding")
+            .post("/api/holdings")
             .headers(headers_http_authenticated)
             .body(StringBody("""{
                 "id":null
                 , "name":"SAMPLE_TEXT"
                 , "description":"SAMPLE_TEXT"
-                , "quantityInit":"0"
-                , "quantityRemaining":"0"
-                , "priceUnit":null
                 , "image":null
-                , "onSaleDate":"2020-01-01T00:00:00.000Z"
-                , "expiryDate":"2020-01-01T00:00:00.000Z"
-                , "bio":null
-                , "available":null
                 }""")).asJSON
             .check(status.is(201))
-            .check(headerRegex("Location", "(.*)").saveAs("new_stock_url"))).exitHereIfFailed
+            .check(headerRegex("Location", "(.*)").saveAs("new_holding_url"))).exitHereIfFailed
             .pause(10)
             .repeat(5) {
-                exec(http("Get created stock")
-                .get("${new_stock_url}")
+                exec(http("Get created holding")
+                .get("${new_holding_url}")
                 .headers(headers_http_authenticated))
                 .pause(10)
             }
-            .exec(http("Delete created stock")
-            .delete("${new_stock_url}")
+            .exec(http("Delete created holding")
+            .delete("${new_holding_url}")
             .headers(headers_http_authenticated))
             .pause(10)
         }

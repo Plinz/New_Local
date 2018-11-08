@@ -4,39 +4,29 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { take, map } from 'rxjs/operators';
-import * as moment from 'moment';
-import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
-import { StockService } from 'app/entities/stock/stock.service';
-import { IStock, Stock } from 'app/shared/model/stock.model';
+import { HoldingService } from 'app/entities/holding/holding.service';
+import { IHolding, Holding } from 'app/shared/model/holding.model';
 
 describe('Service Tests', () => {
-    describe('Stock Service', () => {
+    describe('Holding Service', () => {
         let injector: TestBed;
-        let service: StockService;
+        let service: HoldingService;
         let httpMock: HttpTestingController;
-        let elemDefault: IStock;
-        let currentDate: moment.Moment;
+        let elemDefault: IHolding;
         beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [HttpClientTestingModule]
             });
             injector = getTestBed();
-            service = injector.get(StockService);
+            service = injector.get(HoldingService);
             httpMock = injector.get(HttpTestingController);
-            currentDate = moment();
 
-            elemDefault = new Stock(0, 'AAAAAAA', 'AAAAAAA', 0, 0, 0, 'image/png', 'AAAAAAA', currentDate, currentDate, false, false);
+            elemDefault = new Holding(0, 'AAAAAAA', 'AAAAAAA', 'image/png', 'AAAAAAA');
         });
 
         describe('Service methods', async () => {
             it('should find an element', async () => {
-                const returnedFromService = Object.assign(
-                    {
-                        onSaleDate: currentDate.format(DATE_TIME_FORMAT),
-                        expiryDate: currentDate.format(DATE_TIME_FORMAT)
-                    },
-                    elemDefault
-                );
+                const returnedFromService = Object.assign({}, elemDefault);
                 service
                     .find(123)
                     .pipe(take(1))
@@ -46,54 +36,33 @@ describe('Service Tests', () => {
                 req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should create a Stock', async () => {
+            it('should create a Holding', async () => {
                 const returnedFromService = Object.assign(
                     {
-                        id: 0,
-                        onSaleDate: currentDate.format(DATE_TIME_FORMAT),
-                        expiryDate: currentDate.format(DATE_TIME_FORMAT)
+                        id: 0
                     },
                     elemDefault
                 );
-                const expected = Object.assign(
-                    {
-                        onSaleDate: currentDate,
-                        expiryDate: currentDate
-                    },
-                    returnedFromService
-                );
+                const expected = Object.assign({}, returnedFromService);
                 service
-                    .create(new Stock(null))
+                    .create(new Holding(null))
                     .pipe(take(1))
                     .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
                 const req = httpMock.expectOne({ method: 'POST' });
                 req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should update a Stock', async () => {
+            it('should update a Holding', async () => {
                 const returnedFromService = Object.assign(
                     {
                         name: 'BBBBBB',
                         description: 'BBBBBB',
-                        quantityInit: 1,
-                        quantityRemaining: 1,
-                        priceUnit: 1,
-                        image: 'BBBBBB',
-                        onSaleDate: currentDate.format(DATE_TIME_FORMAT),
-                        expiryDate: currentDate.format(DATE_TIME_FORMAT),
-                        bio: true,
-                        available: true
+                        image: 'BBBBBB'
                     },
                     elemDefault
                 );
 
-                const expected = Object.assign(
-                    {
-                        onSaleDate: currentDate,
-                        expiryDate: currentDate
-                    },
-                    returnedFromService
-                );
+                const expected = Object.assign({}, returnedFromService);
                 service
                     .update(expected)
                     .pipe(take(1))
@@ -102,29 +71,16 @@ describe('Service Tests', () => {
                 req.flush(JSON.stringify(returnedFromService));
             });
 
-            it('should return a list of Stock', async () => {
+            it('should return a list of Holding', async () => {
                 const returnedFromService = Object.assign(
                     {
                         name: 'BBBBBB',
                         description: 'BBBBBB',
-                        quantityInit: 1,
-                        quantityRemaining: 1,
-                        priceUnit: 1,
-                        image: 'BBBBBB',
-                        onSaleDate: currentDate.format(DATE_TIME_FORMAT),
-                        expiryDate: currentDate.format(DATE_TIME_FORMAT),
-                        bio: true,
-                        available: true
+                        image: 'BBBBBB'
                     },
                     elemDefault
                 );
-                const expected = Object.assign(
-                    {
-                        onSaleDate: currentDate,
-                        expiryDate: currentDate
-                    },
-                    returnedFromService
-                );
+                const expected = Object.assign({}, returnedFromService);
                 service
                     .query(expected)
                     .pipe(take(1), map(resp => resp.body))
@@ -134,7 +90,7 @@ describe('Service Tests', () => {
                 httpMock.verify();
             });
 
-            it('should delete a Stock', async () => {
+            it('should delete a Holding', async () => {
                 const rxPromise = service.delete(123).subscribe(resp => expect(resp.ok));
 
                 const req = httpMock.expectOne({ method: 'DELETE' });

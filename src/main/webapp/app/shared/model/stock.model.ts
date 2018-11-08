@@ -1,9 +1,12 @@
 import { Moment } from 'moment';
 import { IProductType } from 'app/shared/model//product-type.model';
+import { IHolding } from 'app/shared/model//holding.model';
 import { IPerson } from 'app/shared/model//person.model';
 
 export interface IStock {
     id?: number;
+    name?: string;
+    description?: string;
     quantityInit?: number;
     quantityRemaining?: number;
     priceUnit?: number;
@@ -14,12 +17,15 @@ export interface IStock {
     bio?: boolean;
     available?: boolean;
     productType?: IProductType;
+    holding?: IHolding;
     person?: IPerson;
 }
 
 export class Stock implements IStock {
     constructor(
         public id?: number,
+        public name?: string,
+        public description?: string,
         public quantityInit?: number,
         public quantityRemaining?: number,
         public priceUnit?: number,
@@ -30,6 +36,7 @@ export class Stock implements IStock {
         public bio?: boolean,
         public available?: boolean,
         public productType?: IProductType,
+        public holding?: IHolding,
         public person?: IPerson
     ) {
         this.bio = this.bio || false;

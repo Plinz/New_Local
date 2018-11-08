@@ -8,6 +8,7 @@ import { NewLocalProductTypeModule } from './product-type/product-type.module';
 import { NewLocalLocationModule } from './location/location.module';
 import { NewLocalStockModule } from './stock/stock.module';
 import { NewLocalPersonModule } from './person/person.module';
+import { NewLocalHoldingModule } from './holding/holding.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -21,6 +22,7 @@ import { NewLocalPersonModule } from './person/person.module';
         NewLocalLocationModule,
         NewLocalStockModule,
         NewLocalPersonModule,
+        NewLocalHoldingModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

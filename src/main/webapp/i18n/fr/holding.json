@@ -1,0 +1,27 @@
+
+{
+    "newLocalApp": {
+        "holding" : {
+            "home": {
+                "title": "Holdings",
+                "createLabel": "Créer un nouveau Holding",
+                "createOrEditLabel": "Créer ou éditer un Holding",
+                "search": "Recherche pour Holding"
+            },
+            "created": "Un nouveau Holding a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Holding avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Holding avec l'identifiant {{ param }} a été supprimé",
+            "delete": {
+                "question": "Etes-vous certain de vouloir supprimer le Holding {{ id }} ?"
+            },
+            "detail": {
+                "title": "Holding"
+            },
+            "name": "Name",
+            "description": "Description",
+            "image": "Image",
+            "location": "Location",
+            "person": "Person"
+        }
+    }
+}

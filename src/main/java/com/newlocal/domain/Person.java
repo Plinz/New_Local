@@ -46,6 +46,9 @@ public class Person implements Serializable {
     @OneToMany(mappedBy = "person")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Location> locations = new HashSet<>();
+    @OneToMany(mappedBy = "person")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Holding> holdings = new HashSet<>();
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -191,6 +194,31 @@ public class Person implements Serializable {
 
     public void setLocations(Set<Location> locations) {
         this.locations = locations;
+    }
+
+    public Set<Holding> getHoldings() {
+        return holdings;
+    }
+
+    public Person holdings(Set<Holding> holdings) {
+        this.holdings = holdings;
+        return this;
+    }
+
+    public Person addHolding(Holding holding) {
+        this.holdings.add(holding);
+        holding.setPerson(this);
+        return this;
+    }
+
+    public Person removeHolding(Holding holding) {
+        this.holdings.remove(holding);
+        holding.setPerson(null);
+        return this;
+    }
+
+    public void setHoldings(Set<Holding> holdings) {
+        this.holdings = holdings;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

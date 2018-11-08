@@ -26,6 +26,8 @@ export class StockUpdatePage {
     pageTitle = element(by.id('jhi-stock-heading'));
     saveButton = element(by.id('save-entity'));
     cancelButton = element(by.id('cancel-save'));
+    nameInput = element(by.id('field_name'));
+    descriptionInput = element(by.id('field_description'));
     quantityInitInput = element(by.id('field_quantityInit'));
     quantityRemainingInput = element(by.id('field_quantityRemaining'));
     priceUnitInput = element(by.id('field_priceUnit'));
@@ -35,10 +37,27 @@ export class StockUpdatePage {
     bioInput = element(by.id('field_bio'));
     availableInput = element(by.id('field_available'));
     productTypeSelect = element(by.id('field_productType'));
+    holdingSelect = element(by.id('field_holding'));
     personSelect = element(by.id('field_person'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
+    }
+
+    async setNameInput(name) {
+        await this.nameInput.sendKeys(name);
+    }
+
+    async getNameInput() {
+        return this.nameInput.getAttribute('value');
+    }
+
+    async setDescriptionInput(description) {
+        await this.descriptionInput.sendKeys(description);
+    }
+
+    async getDescriptionInput() {
+        return this.descriptionInput.getAttribute('value');
     }
 
     async setQuantityInitInput(quantityInit) {
@@ -113,6 +132,25 @@ export class StockUpdatePage {
 
     async getProductTypeSelectedOption() {
         return this.productTypeSelect.element(by.css('option:checked')).getText();
+    }
+
+    async holdingSelectLastOption() {
+        await this.holdingSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async holdingSelectOption(option) {
+        await this.holdingSelect.sendKeys(option);
+    }
+
+    getHoldingSelect(): ElementFinder {
+        return this.holdingSelect;
+    }
+
+    async getHoldingSelectedOption() {
+        return this.holdingSelect.element(by.css('option:checked')).getText();
     }
 
     async personSelectLastOption() {

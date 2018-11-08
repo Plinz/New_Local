@@ -48,6 +48,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = NewLocalApp.class)
 public class StockResourceIntTest {
 
+    private static final String DEFAULT_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_NAME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
+    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
+
     private static final Integer DEFAULT_QUANTITY_INIT = 1;
     private static final Integer UPDATED_QUANTITY_INIT = 2;
 
@@ -120,6 +126,8 @@ public class StockResourceIntTest {
      */
     public static Stock createEntity(EntityManager em) {
         Stock stock = new Stock()
+            .name(DEFAULT_NAME)
+            .description(DEFAULT_DESCRIPTION)
             .quantityInit(DEFAULT_QUANTITY_INIT)
             .quantityRemaining(DEFAULT_QUANTITY_REMAINING)
             .priceUnit(DEFAULT_PRICE_UNIT)
@@ -152,6 +160,8 @@ public class StockResourceIntTest {
         List<Stock> stockList = stockRepository.findAll();
         assertThat(stockList).hasSize(databaseSizeBeforeCreate + 1);
         Stock testStock = stockList.get(stockList.size() - 1);
+        assertThat(testStock.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testStock.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testStock.getQuantityInit()).isEqualTo(DEFAULT_QUANTITY_INIT);
         assertThat(testStock.getQuantityRemaining()).isEqualTo(DEFAULT_QUANTITY_REMAINING);
         assertThat(testStock.getPriceUnit()).isEqualTo(DEFAULT_PRICE_UNIT);
@@ -199,6 +209,8 @@ public class StockResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(stock.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].quantityInit").value(hasItem(DEFAULT_QUANTITY_INIT)))
             .andExpect(jsonPath("$.[*].quantityRemaining").value(hasItem(DEFAULT_QUANTITY_REMAINING)))
             .andExpect(jsonPath("$.[*].priceUnit").value(hasItem(DEFAULT_PRICE_UNIT.doubleValue())))
@@ -221,6 +233,8 @@ public class StockResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(stock.getId().intValue()))
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.quantityInit").value(DEFAULT_QUANTITY_INIT))
             .andExpect(jsonPath("$.quantityRemaining").value(DEFAULT_QUANTITY_REMAINING))
             .andExpect(jsonPath("$.priceUnit").value(DEFAULT_PRICE_UNIT.doubleValue()))
@@ -253,6 +267,8 @@ public class StockResourceIntTest {
         // Disconnect from session so that the updates on updatedStock are not directly saved in db
         em.detach(updatedStock);
         updatedStock
+            .name(UPDATED_NAME)
+            .description(UPDATED_DESCRIPTION)
             .quantityInit(UPDATED_QUANTITY_INIT)
             .quantityRemaining(UPDATED_QUANTITY_REMAINING)
             .priceUnit(UPDATED_PRICE_UNIT)
@@ -272,6 +288,8 @@ public class StockResourceIntTest {
         List<Stock> stockList = stockRepository.findAll();
         assertThat(stockList).hasSize(databaseSizeBeforeUpdate);
         Stock testStock = stockList.get(stockList.size() - 1);
+        assertThat(testStock.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testStock.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testStock.getQuantityInit()).isEqualTo(UPDATED_QUANTITY_INIT);
         assertThat(testStock.getQuantityRemaining()).isEqualTo(UPDATED_QUANTITY_REMAINING);
         assertThat(testStock.getPriceUnit()).isEqualTo(UPDATED_PRICE_UNIT);
@@ -340,6 +358,8 @@ public class StockResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(stock.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].quantityInit").value(hasItem(DEFAULT_QUANTITY_INIT)))
             .andExpect(jsonPath("$.[*].quantityRemaining").value(hasItem(DEFAULT_QUANTITY_REMAINING)))
             .andExpect(jsonPath("$.[*].priceUnit").value(hasItem(DEFAULT_PRICE_UNIT.doubleValue())))

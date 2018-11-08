@@ -5,6 +5,14 @@
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="newLocalApp.stock.name">Name</span></dt>
+                <dd>
+                    <span>{{stock.name}}</span>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.stock.description">Description</span></dt>
+                <dd>
+                    <span>{{stock.description}}</span>
+                </dd>
                 <dt><span jhiTranslate="newLocalApp.stock.quantityInit">Quantity Init</span></dt>
                 <dd>
                     <span>{{stock.quantityInit}}</span>
@@ -46,6 +54,12 @@
                 <dd>
                     <div *ngIf="stock.productType">
                         <a [routerLink]="['/product-type', stock.productType?.id, 'view']">{{stock.productType?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.stock.holding">Holding</span></dt>
+                <dd>
+                    <div *ngIf="stock.holding">
+                        <a [routerLink]="['/holding', stock.holding?.id, 'view']">{{stock.holding?.id}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.stock.person">Person</span></dt>

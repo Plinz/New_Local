@@ -27,6 +27,12 @@ public class Stock implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "quantity_init")
     private Integer quantityInit;
 
@@ -60,6 +66,10 @@ public class Stock implements Serializable {
     private ProductType productType;
 
     @ManyToOne
+    @JsonIgnoreProperties("")
+    private Holding holding;
+
+    @ManyToOne
     @JsonIgnoreProperties("stocks")
     private Person person;
 
@@ -70,6 +80,32 @@ public class Stock implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Stock name(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Stock description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getQuantityInit() {
@@ -202,6 +238,19 @@ public class Stock implements Serializable {
         this.productType = productType;
     }
 
+    public Holding getHolding() {
+        return holding;
+    }
+
+    public Stock holding(Holding holding) {
+        this.holding = holding;
+        return this;
+    }
+
+    public void setHolding(Holding holding) {
+        this.holding = holding;
+    }
+
     public Person getPerson() {
         return person;
     }
@@ -240,6 +289,8 @@ public class Stock implements Serializable {
     public String toString() {
         return "Stock{" +
             "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", description='" + getDescription() + "'" +
             ", quantityInit=" + getQuantityInit() +
             ", quantityRemaining=" + getQuantityRemaining() +
             ", priceUnit=" + getPriceUnit() +

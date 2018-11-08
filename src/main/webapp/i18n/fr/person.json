@@ -22,7 +22,8 @@
             "grade": "Grade",
             "purchasePending": "Purchase Pending",
             "purchaseDone": "Purchase Done",
-            "location": "Location"
+            "location": "Location",
+            "holding": "Holding"
         }
     }
 }

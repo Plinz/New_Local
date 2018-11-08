@@ -10,6 +10,8 @@ import { IStock } from 'app/shared/model/stock.model';
 import { StockService } from './stock.service';
 import { IProductType } from 'app/shared/model/product-type.model';
 import { ProductTypeService } from 'app/entities/product-type';
+import { IHolding } from 'app/shared/model/holding.model';
+import { HoldingService } from 'app/entities/holding';
 import { IPerson } from 'app/shared/model/person.model';
 import { PersonService } from 'app/entities/person';
 
@@ -23,6 +25,8 @@ export class StockUpdateComponent implements OnInit {
 
     producttypes: IProductType[];
 
+    holdings: IHolding[];
+
     people: IPerson[];
     onSaleDate: string;
     expiryDate: string;
@@ -32,6 +36,7 @@ export class StockUpdateComponent implements OnInit {
         private jhiAlertService: JhiAlertService,
         private stockService: StockService,
         private productTypeService: ProductTypeService,
+        private holdingService: HoldingService,
         private personService: PersonService,
         private elementRef: ElementRef,
         private activatedRoute: ActivatedRoute
@@ -47,6 +52,12 @@ export class StockUpdateComponent implements OnInit {
         this.productTypeService.query().subscribe(
             (res: HttpResponse<IProductType[]>) => {
                 this.producttypes = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.holdingService.query().subscribe(
+            (res: HttpResponse<IHolding[]>) => {
+                this.holdings = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -107,6 +118,10 @@ export class StockUpdateComponent implements OnInit {
     }
 
     trackProductTypeById(index: number, item: IProductType) {
+        return item.id;
+    }
+
+    trackHoldingById(index: number, item: IHolding) {
         return item.id;
     }
 

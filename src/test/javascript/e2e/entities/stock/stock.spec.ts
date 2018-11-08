@@ -43,6 +43,8 @@ describe('Stock e2e test', () => {
 
         await stockComponentsPage.clickOnCreateButton();
         await promise.all([
+            stockUpdatePage.setNameInput('name'),
+            stockUpdatePage.setDescriptionInput('description'),
             stockUpdatePage.setQuantityInitInput('5'),
             stockUpdatePage.setQuantityRemainingInput('5'),
             stockUpdatePage.setPriceUnitInput('5'),
@@ -50,8 +52,11 @@ describe('Stock e2e test', () => {
             stockUpdatePage.setOnSaleDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
             stockUpdatePage.setExpiryDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
             stockUpdatePage.productTypeSelectLastOption(),
+            stockUpdatePage.holdingSelectLastOption(),
             stockUpdatePage.personSelectLastOption()
         ]);
+        expect(await stockUpdatePage.getNameInput()).to.eq('name');
+        expect(await stockUpdatePage.getDescriptionInput()).to.eq('description');
         expect(await stockUpdatePage.getQuantityInitInput()).to.eq('5');
         expect(await stockUpdatePage.getQuantityRemainingInput()).to.eq('5');
         expect(await stockUpdatePage.getPriceUnitInput()).to.eq('5');

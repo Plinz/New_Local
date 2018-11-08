@@ -10,6 +10,16 @@
                         [(ngModel)]="stock.id" readonly />
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.name" for="field_name">Name</label>
+                    <input type="text" class="form-control" name="name" id="field_name"
+                        [(ngModel)]="stock.name" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.description" for="field_description">Description</label>
+                    <input type="text" class="form-control" name="description" id="field_description"
+                        [(ngModel)]="stock.description" />
+                </div>
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.quantityInit" for="field_quantityInit">Quantity Init</label>
                     <input type="number" class="form-control" name="quantityInit" id="field_quantityInit"
                         [(ngModel)]="stock.quantityInit" />
@@ -71,6 +81,13 @@
                     <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productType" >
                         <option [ngValue]="null"></option>
                         <option [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption" *ngFor="let productTypeOption of producttypes; trackBy: trackProductTypeById">{{productTypeOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.holding" for="field_holding">Holding</label>
+                    <select class="form-control" id="field_holding" name="holding" [(ngModel)]="stock.holding" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="holdingOption.id === stock.holding?.id ? stock.holding : holdingOption" *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">{{holdingOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">

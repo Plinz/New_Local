@@ -15,6 +15,7 @@
                 "location": "Location",
                 "stock": "Stock",
                 "person": "Person",
+                "holding": "Holding",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
