@@ -1,8 +1,11 @@
 package com.newlocal.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.newlocal.domain.Person;
 import com.newlocal.domain.Stock;
+import com.newlocal.repository.PersonRepository;
 import com.newlocal.repository.StockRepository;
+import com.newlocal.repository.UserRepository;
 import com.newlocal.repository.search.StockSearchRepository;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
@@ -22,8 +25,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -42,9 +43,14 @@ public class StockResource {
 
     private StockSearchRepository stockSearchRepository;
 
-    public StockResource(StockRepository stockRepository, StockSearchRepository stockSearchRepository) {
+    private PersonRepository personRepository;
+    private PersonDAO personDAO;
+
+    public StockResource(StockRepository stockRepository, StockSearchRepository stockSearchRepository, PersonRepository personRepository, PersonDAO personDAO) {
         this.stockRepository = stockRepository;
         this.stockSearchRepository = stockSearchRepository;
+        this.personRepository = personRepository;
+        this.personDAO = personDAO;
     }
 
     /**
@@ -61,6 +67,7 @@ public class StockResource {
         if (stock.getId() != null) {
             throw new BadRequestAlertException("A new stock cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        stock.setPerson(personRepository.findById(personDAO.getPersonIdByCurrentLogin()).get());
         Stock result = stockRepository.save(stock);
         stockSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/stocks/" + result.getId()))

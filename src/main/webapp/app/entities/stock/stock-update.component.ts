@@ -13,7 +13,6 @@ import { ProductTypeService } from 'app/entities/product-type';
 import { IHolding } from 'app/shared/model/holding.model';
 import { HoldingService } from 'app/entities/holding';
 import { IPerson } from 'app/shared/model/person.model';
-import { PersonService } from 'app/entities/person';
 
 @Component({
     selector: 'jhi-stock-update',
@@ -27,9 +26,10 @@ export class StockUpdateComponent implements OnInit {
 
     holdings: IHolding[];
 
-    people: IPerson[];
-    onSaleDate: string;
+    // people: IPerson[];
+    // onSaleDate: string;
     expiryDate: string;
+    currentDate: string;
 
     constructor(
         private dataUtils: JhiDataUtils,
@@ -37,7 +37,7 @@ export class StockUpdateComponent implements OnInit {
         private stockService: StockService,
         private productTypeService: ProductTypeService,
         private holdingService: HoldingService,
-        private personService: PersonService,
+        // private personService: PersonService,
         private elementRef: ElementRef,
         private activatedRoute: ActivatedRoute
     ) {}
@@ -46,7 +46,7 @@ export class StockUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ stock }) => {
             this.stock = stock;
-            this.onSaleDate = this.stock.onSaleDate != null ? this.stock.onSaleDate.format(DATE_TIME_FORMAT) : null;
+            // this.onSaleDate = this.stock.onSaleDate != null ? this.stock.onSaleDate.format(DATE_TIME_FORMAT) : null;
             this.expiryDate = this.stock.expiryDate != null ? this.stock.expiryDate.format(DATE_TIME_FORMAT) : null;
         });
         this.productTypeService.query().subscribe(
@@ -55,18 +55,24 @@ export class StockUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.holdingService.query().subscribe(
+        /*this.holdingService.query().subscribe(
             (res: HttpResponse<IHolding[]>) => {
                 this.holdings = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.personService.query().subscribe(
+        );*/
+        /*this.personService.query().subscribe(
             (res: HttpResponse<IPerson[]>) => {
                 this.people = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        );*/
+        const myDate = new Date();
+        if (myDate.getDate() < 10) {
+            this.currentDate = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-0${myDate.getDate()}`;
+        } else {
+            this.currentDate = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
+        }
     }
 
     byteSize(field) {
@@ -91,8 +97,10 @@ export class StockUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.stock.onSaleDate = this.onSaleDate != null ? moment(this.onSaleDate, DATE_TIME_FORMAT) : null;
+        // this.stock.onSaleDate = this.onSaleDate != null ? moment(this.onSaleDate, DATE_TIME_FORMAT) : null;
+        this.stock.onSaleDate = moment(new Date(), DATE_TIME_FORMAT);
         this.stock.expiryDate = this.expiryDate != null ? moment(this.expiryDate, DATE_TIME_FORMAT) : null;
+        this.stock.quantityRemaining = this.stock.quantityInit;
         if (this.stock.id !== undefined) {
             this.subscribeToSaveResponse(this.stockService.update(this.stock));
         } else {

@@ -3,6 +3,7 @@ package com.newlocal.web.rest;
 import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.Stock;
+import com.newlocal.repository.PersonRepository;
 import com.newlocal.repository.StockRepository;
 import com.newlocal.repository.search.StockSearchRepository;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
@@ -108,9 +109,9 @@ public class StockResourceIntTest {
     private Stock stock;
 
     @Before
-    public void setup() {
+    public void setup(PersonRepository userRepository, PersonDAO userDAO) {
         MockitoAnnotations.initMocks(this);
-        final StockResource stockResource = new StockResource(stockRepository, mockStockSearchRepository);
+        final StockResource stockResource = new StockResource(stockRepository, mockStockSearchRepository, userRepository, userDAO);
         this.restStockMockMvc = MockMvcBuilders.standaloneSetup(stockResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
