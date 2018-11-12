@@ -1,7 +1,6 @@
-
 {
     "newLocalApp": {
-        "stock" : {
+        "stock": {
             "home": {
                 "title": "Stocks",
                 "createLabel": "Créer un nouveau Stock",
@@ -17,8 +16,6 @@
             "detail": {
                 "title": "Stock"
             },
-            "name": "Name",
-            "description": "Description",
             "quantityInit": "Quantity Init",
             "quantityRemaining": "Quantity Remaining",
             "priceUnit": "Price Unit",
@@ -28,8 +25,15 @@
             "bio": "Bio",
             "available": "Available",
             "productType": "Product Type",
-            "holding": "Holding",
-            "person": "Person"
+            "person": "Person",
+            "id": "N°Lot",
+            "nom": "Nom",
+            "datep": "Date de péremption",
+            "prix": "Prix(unité ou Kg)",
+            "gain": "Gain",
+            "qvendu": "Quantité vendu",
+            "qtotal": "Quantité total",
+            "vente": "Vente en cours"
         }
     }
 }

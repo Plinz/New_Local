@@ -30,6 +30,8 @@ export class StockComponent implements OnInit, OnDestroy {
     predicate: any;
     previousPage: any;
     reverse: any;
+    count: number;
+    today: any;
 
     constructor(
         private stockService: StockService,
@@ -41,6 +43,9 @@ export class StockComponent implements OnInit, OnDestroy {
         private router: Router,
         private eventManager: JhiEventManager
     ) {
+        this.count = 1;
+        this.today = Date.now();
+
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
@@ -175,5 +180,20 @@ export class StockComponent implements OnInit, OnDestroy {
 
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
+    }
+
+    onClickMe(i: number) {
+        this.count = i;
+    }
+
+    checkDate(d: any) {
+        // const d1 = this.today.getTime();
+        // const d2 = new Date(d);
+        // const d3 = d2.getTime();
+        // if (d1 < d3) {
+        return true;
+        // } else {
+        //    return false;
+        // }
     }
 }

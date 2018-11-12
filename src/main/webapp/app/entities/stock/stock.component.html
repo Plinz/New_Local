@@ -1,118 +1,252 @@
-<div>
-    <h2 id="page-heading">
-        <span jhiTranslate="newLocalApp.stock.home.title">Stocks</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-stock" [routerLink]="['/stock/new']">
-            <fa-icon [icon]="'plus'"></fa-icon>
-            <span class="hidden-sm-down"  jhiTranslate="newLocalApp.stock.home.createLabel">
-            Create new Stock
-            </span>
-        </button>
-    </h2>
-    <jhi-alert></jhi-alert>
+<div class="mt-5">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page" jhiTranslate="newLocalApp.stock.vente">Vente</li>
+        </ol>
+    </nav>
+
     <div class="row">
-        <div class="col-sm-12">
-            <form name="searchForm" class="form-inline">
-                <div class="input-group w-100 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'newLocalApp.stock.home.search' | translate }}">
-                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <fa-icon [icon]="'search'"></fa-icon>
-                    </button>
-                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <fa-icon [icon]="'trash-alt'"></fa-icon>
-                    </button>
+        <div class="col-md-4">
+            <!--ONGLET/LIEN-->
+            <div>
+                <ul class="nav nav-tabs  lighten-3  font-weight-bold " id="myClassicTabShadow" role="tablist">
+                    <li class="nav-item">
+                        <a (click)="onClickMe(1)" class="nav-link  waves-light active show" id="profile-tab-classic-shadow"
+                            data-toggle="tab" href="#profile-classic-shadow" role="tab" aria-controls="profile-classic-shadow"
+                            aria-selected="true">
+                            <i class="fa fa-shopping-bag" aria-hidden="true"></i> En Vente
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a (click)="onClickMe(2)" class="nav-link waves-light" id="follow-tab-classic-shadow"
+                            data-toggle="tab" href="#follow-classic-shadow" role="tab" aria-controls="follow-classic-shadow"
+                            aria-selected="false">
+                            <i class="fa fa-plus" aria-hidden="true"></i> En Ajout
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a (click)="onClickMe(3)" class="nav-link waves-light" id="contact-tab-classic-shadow"
+                            data-toggle="tab" href="#contact-classic-shadow" role="tab" aria-controls="contact-classic-shadow"
+                            aria-selected="false">
+                            <i class="fa fa-check" aria-hidden="true"></i> Terminées
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <!--BARRE DE RECHERCE-->
+            <div>
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group w-100 mt-3">
+                        <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch"
+                            placeholder="{{ 'newLocalApp.stock.home.search' | translate }}">
+                        <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                            <fa-icon [icon]="'search'"></fa-icon>
+                        </button>
+                        <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                            <fa-icon [icon]="'trash-alt'"></fa-icon>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4 text-center  ">
+            <!--BOUTON CREATION-->
+            <div>
+                <button id="jh-create-entity" class="btn btn-primary float-center jh-create-entity create-stock"
+                    [routerLink]="['/stock/new']">
+                    <fa-icon [icon]="'plus'"></fa-icon>
+                    <span class="hidden-sm-down" jhiTranslate="newLocalApp.stock.home.createLabel">
+                        Create new Stock
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="defaultChecked2" checked>
+                                    <label class="custom-control-label" for="defaultChecked2">Tout séléctionner</label>
+                                    <button class="btn btn-danger btn-sm">
+                                        <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <select class="custom-select-sm form-control form-control-sm">
+                                    <option value="" disabled selected>Catégorie</option>
+                                    <option value="1">Fruits</option>
+                                    <option value="2">Légumes</option>
+                                    <option value="3">Viandes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive text-center" *ngIf="stocks">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+                                    <th>
+                                        <span jhiTranslate="newLocalApp.stock.nom">Nom</span>
+                                    </th>
+                                    <th>
+                                        <span jhiTranslate="newLocalApp.stock.id">N°Lot</span>
+                                    </th>
+                                    <th>
+                                        <span jhiTranslate="newLocalApp.stock.bio">bio</span>
+                                    </th>
+                                    <th>
+                                        <span jhiTranslate="newLocalApp.stock.datep">datep</span>
+                                    </th>
+                                    <th>
+                                        <span jhiTranslate="newLocalApp.stock.prix">prix</span>
+                                    </th>
+                                    <th *ngIf="count!=2">
+                                        <span jhiTranslate="newLocalApp.stock.gain">gain</span>
+                                    </th>
+                                    <th *ngIf="count!=2">
+                                        <span jhiTranslate="newLocalApp.stock.qvendu">qvendu</span>
+                                    </th>
+                                    <th>
+                                        <span jhiTranslate="newLocalApp.stock.qtotal">qtotal</span>
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let stock of stocks ;trackBy: trackId">
+                                    <td>{{stock.id}}</td>
+                                    <td *ngIf="stock.available">vente</td>
+                                    <td *ngIf="!stock.available">ajout</td>
+                                    <td>{{stock.expiryDate | date:'medium'}}</td>
+                                    <td>{{today | date:'medium'}}</td>
+                                    <td *ngIf="checkDate(stock.expiryDate)">termine</td>
+                                    <!--
+                                    <td *ngIf="stock.available">ajout</td>
+                                    <td *ngIf="count==2 && !stock.available">ajout</td>
+                                    <td *ngIf="stock.available && checkDate(stock.expiryDate)">terminé</td>
+
+                                    <td class="pt-3-half">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-md-1">
+                                                    <input type="checkbox" name="img" value="">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <a *ngIf="stock.image" (click)="openFile(stock.imageContentType, stock.image)">
+                                                        <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image"
+                                                            style="max-height: 50px;" alt="stock image" />
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    {{stock.name}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{stock.id}}</td>
+                                    <td>{{stock.bio}}</td>
+                                    <td>{{stock.expiryDate | date:'medium'}}</td>
+                                    <td>{{stock.priceUnit}}</td>
+                                    <td *ngIf="count!=2">{{stock.quantityInit}} - {{stock.quantityRemaining}}
+                                        *{{stock.priceUnit}} </td>
+                                    <td *ngIf="count!=2">{{stock.quantityInit}} - {{stock.quantityRemaining}}</td>
+                                    <td>{{stock.quantityInit}}</td>
+
+                                    <td class="text-center">
+                                        <div class="btn-group flex-btn-group-container">
+                                            <button *ngIf="count==2" type="submit" [routerLink]="['/stock', stock.id, 'edit']"
+                                                class="btn btn-primary btn-sm">
+                                                <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                                            </button>
+                                            <button t*ngIf="count!=3" ype="submit" [routerLink]="['/', { outlets: { popup: 'stock/'+ stock.id + '/delete'} }]"
+                                                replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
+                                                <fa-icon [icon]="'times'"></fa-icon>
+                                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+-->
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+
                 </div>
-            </form>
+            </div>
+        </div>
+
+        <div class="col-md-12" style="background-color: brown">
+            <h1>AAA</h1>
+            <div class="card">
+                <div class="card-body">
+                    <table>
+                        <tr *ngFor="let stock of stocks ;trackBy: trackId">
+                            <td><a [routerLink]="['/stock', stock.id, 'view' ]">{{stock.id}}</a></td>
+                            <td>{{stock.name}}</td>
+                            <td>{{stock.description}}</td>
+                            <td>{{stock.quantityInit}}</td>
+                            <td>{{stock.quantityRemaining}}</td>
+                            <td>{{stock.priceUnit}}</td>
+                            <td>
+                                <a *ngIf="stock.image" (click)="openFile(stock.imageContentType, stock.image)">
+                                    <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" style="max-height: 30px;"
+                                        alt="stock image" />
+                                </a>
+                                <span *ngIf="stock.image">{{stock.imageContentType}}, {{byteSize(stock.image)}}</span>
+                            </td>
+                            <td>{{stock.onSaleDate | date:'medium'}}</td>
+                            <td>{{stock.expiryDate | date:'medium'}}</td>
+                            <td>{{stock.bio}}</td>
+                            <td>{{stock.available}}</td>
+                            <td>
+                                <div *ngIf="stock.productType">
+                                    <a [routerLink]="['../product-type', stock.productType?.id, 'view' ]">{{stock.productType?.id}}</a>
+                                </div>
+                            </td>
+                            <td>
+                                <div *ngIf="stock.holding">
+                                    <a [routerLink]="['../holding', stock.holding?.id, 'view' ]">{{stock.holding?.id}}</a>
+                                </div>
+                            </td>
+                            <td>
+                                <div *ngIf="stock.person">
+                                    <a [routerLink]="['../person', stock.person?.id, 'view' ]">{{stock.person?.id}}</a>
+                                </div>
+                            </td>
+                            <td class="text-right">
+                                <div class="btn-group flex-btn-group-container">
+                                    <button type="submit" [routerLink]="['/stock', stock.id, 'view' ]" class="btn btn-info btn-sm">
+                                        <fa-icon [icon]="'eye'"></fa-icon>
+                                        <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                                    </button>
+                                    <button type="submit" [routerLink]="['/stock', stock.id, 'edit']" class="btn btn-primary btn-sm">
+                                        <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                                        <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                                    </button>
+                                    <button type="submit" [routerLink]="['/', { outlets: { popup: 'stock/'+ stock.id + '/delete'} }]"
+                                        replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
+                                        <fa-icon [icon]="'times'"></fa-icon>
+                                        <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-    <br/>
-    <div class="table-responsive" *ngIf="stocks">
-        <table class="table table-striped">
-            <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="name"><span jhiTranslate="newLocalApp.stock.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="description"><span jhiTranslate="newLocalApp.stock.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="quantityInit"><span jhiTranslate="newLocalApp.stock.quantityInit">Quantity Init</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="quantityRemaining"><span jhiTranslate="newLocalApp.stock.quantityRemaining">Quantity Remaining</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="priceUnit"><span jhiTranslate="newLocalApp.stock.priceUnit">Price Unit</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="image"><span jhiTranslate="newLocalApp.stock.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="onSaleDate"><span jhiTranslate="newLocalApp.stock.onSaleDate">On Sale Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="expiryDate"><span jhiTranslate="newLocalApp.stock.expiryDate">Expiry Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="bio"><span jhiTranslate="newLocalApp.stock.bio">Bio</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="available"><span jhiTranslate="newLocalApp.stock.available">Available</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="productType.id"><span jhiTranslate="newLocalApp.stock.productType">Product Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="holding.id"><span jhiTranslate="newLocalApp.stock.holding">Holding</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="person.id"><span jhiTranslate="newLocalApp.stock.person">Person</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let stock of stocks ;trackBy: trackId">
-                <td><a [routerLink]="['/stock', stock.id, 'view' ]">{{stock.id}}</a></td>
-                <td>{{stock.name}}</td>
-                <td>{{stock.description}}</td>
-                <td>{{stock.quantityInit}}</td>
-                <td>{{stock.quantityRemaining}}</td>
-                <td>{{stock.priceUnit}}</td>
-                <td>
-                    <a *ngIf="stock.image" (click)="openFile(stock.imageContentType, stock.image)">
-                        <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" style="max-height: 30px;" alt="stock image"/>
-                    </a>
-                    <span *ngIf="stock.image">{{stock.imageContentType}}, {{byteSize(stock.image)}}</span>
-                </td>
-                <td>{{stock.onSaleDate | date:'medium'}}</td>
-                <td>{{stock.expiryDate | date:'medium'}}</td>
-                <td>{{stock.bio}}</td>
-                <td>{{stock.available}}</td>
-                <td>
-                    <div *ngIf="stock.productType">
-                        <a [routerLink]="['../product-type', stock.productType?.id, 'view' ]" >{{stock.productType?.id}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="stock.holding">
-                        <a [routerLink]="['../holding', stock.holding?.id, 'view' ]" >{{stock.holding?.id}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="stock.person">
-                        <a [routerLink]="['../person', stock.person?.id, 'view' ]" >{{stock.person?.id}}</a>
-                    </div>
-                </td>
-                <td class="text-right">
-                    <div class="btn-group flex-btn-group-container">
-                        <button type="submit"
-                                [routerLink]="['/stock', stock.id, 'view' ]"
-                                class="btn btn-info btn-sm">
-                            <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/stock', stock.id, 'edit']"
-                                class="btn btn-primary btn-sm">
-                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'stock/'+ stock.id + '/delete'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
-                                class="btn btn-danger btn-sm">
-                            <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div *ngIf="stocks && stocks.length">
-        <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-        </div>
-        <div class="row justify-content-center">
-            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
-        </div>
-    </div>
+    <jhi-alert></jhi-alert>
 </div>
