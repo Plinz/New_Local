@@ -40,8 +40,8 @@ public class PurchaseDone implements Serializable {
     private Stock stock;
 
     @ManyToOne
-    @JsonIgnoreProperties("purchaseDones")
-    private Person person;
+    @JsonIgnoreProperties("")
+    private User client;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -91,17 +91,17 @@ public class PurchaseDone implements Serializable {
         this.stock = stock;
     }
 
-    public Person getPerson() {
-        return person;
+    public User getClient() {
+        return client;
     }
 
-    public PurchaseDone person(Person person) {
-        this.person = person;
+    public PurchaseDone client(User user) {
+        this.client = user;
         return this;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setClient(User user) {
+        this.client = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

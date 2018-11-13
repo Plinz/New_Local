@@ -6,8 +6,7 @@ import { JhiAlertService } from 'ng-jhipster';
 
 import { ILocation } from 'app/shared/model/location.model';
 import { LocationService } from './location.service';
-import { IPerson } from 'app/shared/model/person.model';
-import { PersonService } from 'app/entities/person';
+import { IUser, UserService } from 'app/core';
 
 @Component({
     selector: 'jhi-location-update',
@@ -17,12 +16,12 @@ export class LocationUpdateComponent implements OnInit {
     location: ILocation;
     isSaving: boolean;
 
-    people: IPerson[];
+    users: IUser[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private locationService: LocationService,
-        private personService: PersonService,
+        private userService: UserService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -31,9 +30,9 @@ export class LocationUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ location }) => {
             this.location = location;
         });
-        this.personService.query().subscribe(
-            (res: HttpResponse<IPerson[]>) => {
-                this.people = res.body;
+        this.userService.query().subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -69,7 +68,7 @@ export class LocationUpdateComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    trackPersonById(index: number, item: IPerson) {
+    trackUserById(index: number, item: IUser) {
         return item.id;
     }
 }

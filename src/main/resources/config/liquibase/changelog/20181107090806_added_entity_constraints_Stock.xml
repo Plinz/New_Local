@@ -20,11 +20,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="holding"/>
 
-        <addForeignKeyConstraint baseColumnNames="person_id"
+        <addForeignKeyConstraint baseColumnNames="seller_id"
                                  baseTableName="stock"
-                                 constraintName="fk_stock_person_id"
+                                 constraintName="fk_stock_seller_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="person"/>
+                                 referencedTableName="jhi_user"/>
 
     </changeSet>
 </databaseChangeLog>

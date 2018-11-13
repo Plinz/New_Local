@@ -1,7 +1,7 @@
 import { Moment } from 'moment';
 import { IProductType } from 'app/shared/model//product-type.model';
 import { IHolding } from 'app/shared/model//holding.model';
-import { IPerson } from 'app/shared/model//person.model';
+import { IUser } from 'app/core/user/user.model';
 
 export interface IStock {
     id?: number;
@@ -18,7 +18,7 @@ export interface IStock {
     available?: boolean;
     productType?: IProductType;
     holding?: IHolding;
-    person?: IPerson;
+    seller?: IUser;
 }
 
 export class Stock implements IStock {
@@ -37,7 +37,7 @@ export class Stock implements IStock {
         public available?: boolean,
         public productType?: IProductType,
         public holding?: IHolding,
-        public person?: IPerson
+        public seller?: IUser
     ) {
         this.bio = this.bio || false;
         this.available = this.available || false;

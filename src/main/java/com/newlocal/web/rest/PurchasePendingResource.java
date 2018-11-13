@@ -2,10 +2,11 @@ package com.newlocal.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.newlocal.domain.PurchasePending;
-import com.newlocal.repository.PurchasePendingRepository;
-import com.newlocal.repository.search.PurchasePendingSearchRepository;
+import com.newlocal.service.PurchasePendingService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.service.dto.PurchasePendingCriteria;
+import com.newlocal.service.PurchasePendingQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -34,13 +34,13 @@ public class PurchasePendingResource {
 
     private static final String ENTITY_NAME = "purchasePending";
 
-    private PurchasePendingRepository purchasePendingRepository;
+    private PurchasePendingService purchasePendingService;
 
-    private PurchasePendingSearchRepository purchasePendingSearchRepository;
+    private PurchasePendingQueryService purchasePendingQueryService;
 
-    public PurchasePendingResource(PurchasePendingRepository purchasePendingRepository, PurchasePendingSearchRepository purchasePendingSearchRepository) {
-        this.purchasePendingRepository = purchasePendingRepository;
-        this.purchasePendingSearchRepository = purchasePendingSearchRepository;
+    public PurchasePendingResource(PurchasePendingService purchasePendingService, PurchasePendingQueryService purchasePendingQueryService) {
+        this.purchasePendingService = purchasePendingService;
+        this.purchasePendingQueryService = purchasePendingQueryService;
     }
 
     /**
@@ -57,8 +57,7 @@ public class PurchasePendingResource {
         if (purchasePending.getId() != null) {
             throw new BadRequestAlertException("A new purchasePending cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        PurchasePending result = purchasePendingRepository.save(purchasePending);
-        purchasePendingSearchRepository.save(result);
+        PurchasePending result = purchasePendingService.save(purchasePending);
         return ResponseEntity.created(new URI("/api/purchase-pendings/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -80,8 +79,7 @@ public class PurchasePendingResource {
         if (purchasePending.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        PurchasePending result = purchasePendingRepository.save(purchasePending);
-        purchasePendingSearchRepository.save(result);
+        PurchasePending result = purchasePendingService.save(purchasePending);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, purchasePending.getId().toString()))
             .body(result);
@@ -90,13 +88,28 @@ public class PurchasePendingResource {
     /**
      * GET  /purchase-pendings : get all the purchasePendings.
      *
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of purchasePendings in body
      */
     @GetMapping("/purchase-pendings")
     @Timed
-    public List<PurchasePending> getAllPurchasePendings() {
-        log.debug("REST request to get all PurchasePendings");
-        return purchasePendingRepository.findAll();
+    public ResponseEntity<List<PurchasePending>> getAllPurchasePendings(PurchasePendingCriteria criteria) {
+        log.debug("REST request to get PurchasePendings by criteria: {}", criteria);
+        List<PurchasePending> entityList = purchasePendingQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * GET  /purchase-pendings/count : count all the purchasePendings.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/purchase-pendings/count")
+    @Timed
+    public ResponseEntity<Long> countPurchasePendings(PurchasePendingCriteria criteria) {
+        log.debug("REST request to count PurchasePendings by criteria: {}", criteria);
+        return ResponseEntity.ok().body(purchasePendingQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -109,7 +122,7 @@ public class PurchasePendingResource {
     @Timed
     public ResponseEntity<PurchasePending> getPurchasePending(@PathVariable Long id) {
         log.debug("REST request to get PurchasePending : {}", id);
-        Optional<PurchasePending> purchasePending = purchasePendingRepository.findById(id);
+        Optional<PurchasePending> purchasePending = purchasePendingService.findOne(id);
         return ResponseUtil.wrapOrNotFound(purchasePending);
     }
 
@@ -123,9 +136,7 @@ public class PurchasePendingResource {
     @Timed
     public ResponseEntity<Void> deletePurchasePending(@PathVariable Long id) {
         log.debug("REST request to delete PurchasePending : {}", id);
-
-        purchasePendingRepository.deleteById(id);
-        purchasePendingSearchRepository.deleteById(id);
+        purchasePendingService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -140,9 +151,7 @@ public class PurchasePendingResource {
     @Timed
     public List<PurchasePending> searchPurchasePendings(@RequestParam String query) {
         log.debug("REST request to search PurchasePendings for query {}", query);
-        return StreamSupport
-            .stream(purchasePendingSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return purchasePendingService.search(query);
     }
 
 }

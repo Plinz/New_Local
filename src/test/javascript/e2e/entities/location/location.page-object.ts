@@ -32,7 +32,7 @@ export class LocationUpdatePage {
     addressInput = element(by.id('field_address'));
     lonInput = element(by.id('field_lon'));
     latInput = element(by.id('field_lat'));
-    personSelect = element(by.id('field_person'));
+    userSelect = element(by.id('field_user'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -86,23 +86,23 @@ export class LocationUpdatePage {
         return this.latInput.getAttribute('value');
     }
 
-    async personSelectLastOption() {
-        await this.personSelect
+    async userSelectLastOption() {
+        await this.userSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    async personSelectOption(option) {
-        await this.personSelect.sendKeys(option);
+    async userSelectOption(option) {
+        await this.userSelect.sendKeys(option);
     }
 
-    getPersonSelect(): ElementFinder {
-        return this.personSelect;
+    getUserSelect(): ElementFinder {
+        return this.userSelect;
     }
 
-    async getPersonSelectedOption() {
-        return this.personSelect.element(by.css('option:checked')).getText();
+    async getUserSelectedOption() {
+        return this.userSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

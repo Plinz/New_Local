@@ -19,7 +19,7 @@
             },
             "quantity": "Quantity",
             "stock": "Stock",
-            "person": "Person"
+            "client": "Client"
         }
     }
 }

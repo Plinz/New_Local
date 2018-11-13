@@ -36,7 +36,7 @@
             <th><span jhiTranslate="newLocalApp.location.address">Address</span></th>
             <th><span jhiTranslate="newLocalApp.location.lon">Lon</span></th>
             <th><span jhiTranslate="newLocalApp.location.lat">Lat</span></th>
-            <th><span jhiTranslate="newLocalApp.location.person">Person</span></th>
+            <th><span jhiTranslate="newLocalApp.location.user">User</span></th>
             <th></th>
             </tr>
             </thead>
@@ -50,9 +50,7 @@
                 <td>{{location.lon}}</td>
                 <td>{{location.lat}}</td>
                 <td>
-                    <div *ngIf="location.person">
-                        <a [routerLink]="['../person', location.person?.id, 'view' ]" >{{location.person?.id}}</a>
-                    </div>
+                    {{location.user?.id}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

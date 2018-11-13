@@ -45,8 +45,8 @@ public class Location implements Serializable {
     private Double lat;
 
     @ManyToOne
-    @JsonIgnoreProperties("locations")
-    private Person person;
+    @JsonIgnoreProperties("")
+    private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -135,17 +135,17 @@ public class Location implements Serializable {
         this.lat = lat;
     }
 
-    public Person getPerson() {
-        return person;
+    public User getUser() {
+        return user;
     }
 
-    public Location person(Person person) {
-        this.person = person;
+    public Location user(User user) {
+        this.user = user;
         return this;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setUser(User user) {
+        this.user = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

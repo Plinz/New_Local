@@ -2,10 +2,11 @@ package com.newlocal.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.newlocal.domain.Grade;
-import com.newlocal.repository.GradeRepository;
-import com.newlocal.repository.search.GradeSearchRepository;
+import com.newlocal.service.GradeService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.service.dto.GradeCriteria;
+import com.newlocal.service.GradeQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -34,13 +34,13 @@ public class GradeResource {
 
     private static final String ENTITY_NAME = "grade";
 
-    private GradeRepository gradeRepository;
+    private GradeService gradeService;
 
-    private GradeSearchRepository gradeSearchRepository;
+    private GradeQueryService gradeQueryService;
 
-    public GradeResource(GradeRepository gradeRepository, GradeSearchRepository gradeSearchRepository) {
-        this.gradeRepository = gradeRepository;
-        this.gradeSearchRepository = gradeSearchRepository;
+    public GradeResource(GradeService gradeService, GradeQueryService gradeQueryService) {
+        this.gradeService = gradeService;
+        this.gradeQueryService = gradeQueryService;
     }
 
     /**
@@ -57,8 +57,7 @@ public class GradeResource {
         if (grade.getId() != null) {
             throw new BadRequestAlertException("A new grade cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Grade result = gradeRepository.save(grade);
-        gradeSearchRepository.save(result);
+        Grade result = gradeService.save(grade);
         return ResponseEntity.created(new URI("/api/grades/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -80,8 +79,7 @@ public class GradeResource {
         if (grade.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Grade result = gradeRepository.save(grade);
-        gradeSearchRepository.save(result);
+        Grade result = gradeService.save(grade);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, grade.getId().toString()))
             .body(result);
@@ -90,13 +88,28 @@ public class GradeResource {
     /**
      * GET  /grades : get all the grades.
      *
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of grades in body
      */
     @GetMapping("/grades")
     @Timed
-    public List<Grade> getAllGrades() {
-        log.debug("REST request to get all Grades");
-        return gradeRepository.findAll();
+    public ResponseEntity<List<Grade>> getAllGrades(GradeCriteria criteria) {
+        log.debug("REST request to get Grades by criteria: {}", criteria);
+        List<Grade> entityList = gradeQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * GET  /grades/count : count all the grades.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/grades/count")
+    @Timed
+    public ResponseEntity<Long> countGrades(GradeCriteria criteria) {
+        log.debug("REST request to count Grades by criteria: {}", criteria);
+        return ResponseEntity.ok().body(gradeQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -109,7 +122,7 @@ public class GradeResource {
     @Timed
     public ResponseEntity<Grade> getGrade(@PathVariable Long id) {
         log.debug("REST request to get Grade : {}", id);
-        Optional<Grade> grade = gradeRepository.findById(id);
+        Optional<Grade> grade = gradeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(grade);
     }
 
@@ -123,9 +136,7 @@ public class GradeResource {
     @Timed
     public ResponseEntity<Void> deleteGrade(@PathVariable Long id) {
         log.debug("REST request to delete Grade : {}", id);
-
-        gradeRepository.deleteById(id);
-        gradeSearchRepository.deleteById(id);
+        gradeService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -140,9 +151,7 @@ public class GradeResource {
     @Timed
     public List<Grade> searchGrades(@RequestParam String query) {
         log.debug("REST request to search Grades for query {}", query);
-        return StreamSupport
-            .stream(gradeSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return gradeService.search(query);
     }
 
 }

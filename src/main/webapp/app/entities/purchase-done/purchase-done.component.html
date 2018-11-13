@@ -33,7 +33,7 @@
             <th><span jhiTranslate="newLocalApp.purchaseDone.saleDate">Sale Date</span></th>
             <th><span jhiTranslate="newLocalApp.purchaseDone.quantity">Quantity</span></th>
             <th><span jhiTranslate="newLocalApp.purchaseDone.stock">Stock</span></th>
-            <th><span jhiTranslate="newLocalApp.purchaseDone.person">Person</span></th>
+            <th><span jhiTranslate="newLocalApp.purchaseDone.client">Client</span></th>
             <th></th>
             </tr>
             </thead>
@@ -48,9 +48,7 @@
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="purchaseDone.person">
-                        <a [routerLink]="['../person', purchaseDone.person?.id, 'view' ]" >{{purchaseDone.person?.id}}</a>
-                    </div>
+                    {{purchaseDone.client?.id}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

@@ -28,7 +28,7 @@ export class PurchasePendingUpdatePage {
     cancelButton = element(by.id('cancel-save'));
     quantityInput = element(by.id('field_quantity'));
     stockSelect = element(by.id('field_stock'));
-    personSelect = element(by.id('field_person'));
+    clientSelect = element(by.id('field_client'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -61,23 +61,23 @@ export class PurchasePendingUpdatePage {
         return this.stockSelect.element(by.css('option:checked')).getText();
     }
 
-    async personSelectLastOption() {
-        await this.personSelect
+    async clientSelectLastOption() {
+        await this.clientSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    async personSelectOption(option) {
-        await this.personSelect.sendKeys(option);
+    async clientSelectOption(option) {
+        await this.clientSelect.sendKeys(option);
     }
 
-    getPersonSelect(): ElementFinder {
-        return this.personSelect;
+    getClientSelect(): ElementFinder {
+        return this.clientSelect;
     }
 
-    async getPersonSelectedOption() {
-        return this.personSelect.element(by.css('option:checked')).getText();
+    async getClientSelectedOption() {
+        return this.clientSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

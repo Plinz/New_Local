@@ -46,14 +46,7 @@ public class CacheConfiguration {
             cm.createCache(com.newlocal.domain.ProductType.class.getName() + ".grades", jcacheConfiguration);
             cm.createCache(com.newlocal.domain.Location.class.getName(), jcacheConfiguration);
             cm.createCache(com.newlocal.domain.Stock.class.getName(), jcacheConfiguration);
-            cm.createCache(com.newlocal.domain.Person.class.getName(), jcacheConfiguration);
-            cm.createCache(com.newlocal.domain.Person.class.getName() + ".stocks", jcacheConfiguration);
-            cm.createCache(com.newlocal.domain.Person.class.getName() + ".grades", jcacheConfiguration);
-            cm.createCache(com.newlocal.domain.Person.class.getName() + ".purchasePendings", jcacheConfiguration);
-            cm.createCache(com.newlocal.domain.Person.class.getName() + ".purchaseDones", jcacheConfiguration);
-            cm.createCache(com.newlocal.domain.Person.class.getName() + ".locations", jcacheConfiguration);
             cm.createCache(com.newlocal.domain.Holding.class.getName(), jcacheConfiguration);
-            cm.createCache(com.newlocal.domain.Person.class.getName() + ".holdings", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

@@ -41,7 +41,7 @@ describe('PurchasePending e2e test', () => {
         await promise.all([
             purchasePendingUpdatePage.setQuantityInput('5'),
             purchasePendingUpdatePage.stockSelectLastOption(),
-            purchasePendingUpdatePage.personSelectLastOption()
+            purchasePendingUpdatePage.clientSelectLastOption()
         ]);
         expect(await purchasePendingUpdatePage.getQuantityInput()).to.eq('5');
         await purchasePendingUpdatePage.save();

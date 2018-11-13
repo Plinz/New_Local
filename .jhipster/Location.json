@@ -29,8 +29,8 @@
     "relationships": [
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "person",
-            "otherEntityName": "person",
+            "relationshipName": "user",
+            "otherEntityName": "user",
             "otherEntityField": "id"
         }
     ],
@@ -38,8 +38,8 @@
     "entityTableName": "location",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
-    "jpaMetamodelFiltering": false,
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
     "applications": "*"

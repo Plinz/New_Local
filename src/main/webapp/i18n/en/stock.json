@@ -29,7 +29,7 @@
             "available": "Available",
             "productType": "Product Type",
             "holding": "Holding",
-            "person": "Person"
+            "seller": "Seller"
         }
     }
 }

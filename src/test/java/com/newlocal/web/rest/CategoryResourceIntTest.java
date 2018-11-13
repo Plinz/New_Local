@@ -3,9 +3,13 @@ package com.newlocal.web.rest;
 import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.Category;
+import com.newlocal.domain.Category;
 import com.newlocal.repository.CategoryRepository;
 import com.newlocal.repository.search.CategorySearchRepository;
+import com.newlocal.service.CategoryService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.dto.CategoryCriteria;
+import com.newlocal.service.CategoryQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +61,9 @@ public class CategoryResourceIntTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
+    
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * This repository is mocked in the com.newlocal.repository.search test package.
@@ -65,6 +72,9 @@ public class CategoryResourceIntTest {
      */
     @Autowired
     private CategorySearchRepository mockCategorySearchRepository;
+
+    @Autowired
+    private CategoryQueryService categoryQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -85,7 +95,7 @@ public class CategoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CategoryResource categoryResource = new CategoryResource(categoryRepository, mockCategorySearchRepository);
+        final CategoryResource categoryResource = new CategoryResource(categoryService, categoryQueryService);
         this.restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -195,6 +205,140 @@ public class CategoryResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllCategoriesByNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where name equals to DEFAULT_NAME
+        defaultCategoryShouldBeFound("name.equals=" + DEFAULT_NAME);
+
+        // Get all the categoryList where name equals to UPDATED_NAME
+        defaultCategoryShouldNotBeFound("name.equals=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where name in DEFAULT_NAME or UPDATED_NAME
+        defaultCategoryShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
+
+        // Get all the categoryList where name equals to UPDATED_NAME
+        defaultCategoryShouldNotBeFound("name.in=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where name is not null
+        defaultCategoryShouldBeFound("name.specified=true");
+
+        // Get all the categoryList where name is null
+        defaultCategoryShouldNotBeFound("name.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where description equals to DEFAULT_DESCRIPTION
+        defaultCategoryShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the categoryList where description equals to UPDATED_DESCRIPTION
+        defaultCategoryShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultCategoryShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the categoryList where description equals to UPDATED_DESCRIPTION
+        defaultCategoryShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where description is not null
+        defaultCategoryShouldBeFound("description.specified=true");
+
+        // Get all the categoryList where description is null
+        defaultCategoryShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByCategoryParentIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Category categoryParent = CategoryResourceIntTest.createEntity(em);
+        em.persist(categoryParent);
+        em.flush();
+        category.setCategoryParent(categoryParent);
+        categoryRepository.saveAndFlush(category);
+        Long categoryParentId = categoryParent.getId();
+
+        // Get all the categoryList where categoryParent equals to categoryParentId
+        defaultCategoryShouldBeFound("categoryParentId.equals=" + categoryParentId);
+
+        // Get all the categoryList where categoryParent equals to categoryParentId + 1
+        defaultCategoryShouldNotBeFound("categoryParentId.equals=" + (categoryParentId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultCategoryShouldBeFound(String filter) throws Exception {
+        restCategoryMockMvc.perform(get("/api/categories?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(category.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+
+        // Check, that the count call also returns 1
+        restCategoryMockMvc.perform(get("/api/categories/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultCategoryShouldNotBeFound(String filter) throws Exception {
+        restCategoryMockMvc.perform(get("/api/categories?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restCategoryMockMvc.perform(get("/api/categories/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingCategory() throws Exception {
         // Get the category
         restCategoryMockMvc.perform(get("/api/categories/{id}", Long.MAX_VALUE))
@@ -205,7 +349,9 @@ public class CategoryResourceIntTest {
     @Transactional
     public void updateCategory() throws Exception {
         // Initialize the database
-        categoryRepository.saveAndFlush(category);
+        categoryService.save(category);
+        // As the test used the service layer, reset the Elasticsearch mock repository
+        reset(mockCategorySearchRepository);
 
         int databaseSizeBeforeUpdate = categoryRepository.findAll().size();
 
@@ -262,7 +408,7 @@ public class CategoryResourceIntTest {
     @Transactional
     public void deleteCategory() throws Exception {
         // Initialize the database
-        categoryRepository.saveAndFlush(category);
+        categoryService.save(category);
 
         int databaseSizeBeforeDelete = categoryRepository.findAll().size();
 
@@ -283,7 +429,7 @@ public class CategoryResourceIntTest {
     @Transactional
     public void searchCategory() throws Exception {
         // Initialize the database
-        categoryRepository.saveAndFlush(category);
+        categoryService.save(category);
         when(mockCategorySearchRepository.search(queryStringQuery("id:" + category.getId())))
             .thenReturn(Collections.singletonList(category));
         // Search the category

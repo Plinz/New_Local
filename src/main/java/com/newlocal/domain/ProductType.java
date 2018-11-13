@@ -1,6 +1,5 @@
 package com.newlocal.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -9,8 +8,6 @@ import javax.persistence.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -42,9 +39,6 @@ public class ProductType implements Serializable {
     @Column(name = "image_content_type")
     private String imageContentType;
 
-    @OneToMany(mappedBy = "productType")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Grade> grades = new HashSet<>();
     @ManyToOne
     @JsonIgnoreProperties("")
     private Category category;
@@ -108,31 +102,6 @@ public class ProductType implements Serializable {
 
     public void setImageContentType(String imageContentType) {
         this.imageContentType = imageContentType;
-    }
-
-    public Set<Grade> getGrades() {
-        return grades;
-    }
-
-    public ProductType grades(Set<Grade> grades) {
-        this.grades = grades;
-        return this;
-    }
-
-    public ProductType addGrade(Grade grade) {
-        this.grades.add(grade);
-        grade.setProductType(this);
-        return this;
-    }
-
-    public ProductType removeGrade(Grade grade) {
-        this.grades.remove(grade);
-        grade.setProductType(null);
-        return this;
-    }
-
-    public void setGrades(Set<Grade> grades) {
-        this.grades = grades;
     }
 
     public Category getCategory() {

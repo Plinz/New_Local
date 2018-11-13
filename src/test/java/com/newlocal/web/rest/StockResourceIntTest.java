@@ -3,9 +3,15 @@ package com.newlocal.web.rest;
 import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.Stock;
+import com.newlocal.domain.ProductType;
+import com.newlocal.domain.Holding;
+import com.newlocal.domain.User;
 import com.newlocal.repository.StockRepository;
 import com.newlocal.repository.search.StockSearchRepository;
+import com.newlocal.service.StockService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.dto.StockCriteria;
+import com.newlocal.service.StockQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -82,6 +88,9 @@ public class StockResourceIntTest {
 
     @Autowired
     private StockRepository stockRepository;
+    
+    @Autowired
+    private StockService stockService;
 
     /**
      * This repository is mocked in the com.newlocal.repository.search test package.
@@ -90,6 +99,9 @@ public class StockResourceIntTest {
      */
     @Autowired
     private StockSearchRepository mockStockSearchRepository;
+
+    @Autowired
+    private StockQueryService stockQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -110,7 +122,7 @@ public class StockResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final StockResource stockResource = new StockResource(stockRepository, mockStockSearchRepository);
+        final StockResource stockResource = new StockResource(stockService, stockQueryService);
         this.restStockMockMvc = MockMvcBuilders.standaloneSetup(stockResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -248,6 +260,512 @@ public class StockResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllStocksByNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where name equals to DEFAULT_NAME
+        defaultStockShouldBeFound("name.equals=" + DEFAULT_NAME);
+
+        // Get all the stockList where name equals to UPDATED_NAME
+        defaultStockShouldNotBeFound("name.equals=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where name in DEFAULT_NAME or UPDATED_NAME
+        defaultStockShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
+
+        // Get all the stockList where name equals to UPDATED_NAME
+        defaultStockShouldNotBeFound("name.in=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where name is not null
+        defaultStockShouldBeFound("name.specified=true");
+
+        // Get all the stockList where name is null
+        defaultStockShouldNotBeFound("name.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where description equals to DEFAULT_DESCRIPTION
+        defaultStockShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the stockList where description equals to UPDATED_DESCRIPTION
+        defaultStockShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultStockShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the stockList where description equals to UPDATED_DESCRIPTION
+        defaultStockShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where description is not null
+        defaultStockShouldBeFound("description.specified=true");
+
+        // Get all the stockList where description is null
+        defaultStockShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByQuantityInitIsEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where quantityInit equals to DEFAULT_QUANTITY_INIT
+        defaultStockShouldBeFound("quantityInit.equals=" + DEFAULT_QUANTITY_INIT);
+
+        // Get all the stockList where quantityInit equals to UPDATED_QUANTITY_INIT
+        defaultStockShouldNotBeFound("quantityInit.equals=" + UPDATED_QUANTITY_INIT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByQuantityInitIsInShouldWork() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where quantityInit in DEFAULT_QUANTITY_INIT or UPDATED_QUANTITY_INIT
+        defaultStockShouldBeFound("quantityInit.in=" + DEFAULT_QUANTITY_INIT + "," + UPDATED_QUANTITY_INIT);
+
+        // Get all the stockList where quantityInit equals to UPDATED_QUANTITY_INIT
+        defaultStockShouldNotBeFound("quantityInit.in=" + UPDATED_QUANTITY_INIT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByQuantityInitIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where quantityInit is not null
+        defaultStockShouldBeFound("quantityInit.specified=true");
+
+        // Get all the stockList where quantityInit is null
+        defaultStockShouldNotBeFound("quantityInit.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByQuantityInitIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where quantityInit greater than or equals to DEFAULT_QUANTITY_INIT
+        defaultStockShouldBeFound("quantityInit.greaterOrEqualThan=" + DEFAULT_QUANTITY_INIT);
+
+        // Get all the stockList where quantityInit greater than or equals to UPDATED_QUANTITY_INIT
+        defaultStockShouldNotBeFound("quantityInit.greaterOrEqualThan=" + UPDATED_QUANTITY_INIT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByQuantityInitIsLessThanSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where quantityInit less than or equals to DEFAULT_QUANTITY_INIT
+        defaultStockShouldNotBeFound("quantityInit.lessThan=" + DEFAULT_QUANTITY_INIT);
+
+        // Get all the stockList where quantityInit less than or equals to UPDATED_QUANTITY_INIT
+        defaultStockShouldBeFound("quantityInit.lessThan=" + UPDATED_QUANTITY_INIT);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllStocksByQuantityRemainingIsEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where quantityRemaining equals to DEFAULT_QUANTITY_REMAINING
+        defaultStockShouldBeFound("quantityRemaining.equals=" + DEFAULT_QUANTITY_REMAINING);
+
+        // Get all the stockList where quantityRemaining equals to UPDATED_QUANTITY_REMAINING
+        defaultStockShouldNotBeFound("quantityRemaining.equals=" + UPDATED_QUANTITY_REMAINING);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByQuantityRemainingIsInShouldWork() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where quantityRemaining in DEFAULT_QUANTITY_REMAINING or UPDATED_QUANTITY_REMAINING
+        defaultStockShouldBeFound("quantityRemaining.in=" + DEFAULT_QUANTITY_REMAINING + "," + UPDATED_QUANTITY_REMAINING);
+
+        // Get all the stockList where quantityRemaining equals to UPDATED_QUANTITY_REMAINING
+        defaultStockShouldNotBeFound("quantityRemaining.in=" + UPDATED_QUANTITY_REMAINING);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByQuantityRemainingIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where quantityRemaining is not null
+        defaultStockShouldBeFound("quantityRemaining.specified=true");
+
+        // Get all the stockList where quantityRemaining is null
+        defaultStockShouldNotBeFound("quantityRemaining.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByQuantityRemainingIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where quantityRemaining greater than or equals to DEFAULT_QUANTITY_REMAINING
+        defaultStockShouldBeFound("quantityRemaining.greaterOrEqualThan=" + DEFAULT_QUANTITY_REMAINING);
+
+        // Get all the stockList where quantityRemaining greater than or equals to UPDATED_QUANTITY_REMAINING
+        defaultStockShouldNotBeFound("quantityRemaining.greaterOrEqualThan=" + UPDATED_QUANTITY_REMAINING);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByQuantityRemainingIsLessThanSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where quantityRemaining less than or equals to DEFAULT_QUANTITY_REMAINING
+        defaultStockShouldNotBeFound("quantityRemaining.lessThan=" + DEFAULT_QUANTITY_REMAINING);
+
+        // Get all the stockList where quantityRemaining less than or equals to UPDATED_QUANTITY_REMAINING
+        defaultStockShouldBeFound("quantityRemaining.lessThan=" + UPDATED_QUANTITY_REMAINING);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllStocksByPriceUnitIsEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where priceUnit equals to DEFAULT_PRICE_UNIT
+        defaultStockShouldBeFound("priceUnit.equals=" + DEFAULT_PRICE_UNIT);
+
+        // Get all the stockList where priceUnit equals to UPDATED_PRICE_UNIT
+        defaultStockShouldNotBeFound("priceUnit.equals=" + UPDATED_PRICE_UNIT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByPriceUnitIsInShouldWork() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where priceUnit in DEFAULT_PRICE_UNIT or UPDATED_PRICE_UNIT
+        defaultStockShouldBeFound("priceUnit.in=" + DEFAULT_PRICE_UNIT + "," + UPDATED_PRICE_UNIT);
+
+        // Get all the stockList where priceUnit equals to UPDATED_PRICE_UNIT
+        defaultStockShouldNotBeFound("priceUnit.in=" + UPDATED_PRICE_UNIT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByPriceUnitIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where priceUnit is not null
+        defaultStockShouldBeFound("priceUnit.specified=true");
+
+        // Get all the stockList where priceUnit is null
+        defaultStockShouldNotBeFound("priceUnit.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByOnSaleDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where onSaleDate equals to DEFAULT_ON_SALE_DATE
+        defaultStockShouldBeFound("onSaleDate.equals=" + DEFAULT_ON_SALE_DATE);
+
+        // Get all the stockList where onSaleDate equals to UPDATED_ON_SALE_DATE
+        defaultStockShouldNotBeFound("onSaleDate.equals=" + UPDATED_ON_SALE_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByOnSaleDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where onSaleDate in DEFAULT_ON_SALE_DATE or UPDATED_ON_SALE_DATE
+        defaultStockShouldBeFound("onSaleDate.in=" + DEFAULT_ON_SALE_DATE + "," + UPDATED_ON_SALE_DATE);
+
+        // Get all the stockList where onSaleDate equals to UPDATED_ON_SALE_DATE
+        defaultStockShouldNotBeFound("onSaleDate.in=" + UPDATED_ON_SALE_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByOnSaleDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where onSaleDate is not null
+        defaultStockShouldBeFound("onSaleDate.specified=true");
+
+        // Get all the stockList where onSaleDate is null
+        defaultStockShouldNotBeFound("onSaleDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByExpiryDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where expiryDate equals to DEFAULT_EXPIRY_DATE
+        defaultStockShouldBeFound("expiryDate.equals=" + DEFAULT_EXPIRY_DATE);
+
+        // Get all the stockList where expiryDate equals to UPDATED_EXPIRY_DATE
+        defaultStockShouldNotBeFound("expiryDate.equals=" + UPDATED_EXPIRY_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByExpiryDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where expiryDate in DEFAULT_EXPIRY_DATE or UPDATED_EXPIRY_DATE
+        defaultStockShouldBeFound("expiryDate.in=" + DEFAULT_EXPIRY_DATE + "," + UPDATED_EXPIRY_DATE);
+
+        // Get all the stockList where expiryDate equals to UPDATED_EXPIRY_DATE
+        defaultStockShouldNotBeFound("expiryDate.in=" + UPDATED_EXPIRY_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByExpiryDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where expiryDate is not null
+        defaultStockShouldBeFound("expiryDate.specified=true");
+
+        // Get all the stockList where expiryDate is null
+        defaultStockShouldNotBeFound("expiryDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByBioIsEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where bio equals to DEFAULT_BIO
+        defaultStockShouldBeFound("bio.equals=" + DEFAULT_BIO);
+
+        // Get all the stockList where bio equals to UPDATED_BIO
+        defaultStockShouldNotBeFound("bio.equals=" + UPDATED_BIO);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByBioIsInShouldWork() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where bio in DEFAULT_BIO or UPDATED_BIO
+        defaultStockShouldBeFound("bio.in=" + DEFAULT_BIO + "," + UPDATED_BIO);
+
+        // Get all the stockList where bio equals to UPDATED_BIO
+        defaultStockShouldNotBeFound("bio.in=" + UPDATED_BIO);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByBioIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where bio is not null
+        defaultStockShouldBeFound("bio.specified=true");
+
+        // Get all the stockList where bio is null
+        defaultStockShouldNotBeFound("bio.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByAvailableIsEqualToSomething() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where available equals to DEFAULT_AVAILABLE
+        defaultStockShouldBeFound("available.equals=" + DEFAULT_AVAILABLE);
+
+        // Get all the stockList where available equals to UPDATED_AVAILABLE
+        defaultStockShouldNotBeFound("available.equals=" + UPDATED_AVAILABLE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByAvailableIsInShouldWork() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where available in DEFAULT_AVAILABLE or UPDATED_AVAILABLE
+        defaultStockShouldBeFound("available.in=" + DEFAULT_AVAILABLE + "," + UPDATED_AVAILABLE);
+
+        // Get all the stockList where available equals to UPDATED_AVAILABLE
+        defaultStockShouldNotBeFound("available.in=" + UPDATED_AVAILABLE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByAvailableIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        stockRepository.saveAndFlush(stock);
+
+        // Get all the stockList where available is not null
+        defaultStockShouldBeFound("available.specified=true");
+
+        // Get all the stockList where available is null
+        defaultStockShouldNotBeFound("available.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllStocksByProductTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        ProductType productType = ProductTypeResourceIntTest.createEntity(em);
+        em.persist(productType);
+        em.flush();
+        stock.setProductType(productType);
+        stockRepository.saveAndFlush(stock);
+        Long productTypeId = productType.getId();
+
+        // Get all the stockList where productType equals to productTypeId
+        defaultStockShouldBeFound("productTypeId.equals=" + productTypeId);
+
+        // Get all the stockList where productType equals to productTypeId + 1
+        defaultStockShouldNotBeFound("productTypeId.equals=" + (productTypeId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllStocksByHoldingIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Holding holding = HoldingResourceIntTest.createEntity(em);
+        em.persist(holding);
+        em.flush();
+        stock.setHolding(holding);
+        stockRepository.saveAndFlush(stock);
+        Long holdingId = holding.getId();
+
+        // Get all the stockList where holding equals to holdingId
+        defaultStockShouldBeFound("holdingId.equals=" + holdingId);
+
+        // Get all the stockList where holding equals to holdingId + 1
+        defaultStockShouldNotBeFound("holdingId.equals=" + (holdingId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllStocksBySellerIsEqualToSomething() throws Exception {
+        // Initialize the database
+        User seller = UserResourceIntTest.createEntity(em);
+        em.persist(seller);
+        em.flush();
+        stock.setSeller(seller);
+        stockRepository.saveAndFlush(stock);
+        Long sellerId = seller.getId();
+
+        // Get all the stockList where seller equals to sellerId
+        defaultStockShouldBeFound("sellerId.equals=" + sellerId);
+
+        // Get all the stockList where seller equals to sellerId + 1
+        defaultStockShouldNotBeFound("sellerId.equals=" + (sellerId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultStockShouldBeFound(String filter) throws Exception {
+        restStockMockMvc.perform(get("/api/stocks?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(stock.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].quantityInit").value(hasItem(DEFAULT_QUANTITY_INIT)))
+            .andExpect(jsonPath("$.[*].quantityRemaining").value(hasItem(DEFAULT_QUANTITY_REMAINING)))
+            .andExpect(jsonPath("$.[*].priceUnit").value(hasItem(DEFAULT_PRICE_UNIT.doubleValue())))
+            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))))
+            .andExpect(jsonPath("$.[*].onSaleDate").value(hasItem(DEFAULT_ON_SALE_DATE.toString())))
+            .andExpect(jsonPath("$.[*].expiryDate").value(hasItem(DEFAULT_EXPIRY_DATE.toString())))
+            .andExpect(jsonPath("$.[*].bio").value(hasItem(DEFAULT_BIO.booleanValue())))
+            .andExpect(jsonPath("$.[*].available").value(hasItem(DEFAULT_AVAILABLE.booleanValue())));
+
+        // Check, that the count call also returns 1
+        restStockMockMvc.perform(get("/api/stocks/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultStockShouldNotBeFound(String filter) throws Exception {
+        restStockMockMvc.perform(get("/api/stocks?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restStockMockMvc.perform(get("/api/stocks/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingStock() throws Exception {
         // Get the stock
         restStockMockMvc.perform(get("/api/stocks/{id}", Long.MAX_VALUE))
@@ -258,7 +776,9 @@ public class StockResourceIntTest {
     @Transactional
     public void updateStock() throws Exception {
         // Initialize the database
-        stockRepository.saveAndFlush(stock);
+        stockService.save(stock);
+        // As the test used the service layer, reset the Elasticsearch mock repository
+        reset(mockStockSearchRepository);
 
         int databaseSizeBeforeUpdate = stockRepository.findAll().size();
 
@@ -329,7 +849,7 @@ public class StockResourceIntTest {
     @Transactional
     public void deleteStock() throws Exception {
         // Initialize the database
-        stockRepository.saveAndFlush(stock);
+        stockService.save(stock);
 
         int databaseSizeBeforeDelete = stockRepository.findAll().size();
 
@@ -350,7 +870,7 @@ public class StockResourceIntTest {
     @Transactional
     public void searchStock() throws Exception {
         // Initialize the database
-        stockRepository.saveAndFlush(stock);
+        stockService.save(stock);
         when(mockStockSearchRepository.search(queryStringQuery("id:" + stock.getId()), PageRequest.of(0, 20)))
             .thenReturn(new PageImpl<>(Collections.singletonList(stock), PageRequest.of(0, 1), 1));
         // Search the stock

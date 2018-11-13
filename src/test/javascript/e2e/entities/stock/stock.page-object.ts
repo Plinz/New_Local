@@ -38,7 +38,7 @@ export class StockUpdatePage {
     availableInput = element(by.id('field_available'));
     productTypeSelect = element(by.id('field_productType'));
     holdingSelect = element(by.id('field_holding'));
-    personSelect = element(by.id('field_person'));
+    sellerSelect = element(by.id('field_seller'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -153,23 +153,23 @@ export class StockUpdatePage {
         return this.holdingSelect.element(by.css('option:checked')).getText();
     }
 
-    async personSelectLastOption() {
-        await this.personSelect
+    async sellerSelectLastOption() {
+        await this.sellerSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    async personSelectOption(option) {
-        await this.personSelect.sendKeys(option);
+    async sellerSelectOption(option) {
+        await this.sellerSelect.sendKeys(option);
     }
 
-    getPersonSelect(): ElementFinder {
-        return this.personSelect;
+    getSellerSelect(): ElementFinder {
+        return this.sellerSelect;
     }
 
-    async getPersonSelectedOption() {
-        return this.personSelect.element(by.css('option:checked')).getText();
+    async getSellerSelectedOption() {
+        return this.sellerSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

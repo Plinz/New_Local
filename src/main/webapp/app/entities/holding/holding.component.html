@@ -34,7 +34,7 @@
             <th><span jhiTranslate="newLocalApp.holding.description">Description</span></th>
             <th><span jhiTranslate="newLocalApp.holding.image">Image</span></th>
             <th><span jhiTranslate="newLocalApp.holding.location">Location</span></th>
-            <th><span jhiTranslate="newLocalApp.holding.person">Person</span></th>
+            <th><span jhiTranslate="newLocalApp.holding.owner">Owner</span></th>
             <th></th>
             </tr>
             </thead>
@@ -55,9 +55,7 @@
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="holding.person">
-                        <a [routerLink]="['../person', holding.person?.id, 'view' ]" >{{holding.person?.id}}</a>
-                    </div>
+                    {{holding.owner?.id}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

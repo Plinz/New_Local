@@ -8,8 +8,7 @@ import { IPurchasePending } from 'app/shared/model/purchase-pending.model';
 import { PurchasePendingService } from './purchase-pending.service';
 import { IStock } from 'app/shared/model/stock.model';
 import { StockService } from 'app/entities/stock';
-import { IPerson } from 'app/shared/model/person.model';
-import { PersonService } from 'app/entities/person';
+import { IUser, UserService } from 'app/core';
 
 @Component({
     selector: 'jhi-purchase-pending-update',
@@ -21,13 +20,13 @@ export class PurchasePendingUpdateComponent implements OnInit {
 
     stocks: IStock[];
 
-    people: IPerson[];
+    users: IUser[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private purchasePendingService: PurchasePendingService,
         private stockService: StockService,
-        private personService: PersonService,
+        private userService: UserService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -42,9 +41,9 @@ export class PurchasePendingUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.personService.query().subscribe(
-            (res: HttpResponse<IPerson[]>) => {
-                this.people = res.body;
+        this.userService.query().subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -84,7 +83,7 @@ export class PurchasePendingUpdateComponent implements OnInit {
         return item.id;
     }
 
-    trackPersonById(index: number, item: IPerson) {
+    trackUserById(index: number, item: IUser) {
         return item.id;
     }
 }

@@ -28,11 +28,9 @@
                         <a [routerLink]="['/location', holding.location?.id, 'view']">{{holding.location?.id}}</a>
                     </div>
                 </dd>
-                <dt><span jhiTranslate="newLocalApp.holding.person">Person</span></dt>
+                <dt><span jhiTranslate="newLocalApp.holding.owner">Owner</span></dt>
                 <dd>
-                    <div *ngIf="holding.person">
-                        <a [routerLink]="['/person', holding.person?.id, 'view']">{{holding.person?.id}}</a>
-                    </div>
+                    {{holding.owner?.id}}
                 </dd>
             </dl>
 

@@ -30,7 +30,7 @@ export class HoldingUpdatePage {
     descriptionInput = element(by.id('field_description'));
     imageInput = element(by.id('file_image'));
     locationSelect = element(by.id('field_location'));
-    personSelect = element(by.id('field_person'));
+    ownerSelect = element(by.id('field_owner'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -79,23 +79,23 @@ export class HoldingUpdatePage {
         return this.locationSelect.element(by.css('option:checked')).getText();
     }
 
-    async personSelectLastOption() {
-        await this.personSelect
+    async ownerSelectLastOption() {
+        await this.ownerSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    async personSelectOption(option) {
-        await this.personSelect.sendKeys(option);
+    async ownerSelectOption(option) {
+        await this.ownerSelect.sendKeys(option);
     }
 
-    getPersonSelect(): ElementFinder {
-        return this.personSelect;
+    getOwnerSelect(): ElementFinder {
+        return this.ownerSelect;
     }
 
-    async getPersonSelectedOption() {
-        return this.personSelect.element(by.css('option:checked')).getText();
+    async getOwnerSelectedOption() {
+        return this.ownerSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

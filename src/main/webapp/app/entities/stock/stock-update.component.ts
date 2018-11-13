@@ -12,8 +12,7 @@ import { IProductType } from 'app/shared/model/product-type.model';
 import { ProductTypeService } from 'app/entities/product-type';
 import { IHolding } from 'app/shared/model/holding.model';
 import { HoldingService } from 'app/entities/holding';
-import { IPerson } from 'app/shared/model/person.model';
-import { PersonService } from 'app/entities/person';
+import { IUser, UserService } from 'app/core';
 
 @Component({
     selector: 'jhi-stock-update',
@@ -27,7 +26,7 @@ export class StockUpdateComponent implements OnInit {
 
     holdings: IHolding[];
 
-    people: IPerson[];
+    users: IUser[];
     onSaleDate: string;
     expiryDate: string;
 
@@ -37,7 +36,7 @@ export class StockUpdateComponent implements OnInit {
         private stockService: StockService,
         private productTypeService: ProductTypeService,
         private holdingService: HoldingService,
-        private personService: PersonService,
+        private userService: UserService,
         private elementRef: ElementRef,
         private activatedRoute: ActivatedRoute
     ) {}
@@ -61,9 +60,9 @@ export class StockUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.personService.query().subscribe(
-            (res: HttpResponse<IPerson[]>) => {
-                this.people = res.body;
+        this.userService.query().subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -125,7 +124,7 @@ export class StockUpdateComponent implements OnInit {
         return item.id;
     }
 
-    trackPersonById(index: number, item: IPerson) {
+    trackUserById(index: number, item: IUser) {
         return item.id;
     }
 }

@@ -3,9 +3,13 @@ package com.newlocal.web.rest;
 import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.Location;
+import com.newlocal.domain.User;
 import com.newlocal.repository.LocationRepository;
 import com.newlocal.repository.search.LocationSearchRepository;
+import com.newlocal.service.LocationService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.dto.LocationCriteria;
+import com.newlocal.service.LocationQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +67,9 @@ public class LocationResourceIntTest {
 
     @Autowired
     private LocationRepository locationRepository;
+    
+    @Autowired
+    private LocationService locationService;
 
     /**
      * This repository is mocked in the com.newlocal.repository.search test package.
@@ -71,6 +78,9 @@ public class LocationResourceIntTest {
      */
     @Autowired
     private LocationSearchRepository mockLocationSearchRepository;
+
+    @Autowired
+    private LocationQueryService locationQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -91,7 +101,7 @@ public class LocationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LocationResource locationResource = new LocationResource(locationRepository, mockLocationSearchRepository);
+        final LocationResource locationResource = new LocationResource(locationService, locationQueryService);
         this.restLocationMockMvc = MockMvcBuilders.standaloneSetup(locationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -209,6 +219,298 @@ public class LocationResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllLocationsByCityIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where city equals to DEFAULT_CITY
+        defaultLocationShouldBeFound("city.equals=" + DEFAULT_CITY);
+
+        // Get all the locationList where city equals to UPDATED_CITY
+        defaultLocationShouldNotBeFound("city.equals=" + UPDATED_CITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByCityIsInShouldWork() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where city in DEFAULT_CITY or UPDATED_CITY
+        defaultLocationShouldBeFound("city.in=" + DEFAULT_CITY + "," + UPDATED_CITY);
+
+        // Get all the locationList where city equals to UPDATED_CITY
+        defaultLocationShouldNotBeFound("city.in=" + UPDATED_CITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByCityIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where city is not null
+        defaultLocationShouldBeFound("city.specified=true");
+
+        // Get all the locationList where city is null
+        defaultLocationShouldNotBeFound("city.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByCountryIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where country equals to DEFAULT_COUNTRY
+        defaultLocationShouldBeFound("country.equals=" + DEFAULT_COUNTRY);
+
+        // Get all the locationList where country equals to UPDATED_COUNTRY
+        defaultLocationShouldNotBeFound("country.equals=" + UPDATED_COUNTRY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByCountryIsInShouldWork() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where country in DEFAULT_COUNTRY or UPDATED_COUNTRY
+        defaultLocationShouldBeFound("country.in=" + DEFAULT_COUNTRY + "," + UPDATED_COUNTRY);
+
+        // Get all the locationList where country equals to UPDATED_COUNTRY
+        defaultLocationShouldNotBeFound("country.in=" + UPDATED_COUNTRY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByCountryIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where country is not null
+        defaultLocationShouldBeFound("country.specified=true");
+
+        // Get all the locationList where country is null
+        defaultLocationShouldNotBeFound("country.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByZipIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where zip equals to DEFAULT_ZIP
+        defaultLocationShouldBeFound("zip.equals=" + DEFAULT_ZIP);
+
+        // Get all the locationList where zip equals to UPDATED_ZIP
+        defaultLocationShouldNotBeFound("zip.equals=" + UPDATED_ZIP);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByZipIsInShouldWork() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where zip in DEFAULT_ZIP or UPDATED_ZIP
+        defaultLocationShouldBeFound("zip.in=" + DEFAULT_ZIP + "," + UPDATED_ZIP);
+
+        // Get all the locationList where zip equals to UPDATED_ZIP
+        defaultLocationShouldNotBeFound("zip.in=" + UPDATED_ZIP);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByZipIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where zip is not null
+        defaultLocationShouldBeFound("zip.specified=true");
+
+        // Get all the locationList where zip is null
+        defaultLocationShouldNotBeFound("zip.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByAddressIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where address equals to DEFAULT_ADDRESS
+        defaultLocationShouldBeFound("address.equals=" + DEFAULT_ADDRESS);
+
+        // Get all the locationList where address equals to UPDATED_ADDRESS
+        defaultLocationShouldNotBeFound("address.equals=" + UPDATED_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByAddressIsInShouldWork() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where address in DEFAULT_ADDRESS or UPDATED_ADDRESS
+        defaultLocationShouldBeFound("address.in=" + DEFAULT_ADDRESS + "," + UPDATED_ADDRESS);
+
+        // Get all the locationList where address equals to UPDATED_ADDRESS
+        defaultLocationShouldNotBeFound("address.in=" + UPDATED_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByAddressIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where address is not null
+        defaultLocationShouldBeFound("address.specified=true");
+
+        // Get all the locationList where address is null
+        defaultLocationShouldNotBeFound("address.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByLonIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where lon equals to DEFAULT_LON
+        defaultLocationShouldBeFound("lon.equals=" + DEFAULT_LON);
+
+        // Get all the locationList where lon equals to UPDATED_LON
+        defaultLocationShouldNotBeFound("lon.equals=" + UPDATED_LON);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByLonIsInShouldWork() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where lon in DEFAULT_LON or UPDATED_LON
+        defaultLocationShouldBeFound("lon.in=" + DEFAULT_LON + "," + UPDATED_LON);
+
+        // Get all the locationList where lon equals to UPDATED_LON
+        defaultLocationShouldNotBeFound("lon.in=" + UPDATED_LON);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByLonIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where lon is not null
+        defaultLocationShouldBeFound("lon.specified=true");
+
+        // Get all the locationList where lon is null
+        defaultLocationShouldNotBeFound("lon.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByLatIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where lat equals to DEFAULT_LAT
+        defaultLocationShouldBeFound("lat.equals=" + DEFAULT_LAT);
+
+        // Get all the locationList where lat equals to UPDATED_LAT
+        defaultLocationShouldNotBeFound("lat.equals=" + UPDATED_LAT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByLatIsInShouldWork() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where lat in DEFAULT_LAT or UPDATED_LAT
+        defaultLocationShouldBeFound("lat.in=" + DEFAULT_LAT + "," + UPDATED_LAT);
+
+        // Get all the locationList where lat equals to UPDATED_LAT
+        defaultLocationShouldNotBeFound("lat.in=" + UPDATED_LAT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByLatIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where lat is not null
+        defaultLocationShouldBeFound("lat.specified=true");
+
+        // Get all the locationList where lat is null
+        defaultLocationShouldNotBeFound("lat.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByUserIsEqualToSomething() throws Exception {
+        // Initialize the database
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        location.setUser(user);
+        locationRepository.saveAndFlush(location);
+        Long userId = user.getId();
+
+        // Get all the locationList where user equals to userId
+        defaultLocationShouldBeFound("userId.equals=" + userId);
+
+        // Get all the locationList where user equals to userId + 1
+        defaultLocationShouldNotBeFound("userId.equals=" + (userId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultLocationShouldBeFound(String filter) throws Exception {
+        restLocationMockMvc.perform(get("/api/locations?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(location.getId().intValue())))
+            .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY.toString())))
+            .andExpect(jsonPath("$.[*].country").value(hasItem(DEFAULT_COUNTRY.toString())))
+            .andExpect(jsonPath("$.[*].zip").value(hasItem(DEFAULT_ZIP.toString())))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
+            .andExpect(jsonPath("$.[*].lon").value(hasItem(DEFAULT_LON.doubleValue())))
+            .andExpect(jsonPath("$.[*].lat").value(hasItem(DEFAULT_LAT.doubleValue())));
+
+        // Check, that the count call also returns 1
+        restLocationMockMvc.perform(get("/api/locations/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultLocationShouldNotBeFound(String filter) throws Exception {
+        restLocationMockMvc.perform(get("/api/locations?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restLocationMockMvc.perform(get("/api/locations/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingLocation() throws Exception {
         // Get the location
         restLocationMockMvc.perform(get("/api/locations/{id}", Long.MAX_VALUE))
@@ -219,7 +521,9 @@ public class LocationResourceIntTest {
     @Transactional
     public void updateLocation() throws Exception {
         // Initialize the database
-        locationRepository.saveAndFlush(location);
+        locationService.save(location);
+        // As the test used the service layer, reset the Elasticsearch mock repository
+        reset(mockLocationSearchRepository);
 
         int databaseSizeBeforeUpdate = locationRepository.findAll().size();
 
@@ -280,7 +584,7 @@ public class LocationResourceIntTest {
     @Transactional
     public void deleteLocation() throws Exception {
         // Initialize the database
-        locationRepository.saveAndFlush(location);
+        locationService.save(location);
 
         int databaseSizeBeforeDelete = locationRepository.findAll().size();
 
@@ -301,7 +605,7 @@ public class LocationResourceIntTest {
     @Transactional
     public void searchLocation() throws Exception {
         // Initialize the database
-        locationRepository.saveAndFlush(location);
+        locationService.save(location);
         when(mockLocationSearchRepository.search(queryStringQuery("id:" + location.getId())))
             .thenReturn(Collections.singletonList(location));
         // Search the location

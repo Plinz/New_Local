@@ -2,10 +2,11 @@ package com.newlocal.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.newlocal.domain.PurchaseDone;
-import com.newlocal.repository.PurchaseDoneRepository;
-import com.newlocal.repository.search.PurchaseDoneSearchRepository;
+import com.newlocal.service.PurchaseDoneService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.service.dto.PurchaseDoneCriteria;
+import com.newlocal.service.PurchaseDoneQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -34,13 +34,13 @@ public class PurchaseDoneResource {
 
     private static final String ENTITY_NAME = "purchaseDone";
 
-    private PurchaseDoneRepository purchaseDoneRepository;
+    private PurchaseDoneService purchaseDoneService;
 
-    private PurchaseDoneSearchRepository purchaseDoneSearchRepository;
+    private PurchaseDoneQueryService purchaseDoneQueryService;
 
-    public PurchaseDoneResource(PurchaseDoneRepository purchaseDoneRepository, PurchaseDoneSearchRepository purchaseDoneSearchRepository) {
-        this.purchaseDoneRepository = purchaseDoneRepository;
-        this.purchaseDoneSearchRepository = purchaseDoneSearchRepository;
+    public PurchaseDoneResource(PurchaseDoneService purchaseDoneService, PurchaseDoneQueryService purchaseDoneQueryService) {
+        this.purchaseDoneService = purchaseDoneService;
+        this.purchaseDoneQueryService = purchaseDoneQueryService;
     }
 
     /**
@@ -57,8 +57,7 @@ public class PurchaseDoneResource {
         if (purchaseDone.getId() != null) {
             throw new BadRequestAlertException("A new purchaseDone cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        PurchaseDone result = purchaseDoneRepository.save(purchaseDone);
-        purchaseDoneSearchRepository.save(result);
+        PurchaseDone result = purchaseDoneService.save(purchaseDone);
         return ResponseEntity.created(new URI("/api/purchase-dones/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -80,8 +79,7 @@ public class PurchaseDoneResource {
         if (purchaseDone.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        PurchaseDone result = purchaseDoneRepository.save(purchaseDone);
-        purchaseDoneSearchRepository.save(result);
+        PurchaseDone result = purchaseDoneService.save(purchaseDone);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, purchaseDone.getId().toString()))
             .body(result);
@@ -90,13 +88,28 @@ public class PurchaseDoneResource {
     /**
      * GET  /purchase-dones : get all the purchaseDones.
      *
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of purchaseDones in body
      */
     @GetMapping("/purchase-dones")
     @Timed
-    public List<PurchaseDone> getAllPurchaseDones() {
-        log.debug("REST request to get all PurchaseDones");
-        return purchaseDoneRepository.findAll();
+    public ResponseEntity<List<PurchaseDone>> getAllPurchaseDones(PurchaseDoneCriteria criteria) {
+        log.debug("REST request to get PurchaseDones by criteria: {}", criteria);
+        List<PurchaseDone> entityList = purchaseDoneQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * GET  /purchase-dones/count : count all the purchaseDones.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/purchase-dones/count")
+    @Timed
+    public ResponseEntity<Long> countPurchaseDones(PurchaseDoneCriteria criteria) {
+        log.debug("REST request to count PurchaseDones by criteria: {}", criteria);
+        return ResponseEntity.ok().body(purchaseDoneQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -109,7 +122,7 @@ public class PurchaseDoneResource {
     @Timed
     public ResponseEntity<PurchaseDone> getPurchaseDone(@PathVariable Long id) {
         log.debug("REST request to get PurchaseDone : {}", id);
-        Optional<PurchaseDone> purchaseDone = purchaseDoneRepository.findById(id);
+        Optional<PurchaseDone> purchaseDone = purchaseDoneService.findOne(id);
         return ResponseUtil.wrapOrNotFound(purchaseDone);
     }
 
@@ -123,9 +136,7 @@ public class PurchaseDoneResource {
     @Timed
     public ResponseEntity<Void> deletePurchaseDone(@PathVariable Long id) {
         log.debug("REST request to delete PurchaseDone : {}", id);
-
-        purchaseDoneRepository.deleteById(id);
-        purchaseDoneSearchRepository.deleteById(id);
+        purchaseDoneService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -140,9 +151,7 @@ public class PurchaseDoneResource {
     @Timed
     public List<PurchaseDone> searchPurchaseDones(@RequestParam String query) {
         log.debug("REST request to search PurchaseDones for query {}", query);
-        return StreamSupport
-            .stream(purchaseDoneSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return purchaseDoneService.search(query);
     }
 
 }

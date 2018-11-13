@@ -3,9 +3,14 @@ package com.newlocal.web.rest;
 import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.Grade;
+import com.newlocal.domain.User;
+import com.newlocal.domain.ProductType;
 import com.newlocal.repository.GradeRepository;
 import com.newlocal.repository.search.GradeSearchRepository;
+import com.newlocal.service.GradeService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.dto.GradeCriteria;
+import com.newlocal.service.GradeQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +53,9 @@ public class GradeResourceIntTest {
 
     @Autowired
     private GradeRepository gradeRepository;
+    
+    @Autowired
+    private GradeService gradeService;
 
     /**
      * This repository is mocked in the com.newlocal.repository.search test package.
@@ -56,6 +64,9 @@ public class GradeResourceIntTest {
      */
     @Autowired
     private GradeSearchRepository mockGradeSearchRepository;
+
+    @Autowired
+    private GradeQueryService gradeQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -76,7 +87,7 @@ public class GradeResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final GradeResource gradeResource = new GradeResource(gradeRepository, mockGradeSearchRepository);
+        final GradeResource gradeResource = new GradeResource(gradeService, gradeQueryService);
         this.restGradeMockMvc = MockMvcBuilders.standaloneSetup(gradeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -192,6 +203,144 @@ public class GradeResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllGradesByGradeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        gradeRepository.saveAndFlush(grade);
+
+        // Get all the gradeList where grade equals to DEFAULT_GRADE
+        defaultGradeShouldBeFound("grade.equals=" + DEFAULT_GRADE);
+
+        // Get all the gradeList where grade equals to UPDATED_GRADE
+        defaultGradeShouldNotBeFound("grade.equals=" + UPDATED_GRADE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllGradesByGradeIsInShouldWork() throws Exception {
+        // Initialize the database
+        gradeRepository.saveAndFlush(grade);
+
+        // Get all the gradeList where grade in DEFAULT_GRADE or UPDATED_GRADE
+        defaultGradeShouldBeFound("grade.in=" + DEFAULT_GRADE + "," + UPDATED_GRADE);
+
+        // Get all the gradeList where grade equals to UPDATED_GRADE
+        defaultGradeShouldNotBeFound("grade.in=" + UPDATED_GRADE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllGradesByGradeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        gradeRepository.saveAndFlush(grade);
+
+        // Get all the gradeList where grade is not null
+        defaultGradeShouldBeFound("grade.specified=true");
+
+        // Get all the gradeList where grade is null
+        defaultGradeShouldNotBeFound("grade.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllGradesByGradeIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        gradeRepository.saveAndFlush(grade);
+
+        // Get all the gradeList where grade greater than or equals to DEFAULT_GRADE
+        defaultGradeShouldBeFound("grade.greaterOrEqualThan=" + DEFAULT_GRADE);
+
+        // Get all the gradeList where grade greater than or equals to UPDATED_GRADE
+        defaultGradeShouldNotBeFound("grade.greaterOrEqualThan=" + UPDATED_GRADE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllGradesByGradeIsLessThanSomething() throws Exception {
+        // Initialize the database
+        gradeRepository.saveAndFlush(grade);
+
+        // Get all the gradeList where grade less than or equals to DEFAULT_GRADE
+        defaultGradeShouldNotBeFound("grade.lessThan=" + DEFAULT_GRADE);
+
+        // Get all the gradeList where grade less than or equals to UPDATED_GRADE
+        defaultGradeShouldBeFound("grade.lessThan=" + UPDATED_GRADE);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllGradesByUserIsEqualToSomething() throws Exception {
+        // Initialize the database
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        grade.setUser(user);
+        gradeRepository.saveAndFlush(grade);
+        Long userId = user.getId();
+
+        // Get all the gradeList where user equals to userId
+        defaultGradeShouldBeFound("userId.equals=" + userId);
+
+        // Get all the gradeList where user equals to userId + 1
+        defaultGradeShouldNotBeFound("userId.equals=" + (userId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllGradesByProductTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        ProductType productType = ProductTypeResourceIntTest.createEntity(em);
+        em.persist(productType);
+        em.flush();
+        grade.setProductType(productType);
+        gradeRepository.saveAndFlush(grade);
+        Long productTypeId = productType.getId();
+
+        // Get all the gradeList where productType equals to productTypeId
+        defaultGradeShouldBeFound("productTypeId.equals=" + productTypeId);
+
+        // Get all the gradeList where productType equals to productTypeId + 1
+        defaultGradeShouldNotBeFound("productTypeId.equals=" + (productTypeId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultGradeShouldBeFound(String filter) throws Exception {
+        restGradeMockMvc.perform(get("/api/grades?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(grade.getId().intValue())))
+            .andExpect(jsonPath("$.[*].grade").value(hasItem(DEFAULT_GRADE)));
+
+        // Check, that the count call also returns 1
+        restGradeMockMvc.perform(get("/api/grades/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultGradeShouldNotBeFound(String filter) throws Exception {
+        restGradeMockMvc.perform(get("/api/grades?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restGradeMockMvc.perform(get("/api/grades/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingGrade() throws Exception {
         // Get the grade
         restGradeMockMvc.perform(get("/api/grades/{id}", Long.MAX_VALUE))
@@ -202,7 +351,9 @@ public class GradeResourceIntTest {
     @Transactional
     public void updateGrade() throws Exception {
         // Initialize the database
-        gradeRepository.saveAndFlush(grade);
+        gradeService.save(grade);
+        // As the test used the service layer, reset the Elasticsearch mock repository
+        reset(mockGradeSearchRepository);
 
         int databaseSizeBeforeUpdate = gradeRepository.findAll().size();
 
@@ -253,7 +404,7 @@ public class GradeResourceIntTest {
     @Transactional
     public void deleteGrade() throws Exception {
         // Initialize the database
-        gradeRepository.saveAndFlush(grade);
+        gradeService.save(grade);
 
         int databaseSizeBeforeDelete = gradeRepository.findAll().size();
 
@@ -274,7 +425,7 @@ public class GradeResourceIntTest {
     @Transactional
     public void searchGrade() throws Exception {
         // Initialize the database
-        gradeRepository.saveAndFlush(grade);
+        gradeService.save(grade);
         when(mockGradeSearchRepository.search(queryStringQuery("id:" + grade.getId())))
             .thenReturn(Collections.singletonList(grade));
         // Search the grade

@@ -24,8 +24,8 @@
         },
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "person",
-            "otherEntityName": "person",
+            "relationshipName": "owner",
+            "otherEntityName": "user",
             "otherEntityField": "id"
         }
     ],
@@ -33,8 +33,8 @@
     "entityTableName": "holding",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
-    "jpaMetamodelFiltering": false,
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
     "applications": "*"

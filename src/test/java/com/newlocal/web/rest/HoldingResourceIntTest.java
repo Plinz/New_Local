@@ -3,9 +3,14 @@ package com.newlocal.web.rest;
 import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.Holding;
+import com.newlocal.domain.Location;
+import com.newlocal.domain.User;
 import com.newlocal.repository.HoldingRepository;
 import com.newlocal.repository.search.HoldingSearchRepository;
+import com.newlocal.service.HoldingService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.dto.HoldingCriteria;
+import com.newlocal.service.HoldingQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +62,9 @@ public class HoldingResourceIntTest {
 
     @Autowired
     private HoldingRepository holdingRepository;
+    
+    @Autowired
+    private HoldingService holdingService;
 
     /**
      * This repository is mocked in the com.newlocal.repository.search test package.
@@ -65,6 +73,9 @@ public class HoldingResourceIntTest {
      */
     @Autowired
     private HoldingSearchRepository mockHoldingSearchRepository;
+
+    @Autowired
+    private HoldingQueryService holdingQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -85,7 +96,7 @@ public class HoldingResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final HoldingResource holdingResource = new HoldingResource(holdingRepository, mockHoldingSearchRepository);
+        final HoldingResource holdingResource = new HoldingResource(holdingService, holdingQueryService);
         this.restHoldingMockMvc = MockMvcBuilders.standaloneSetup(holdingResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -195,6 +206,159 @@ public class HoldingResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllHoldingsByNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        holdingRepository.saveAndFlush(holding);
+
+        // Get all the holdingList where name equals to DEFAULT_NAME
+        defaultHoldingShouldBeFound("name.equals=" + DEFAULT_NAME);
+
+        // Get all the holdingList where name equals to UPDATED_NAME
+        defaultHoldingShouldNotBeFound("name.equals=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllHoldingsByNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        holdingRepository.saveAndFlush(holding);
+
+        // Get all the holdingList where name in DEFAULT_NAME or UPDATED_NAME
+        defaultHoldingShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
+
+        // Get all the holdingList where name equals to UPDATED_NAME
+        defaultHoldingShouldNotBeFound("name.in=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllHoldingsByNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        holdingRepository.saveAndFlush(holding);
+
+        // Get all the holdingList where name is not null
+        defaultHoldingShouldBeFound("name.specified=true");
+
+        // Get all the holdingList where name is null
+        defaultHoldingShouldNotBeFound("name.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllHoldingsByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        holdingRepository.saveAndFlush(holding);
+
+        // Get all the holdingList where description equals to DEFAULT_DESCRIPTION
+        defaultHoldingShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the holdingList where description equals to UPDATED_DESCRIPTION
+        defaultHoldingShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllHoldingsByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        holdingRepository.saveAndFlush(holding);
+
+        // Get all the holdingList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultHoldingShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the holdingList where description equals to UPDATED_DESCRIPTION
+        defaultHoldingShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllHoldingsByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        holdingRepository.saveAndFlush(holding);
+
+        // Get all the holdingList where description is not null
+        defaultHoldingShouldBeFound("description.specified=true");
+
+        // Get all the holdingList where description is null
+        defaultHoldingShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllHoldingsByLocationIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Location location = LocationResourceIntTest.createEntity(em);
+        em.persist(location);
+        em.flush();
+        holding.setLocation(location);
+        holdingRepository.saveAndFlush(holding);
+        Long locationId = location.getId();
+
+        // Get all the holdingList where location equals to locationId
+        defaultHoldingShouldBeFound("locationId.equals=" + locationId);
+
+        // Get all the holdingList where location equals to locationId + 1
+        defaultHoldingShouldNotBeFound("locationId.equals=" + (locationId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllHoldingsByOwnerIsEqualToSomething() throws Exception {
+        // Initialize the database
+        User owner = UserResourceIntTest.createEntity(em);
+        em.persist(owner);
+        em.flush();
+        holding.setOwner(owner);
+        holdingRepository.saveAndFlush(holding);
+        Long ownerId = owner.getId();
+
+        // Get all the holdingList where owner equals to ownerId
+        defaultHoldingShouldBeFound("ownerId.equals=" + ownerId);
+
+        // Get all the holdingList where owner equals to ownerId + 1
+        defaultHoldingShouldNotBeFound("ownerId.equals=" + (ownerId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultHoldingShouldBeFound(String filter) throws Exception {
+        restHoldingMockMvc.perform(get("/api/holdings?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(holding.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+
+        // Check, that the count call also returns 1
+        restHoldingMockMvc.perform(get("/api/holdings/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultHoldingShouldNotBeFound(String filter) throws Exception {
+        restHoldingMockMvc.perform(get("/api/holdings?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restHoldingMockMvc.perform(get("/api/holdings/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingHolding() throws Exception {
         // Get the holding
         restHoldingMockMvc.perform(get("/api/holdings/{id}", Long.MAX_VALUE))
@@ -205,7 +369,9 @@ public class HoldingResourceIntTest {
     @Transactional
     public void updateHolding() throws Exception {
         // Initialize the database
-        holdingRepository.saveAndFlush(holding);
+        holdingService.save(holding);
+        // As the test used the service layer, reset the Elasticsearch mock repository
+        reset(mockHoldingSearchRepository);
 
         int databaseSizeBeforeUpdate = holdingRepository.findAll().size();
 
@@ -262,7 +428,7 @@ public class HoldingResourceIntTest {
     @Transactional
     public void deleteHolding() throws Exception {
         // Initialize the database
-        holdingRepository.saveAndFlush(holding);
+        holdingService.save(holding);
 
         int databaseSizeBeforeDelete = holdingRepository.findAll().size();
 
@@ -283,7 +449,7 @@ public class HoldingResourceIntTest {
     @Transactional
     public void searchHolding() throws Exception {
         // Initialize the database
-        holdingRepository.saveAndFlush(holding);
+        holdingService.save(holding);
         when(mockHoldingSearchRepository.search(queryStringQuery("id:" + holding.getId())))
             .thenReturn(Collections.singletonList(holding));
         // Search the holding

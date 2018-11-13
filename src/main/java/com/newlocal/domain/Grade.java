@@ -32,11 +32,11 @@ public class Grade implements Serializable {
     private Integer grade;
 
     @ManyToOne
-    @JsonIgnoreProperties("grades")
-    private Person person;
+    @JsonIgnoreProperties("")
+    private User user;
 
     @ManyToOne
-    @JsonIgnoreProperties("grades")
+    @JsonIgnoreProperties("")
     private ProductType productType;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -61,17 +61,17 @@ public class Grade implements Serializable {
         this.grade = grade;
     }
 
-    public Person getPerson() {
-        return person;
+    public User getUser() {
+        return user;
     }
 
-    public Grade person(Person person) {
-        this.person = person;
+    public Grade user(User user) {
+        this.user = user;
         return this;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public ProductType getProductType() {

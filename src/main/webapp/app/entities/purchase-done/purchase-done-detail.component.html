@@ -19,11 +19,9 @@
                         <a [routerLink]="['/stock', purchaseDone.stock?.id, 'view']">{{purchaseDone.stock?.id}}</a>
                     </div>
                 </dd>
-                <dt><span jhiTranslate="newLocalApp.purchaseDone.person">Person</span></dt>
+                <dt><span jhiTranslate="newLocalApp.purchaseDone.client">Client</span></dt>
                 <dd>
-                    <div *ngIf="purchaseDone.person">
-                        <a [routerLink]="['/person', purchaseDone.person?.id, 'view']">{{purchaseDone.person?.id}}</a>
-                    </div>
+                    {{purchaseDone.client?.id}}
                 </dd>
             </dl>
 

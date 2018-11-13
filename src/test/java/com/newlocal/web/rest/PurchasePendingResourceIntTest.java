@@ -3,9 +3,14 @@ package com.newlocal.web.rest;
 import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.PurchasePending;
+import com.newlocal.domain.Stock;
+import com.newlocal.domain.User;
 import com.newlocal.repository.PurchasePendingRepository;
 import com.newlocal.repository.search.PurchasePendingSearchRepository;
+import com.newlocal.service.PurchasePendingService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.dto.PurchasePendingCriteria;
+import com.newlocal.service.PurchasePendingQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +53,9 @@ public class PurchasePendingResourceIntTest {
 
     @Autowired
     private PurchasePendingRepository purchasePendingRepository;
+    
+    @Autowired
+    private PurchasePendingService purchasePendingService;
 
     /**
      * This repository is mocked in the com.newlocal.repository.search test package.
@@ -56,6 +64,9 @@ public class PurchasePendingResourceIntTest {
      */
     @Autowired
     private PurchasePendingSearchRepository mockPurchasePendingSearchRepository;
+
+    @Autowired
+    private PurchasePendingQueryService purchasePendingQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -76,7 +87,7 @@ public class PurchasePendingResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PurchasePendingResource purchasePendingResource = new PurchasePendingResource(purchasePendingRepository, mockPurchasePendingSearchRepository);
+        final PurchasePendingResource purchasePendingResource = new PurchasePendingResource(purchasePendingService, purchasePendingQueryService);
         this.restPurchasePendingMockMvc = MockMvcBuilders.standaloneSetup(purchasePendingResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -192,6 +203,144 @@ public class PurchasePendingResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllPurchasePendingsByQuantityIsEqualToSomething() throws Exception {
+        // Initialize the database
+        purchasePendingRepository.saveAndFlush(purchasePending);
+
+        // Get all the purchasePendingList where quantity equals to DEFAULT_QUANTITY
+        defaultPurchasePendingShouldBeFound("quantity.equals=" + DEFAULT_QUANTITY);
+
+        // Get all the purchasePendingList where quantity equals to UPDATED_QUANTITY
+        defaultPurchasePendingShouldNotBeFound("quantity.equals=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchasePendingsByQuantityIsInShouldWork() throws Exception {
+        // Initialize the database
+        purchasePendingRepository.saveAndFlush(purchasePending);
+
+        // Get all the purchasePendingList where quantity in DEFAULT_QUANTITY or UPDATED_QUANTITY
+        defaultPurchasePendingShouldBeFound("quantity.in=" + DEFAULT_QUANTITY + "," + UPDATED_QUANTITY);
+
+        // Get all the purchasePendingList where quantity equals to UPDATED_QUANTITY
+        defaultPurchasePendingShouldNotBeFound("quantity.in=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchasePendingsByQuantityIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        purchasePendingRepository.saveAndFlush(purchasePending);
+
+        // Get all the purchasePendingList where quantity is not null
+        defaultPurchasePendingShouldBeFound("quantity.specified=true");
+
+        // Get all the purchasePendingList where quantity is null
+        defaultPurchasePendingShouldNotBeFound("quantity.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchasePendingsByQuantityIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        purchasePendingRepository.saveAndFlush(purchasePending);
+
+        // Get all the purchasePendingList where quantity greater than or equals to DEFAULT_QUANTITY
+        defaultPurchasePendingShouldBeFound("quantity.greaterOrEqualThan=" + DEFAULT_QUANTITY);
+
+        // Get all the purchasePendingList where quantity greater than or equals to UPDATED_QUANTITY
+        defaultPurchasePendingShouldNotBeFound("quantity.greaterOrEqualThan=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchasePendingsByQuantityIsLessThanSomething() throws Exception {
+        // Initialize the database
+        purchasePendingRepository.saveAndFlush(purchasePending);
+
+        // Get all the purchasePendingList where quantity less than or equals to DEFAULT_QUANTITY
+        defaultPurchasePendingShouldNotBeFound("quantity.lessThan=" + DEFAULT_QUANTITY);
+
+        // Get all the purchasePendingList where quantity less than or equals to UPDATED_QUANTITY
+        defaultPurchasePendingShouldBeFound("quantity.lessThan=" + UPDATED_QUANTITY);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllPurchasePendingsByStockIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Stock stock = StockResourceIntTest.createEntity(em);
+        em.persist(stock);
+        em.flush();
+        purchasePending.setStock(stock);
+        purchasePendingRepository.saveAndFlush(purchasePending);
+        Long stockId = stock.getId();
+
+        // Get all the purchasePendingList where stock equals to stockId
+        defaultPurchasePendingShouldBeFound("stockId.equals=" + stockId);
+
+        // Get all the purchasePendingList where stock equals to stockId + 1
+        defaultPurchasePendingShouldNotBeFound("stockId.equals=" + (stockId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllPurchasePendingsByClientIsEqualToSomething() throws Exception {
+        // Initialize the database
+        User client = UserResourceIntTest.createEntity(em);
+        em.persist(client);
+        em.flush();
+        purchasePending.setClient(client);
+        purchasePendingRepository.saveAndFlush(purchasePending);
+        Long clientId = client.getId();
+
+        // Get all the purchasePendingList where client equals to clientId
+        defaultPurchasePendingShouldBeFound("clientId.equals=" + clientId);
+
+        // Get all the purchasePendingList where client equals to clientId + 1
+        defaultPurchasePendingShouldNotBeFound("clientId.equals=" + (clientId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultPurchasePendingShouldBeFound(String filter) throws Exception {
+        restPurchasePendingMockMvc.perform(get("/api/purchase-pendings?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(purchasePending.getId().intValue())))
+            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)));
+
+        // Check, that the count call also returns 1
+        restPurchasePendingMockMvc.perform(get("/api/purchase-pendings/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultPurchasePendingShouldNotBeFound(String filter) throws Exception {
+        restPurchasePendingMockMvc.perform(get("/api/purchase-pendings?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restPurchasePendingMockMvc.perform(get("/api/purchase-pendings/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingPurchasePending() throws Exception {
         // Get the purchasePending
         restPurchasePendingMockMvc.perform(get("/api/purchase-pendings/{id}", Long.MAX_VALUE))
@@ -202,7 +351,9 @@ public class PurchasePendingResourceIntTest {
     @Transactional
     public void updatePurchasePending() throws Exception {
         // Initialize the database
-        purchasePendingRepository.saveAndFlush(purchasePending);
+        purchasePendingService.save(purchasePending);
+        // As the test used the service layer, reset the Elasticsearch mock repository
+        reset(mockPurchasePendingSearchRepository);
 
         int databaseSizeBeforeUpdate = purchasePendingRepository.findAll().size();
 
@@ -253,7 +404,7 @@ public class PurchasePendingResourceIntTest {
     @Transactional
     public void deletePurchasePending() throws Exception {
         // Initialize the database
-        purchasePendingRepository.saveAndFlush(purchasePending);
+        purchasePendingService.save(purchasePending);
 
         int databaseSizeBeforeDelete = purchasePendingRepository.findAll().size();
 
@@ -274,7 +425,7 @@ public class PurchasePendingResourceIntTest {
     @Transactional
     public void searchPurchasePending() throws Exception {
         // Initialize the database
-        purchasePendingRepository.saveAndFlush(purchasePending);
+        purchasePendingService.save(purchasePending);
         when(mockPurchasePendingSearchRepository.search(queryStringQuery("id:" + purchasePending.getId())))
             .thenReturn(Collections.singletonList(purchasePending));
         // Search the purchasePending

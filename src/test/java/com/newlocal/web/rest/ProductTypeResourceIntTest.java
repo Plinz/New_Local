@@ -3,9 +3,13 @@ package com.newlocal.web.rest;
 import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.ProductType;
+import com.newlocal.domain.Category;
 import com.newlocal.repository.ProductTypeRepository;
 import com.newlocal.repository.search.ProductTypeSearchRepository;
+import com.newlocal.service.ProductTypeService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.dto.ProductTypeCriteria;
+import com.newlocal.service.ProductTypeQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +61,9 @@ public class ProductTypeResourceIntTest {
 
     @Autowired
     private ProductTypeRepository productTypeRepository;
+    
+    @Autowired
+    private ProductTypeService productTypeService;
 
     /**
      * This repository is mocked in the com.newlocal.repository.search test package.
@@ -65,6 +72,9 @@ public class ProductTypeResourceIntTest {
      */
     @Autowired
     private ProductTypeSearchRepository mockProductTypeSearchRepository;
+
+    @Autowired
+    private ProductTypeQueryService productTypeQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -85,7 +95,7 @@ public class ProductTypeResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ProductTypeResource productTypeResource = new ProductTypeResource(productTypeRepository, mockProductTypeSearchRepository);
+        final ProductTypeResource productTypeResource = new ProductTypeResource(productTypeService, productTypeQueryService);
         this.restProductTypeMockMvc = MockMvcBuilders.standaloneSetup(productTypeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -195,6 +205,140 @@ public class ProductTypeResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllProductTypesByNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        productTypeRepository.saveAndFlush(productType);
+
+        // Get all the productTypeList where name equals to DEFAULT_NAME
+        defaultProductTypeShouldBeFound("name.equals=" + DEFAULT_NAME);
+
+        // Get all the productTypeList where name equals to UPDATED_NAME
+        defaultProductTypeShouldNotBeFound("name.equals=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductTypesByNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        productTypeRepository.saveAndFlush(productType);
+
+        // Get all the productTypeList where name in DEFAULT_NAME or UPDATED_NAME
+        defaultProductTypeShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
+
+        // Get all the productTypeList where name equals to UPDATED_NAME
+        defaultProductTypeShouldNotBeFound("name.in=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductTypesByNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        productTypeRepository.saveAndFlush(productType);
+
+        // Get all the productTypeList where name is not null
+        defaultProductTypeShouldBeFound("name.specified=true");
+
+        // Get all the productTypeList where name is null
+        defaultProductTypeShouldNotBeFound("name.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductTypesByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        productTypeRepository.saveAndFlush(productType);
+
+        // Get all the productTypeList where description equals to DEFAULT_DESCRIPTION
+        defaultProductTypeShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the productTypeList where description equals to UPDATED_DESCRIPTION
+        defaultProductTypeShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductTypesByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        productTypeRepository.saveAndFlush(productType);
+
+        // Get all the productTypeList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultProductTypeShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the productTypeList where description equals to UPDATED_DESCRIPTION
+        defaultProductTypeShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductTypesByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        productTypeRepository.saveAndFlush(productType);
+
+        // Get all the productTypeList where description is not null
+        defaultProductTypeShouldBeFound("description.specified=true");
+
+        // Get all the productTypeList where description is null
+        defaultProductTypeShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllProductTypesByCategoryIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Category category = CategoryResourceIntTest.createEntity(em);
+        em.persist(category);
+        em.flush();
+        productType.setCategory(category);
+        productTypeRepository.saveAndFlush(productType);
+        Long categoryId = category.getId();
+
+        // Get all the productTypeList where category equals to categoryId
+        defaultProductTypeShouldBeFound("categoryId.equals=" + categoryId);
+
+        // Get all the productTypeList where category equals to categoryId + 1
+        defaultProductTypeShouldNotBeFound("categoryId.equals=" + (categoryId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultProductTypeShouldBeFound(String filter) throws Exception {
+        restProductTypeMockMvc.perform(get("/api/product-types?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(productType.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+
+        // Check, that the count call also returns 1
+        restProductTypeMockMvc.perform(get("/api/product-types/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultProductTypeShouldNotBeFound(String filter) throws Exception {
+        restProductTypeMockMvc.perform(get("/api/product-types?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restProductTypeMockMvc.perform(get("/api/product-types/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingProductType() throws Exception {
         // Get the productType
         restProductTypeMockMvc.perform(get("/api/product-types/{id}", Long.MAX_VALUE))
@@ -205,7 +349,9 @@ public class ProductTypeResourceIntTest {
     @Transactional
     public void updateProductType() throws Exception {
         // Initialize the database
-        productTypeRepository.saveAndFlush(productType);
+        productTypeService.save(productType);
+        // As the test used the service layer, reset the Elasticsearch mock repository
+        reset(mockProductTypeSearchRepository);
 
         int databaseSizeBeforeUpdate = productTypeRepository.findAll().size();
 
@@ -262,7 +408,7 @@ public class ProductTypeResourceIntTest {
     @Transactional
     public void deleteProductType() throws Exception {
         // Initialize the database
-        productTypeRepository.saveAndFlush(productType);
+        productTypeService.save(productType);
 
         int databaseSizeBeforeDelete = productTypeRepository.findAll().size();
 
@@ -283,7 +429,7 @@ public class ProductTypeResourceIntTest {
     @Transactional
     public void searchProductType() throws Exception {
         // Initialize the database
-        productTypeRepository.saveAndFlush(productType);
+        productTypeService.save(productType);
         when(mockProductTypeSearchRepository.search(queryStringQuery("id:" + productType.getId())))
             .thenReturn(Collections.singletonList(productType));
         // Search the productType

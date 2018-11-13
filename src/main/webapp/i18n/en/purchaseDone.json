@@ -20,7 +20,7 @@
             "saleDate": "Sale Date",
             "quantity": "Quantity",
             "stock": "Stock",
-            "person": "Person"
+            "client": "Client"
         }
     }
 }

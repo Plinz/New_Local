@@ -44,8 +44,8 @@ public class Holding implements Serializable {
     private Location location;
 
     @ManyToOne
-    @JsonIgnoreProperties("holdings")
-    private Person person;
+    @JsonIgnoreProperties("")
+    private User owner;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -121,17 +121,17 @@ public class Holding implements Serializable {
         this.location = location;
     }
 
-    public Person getPerson() {
-        return person;
+    public User getOwner() {
+        return owner;
     }
 
-    public Holding person(Person person) {
-        this.person = person;
+    public Holding owner(User user) {
+        this.owner = user;
         return this;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setOwner(User user) {
+        this.owner = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

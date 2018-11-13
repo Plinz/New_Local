@@ -1,13 +1,13 @@
 import { IStock } from 'app/shared/model//stock.model';
-import { IPerson } from 'app/shared/model//person.model';
+import { IUser } from 'app/core/user/user.model';
 
 export interface IPurchasePending {
     id?: number;
     quantity?: number;
     stock?: IStock;
-    person?: IPerson;
+    client?: IUser;
 }
 
 export class PurchasePending implements IPurchasePending {
-    constructor(public id?: number, public quantity?: number, public stock?: IStock, public person?: IPerson) {}
+    constructor(public id?: number, public quantity?: number, public stock?: IStock, public client?: IUser) {}
 }

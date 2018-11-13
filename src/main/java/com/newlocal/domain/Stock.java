@@ -70,8 +70,8 @@ public class Stock implements Serializable {
     private Holding holding;
 
     @ManyToOne
-    @JsonIgnoreProperties("stocks")
-    private Person person;
+    @JsonIgnoreProperties("")
+    private User seller;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -251,17 +251,17 @@ public class Stock implements Serializable {
         this.holding = holding;
     }
 
-    public Person getPerson() {
-        return person;
+    public User getSeller() {
+        return seller;
     }
 
-    public Stock person(Person person) {
-        this.person = person;
+    public Stock seller(User user) {
+        this.seller = user;
         return this;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setSeller(User user) {
+        this.seller = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

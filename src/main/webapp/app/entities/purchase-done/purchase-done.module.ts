@@ -2,6 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { NewLocalSharedModule } from 'app/shared';
+import { NewLocalAdminModule } from 'app/admin/admin.module';
 import {
     PurchaseDoneComponent,
     PurchaseDoneDetailComponent,
@@ -15,7 +16,7 @@ import {
 const ENTITY_STATES = [...purchaseDoneRoute, ...purchaseDonePopupRoute];
 
 @NgModule({
-    imports: [NewLocalSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [NewLocalSharedModule, NewLocalAdminModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         PurchaseDoneComponent,
         PurchaseDoneDetailComponent,

@@ -2,10 +2,11 @@ package com.newlocal.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.newlocal.domain.Holding;
-import com.newlocal.repository.HoldingRepository;
-import com.newlocal.repository.search.HoldingSearchRepository;
+import com.newlocal.service.HoldingService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.service.dto.HoldingCriteria;
+import com.newlocal.service.HoldingQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -33,13 +33,13 @@ public class HoldingResource {
 
     private static final String ENTITY_NAME = "holding";
 
-    private HoldingRepository holdingRepository;
+    private HoldingService holdingService;
 
-    private HoldingSearchRepository holdingSearchRepository;
+    private HoldingQueryService holdingQueryService;
 
-    public HoldingResource(HoldingRepository holdingRepository, HoldingSearchRepository holdingSearchRepository) {
-        this.holdingRepository = holdingRepository;
-        this.holdingSearchRepository = holdingSearchRepository;
+    public HoldingResource(HoldingService holdingService, HoldingQueryService holdingQueryService) {
+        this.holdingService = holdingService;
+        this.holdingQueryService = holdingQueryService;
     }
 
     /**
@@ -56,8 +56,7 @@ public class HoldingResource {
         if (holding.getId() != null) {
             throw new BadRequestAlertException("A new holding cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Holding result = holdingRepository.save(holding);
-        holdingSearchRepository.save(result);
+        Holding result = holdingService.save(holding);
         return ResponseEntity.created(new URI("/api/holdings/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -79,8 +78,7 @@ public class HoldingResource {
         if (holding.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Holding result = holdingRepository.save(holding);
-        holdingSearchRepository.save(result);
+        Holding result = holdingService.save(holding);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, holding.getId().toString()))
             .body(result);
@@ -89,13 +87,28 @@ public class HoldingResource {
     /**
      * GET  /holdings : get all the holdings.
      *
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of holdings in body
      */
     @GetMapping("/holdings")
     @Timed
-    public List<Holding> getAllHoldings() {
-        log.debug("REST request to get all Holdings");
-        return holdingRepository.findAll();
+    public ResponseEntity<List<Holding>> getAllHoldings(HoldingCriteria criteria) {
+        log.debug("REST request to get Holdings by criteria: {}", criteria);
+        List<Holding> entityList = holdingQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * GET  /holdings/count : count all the holdings.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/holdings/count")
+    @Timed
+    public ResponseEntity<Long> countHoldings(HoldingCriteria criteria) {
+        log.debug("REST request to count Holdings by criteria: {}", criteria);
+        return ResponseEntity.ok().body(holdingQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -108,7 +121,7 @@ public class HoldingResource {
     @Timed
     public ResponseEntity<Holding> getHolding(@PathVariable Long id) {
         log.debug("REST request to get Holding : {}", id);
-        Optional<Holding> holding = holdingRepository.findById(id);
+        Optional<Holding> holding = holdingService.findOne(id);
         return ResponseUtil.wrapOrNotFound(holding);
     }
 
@@ -122,9 +135,7 @@ public class HoldingResource {
     @Timed
     public ResponseEntity<Void> deleteHolding(@PathVariable Long id) {
         log.debug("REST request to delete Holding : {}", id);
-
-        holdingRepository.deleteById(id);
-        holdingSearchRepository.deleteById(id);
+        holdingService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -139,9 +150,7 @@ public class HoldingResource {
     @Timed
     public List<Holding> searchHoldings(@RequestParam String query) {
         log.debug("REST request to search Holdings for query {}", query);
-        return StreamSupport
-            .stream(holdingSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return holdingService.search(query);
     }
 
 }

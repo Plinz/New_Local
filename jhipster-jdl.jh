@@ -51,23 +51,6 @@ entity Holding {
 	image ImageBlob	
 }
 
-entity Person {
-}
-
-relationship OneToOne {
-	Person to User
-}
-
-relationship OneToMany {
-	Person to Stock,
-    Person to Grade,
-    Person to PurchasePending,
-    Person to PurchaseDone,
-    Person to Location,
-    ProductType to Grade,
-    Person to Holding
-}
-
 relationship ManyToOne {
 	ProductType{category} to Category,
     Category{categoryParent} to Category,
@@ -75,13 +58,29 @@ relationship ManyToOne {
     PurchaseDone{stock} to Stock,
     Stock{productType} to ProductType,
     Holding{location} to Location,
-    Stock{holding} to Holding
+    Stock{holding} to Holding,
+    Stock{seller} to User,
+    Grade{user} to User,
+    PurchasePending{client} to User,
+    PurchaseDone{client} to User,
+    Location{user} to User,
+    Holding{owner} to User
+    Grade{productType} to ProductType
 }
 
 
 // Set pagination options
 paginate Stock with pagination
 //paginate Grade with pagination
+
+filter Stock
+filter PurchaseDone
+filter PurchasePending
+filter Grade
+filter Location
+filter Holding
+filter ProductType
+filter Category
 
 // Use Data Transfert Objects (DTO)
 // dto * with mapstruct

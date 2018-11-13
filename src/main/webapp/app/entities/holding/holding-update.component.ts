@@ -8,8 +8,7 @@ import { IHolding } from 'app/shared/model/holding.model';
 import { HoldingService } from './holding.service';
 import { ILocation } from 'app/shared/model/location.model';
 import { LocationService } from 'app/entities/location';
-import { IPerson } from 'app/shared/model/person.model';
-import { PersonService } from 'app/entities/person';
+import { IUser, UserService } from 'app/core';
 
 @Component({
     selector: 'jhi-holding-update',
@@ -21,14 +20,14 @@ export class HoldingUpdateComponent implements OnInit {
 
     locations: ILocation[];
 
-    people: IPerson[];
+    users: IUser[];
 
     constructor(
         private dataUtils: JhiDataUtils,
         private jhiAlertService: JhiAlertService,
         private holdingService: HoldingService,
         private locationService: LocationService,
-        private personService: PersonService,
+        private userService: UserService,
         private elementRef: ElementRef,
         private activatedRoute: ActivatedRoute
     ) {}
@@ -44,9 +43,9 @@ export class HoldingUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.personService.query().subscribe(
-            (res: HttpResponse<IPerson[]>) => {
-                this.people = res.body;
+        this.userService.query().subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -102,7 +101,7 @@ export class HoldingUpdateComponent implements OnInit {
         return item.id;
     }
 
-    trackPersonById(index: number, item: IPerson) {
+    trackUserById(index: number, item: IUser) {
         return item.id;
     }
 }

@@ -6,8 +6,7 @@ import { JhiAlertService } from 'ng-jhipster';
 
 import { IGrade } from 'app/shared/model/grade.model';
 import { GradeService } from './grade.service';
-import { IPerson } from 'app/shared/model/person.model';
-import { PersonService } from 'app/entities/person';
+import { IUser, UserService } from 'app/core';
 import { IProductType } from 'app/shared/model/product-type.model';
 import { ProductTypeService } from 'app/entities/product-type';
 
@@ -19,14 +18,14 @@ export class GradeUpdateComponent implements OnInit {
     grade: IGrade;
     isSaving: boolean;
 
-    people: IPerson[];
+    users: IUser[];
 
     producttypes: IProductType[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private gradeService: GradeService,
-        private personService: PersonService,
+        private userService: UserService,
         private productTypeService: ProductTypeService,
         private activatedRoute: ActivatedRoute
     ) {}
@@ -36,9 +35,9 @@ export class GradeUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ grade }) => {
             this.grade = grade;
         });
-        this.personService.query().subscribe(
-            (res: HttpResponse<IPerson[]>) => {
-                this.people = res.body;
+        this.userService.query().subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -80,7 +79,7 @@ export class GradeUpdateComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    trackPersonById(index: number, item: IPerson) {
+    trackUserById(index: number, item: IUser) {
         return item.id;
     }
 

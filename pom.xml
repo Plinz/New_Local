@@ -511,6 +511,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <!-- Force alphabetical order to have a reproducible build -->
+                    <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
                     <runOrder>alphabetical</runOrder>
                 </configuration>
             </plugin>

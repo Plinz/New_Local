@@ -14,7 +14,6 @@
                 "productType": "Product Type",
                 "location": "Location",
                 "stock": "Stock",
-                "person": "Person",
                 "holding": "Holding",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
@@ -40,7 +39,12 @@
                 "database": "Base de données",
                 "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
             },
-            "language": "Langue"
+            "language": "Langue",
+            "vegetable": "Légume",
+            "fruit": "Fruit",
+            "fish": "Poisson",
+            "meat": "Viande",
+            "grocery": "Epicerie"
         },
         "form": {
             "username": "Nom d'utilisateur",

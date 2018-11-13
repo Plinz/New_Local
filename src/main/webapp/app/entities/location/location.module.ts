@@ -2,6 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { NewLocalSharedModule } from 'app/shared';
+import { NewLocalAdminModule } from 'app/admin/admin.module';
 import {
     LocationComponent,
     LocationDetailComponent,
@@ -15,7 +16,7 @@ import {
 const ENTITY_STATES = [...locationRoute, ...locationPopupRoute];
 
 @NgModule({
-    imports: [NewLocalSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [NewLocalSharedModule, NewLocalAdminModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         LocationComponent,
         LocationDetailComponent,

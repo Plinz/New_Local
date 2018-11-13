@@ -31,7 +31,7 @@
             <tr>
             <th><span jhiTranslate="global.field.id">ID</span></th>
             <th><span jhiTranslate="newLocalApp.grade.grade">Grade</span></th>
-            <th><span jhiTranslate="newLocalApp.grade.person">Person</span></th>
+            <th><span jhiTranslate="newLocalApp.grade.user">User</span></th>
             <th><span jhiTranslate="newLocalApp.grade.productType">Product Type</span></th>
             <th></th>
             </tr>
@@ -41,9 +41,7 @@
                 <td><a [routerLink]="['/grade', grade.id, 'view' ]">{{grade.id}}</a></td>
                 <td>{{grade.grade}}</td>
                 <td>
-                    <div *ngIf="grade.person">
-                        <a [routerLink]="['../person', grade.person?.id, 'view' ]" >{{grade.person?.id}}</a>
-                    </div>
+                    {{grade.user?.id}}
                 </td>
                 <td>
                     <div *ngIf="grade.productType">

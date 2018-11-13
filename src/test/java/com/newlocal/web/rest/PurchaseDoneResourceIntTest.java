@@ -3,9 +3,14 @@ package com.newlocal.web.rest;
 import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.PurchaseDone;
+import com.newlocal.domain.Stock;
+import com.newlocal.domain.User;
 import com.newlocal.repository.PurchaseDoneRepository;
 import com.newlocal.repository.search.PurchaseDoneSearchRepository;
+import com.newlocal.service.PurchaseDoneService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.dto.PurchaseDoneCriteria;
+import com.newlocal.service.PurchaseDoneQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +58,9 @@ public class PurchaseDoneResourceIntTest {
 
     @Autowired
     private PurchaseDoneRepository purchaseDoneRepository;
+    
+    @Autowired
+    private PurchaseDoneService purchaseDoneService;
 
     /**
      * This repository is mocked in the com.newlocal.repository.search test package.
@@ -61,6 +69,9 @@ public class PurchaseDoneResourceIntTest {
      */
     @Autowired
     private PurchaseDoneSearchRepository mockPurchaseDoneSearchRepository;
+
+    @Autowired
+    private PurchaseDoneQueryService purchaseDoneQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -81,7 +92,7 @@ public class PurchaseDoneResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PurchaseDoneResource purchaseDoneResource = new PurchaseDoneResource(purchaseDoneRepository, mockPurchaseDoneSearchRepository);
+        final PurchaseDoneResource purchaseDoneResource = new PurchaseDoneResource(purchaseDoneService, purchaseDoneQueryService);
         this.restPurchaseDoneMockMvc = MockMvcBuilders.standaloneSetup(purchaseDoneResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -201,6 +212,184 @@ public class PurchaseDoneResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllPurchaseDonesBySaleDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        purchaseDoneRepository.saveAndFlush(purchaseDone);
+
+        // Get all the purchaseDoneList where saleDate equals to DEFAULT_SALE_DATE
+        defaultPurchaseDoneShouldBeFound("saleDate.equals=" + DEFAULT_SALE_DATE);
+
+        // Get all the purchaseDoneList where saleDate equals to UPDATED_SALE_DATE
+        defaultPurchaseDoneShouldNotBeFound("saleDate.equals=" + UPDATED_SALE_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchaseDonesBySaleDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        purchaseDoneRepository.saveAndFlush(purchaseDone);
+
+        // Get all the purchaseDoneList where saleDate in DEFAULT_SALE_DATE or UPDATED_SALE_DATE
+        defaultPurchaseDoneShouldBeFound("saleDate.in=" + DEFAULT_SALE_DATE + "," + UPDATED_SALE_DATE);
+
+        // Get all the purchaseDoneList where saleDate equals to UPDATED_SALE_DATE
+        defaultPurchaseDoneShouldNotBeFound("saleDate.in=" + UPDATED_SALE_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchaseDonesBySaleDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        purchaseDoneRepository.saveAndFlush(purchaseDone);
+
+        // Get all the purchaseDoneList where saleDate is not null
+        defaultPurchaseDoneShouldBeFound("saleDate.specified=true");
+
+        // Get all the purchaseDoneList where saleDate is null
+        defaultPurchaseDoneShouldNotBeFound("saleDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchaseDonesByQuantityIsEqualToSomething() throws Exception {
+        // Initialize the database
+        purchaseDoneRepository.saveAndFlush(purchaseDone);
+
+        // Get all the purchaseDoneList where quantity equals to DEFAULT_QUANTITY
+        defaultPurchaseDoneShouldBeFound("quantity.equals=" + DEFAULT_QUANTITY);
+
+        // Get all the purchaseDoneList where quantity equals to UPDATED_QUANTITY
+        defaultPurchaseDoneShouldNotBeFound("quantity.equals=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchaseDonesByQuantityIsInShouldWork() throws Exception {
+        // Initialize the database
+        purchaseDoneRepository.saveAndFlush(purchaseDone);
+
+        // Get all the purchaseDoneList where quantity in DEFAULT_QUANTITY or UPDATED_QUANTITY
+        defaultPurchaseDoneShouldBeFound("quantity.in=" + DEFAULT_QUANTITY + "," + UPDATED_QUANTITY);
+
+        // Get all the purchaseDoneList where quantity equals to UPDATED_QUANTITY
+        defaultPurchaseDoneShouldNotBeFound("quantity.in=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchaseDonesByQuantityIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        purchaseDoneRepository.saveAndFlush(purchaseDone);
+
+        // Get all the purchaseDoneList where quantity is not null
+        defaultPurchaseDoneShouldBeFound("quantity.specified=true");
+
+        // Get all the purchaseDoneList where quantity is null
+        defaultPurchaseDoneShouldNotBeFound("quantity.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchaseDonesByQuantityIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        purchaseDoneRepository.saveAndFlush(purchaseDone);
+
+        // Get all the purchaseDoneList where quantity greater than or equals to DEFAULT_QUANTITY
+        defaultPurchaseDoneShouldBeFound("quantity.greaterOrEqualThan=" + DEFAULT_QUANTITY);
+
+        // Get all the purchaseDoneList where quantity greater than or equals to UPDATED_QUANTITY
+        defaultPurchaseDoneShouldNotBeFound("quantity.greaterOrEqualThan=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchaseDonesByQuantityIsLessThanSomething() throws Exception {
+        // Initialize the database
+        purchaseDoneRepository.saveAndFlush(purchaseDone);
+
+        // Get all the purchaseDoneList where quantity less than or equals to DEFAULT_QUANTITY
+        defaultPurchaseDoneShouldNotBeFound("quantity.lessThan=" + DEFAULT_QUANTITY);
+
+        // Get all the purchaseDoneList where quantity less than or equals to UPDATED_QUANTITY
+        defaultPurchaseDoneShouldBeFound("quantity.lessThan=" + UPDATED_QUANTITY);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllPurchaseDonesByStockIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Stock stock = StockResourceIntTest.createEntity(em);
+        em.persist(stock);
+        em.flush();
+        purchaseDone.setStock(stock);
+        purchaseDoneRepository.saveAndFlush(purchaseDone);
+        Long stockId = stock.getId();
+
+        // Get all the purchaseDoneList where stock equals to stockId
+        defaultPurchaseDoneShouldBeFound("stockId.equals=" + stockId);
+
+        // Get all the purchaseDoneList where stock equals to stockId + 1
+        defaultPurchaseDoneShouldNotBeFound("stockId.equals=" + (stockId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllPurchaseDonesByClientIsEqualToSomething() throws Exception {
+        // Initialize the database
+        User client = UserResourceIntTest.createEntity(em);
+        em.persist(client);
+        em.flush();
+        purchaseDone.setClient(client);
+        purchaseDoneRepository.saveAndFlush(purchaseDone);
+        Long clientId = client.getId();
+
+        // Get all the purchaseDoneList where client equals to clientId
+        defaultPurchaseDoneShouldBeFound("clientId.equals=" + clientId);
+
+        // Get all the purchaseDoneList where client equals to clientId + 1
+        defaultPurchaseDoneShouldNotBeFound("clientId.equals=" + (clientId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultPurchaseDoneShouldBeFound(String filter) throws Exception {
+        restPurchaseDoneMockMvc.perform(get("/api/purchase-dones?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(purchaseDone.getId().intValue())))
+            .andExpect(jsonPath("$.[*].saleDate").value(hasItem(DEFAULT_SALE_DATE.toString())))
+            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)));
+
+        // Check, that the count call also returns 1
+        restPurchaseDoneMockMvc.perform(get("/api/purchase-dones/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultPurchaseDoneShouldNotBeFound(String filter) throws Exception {
+        restPurchaseDoneMockMvc.perform(get("/api/purchase-dones?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restPurchaseDoneMockMvc.perform(get("/api/purchase-dones/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingPurchaseDone() throws Exception {
         // Get the purchaseDone
         restPurchaseDoneMockMvc.perform(get("/api/purchase-dones/{id}", Long.MAX_VALUE))
@@ -211,7 +400,9 @@ public class PurchaseDoneResourceIntTest {
     @Transactional
     public void updatePurchaseDone() throws Exception {
         // Initialize the database
-        purchaseDoneRepository.saveAndFlush(purchaseDone);
+        purchaseDoneService.save(purchaseDone);
+        // As the test used the service layer, reset the Elasticsearch mock repository
+        reset(mockPurchaseDoneSearchRepository);
 
         int databaseSizeBeforeUpdate = purchaseDoneRepository.findAll().size();
 
@@ -264,7 +455,7 @@ public class PurchaseDoneResourceIntTest {
     @Transactional
     public void deletePurchaseDone() throws Exception {
         // Initialize the database
-        purchaseDoneRepository.saveAndFlush(purchaseDone);
+        purchaseDoneService.save(purchaseDone);
 
         int databaseSizeBeforeDelete = purchaseDoneRepository.findAll().size();
 
@@ -285,7 +476,7 @@ public class PurchaseDoneResourceIntTest {
     @Transactional
     public void searchPurchaseDone() throws Exception {
         // Initialize the database
-        purchaseDoneRepository.saveAndFlush(purchaseDone);
+        purchaseDoneService.save(purchaseDone);
         when(mockPurchaseDoneSearchRepository.search(queryStringQuery("id:" + purchaseDone.getId())))
             .thenReturn(Collections.singletonList(purchaseDone));
         // Search the purchaseDone

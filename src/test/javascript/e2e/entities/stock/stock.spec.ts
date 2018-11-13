@@ -53,7 +53,7 @@ describe('Stock e2e test', () => {
             stockUpdatePage.setExpiryDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
             stockUpdatePage.productTypeSelectLastOption(),
             stockUpdatePage.holdingSelectLastOption(),
-            stockUpdatePage.personSelectLastOption()
+            stockUpdatePage.sellerSelectLastOption()
         ]);
         expect(await stockUpdatePage.getNameInput()).to.eq('name');
         expect(await stockUpdatePage.getDescriptionInput()).to.eq('description');

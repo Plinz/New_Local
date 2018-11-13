@@ -42,7 +42,7 @@ describe('PurchaseDone e2e test', () => {
             purchaseDoneUpdatePage.setSaleDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
             purchaseDoneUpdatePage.setQuantityInput('5'),
             purchaseDoneUpdatePage.stockSelectLastOption(),
-            purchaseDoneUpdatePage.personSelectLastOption()
+            purchaseDoneUpdatePage.clientSelectLastOption()
         ]);
         expect(await purchaseDoneUpdatePage.getSaleDateInput()).to.contain('2001-01-01T02:30');
         expect(await purchaseDoneUpdatePage.getQuantityInput()).to.eq('5');

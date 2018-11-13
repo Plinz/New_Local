@@ -47,7 +47,7 @@ describe('Holding e2e test', () => {
             holdingUpdatePage.setDescriptionInput('description'),
             holdingUpdatePage.setImageInput(absolutePath),
             holdingUpdatePage.locationSelectLastOption(),
-            holdingUpdatePage.personSelectLastOption()
+            holdingUpdatePage.ownerSelectLastOption()
         ]);
         expect(await holdingUpdatePage.getNameInput()).to.eq('name');
         expect(await holdingUpdatePage.getDescriptionInput()).to.eq('description');

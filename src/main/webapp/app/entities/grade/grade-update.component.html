@@ -26,10 +26,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.grade.person" for="field_person">Person</label>
-                    <select class="form-control" id="field_person" name="person" [(ngModel)]="grade.person" >
+                    <label class="form-control-label" jhiTranslate="newLocalApp.grade.user" for="field_user">User</label>
+                    <select class="form-control" id="field_user" name="user" [(ngModel)]="grade.user" >
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="personOption.id === grade.person?.id ? grade.person : personOption" *ngFor="let personOption of people; trackBy: trackPersonById">{{personOption.id}}</option>
+                        <option [ngValue]="userOption.id === grade.user?.id ? grade.user : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">

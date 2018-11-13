@@ -9,11 +9,9 @@
                 <dd>
                     <span>{{grade.grade}}</span>
                 </dd>
-                <dt><span jhiTranslate="newLocalApp.grade.person">Person</span></dt>
+                <dt><span jhiTranslate="newLocalApp.grade.user">User</span></dt>
                 <dd>
-                    <div *ngIf="grade.person">
-                        <a [routerLink]="['/person', grade.person?.id, 'view']">{{grade.person?.id}}</a>
-                    </div>
+                    {{grade.user?.id}}
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.grade.productType">Product Type</span></dt>
                 <dd>

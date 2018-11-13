@@ -10,8 +10,7 @@ import { IPurchaseDone } from 'app/shared/model/purchase-done.model';
 import { PurchaseDoneService } from './purchase-done.service';
 import { IStock } from 'app/shared/model/stock.model';
 import { StockService } from 'app/entities/stock';
-import { IPerson } from 'app/shared/model/person.model';
-import { PersonService } from 'app/entities/person';
+import { IUser, UserService } from 'app/core';
 
 @Component({
     selector: 'jhi-purchase-done-update',
@@ -23,14 +22,14 @@ export class PurchaseDoneUpdateComponent implements OnInit {
 
     stocks: IStock[];
 
-    people: IPerson[];
+    users: IUser[];
     saleDate: string;
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private purchaseDoneService: PurchaseDoneService,
         private stockService: StockService,
-        private personService: PersonService,
+        private userService: UserService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -46,9 +45,9 @@ export class PurchaseDoneUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.personService.query().subscribe(
-            (res: HttpResponse<IPerson[]>) => {
-                this.people = res.body;
+        this.userService.query().subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -89,7 +88,7 @@ export class PurchaseDoneUpdateComponent implements OnInit {
         return item.id;
     }
 
-    trackPersonById(index: number, item: IPerson) {
+    trackUserById(index: number, item: IUser) {
         return item.id;
     }
 }

@@ -14,11 +14,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="stock"/>
 
-        <addForeignKeyConstraint baseColumnNames="person_id"
+        <addForeignKeyConstraint baseColumnNames="client_id"
                                  baseTableName="purchase_pending"
-                                 constraintName="fk_purchase_pending_person_id"
+                                 constraintName="fk_purchase_pending_client_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="person"/>
+                                 referencedTableName="jhi_user"/>
 
     </changeSet>
 </databaseChangeLog>

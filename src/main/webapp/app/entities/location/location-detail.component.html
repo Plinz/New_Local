@@ -29,11 +29,9 @@
                 <dd>
                     <span>{{location.lat}}</span>
                 </dd>
-                <dt><span jhiTranslate="newLocalApp.location.person">Person</span></dt>
+                <dt><span jhiTranslate="newLocalApp.location.user">User</span></dt>
                 <dd>
-                    <div *ngIf="location.person">
-                        <a [routerLink]="['/person', location.person?.id, 'view']">{{location.person?.id}}</a>
-                    </div>
+                    {{location.user?.id}}
                 </dd>
             </dl>
 

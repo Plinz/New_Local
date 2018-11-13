@@ -18,8 +18,8 @@
         },
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "person",
-            "otherEntityName": "person",
+            "relationshipName": "client",
+            "otherEntityName": "user",
             "otherEntityField": "id"
         }
     ],
@@ -27,8 +27,8 @@
     "entityTableName": "purchase_pending",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
-    "jpaMetamodelFiltering": false,
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
     "applications": "*"

@@ -45,7 +45,7 @@ describe('Location e2e test', () => {
             locationUpdatePage.setAddressInput('address'),
             locationUpdatePage.setLonInput('5'),
             locationUpdatePage.setLatInput('5'),
-            locationUpdatePage.personSelectLastOption()
+            locationUpdatePage.userSelectLastOption()
         ]);
         expect(await locationUpdatePage.getCityInput()).to.eq('city');
         expect(await locationUpdatePage.getCountryInput()).to.eq('country');

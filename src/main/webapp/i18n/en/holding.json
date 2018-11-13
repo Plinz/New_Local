@@ -21,7 +21,7 @@
             "description": "Description",
             "image": "Image",
             "location": "Location",
-            "person": "Person"
+            "owner": "Owner"
         }
     }
 }

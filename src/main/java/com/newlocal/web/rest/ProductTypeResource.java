@@ -2,10 +2,11 @@ package com.newlocal.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.newlocal.domain.ProductType;
-import com.newlocal.repository.ProductTypeRepository;
-import com.newlocal.repository.search.ProductTypeSearchRepository;
+import com.newlocal.service.ProductTypeService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.service.dto.ProductTypeCriteria;
+import com.newlocal.service.ProductTypeQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -33,13 +33,13 @@ public class ProductTypeResource {
 
     private static final String ENTITY_NAME = "productType";
 
-    private ProductTypeRepository productTypeRepository;
+    private ProductTypeService productTypeService;
 
-    private ProductTypeSearchRepository productTypeSearchRepository;
+    private ProductTypeQueryService productTypeQueryService;
 
-    public ProductTypeResource(ProductTypeRepository productTypeRepository, ProductTypeSearchRepository productTypeSearchRepository) {
-        this.productTypeRepository = productTypeRepository;
-        this.productTypeSearchRepository = productTypeSearchRepository;
+    public ProductTypeResource(ProductTypeService productTypeService, ProductTypeQueryService productTypeQueryService) {
+        this.productTypeService = productTypeService;
+        this.productTypeQueryService = productTypeQueryService;
     }
 
     /**
@@ -56,8 +56,7 @@ public class ProductTypeResource {
         if (productType.getId() != null) {
             throw new BadRequestAlertException("A new productType cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ProductType result = productTypeRepository.save(productType);
-        productTypeSearchRepository.save(result);
+        ProductType result = productTypeService.save(productType);
         return ResponseEntity.created(new URI("/api/product-types/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -79,8 +78,7 @@ public class ProductTypeResource {
         if (productType.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        ProductType result = productTypeRepository.save(productType);
-        productTypeSearchRepository.save(result);
+        ProductType result = productTypeService.save(productType);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, productType.getId().toString()))
             .body(result);
@@ -89,13 +87,28 @@ public class ProductTypeResource {
     /**
      * GET  /product-types : get all the productTypes.
      *
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of productTypes in body
      */
     @GetMapping("/product-types")
     @Timed
-    public List<ProductType> getAllProductTypes() {
-        log.debug("REST request to get all ProductTypes");
-        return productTypeRepository.findAll();
+    public ResponseEntity<List<ProductType>> getAllProductTypes(ProductTypeCriteria criteria) {
+        log.debug("REST request to get ProductTypes by criteria: {}", criteria);
+        List<ProductType> entityList = productTypeQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * GET  /product-types/count : count all the productTypes.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/product-types/count")
+    @Timed
+    public ResponseEntity<Long> countProductTypes(ProductTypeCriteria criteria) {
+        log.debug("REST request to count ProductTypes by criteria: {}", criteria);
+        return ResponseEntity.ok().body(productTypeQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -108,7 +121,7 @@ public class ProductTypeResource {
     @Timed
     public ResponseEntity<ProductType> getProductType(@PathVariable Long id) {
         log.debug("REST request to get ProductType : {}", id);
-        Optional<ProductType> productType = productTypeRepository.findById(id);
+        Optional<ProductType> productType = productTypeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(productType);
     }
 
@@ -122,9 +135,7 @@ public class ProductTypeResource {
     @Timed
     public ResponseEntity<Void> deleteProductType(@PathVariable Long id) {
         log.debug("REST request to delete ProductType : {}", id);
-
-        productTypeRepository.deleteById(id);
-        productTypeSearchRepository.deleteById(id);
+        productTypeService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -139,9 +150,7 @@ public class ProductTypeResource {
     @Timed
     public List<ProductType> searchProductTypes(@RequestParam String query) {
         log.debug("REST request to search ProductTypes for query {}", query);
-        return StreamSupport
-            .stream(productTypeSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return productTypeService.search(query);
     }
 
 }

@@ -2,11 +2,12 @@ package com.newlocal.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.newlocal.domain.Stock;
-import com.newlocal.repository.StockRepository;
-import com.newlocal.repository.search.StockSearchRepository;
+import com.newlocal.service.StockService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
+import com.newlocal.service.dto.StockCriteria;
+import com.newlocal.service.StockQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -38,13 +38,13 @@ public class StockResource {
 
     private static final String ENTITY_NAME = "stock";
 
-    private StockRepository stockRepository;
+    private StockService stockService;
 
-    private StockSearchRepository stockSearchRepository;
+    private StockQueryService stockQueryService;
 
-    public StockResource(StockRepository stockRepository, StockSearchRepository stockSearchRepository) {
-        this.stockRepository = stockRepository;
-        this.stockSearchRepository = stockSearchRepository;
+    public StockResource(StockService stockService, StockQueryService stockQueryService) {
+        this.stockService = stockService;
+        this.stockQueryService = stockQueryService;
     }
 
     /**
@@ -61,8 +61,7 @@ public class StockResource {
         if (stock.getId() != null) {
             throw new BadRequestAlertException("A new stock cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Stock result = stockRepository.save(stock);
-        stockSearchRepository.save(result);
+        Stock result = stockService.save(stock);
         return ResponseEntity.created(new URI("/api/stocks/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -84,8 +83,7 @@ public class StockResource {
         if (stock.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Stock result = stockRepository.save(stock);
-        stockSearchRepository.save(result);
+        Stock result = stockService.save(stock);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stock.getId().toString()))
             .body(result);
@@ -95,15 +93,29 @@ public class StockResource {
      * GET  /stocks : get all the stocks.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of stocks in body
      */
     @GetMapping("/stocks")
     @Timed
-    public ResponseEntity<List<Stock>> getAllStocks(Pageable pageable) {
-        log.debug("REST request to get a page of Stocks");
-        Page<Stock> page = stockRepository.findAll(pageable);
+    public ResponseEntity<List<Stock>> getAllStocks(StockCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Stocks by criteria: {}", criteria);
+        Page<Stock> page = stockQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/stocks");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+    * GET  /stocks/count : count all the stocks.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/stocks/count")
+    @Timed
+    public ResponseEntity<Long> countStocks(StockCriteria criteria) {
+        log.debug("REST request to count Stocks by criteria: {}", criteria);
+        return ResponseEntity.ok().body(stockQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -116,7 +128,7 @@ public class StockResource {
     @Timed
     public ResponseEntity<Stock> getStock(@PathVariable Long id) {
         log.debug("REST request to get Stock : {}", id);
-        Optional<Stock> stock = stockRepository.findById(id);
+        Optional<Stock> stock = stockService.findOne(id);
         return ResponseUtil.wrapOrNotFound(stock);
     }
 
@@ -130,9 +142,7 @@ public class StockResource {
     @Timed
     public ResponseEntity<Void> deleteStock(@PathVariable Long id) {
         log.debug("REST request to delete Stock : {}", id);
-
-        stockRepository.deleteById(id);
-        stockSearchRepository.deleteById(id);
+        stockService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -148,7 +158,7 @@ public class StockResource {
     @Timed
     public ResponseEntity<List<Stock>> searchStocks(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Stocks for query {}", query);
-        Page<Stock> page = stockSearchRepository.search(queryStringQuery(query), pageable);
+        Page<Stock> page = stockService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/stocks");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

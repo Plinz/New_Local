@@ -42,7 +42,7 @@
             <th jhiSortBy="available"><span jhiTranslate="newLocalApp.stock.available">Available</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="productType.id"><span jhiTranslate="newLocalApp.stock.productType">Product Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="holding.id"><span jhiTranslate="newLocalApp.stock.holding">Holding</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="person.id"><span jhiTranslate="newLocalApp.stock.person">Person</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="seller.id"><span jhiTranslate="newLocalApp.stock.seller">Seller</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -75,9 +75,7 @@
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="stock.person">
-                        <a [routerLink]="['../person', stock.person?.id, 'view' ]" >{{stock.person?.id}}</a>
-                    </div>
+                    {{stock.seller?.id}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

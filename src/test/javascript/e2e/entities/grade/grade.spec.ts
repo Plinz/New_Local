@@ -40,7 +40,7 @@ describe('Grade e2e test', () => {
         await gradeComponentsPage.clickOnCreateButton();
         await promise.all([
             gradeUpdatePage.setGradeInput('5'),
-            gradeUpdatePage.personSelectLastOption(),
+            gradeUpdatePage.userSelectLastOption(),
             gradeUpdatePage.productTypeSelectLastOption()
         ]);
         expect(await gradeUpdatePage.getGradeInput()).to.eq('5');

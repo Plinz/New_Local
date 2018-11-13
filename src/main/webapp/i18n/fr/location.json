@@ -23,7 +23,7 @@
             "address": "Address",
             "lon": "Lon",
             "lat": "Lat",
-            "person": "Person"
+            "user": "User"
         }
     }
 }
