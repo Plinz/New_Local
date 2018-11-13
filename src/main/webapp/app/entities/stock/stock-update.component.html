@@ -10,29 +10,21 @@
                         [(ngModel)]="stock.id" readonly />
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.productType" for="field_productType">Product Type</label>
+                    <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productType" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption" *ngFor="let productTypeOption of producttypes; trackBy: trackProductTypeById">{{productTypeOption.name}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.name" for="field_name">Name</label>
                     <input type="text" class="form-control" name="name" id="field_name"
-                        [(ngModel)]="stock.name" />
+                           [(ngModel)]="stock.name" />
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.description" for="field_description">Description</label>
                     <input type="text" class="form-control" name="description" id="field_description"
-                        [(ngModel)]="stock.description" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.quantityInit" for="field_quantityInit">Quantity Init</label>
-                    <input type="number" class="form-control" name="quantityInit" id="field_quantityInit"
-                        [(ngModel)]="stock.quantityInit" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.quantityRemaining" for="field_quantityRemaining">Quantity Remaining</label>
-                    <input type="number" class="form-control" name="quantityRemaining" id="field_quantityRemaining"
-                        [(ngModel)]="stock.quantityRemaining" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.priceUnit" for="field_priceUnit">Price Unit</label>
-                    <input type="number" class="form-control" name="priceUnit" id="field_priceUnit"
-                        [(ngModel)]="stock.priceUnit" />
+                           [(ngModel)]="stock.description" />
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.image" for="field_image">Image</label>
@@ -47,56 +39,63 @@
                         <input type="file" id="file_image" (change)="setFileData($event, stock, 'image', true)" accept="image/*" jhiTranslate="entity.action.addimage"/>
                     </div>
                     <input type="hidden" class="form-control" name="image" id="field_image"
-                        [(ngModel)]="stock.image" />
+                           [(ngModel)]="stock.image" />
                     <input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
-                        [(ngModel)]="stock.imageContentType" />
+                           [(ngModel)]="stock.imageContentType" />
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.expiryDate" for="field_expiryDate">Expiry Date</label>
+                    <div class="d-flex">
+                        <input id="field_expiryDate" type="date" min="{{currentDate}}" class="form-control" name="expiryDate" [(ngModel)]="expiryDate"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.quantityInit" for="field_quantityInit">Quantity Init</label>
+                    <input type="number" class="form-control" name="quantityInit" id="field_quantityInit"
+                           [(ngModel)]="stock.quantityInit" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.bio" for="field_bio">Bio</label>
+                    <input type="checkbox" class="form-control" name="bio" id="field_bio"
+                           [(ngModel)]="stock.bio" />
+                </div>
+                <!--<div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.quantityRemaining" for="field_quantityRemaining">Quantity Remaining</label>
+                    <input type="number" class="form-control" name="quantityRemaining" id="field_quantityRemaining"
+                        [(ngModel)]="stock.quantityRemaining" />
+                </div>-->
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.priceUnit" for="field_priceUnit">Price Unit</label>
+                    <input type="number" class="form-control" name="priceUnit" id="field_priceUnit"
+                        [(ngModel)]="stock.priceUnit" />
+                </div>
+                <!--<div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.onSaleDate" for="field_onSaleDate">On Sale Date</label>
                     <div class="d-flex">
                         <input id="field_onSaleDate" type="datetime-local" class="form-control" name="onSaleDate" [(ngModel)]="onSaleDate"
                         />
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.expiryDate" for="field_expiryDate">Expiry Date</label>
-                    <div class="d-flex">
-                        <input id="field_expiryDate" type="datetime-local" class="form-control" name="expiryDate" [(ngModel)]="expiryDate"
-                        />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.bio" for="field_bio">Bio</label>
-                    <input type="checkbox" class="form-control" name="bio" id="field_bio"
-                        [(ngModel)]="stock.bio" />
-                </div>
-                <div class="form-group">
+                </div>-->
+                <!--<div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.available" for="field_available">Available</label>
                     <input type="checkbox" class="form-control" name="available" id="field_available"
                         [(ngModel)]="stock.available" />
-                </div>
-
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.productType" for="field_productType">Product Type</label>
-                    <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productType" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption" *ngFor="let productTypeOption of producttypes; trackBy: trackProductTypeById">{{productTypeOption.id}}</option>
-                    </select>
-                </div>
+                </div>-->
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.holding" for="field_holding">Holding</label>
                     <select class="form-control" id="field_holding" name="holding" [(ngModel)]="stock.holding" >
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="holdingOption.id === stock.holding?.id ? stock.holding : holdingOption" *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">{{holdingOption.id}}</option>
+                        <option [ngValue]="holdingOption.id === stock.holding?.id ? stock.holding : holdingOption" *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">{{holdingOption.name}}</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.seller" for="field_seller">Seller</label>
                     <select class="form-control" id="field_seller" name="seller" [(ngModel)]="stock.seller" >
                         <option [ngValue]="null"></option>
                         <option [ngValue]="userOption.id === stock.seller?.id ? stock.seller : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
                     </select>
-                </div>
+                </div>-->
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">

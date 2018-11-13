@@ -3,33 +3,33 @@
     "newLocalApp": {
         "stock" : {
             "home": {
-                "title": "Stocks",
-                "createLabel": "Créer un nouveau Stock",
-                "createOrEditLabel": "Créer ou éditer un Stock",
-                "search": "Recherche pour Stock"
+                "title": "Mes stocks de produits",
+                "createLabel": "Vendre un nouveau stock",
+                "createOrEditLabel": "Créer ou éditer un stock",
+                "search": "Rechercher un stock"
             },
-            "created": "Un nouveau Stock a été créé avec l'identifiant {{ param }}",
-            "updated": "Le Stock avec l'identifiant {{ param }} a été mis à jour",
-            "deleted": "Le Stock avec l'identifiant {{ param }} a été supprimé",
+            "created": "Un nouveau stock a été créé avec l'identifiant {{ param }}",
+            "updated": "Le stock avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le stock avec l'identifiant {{ param }} a été supprimé",
             "delete": {
-                "question": "Etes-vous certain de vouloir supprimer le Stock {{ id }} ?"
+                "question": "Etes-vous certain de vouloir supprimer le stock {{ id }} ?"
             },
             "detail": {
                 "title": "Stock"
             },
-            "name": "Name",
-            "description": "Description",
-            "quantityInit": "Quantity Init",
-            "quantityRemaining": "Quantity Remaining",
-            "priceUnit": "Price Unit",
-            "image": "Image",
-            "onSaleDate": "On Sale Date",
-            "expiryDate": "Expiry Date",
+            "name": "Nom du produit",
+            "description": "Description du produit",
+            "quantityInit": "Quantité",
+            "quantityRemaining": "Quantité restante",
+            "priceUnit": "Prix unitaire",
+            "image": "Image du produit",
+            "onSaleDate": "Date de mise en vente",
+            "expiryDate": "Date de péremption",
             "bio": "Bio",
-            "available": "Available",
-            "productType": "Product Type",
-            "holding": "Holding",
-            "seller": "Seller"
+            "available": "Disponible",
+            "productType": "Type de produit",
+            "holding": "Exploitation",
+            "seller": "Producteur"
         }
     }
 }

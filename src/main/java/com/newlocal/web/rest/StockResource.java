@@ -2,6 +2,7 @@ package com.newlocal.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.newlocal.domain.Stock;
+import com.newlocal.repository.UserRepository;
 import com.newlocal.service.StockService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
@@ -23,9 +24,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Stock.
@@ -42,9 +40,15 @@ public class StockResource {
 
     private StockQueryService stockQueryService;
 
-    public StockResource(StockService stockService, StockQueryService stockQueryService) {
+    private UserRepository userRepository;
+
+    private UserDAO userDAO;
+
+    public StockResource(StockService stockService, StockQueryService stockQueryService, UserRepository userRepository, UserDAO userDAO) {
         this.stockService = stockService;
         this.stockQueryService = stockQueryService;
+        this.userRepository = userRepository;
+        this.userDAO = userDAO;
     }
 
     /**
@@ -60,6 +64,12 @@ public class StockResource {
         log.debug("REST request to save Stock : {}", stock);
         if (stock.getId() != null) {
             throw new BadRequestAlertException("A new stock cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        long idCurrentUser = userDAO.getUserIdByCurrentLogin();
+        if (idCurrentUser != 0){
+            stock.setSeller(userRepository.findById(idCurrentUser).get());
+        }else{
+            stock.setSeller(null);
         }
         Stock result = stockService.save(stock);
         return ResponseEntity.created(new URI("/api/stocks/" + result.getId()))
