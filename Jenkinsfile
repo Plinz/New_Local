@@ -42,15 +42,17 @@ node {
         }
     }
 
+    stage('quality analysis') {
+        withSonarQubeEnv('sonar') {
+            sh "./mvnw sonar:sonar"
+        }
+    }
+/*
     stage('package and deploy') {
 	withCredentials([[$class: 'StringBinding', credentialsId: 'HEROKU_API_KEY', variable: 'HEROKU_API_KEY']]) {
         	sh "./mvnw com.heroku.sdk:heroku-maven-plugin:2.0.5:deploy -DskipTests -Pprod -Dheroku.buildpacks=heroku/jvm -Dheroku.appName=new-local"
 	}
         archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
     }
-    stage('quality analysis') {
-        withSonarQubeEnv('sonar') {
-            sh "./mvnw sonar:sonar"
-        }
-    }
+*/
 }
