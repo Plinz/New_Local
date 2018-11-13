@@ -9,6 +9,7 @@ import { Principal } from 'app/core';
 
 import { ITEMS_PER_PAGE } from 'app/shared';
 import { StockService } from './stock.service';
+import { Moment } from 'moment';
 
 @Component({
     selector: 'jhi-stock',
@@ -32,6 +33,7 @@ export class StockComponent implements OnInit, OnDestroy {
     reverse: any;
     count: number;
     today: any;
+    tmp: any;
 
     constructor(
         private stockService: StockService,
@@ -44,8 +46,6 @@ export class StockComponent implements OnInit, OnDestroy {
         private eventManager: JhiEventManager
     ) {
         this.count = 1;
-        this.today = Date.now();
-
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
@@ -187,13 +187,37 @@ export class StockComponent implements OnInit, OnDestroy {
     }
 
     checkDate(d: any) {
-        // const d1 = this.today.getTime();
-        // const d2 = new Date(d);
-        // const d3 = d2.getTime();
-        // if (d1 < d3) {
-        return true;
-        // } else {
-        //    return false;
-        // }
+        this.today = Date.now();
+        const d1 = new Date(this.today);
+        const d2 = new Date(d);
+        if (d1.getTime() < d2.getTime()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    onglet1(b: any, d: any) {
+        if (b && this.count === 1 && this.checkDate(d)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    onglet2(b: any) {
+        if (!b && this.count === 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    onglet3(b: any, d: any) {
+        if (b && this.count === 3 && !this.checkDate(d)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
