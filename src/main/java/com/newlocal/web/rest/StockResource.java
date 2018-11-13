@@ -67,7 +67,12 @@ public class StockResource {
         if (stock.getId() != null) {
             throw new BadRequestAlertException("A new stock cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        stock.setPerson(personRepository.findById(personDAO.getPersonIdByCurrentLogin()).get());
+        long idCurrentUser = personDAO.getPersonIdByCurrentLogin();
+        if (idCurrentUser != 0){
+            stock.setPerson(personRepository.findById(idCurrentUser).get());
+        }else{
+            stock.setPerson(null);
+        }
         Stock result = stockRepository.save(stock);
         stockSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/stocks/" + result.getId()))

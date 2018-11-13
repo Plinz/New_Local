@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -104,14 +105,17 @@ public class StockResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private PersonRepository personRepository;
+
     private MockMvc restStockMockMvc;
 
     private Stock stock;
 
     @Before
-    public void setup(PersonRepository userRepository, PersonDAO userDAO) {
+    public void setup() {
         MockitoAnnotations.initMocks(this);
-        final StockResource stockResource = new StockResource(stockRepository, mockStockSearchRepository, userRepository, userDAO);
+        final StockResource stockResource = new StockResource(stockRepository, mockStockSearchRepository, personRepository, new PersonDAO(new JdbcTemplate()));
         this.restStockMockMvc = MockMvcBuilders.standaloneSetup(stockResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
