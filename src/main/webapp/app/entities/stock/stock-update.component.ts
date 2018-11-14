@@ -27,8 +27,9 @@ export class StockUpdateComponent implements OnInit {
     holdings: IHolding[];
 
     users: IUser[];
-    onSaleDate: string;
+    // onSaleDate: string;
     expiryDate: string;
+    currentDate: string;
 
     constructor(
         private dataUtils: JhiDataUtils,
@@ -36,7 +37,7 @@ export class StockUpdateComponent implements OnInit {
         private stockService: StockService,
         private productTypeService: ProductTypeService,
         private holdingService: HoldingService,
-        private userService: UserService,
+        // private userService: UserService,
         private elementRef: ElementRef,
         private activatedRoute: ActivatedRoute
     ) {}
@@ -45,7 +46,7 @@ export class StockUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ stock }) => {
             this.stock = stock;
-            this.onSaleDate = this.stock.onSaleDate != null ? this.stock.onSaleDate.format(DATE_TIME_FORMAT) : null;
+            // this.onSaleDate = this.stock.onSaleDate != null ? this.stock.onSaleDate.format(DATE_TIME_FORMAT) : null;
             this.expiryDate = this.stock.expiryDate != null ? this.stock.expiryDate.format(DATE_TIME_FORMAT) : null;
         });
         this.productTypeService.query().subscribe(
@@ -54,7 +55,7 @@ export class StockUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.holdingService.query().subscribe(
+        /*this.holdingService.query().subscribe(
             (res: HttpResponse<IHolding[]>) => {
                 this.holdings = res.body;
             },
@@ -65,7 +66,13 @@ export class StockUpdateComponent implements OnInit {
                 this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        );*/
+        const myDate = new Date();
+        if (myDate.getDate() < 10) {
+            this.currentDate = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-0${myDate.getDate()}`;
+        } else {
+            this.currentDate = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
+        }
     }
 
     byteSize(field) {
@@ -90,8 +97,10 @@ export class StockUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        this.stock.onSaleDate = this.onSaleDate != null ? moment(this.onSaleDate, DATE_TIME_FORMAT) : null;
+        // this.stock.onSaleDate = this.onSaleDate != null ? moment(this.onSaleDate, DATE_TIME_FORMAT) : null;
+        this.stock.onSaleDate = moment(new Date(), DATE_TIME_FORMAT);
         this.stock.expiryDate = this.expiryDate != null ? moment(this.expiryDate, DATE_TIME_FORMAT) : null;
+        this.stock.quantityRemaining = this.stock.quantityInit;
         if (this.stock.id !== undefined) {
             this.subscribeToSaveResponse(this.stockService.update(this.stock));
         } else {

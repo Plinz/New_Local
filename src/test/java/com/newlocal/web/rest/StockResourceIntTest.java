@@ -7,10 +7,10 @@ import com.newlocal.domain.ProductType;
 import com.newlocal.domain.Holding;
 import com.newlocal.domain.User;
 import com.newlocal.repository.StockRepository;
+import com.newlocal.repository.UserRepository;
 import com.newlocal.repository.search.StockSearchRepository;
 import com.newlocal.service.StockService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
-import com.newlocal.service.dto.StockCriteria;
 import com.newlocal.service.StockQueryService;
 
 import org.junit.Before;
@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -115,6 +116,9 @@ public class StockResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private MockMvc restStockMockMvc;
 
     private Stock stock;
@@ -122,7 +126,7 @@ public class StockResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final StockResource stockResource = new StockResource(stockService, stockQueryService);
+        final StockResource stockResource = new StockResource(stockService, stockQueryService, userRepository, new UserDAO(new JdbcTemplate()));
         this.restStockMockMvc = MockMvcBuilders.standaloneSetup(stockResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
