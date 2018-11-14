@@ -44,7 +44,8 @@ import {
     faFish,
     faCookieBite,
     faWineGlass,
-    faHome
+    faHome,
+    faDrumstickBite
 } from '@fortawesome/free-solid-svg-icons';
 
 // Adds the SVG icon to the library so you can use it in your page
@@ -87,5 +88,6 @@ library.add(faFish);
 library.add(faLemon);
 library.add(faCookieBite);
 library.add(faWineGlass);
+library.add(faDrumstickBite);
 
 // jhipster-needle-add-element-to-vendor - JHipster will add new menu items here

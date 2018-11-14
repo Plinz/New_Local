@@ -29,14 +29,6 @@
                         </span>
                     </a>
                 </li>
-                <li *jhiHasAnyAuthority="'ROLE_SELLER'" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
-                        <span>
-                            <fa-icon [icon]="'boxes'"></fa-icon>
-                            <span jhiTranslate="global.menu.stockManagement">Stock Management</span>
-                        </span>
-                    </a>
-                </li>
                 <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
                 <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                     <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
@@ -223,7 +215,7 @@
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
                 <span>
                     <fa-icon [icon]="'tree'"></fa-icon>
-                    <span jhiTranslate="global.menu.vegetable">Vegetable</span>
+                    <span class="pl-2" jhiTranslate="global.menu.vegetable">Vegetable</span>
                 </span>
             </a>
             </li>
@@ -231,7 +223,7 @@
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
                 <span>
                     <fa-icon [icon]="'lemon'"></fa-icon>
-                    <span jhiTranslate="global.menu.fruit">Fruit</span>
+                    <span class="pl-2" jhiTranslate="global.menu.fruit">Fruit</span>
                 </span>
             </a>
             </li>
@@ -239,7 +231,7 @@
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
                 <span>
                     <fa-icon [icon]="'fish'"></fa-icon>
-                    <span jhiTranslate="global.menu.fish">Fish</span>
+                    <span class="pl-2" jhiTranslate="global.menu.fish">Fish</span>
                 </span>
             </a>
             </li>
@@ -247,7 +239,7 @@
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
                 <span>
                     <fa-icon [icon]="'drumstick-bite'"></fa-icon>
-                    <span jhiTranslate="global.menu.meat">Meat</span>
+                    <span class="pl-2" jhiTranslate="global.menu.meat">Meat</span>
                 </span>
             </a>
             </li>
@@ -255,8 +247,7 @@
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
                 <span>
                     <fa-icon [icon]="'cookie-bite'"></fa-icon>
-                    <fa-icon [icon]="'wine-bootle'"></fa-icon>
-                    <span jhiTranslate="global.menu.grocery">Grocery</span>
+                    <span class="pl-2" jhiTranslate="global.menu.grocery">Grocery</span>
                 </span>
             </a>
             </li>
