@@ -11,13 +11,14 @@ import { AuthInterceptor } from './blocks/interceptor/auth.interceptor';
 import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
 import { ErrorHandlerInterceptor } from './blocks/interceptor/errorhandler.interceptor';
 import { NotificationInterceptor } from './blocks/interceptor/notification.interceptor';
-import { NewLocalSharedModule } from 'app/shared';
-import { NewLocalCoreModule } from 'app/core';
+import { NewLocalSharedModule } from './shared';
+import { NewLocalCoreModule } from './core';
 import { NewLocalAppRoutingModule } from './app-routing.module';
 import { NewLocalHomeModule } from './home/home.module';
 import { NewLocalMainSearchModule } from './mainSearch/mainSearch.module';
 import { NewLocalAccountModule } from './account/account.module';
 import { NewLocalEntityModule } from './entities/entity.module';
+import { NewLocalStockManagementModule } from './stockManagement/stockManagement.module';
 import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
@@ -31,6 +32,7 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
         NewLocalCoreModule,
         NewLocalHomeModule,
         NewLocalMainSearchModule,
+        NewLocalStockManagementModule,
         NewLocalAccountModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
         NewLocalEntityModule
