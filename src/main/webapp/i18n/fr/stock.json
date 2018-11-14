@@ -29,7 +29,15 @@
             "available": "Disponible",
             "productType": "Type de produit",
             "holding": "Exploitation",
-            "seller": "Producteur"
+            "seller": "Producteur",
+            "id": "N°Lot",
+            "nom": "Nom",
+            "datep": "Date de péremption",
+            "prix": "Prix(unité ou Kg)",
+            "gain": "Gain",
+            "qvendu": "Quantité vendu",
+            "qtotal": "Quantité total",
+            "vente": "Vente en cours"
         }
     }
 }
