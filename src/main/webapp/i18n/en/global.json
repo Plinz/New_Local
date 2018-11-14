@@ -44,7 +44,8 @@
             "fruit": "Fruit",
             "fish": "Fish",
             "meat": "Meat",
-            "grocery": "Grocery"
+            "grocery": "Grocery",
+            "stockManagement": "Stock Management"
         },
         "form": {
             "username": "Username",
