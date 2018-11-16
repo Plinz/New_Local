@@ -1,7 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-import { NewLocalPurchaseDoneModule } from './purchase-done/purchase-done.module';
-import { NewLocalPurchasePendingModule } from './purchase-pending/purchase-pending.module';
+import { NewLocalPurchaseModule } from './purchase/purchase.module';
 import { NewLocalGradeModule } from './grade/grade.module';
 import { NewLocalCategoryModule } from './category/category.module';
 import { NewLocalProductTypeModule } from './product-type/product-type.module';
@@ -13,8 +12,7 @@ import { NewLocalHoldingModule } from './holding/holding.module';
 @NgModule({
     // prettier-ignore
     imports: [
-        NewLocalPurchaseDoneModule,
-        NewLocalPurchasePendingModule,
+        NewLocalPurchaseModule,
         NewLocalGradeModule,
         NewLocalCategoryModule,
         NewLocalProductTypeModule,

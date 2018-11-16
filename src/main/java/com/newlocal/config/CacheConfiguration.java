@@ -38,8 +38,7 @@ public class CacheConfiguration {
             cm.createCache(com.newlocal.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(com.newlocal.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(com.newlocal.domain.User.class.getName() + ".authorities", jcacheConfiguration);
-            cm.createCache(com.newlocal.domain.PurchaseDone.class.getName(), jcacheConfiguration);
-            cm.createCache(com.newlocal.domain.PurchasePending.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Purchase.class.getName(), jcacheConfiguration);
             cm.createCache(com.newlocal.domain.Grade.class.getName(), jcacheConfiguration);
             cm.createCache(com.newlocal.domain.Category.class.getName(), jcacheConfiguration);
             cm.createCache(com.newlocal.domain.ProductType.class.getName(), jcacheConfiguration);

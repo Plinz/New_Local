@@ -7,8 +7,7 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entities",
-                "purchaseDone": "Purchase Done",
-                "purchasePending": "Purchase Pending",
+                "purchase": "Purchase",
                 "grade": "Grade",
                 "category": "Category",
                 "productType": "Product Type",

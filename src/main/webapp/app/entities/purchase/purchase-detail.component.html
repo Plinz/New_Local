@@ -1,0 +1,41 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="purchase">
+            <h2><span jhiTranslate="newLocalApp.purchase.detail.title">Purchase</span> {{purchase.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="newLocalApp.purchase.saleDate">Sale Date</span></dt>
+                <dd>
+                    <span>{{purchase.saleDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.purchase.quantity">Quantity</span></dt>
+                <dd>
+                    <span>{{purchase.quantity}}</span>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.purchase.stock">Stock</span></dt>
+                <dd>
+                    <div *ngIf="purchase.stock">
+                        <a [routerLink]="['/stock', purchase.stock?.id, 'view']">{{purchase.stock?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.purchase.client">Client</span></dt>
+                <dd>
+                    {{purchase.client?.id}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/purchase', purchase.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

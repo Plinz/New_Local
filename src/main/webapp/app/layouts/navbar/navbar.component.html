@@ -56,17 +56,10 @@
                     </a>
                     <ul class="dropdown-menu" ngbDropdownMenu>
                         <li>
-                            <a class="dropdown-item" routerLink="purchase-done" routerLinkActive="active"
+                            <a class="dropdown-item" routerLink="purchase" routerLinkActive="active"
                                 [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                                 <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
-                                <span jhiTranslate="global.menu.entities.purchaseDone">Purchase Done</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" routerLink="purchase-pending" routerLinkActive="active"
-                                [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                                <fa-icon [icon]="'asterisk'" [fixedWidth]="true"></fa-icon>
-                                <span jhiTranslate="global.menu.entities.purchasePending">Purchase Pending</span>
+                                <span jhiTranslate="global.menu.entities.purchase">Purchase</span>
                             </a>
                         </li>
                         <li>
