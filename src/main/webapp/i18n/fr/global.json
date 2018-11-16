@@ -4,7 +4,7 @@
         "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
         "menu": {
             "home": "Accueil",
-            "stockManagement":"Gestion des stocks",
+            "stockManagement":"Stocks",
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entités",
@@ -23,13 +23,13 @@
                 "settings": "Profil",
                 "password": "Mot de passe",
                 "sessions": "Sessions",
-                "login": "S'authentifier",
+                "login": "Connexion",
                 "logout": "Déconnexion",
-                "register": "Créer un compte"
+                "register": "Inscription"
             },
             "admin": {
                 "main": "Administration",
-                "userManagement": "Gestion des utilisateurs",
+                "userManagement": "Utilisateurs",
                 "tracker": "Suivi des utilisateurs",
                 "metrics": "Métriques",
                 "health": "Diagnostics",
@@ -45,8 +45,7 @@
             "fruit": "Fruit",
             "fish": "Poisson",
             "meat": "Viande",
-            "grocery": "Epicerie",
-            "stockManagement": "Gestion des stocks"
+            "grocery": "Epicerie"
         },
         "form": {
             "username": "Nom d'utilisateur",

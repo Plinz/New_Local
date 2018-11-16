@@ -28,7 +28,7 @@
             },
             "admin": {
                 "main": "Administration",
-                "userManagement": "User management",
+                "userManagement": "Users",
                 "tracker": "User tracker",
                 "metrics": "Metrics",
                 "health": "Health",
@@ -45,7 +45,7 @@
             "fish": "Fish",
             "meat": "Meat",
             "grocery": "Grocery",
-            "stockManagement": "Stock Management"
+            "stockManagement": "Stocks"
         },
         "form": {
             "username": "Username",
