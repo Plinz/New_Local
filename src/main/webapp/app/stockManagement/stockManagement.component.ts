@@ -10,6 +10,9 @@ import { Principal } from '../core';
 import { ITEMS_PER_PAGE } from '../shared';
 import { StockService } from '../entities/stock/stock.service';
 
+import { CategoryService } from '../entities/category/category.service';
+import { ICategory } from '../shared/model/category.model';
+
 @Component({
     selector: 'jhi-stock',
     templateUrl: './stockManagement.component.html'
@@ -32,6 +35,8 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     reverse: any;
     count: number;
     today: any;
+    optionCategory: number;
+    categories: ICategory[];
 
     constructor(
         private stockService: StockService,
@@ -41,9 +46,11 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private dataUtils: JhiDataUtils,
         private router: Router,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private categoryService: CategoryService
     ) {
         this.count = 1;
+        this.optionCategory = -1;
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
@@ -135,6 +142,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.loadAll();
+        this.loadCategory();
         this.principal.identity().then(account => {
             this.currentAccount = account;
         });
@@ -195,27 +203,49 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    onglet1(b: any, d: any) {
-        if (b && this.count === 1 && this.checkDate(d)) {
+    onglet1(b: any, d: any, o: number) {
+        if (b && this.count === 1 && this.checkDate(d) && this.checkoption(o)) {
             return true;
         } else {
             return false;
         }
     }
 
-    onglet2(b: any) {
-        if (!b && this.count === 2) {
+    onglet2(b: any, o: number) {
+        if (!b && this.count === 2 && this.checkoption(o)) {
             return true;
         } else {
             return false;
         }
     }
 
-    onglet3(b: any, d: any) {
-        if (b && this.count === 3 && !this.checkDate(d)) {
+    onglet3(b: any, d: any, o: number) {
+        if (b && this.count === 3 && !this.checkDate(d) && this.checkoption(o)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    option(x: number) {
+        this.optionCategory = x;
+    }
+
+    checkoption(o: number) {
+        if (o === this.optionCategory || this.optionCategory === -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    loadCategory() {
+        this.categoryService.query().subscribe(
+            (res: HttpResponse<ICategory[]>) => {
+                this.categories = res.body;
+                this.currentSearch = '';
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 }
