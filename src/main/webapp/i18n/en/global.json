@@ -7,8 +7,7 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entities",
-                "purchaseDone": "Purchase Done",
-                "purchasePending": "Purchase Pending",
+                "purchase": "Purchase",
                 "grade": "Grade",
                 "category": "Category",
                 "productType": "Product Type",
@@ -28,7 +27,7 @@
             },
             "admin": {
                 "main": "Administration",
-                "userManagement": "User management",
+                "userManagement": "Users",
                 "tracker": "User tracker",
                 "metrics": "Metrics",
                 "health": "Health",
@@ -45,7 +44,7 @@
             "fish": "Fish",
             "meat": "Meat",
             "grocery": "Grocery",
-            "stockManagement": "Stock Management"
+            "stockManagement": "Stocks"
         },
         "form": {
             "username": "Username",

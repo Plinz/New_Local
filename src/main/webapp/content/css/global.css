@@ -11,16 +11,16 @@ h4 {
 }
 
 body {
-    background: #e4e5e6;
+    background: #f5f5f5;
 }
 
 a {
-    color: #533f03;
+    color: #f5f5f5;
     font-weight: bold;
 }
 
 a:hover {
-    color: #533f03;
+    color: #feb95f;
     font-weight: bold;
     /* make sure browsers use the pointer cursor for anchors, even with no href */
     cursor: pointer;
@@ -163,9 +163,9 @@ http://stackoverflow.com/questions/19562903/remove-padding-from-columns-in-boots
 
 /* bootstrap 3 input-group 100% width
 http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
-.width-min {
+/* .width-min {
     width: 1% !important;
-}
+} */
 
 /* Makes toolbar not wrap on smaller screens
 http://www.sketchingwithcss.com/samplechapter/cheatsheet.html#right */

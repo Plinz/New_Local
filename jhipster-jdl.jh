@@ -1,10 +1,6 @@
-entity PurchaseDone {
+entity Purchase {
 	saleDate Instant,
     quantity Integer required 
-}
-
-entity PurchasePending {
-	quantity Integer required
 }
 
 entity Grade {
@@ -54,15 +50,13 @@ entity Holding {
 relationship ManyToOne {
 	ProductType{category} to Category,
     Category{categoryParent} to Category,
-    PurchasePending{stock} to Stock,
-    PurchaseDone{stock} to Stock,
+    Purchase{stock} to Stock,
     Stock{productType} to ProductType,
     Holding{location} to Location,
     Stock{holding} to Holding,
     Stock{seller} to User,
     Grade{user} to User,
-    PurchasePending{client} to User,
-    PurchaseDone{client} to User,
+    Purchase{client} to User,
     Location{user} to User,
     Holding{owner} to User
     Grade{productType} to ProductType
@@ -74,8 +68,7 @@ paginate Stock with pagination
 //paginate Grade with pagination
 
 filter Stock
-filter PurchaseDone
-filter PurchasePending
+filter Purchase
 filter Grade
 filter Location
 filter Holding

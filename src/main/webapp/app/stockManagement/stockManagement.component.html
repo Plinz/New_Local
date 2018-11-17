@@ -6,20 +6,17 @@
             <div>
                 <ul class="nav nav-tabs  lighten-3  font-weight-bold " id="myClassicTabShadow" role="tablist">
                     <li class="nav-item">
-                        <a (click)="onClickMe(1)" class="nav-link  waves-light show" [class.active]="count==1" id="onglet1"
-                            data-toggle="tab" role="tab" aria-controls="profile-classic-shadow" aria-selected="true">
+                        <a (click)="onClickMe(1)" class="nav-link  waves-light show" [class.active]="count==1" id="onglet1" data-toggle="tab" role="tab" aria-controls="profile-classic-shadow" aria-selected="true">
                             <i class="fa fa-shopping-bag" aria-hidden="true"></i> En Vente
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a (click)="onClickMe(2)" class="nav-link waves-light " [class.active]="count==2" id="onglet2"
-                            data-toggle="tab" role="tab" aria-controls="follow-classic-shadow" aria-selected="false">
+                        <a (click)="onClickMe(2)" class="nav-link waves-light " [class.active]="count==2" id="onglet2" data-toggle="tab" role="tab" aria-controls="follow-classic-shadow" aria-selected="false">
                             <i class="fa fa-plus" aria-hidden="true"></i> En Ajout
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a (click)="onClickMe(3)" class="nav-link waves-light" [class.active]="count==3" id="onglet3"
-                            data-toggle="tab" role="tab" aria-controls="contact-classic-shadow" aria-selected="false">
+                        <a (click)="onClickMe(3)" class="nav-link waves-light" [class.active]="count==3" id="onglet3" data-toggle="tab" role="tab" aria-controls="contact-classic-shadow" aria-selected="false">
                             <i class="fa fa-check" aria-hidden="true"></i> Terminées
                         </a>
                     </li>
@@ -27,20 +24,18 @@
             </div>
         </div>
         <div class="col-md-1">
-                <select class="custom-select-sm form-control form-control-sm">
+            <select class="custom-select-sm form-control form-control-sm">
                     <option value="" disabled selected>Catégorie</option>
-                    <option value="1">Fruits</option>
-                    <option value="2">Légumes</option>
-                    <option value="3">Viandes</option>
-                </select>
+                    <option value="1" (click)="option(-1)">Tout</option>
+                    <option *ngFor="let catego of categories ;" (click)="option(catego.id)">{{catego.name}}</option>
+            </select>
         </div>
         <div class="col-md-3">
             <!--BARRE DE RECHERCE-->
             <div>
                 <form name="searchForm" class="form-inline">
                     <div class="input-group w-100 mt-3">
-                        <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch"
-                            placeholder="{{ 'newLocalApp.stock.home.search' | translate }}">
+                        <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'newLocalApp.stock.home.search' | translate }}">
                         <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
                             <fa-icon [icon]="'search'"></fa-icon>
                         </button>
@@ -54,8 +49,7 @@
         <div class="col-md-4 text-center  ">
             <!--BOUTON CREATION-->
             <div>
-                <button id="jh-create-entity" class="btn btn-primary float-center jh-create-entity create-stock"
-                    [routerLink]="['/stockManagement/new']">
+                <button id="jh-create-entity" class="btn btn-primary float-center jh-create-entity create-stock" [routerLink]="['/stockManagement/new']">
                     <fa-icon [icon]="'plus'"></fa-icon>
                     <span class="hidden-sm-down" jhiTranslate="newLocalApp.stock.home.createLabel">
                         Create new Stock
@@ -114,7 +108,7 @@
                             </thead>
 
                             <tbody *ngFor="let stock of stocks ;trackBy: trackId">
-                                <tr *ngIf="onglet1(stock.available,stock.expiryDate) || onglet2(stock.available) || onglet3(stock.available,stock.expiryDate) ">
+                                <tr *ngIf="onglet1(stock.available,stock.expiryDate,stock.productType.category.id) || onglet2(stock.available,stock.productType.category.id) || onglet3(stock.available,stock.expiryDate,stock.productType.category.id) ">
                                     <td class="pt-3-half">
                                         <div class="container">
                                             <div class="row">
@@ -123,8 +117,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <a *ngIf="stock.image" (click)="openFile(stock.imageContentType, stock.image)">
-                                                        <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image"
-                                                            style="max-height:50px" alt="stock image" />
+                                                        <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" style="max-height:50px" alt="stock image" />
                                                     </a>
                                                 </div>
                                                 <div class="col-md-4">
@@ -143,13 +136,11 @@
 
                                     <td class="text-center">
                                         <div class="btn-group flex-btn-group-container">
-                                            <button *ngIf="count==2" type="submit" [routerLink]="['/stockManagement', stock.id, 'edit']"
-                                                class="btn btn-primary btn-sm">
+                                            <button *ngIf="count==2" type="submit" [routerLink]="['/stockManagement', stock.id, 'edit']" class="btn btn-primary btn-sm">
                                                 <fa-icon [icon]="'pencil-alt'"></fa-icon>
                                                 <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                                             </button>
-                                            <button *ngIf="count!=3" ype="submit" [routerLink]="['/', { outlets: { popup: 'stockManagement/'+ stock.id + '/delete'} }]"
-                                                replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
+                                            <button *ngIf="count!=3" ype="submit" [routerLink]="['/', { outlets: { popup: 'stockManagement/'+ stock.id + '/delete'} }]" replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
                                                 <fa-icon [icon]="'times'"></fa-icon>
                                                 <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                                             </button>
@@ -158,7 +149,6 @@
                                 </tr>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
