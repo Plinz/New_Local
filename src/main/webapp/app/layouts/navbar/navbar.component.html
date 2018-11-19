@@ -35,8 +35,8 @@
             </ul>
         </div>
         <div class="input-group px-2">
-            <input class="form-control border-right-0 border" type="search" value="search" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch"
-                    placeholder="{{ 'newLocalApp.mainSearch.search' | translate }}">
+            <input class="form-control border-right-0 border" type="text" value="search" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch"
+                    placeholder="{{ 'newLocalApp.mainSearch.search' | translate }}" (keydown.enter)="search(currentSearch)">
             <span class="input-group-append">
                   <div class="input-group-text bg-white" (click)="search(currentSearch)" routerLinkActive="active"
                     [routerLinkActiveOptions]="{ exact: true }"><fa-icon [icon]="'search'" [fixedWidth]="true"></fa-icon></div>
