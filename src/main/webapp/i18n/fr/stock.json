@@ -37,7 +37,8 @@
             "gain": "Gain",
             "qvendu": "Quantité vendu",
             "qtotal": "Quantité total",
-            "vente": "Vente en cours"
+            "vente": "Vente en cours",
+            "return":"Retour stock"
         }
     }
 }
