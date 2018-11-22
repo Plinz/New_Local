@@ -3,16 +3,16 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
-import { DATE_TIME_FORMAT } from '../shared/constants/input.constants';
+import { DATE_TIME_FORMAT } from 'app/shared';
 import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 
 import { IStock } from '../shared/model/stock.model';
-import { StockService } from '../entities/stock/stock.service';
+import { StockService } from 'app/entities/stock';
 import { IProductType } from '../shared/model/product-type.model';
 import { ProductTypeService } from '../entities/product-type';
 import { IHolding } from '../shared/model/holding.model';
 import { HoldingService } from '../entities/holding';
-import { IUser, UserService } from '../core';
+import { IUser } from '../core';
 
 @Component({
     selector: 'jhi-stock-update',
@@ -21,7 +21,9 @@ import { IUser, UserService } from '../core';
 export class StockManagementUpdateComponent implements OnInit {
     stock: IStock;
     isSaving: boolean;
-    producttypes: IProductType[];
+
+    productTypes: IProductType[];
+
     holdings: IHolding[];
     users: IUser[];
     // onSaleDate: string;
@@ -50,23 +52,17 @@ export class StockManagementUpdateComponent implements OnInit {
         });
         this.productTypeService.query().subscribe(
             (res: HttpResponse<IProductType[]>) => {
-                this.producttypes = res.body;
+                this.productTypes = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.holdingService.getCurrentUser().subscribe(
+        this.holdingService.findByCurrentUser().subscribe(
             (res: HttpResponse<IHolding[]>) => {
                 this.holdings = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        /*this.holdingService.query().subscribe(
-            (res: HttpResponse<IHolding[]>) => {
-                this.holdings = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.userService.query().subscribe(
+        /*this.userService.query().subscribe(
             (res: HttpResponse<IUser[]>) => {
                 this.users = res.body;
             },

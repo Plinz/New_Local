@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
@@ -28,6 +28,10 @@ export class HoldingService {
         return this.http.get<IHolding>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
+    findByCurrentUser(): Observable<EntityArrayResponseType> {
+        return this.http.get<IHolding[]>(`${this.resourceUrl}/currentUser`, { observe: 'response' });
+    }
+
     query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
         return this.http.get<IHolding[]>(this.resourceUrl, { params: options, observe: 'response' });
@@ -40,9 +44,5 @@ export class HoldingService {
     search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
         return this.http.get<IHolding[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
-    }
-
-    getCurrentUser(): Observable<EntityArrayResponseType> {
-        return this.http.get<IHolding[]>(`${this.resourceUrl}/currentUser`, { observe: 'response' });
     }
 }
