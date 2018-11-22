@@ -25,4 +25,5 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
     List<Stock> findAllStocks(Sort sort);
     
     
+
 }

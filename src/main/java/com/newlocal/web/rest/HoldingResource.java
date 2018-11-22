@@ -153,4 +153,17 @@ public class HoldingResource {
         return holdingService.search(query);
     }
 
+    /**
+     * GET  /holdings : get all the holdings.
+     *
+     * @param criteria the criterias which the requested entities should match
+     * @return the ResponseEntity with status 200 (OK) and the list of holdings in body
+     */
+    @GetMapping("/holdings/currentUser")
+    @Timed
+    public ResponseEntity<List<Holding>> getHoldingsCurrentUser() {
+        log.debug("REST request to get Holdings by criteria: {}");
+        List<Holding> entityList = holdingService.getHoldingsCurrentUser();
+        return ResponseEntity.ok().body(entityList);
+    }    
 }

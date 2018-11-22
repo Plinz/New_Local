@@ -41,4 +41,8 @@ export class HoldingService {
         const options = createRequestOption(req);
         return this.http.get<IHolding[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
+
+    getCurrentUser(): Observable<EntityArrayResponseType> {
+        return this.http.get<IHolding[]>(`${this.resourceUrl}/currentUser`, { observe: 'response' });
+    }
 }

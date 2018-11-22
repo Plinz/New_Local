@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.List;
 import java.lang.Object;
@@ -97,7 +98,9 @@ public class StockService {
         log.debug("Request to search for a page of Stocks for query {}", query);
         return stockSearchRepository.search(queryStringQuery(query), pageable);    }
 
-         /**
+
+
+    /**
      * Search for the stock bio
      *
      */
@@ -106,6 +109,7 @@ public class StockService {
         log.debug("Request to search for Product Bio {}");
         return stockRepository.getProductBio();
     }
+
 
      /**
      * Search last new stock
@@ -118,4 +122,5 @@ public class StockService {
         List <Stock> ListOrder=stockRepository.findAllStocks(new Sort(Sort.Direction.DESC, "onSaleDate"));
         return ListOrder;
     }
+
 }

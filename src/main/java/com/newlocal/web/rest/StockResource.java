@@ -174,7 +174,11 @@ public class StockResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+<<<<<<< HEAD
  /**
+=======
+     /**
+>>>>>>> d1a1bece382a758261e8fa105bde32a20c0d7b8b
      * SEARCH Random Product Bio
      *
      */
@@ -188,6 +192,7 @@ public class StockResource {
     }
 
 
+
     /**
      * SEARCH last New Stock
      *
@@ -199,6 +204,7 @@ public class StockResource {
         return "Test"+stockService.getNewStock().get(0).toString();
         
     }
+
 
 
 }
