@@ -58,7 +58,6 @@ public class HoldingService {
         return holdingRepository.findAll();
     }
 
-
     /**
      * Get one holding by id.
      *
@@ -69,6 +68,17 @@ public class HoldingService {
     public Optional<Holding> findOne(Long id) {
         log.debug("Request to get Holding : {}", id);
         return holdingRepository.findById(id);
+    }
+
+    /**
+     * Get multiple holdings of current user.
+     *
+     * @return the entities list
+     */
+    @Transactional(readOnly = true)
+    public List<Holding> findByCurrentUser() {
+        log.debug("Request to get Holdings of the current user");
+        return holdingRepository.findByOwnerIsCurrentUser();
     }
 
     /**

@@ -8,6 +8,7 @@ import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.service.dto.HoldingCriteria;
 import com.newlocal.service.HoldingQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
+import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -123,6 +124,19 @@ public class HoldingResource {
         log.debug("REST request to get Holding : {}", id);
         Optional<Holding> holding = holdingService.findOne(id);
         return ResponseUtil.wrapOrNotFound(holding);
+    }
+
+    /**
+     * GET /holdings/currentUser : get the current user holdings
+     *
+     * @return the ResponseEntity with status 200 (OK) and with body the holdings, or with status 404 (Not Found)
+     */
+    @GetMapping("/holding/currentUser")
+    @Timed
+    public ResponseEntity<List<Holding>> getHoldingsByCurrentUser(){
+        log.debug("REST request to get Holdings of the current user : {}");
+        List<Holding> holdings = holdingService.findByCurrentUser();
+        return ResponseEntity.ok().body(holdings);
     }
 
     /**

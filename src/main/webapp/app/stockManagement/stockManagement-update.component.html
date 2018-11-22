@@ -82,6 +82,11 @@
                     <input type="checkbox" class="form-control" name="available" id="field_available"
                         [(ngModel)]="stock.available" />
                 </div>-->
+                <ul>
+                    <li *ngFor="let t of holdings">
+                        {{t.name}}
+                    </li>
+                </ul>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.holding" for="field_holding">Holding</label>
                     <select class="form-control" id="field_holding" name="holding" [(ngModel)]="stock.holding" >
