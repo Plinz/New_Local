@@ -37,6 +37,8 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     today: any;
     optionCategory: number;
     categories: ICategory[];
+    bAllcheckbox: boolean;
+    list: any[];
 
     constructor(
         private stockService: StockService,
@@ -248,5 +250,55 @@ export class StockManagementComponent implements OnInit, OnDestroy {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+    }
+
+    // Test
+    checkboxcopie(bval: boolean) {
+        const a: any[] = [];
+        for (const j of this.stocks) {
+            a.push({ id: j.id, bol: bval });
+        }
+        this.list = a;
+    }
+
+    checkboxcheck(id: any) {
+        let i = 0;
+        while (i < this.list.length && id !== this.list[i].id) {
+            i++;
+        }
+        if (i !== this.list.length) {
+            this.list[i].bol = !this.list[i].bol;
+        }
+    }
+
+    checkboxallcheck(bval: boolean) {
+        for (const j of this.list) {
+            j.bol = bval;
+        }
+    }
+
+    checkboxonClickMe() {
+        if (this.bAllcheckbox) {
+            this.bAllcheckbox = false;
+            this.checkboxallcheck(false);
+        } else {
+            this.bAllcheckbox = true;
+            this.checkboxallcheck(true);
+        }
+    }
+
+    checkboxsuppr() {
+        const updatedArray = [];
+        let i = 0;
+        for (const j of this.list) {
+            if (j.bol === true) {
+                this.stocks.splice(i, 1);
+                i--;
+            } else {
+                updatedArray.push(j);
+            }
+            i++;
+        }
+        this.list = updatedArray;
     }
 }
