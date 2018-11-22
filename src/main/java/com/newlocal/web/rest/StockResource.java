@@ -174,7 +174,7 @@ public class StockResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-     /**
+    /**
      * SEARCH Random Product Bio
      *
      */
@@ -186,5 +186,18 @@ public class StockResource {
         return "Test"+stockBio.get((new Random()).nextInt(stockBio.size())).toString();
         
     }
+
+    /**
+     * SEARCH last New Stock
+     *
+     */
+    @GetMapping("/stocks/new_stock")
+    @Timed
+    public String getNewStock() {
+        log.debug("REST request to search a new stock");
+        return "Test"+stockService.getNewStock().get(0).toString();
+        
+    }
+
 
 }

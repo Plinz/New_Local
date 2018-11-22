@@ -5,6 +5,7 @@ import com.newlocal.repository.StockRepository;
 import com.newlocal.repository.search.StockSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.List;
+import java.lang.Object;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -95,7 +98,9 @@ public class StockService {
         log.debug("Request to search for a page of Stocks for query {}", query);
         return stockSearchRepository.search(queryStringQuery(query), pageable);    }
 
-             /**
+
+
+    /**
      * Search for the stock bio
      *
      */
@@ -104,4 +109,18 @@ public class StockService {
         log.debug("Request to search for Product Bio {}");
         return stockRepository.getProductBio();
     }
+
+
+     /**
+     * Search last new stock
+     *
+     */
+     
+    @Transactional(readOnly = true)
+    public List<Stock> getNewStock() {
+        log.debug("Request to search a new stock {}");
+        List <Stock> ListOrder=stockRepository.findAllStocks(new Sort(Sort.Direction.DESC, "onSaleDate"));
+        return ListOrder;
+    }
+
 }

@@ -105,7 +105,7 @@
                                         <div class="container">
                                             <div class="row">
                                                 <div class="col-md-1">
-                                                    <input type="checkbox" name="img" value="">
+                                                    <input type="checkbox" [checked]="bAllcheckbox" (click)="checkboxcheck(stock.id)" />
                                                 </div>
                                                 <div class="col-md-4">
                                                     <a *ngIf="stock.image" (click)="openFile(stock.imageContentType, stock.image)">
@@ -146,21 +146,21 @@
                             </tbody>
                         </table>
 
-                        <div class="container-fluid" *ngIf="stocks.length > 0">
+                        <div class="container-fluid" *ngIf="stocks.length>0">
                             <div class="row">
                                 <div class="col-md-5">
                                     <div *ngIf="count!=3" class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" id="defaultChecked2"
-                                            checked>
+                                            (click)="checkboxonClickMe()">
                                         <label class="custom-control-label" for="defaultChecked2">Tout séléctionner</label>
-                                        <button class="btn btn-danger btn-sm">
+                                        <button class="btn btn-danger btn-sm" (click)="nextPage()">
                                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                                         </button>
+                                        <a [routerLink]="['/', { outlets: { popup: 'stockManagement/alldelete'} }]">hhhahah</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
