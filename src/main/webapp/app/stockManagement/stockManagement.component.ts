@@ -49,6 +49,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         private eventManager: JhiEventManager,
         private categoryService: CategoryService
     ) {
+        this.stocks = null;
         this.count = 1;
         this.optionCategory = -1;
         this.itemsPerPage = ITEMS_PER_PAGE;

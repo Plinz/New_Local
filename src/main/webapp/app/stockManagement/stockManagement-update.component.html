@@ -1,104 +1,235 @@
 <div class="row justify-content-center">
-    <div class="col-8">
+    <div class="col-8 mt-5">
+        <div class="row">
+            <div class="col-md-10">
+                <h2 id="jhi-stock-heading" jhiTranslate="newLocalApp.stock.home.createOrEditLabel">Create or edit a
+                    Stock</h2>
+            </div>
+            <div class="col-md-2">
+                <button id="jh-create-entity" class="btn btn-primary float-center jh-create-entity create-stock"
+                    [routerLink]="['/stockManagement/']">
+                    <span class="hidden-sm-down" jhiTranslate="newLocalApp.stock.return">
+                        Retour stock
+                    </span>
+                </button>
+            </div>
+
+            <div class="col-md-12">
+                <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+                    <div>
+                        <jhi-alert-error></jhi-alert-error>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.productType" for="field_productType">Product
+                                        Type</label>
+                                    <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productType">
+                                        <option [ngValue]="null"></option>
+                                        <option [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption"
+                                            *ngFor="let productTypeOption of producttypes; trackBy: trackProductTypeById">{{productTypeOption.name}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="text-center">
+                                    <a class="btn btn-primary float-center jh-create-entity" (click)="clicBtnValiderTypeproduit()">Valider
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="btnValiderTypeproduit">
+                            <div class="card mt-3">
+                                <div class="card-body">
+
+                                    <div class=row>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.name"
+                                                    for="field_name">Name</label>
+                                                <input type="text" class="form-control" name="name" id="field_name"
+                                                    [(ngModel)]="stock.name" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.description"
+                                                    for="field_description">Description</label>
+                                                <textarea rows="4" cols="50" class="form-control" name="description" id="field_description"
+                                                [(ngModel)]="stock.description">
+                                               
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.expiryDate"
+                                                    for="field_expiryDate">Expiry
+                                                    Date</label>
+                                                <div class="d-flex">
+                                                    <input id="field_expiryDate" type="date" min="{{currentDate}}"
+                                                        class="form-control" name="expiryDate" [(ngModel)]="expiryDate" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.quantityInit"
+                                                    for="field_quantityInit">Quantity
+                                                    Init</label>
+                                                <input type="number" class="form-control" name="quantityInit" id="field_quantityInit"
+                                                    [(ngModel)]="stock.quantityInit" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.image"
+                                                    for="field_image">Image</label>
+                                                <div>
+                                                    <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image"
+                                                        style="max-height: 100px;" *ngIf="stock.image" alt="stock image" />
+                                                    <div *ngIf="stock.image" class="form-text text-danger clearfix">
+                                                        <span class="pull-left">{{stock.imageContentType}},
+                                                            {{byteSize(stock.image)}}</span>
+                                                        <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')"
+                                                            class="btn btn-secondary btn-xs pull-right">
+                                                            <fa-icon [icon]="'times'"></fa-icon>
+                                                        </button>
+                                                    </div>
+                                                    <input type="file" id="file_image" (change)="setFileData($event, stock, 'image', true)"
+                                                        accept="image/*" jhiTranslate="entity.action.addimage" />
+                                                </div>
+                                                <input type="hidden" class="form-control" name="image" id="field_image"
+                                                    [(ngModel)]="stock.image" />
+                                                <input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
+                                                    [(ngModel)]="stock.imageContentType" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.bio"
+                                                    for="field_bio">Bio</label>
+                                                <input type="checkbox" class="form-control" name="bio" id="field_bio"
+                                                    [(ngModel)]="stock.bio" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.holding"
+                                                    for="field_holding">Holding</label>
+                                                <select class="form-control" id="field_holding" name="holding"
+                                                    [(ngModel)]="stock.holding">
+                                                    <option [ngValue]="null"></option>
+                                                    <option [ngValue]="holdingOption.id === stock.holding?.id ? stock.holding : holdingOption"
+                                                        *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">{{holdingOption.name}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-2">
+                                    <div class="form-group">
+                                        <label class="form-control-label" jhiTranslate="newLocalApp.stock.priceUnit"
+                                            for="field_priceUnit">Price
+                                            Unit</label>
+                                        <input type="number" class="form-control" name="priceUnit" id="field_priceUnit"
+                                            [(ngModel)]="stock.priceUnit" />
+                                    </div>
+
+
+                                    <div class="text-center">
+                                        <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                                            <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                                        </button>
+                                        <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving"
+                                            class="btn btn-primary">
+                                            <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!--
+        <div class="col-8">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
             <h2 id="jhi-stock-heading" jhiTranslate="newLocalApp.stock.home.createOrEditLabel">Create or edit a Stock</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group" [hidden]="!stock.id">
                     <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="stock.id" readonly />
+                    <input type="text" class="form-control" id="id" name="id" [(ngModel)]="stock.id" readonly />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.productType" for="field_productType">Product Type</label>
-                    <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productType" >
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.productType" for="field_productType">Product
+                        Type</label>
+                    <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productType">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption" *ngFor="let productTypeOption of producttypes; trackBy: trackProductTypeById">{{productTypeOption.name}}</option>
+                        <option [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption"
+                            *ngFor="let productTypeOption of producttypes; trackBy: trackProductTypeById">{{productTypeOption.name}}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.name" for="field_name">Name</label>
-                    <input type="text" class="form-control" name="name" id="field_name"
-                           [(ngModel)]="stock.name" />
+                    <input type="text" class="form-control" name="name" id="field_name" [(ngModel)]="stock.name" />
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.description" for="field_description">Description</label>
-                    <input type="text" class="form-control" name="description" id="field_description"
-                           [(ngModel)]="stock.description" />
+                    <input type="text" class="form-control" name="description" id="field_description" [(ngModel)]="stock.description" />
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.image" for="field_image">Image</label>
                     <div>
-                        <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" style="max-height: 100px;" *ngIf="stock.image" alt="stock image"/>
+                        <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" style="max-height: 100px;"
+                            *ngIf="stock.image" alt="stock image" />
                         <div *ngIf="stock.image" class="form-text text-danger clearfix">
                             <span class="pull-left">{{stock.imageContentType}}, {{byteSize(stock.image)}}</span>
-                            <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')" class="btn btn-secondary btn-xs pull-right">
+                            <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')"
+                                class="btn btn-secondary btn-xs pull-right">
                                 <fa-icon [icon]="'times'"></fa-icon>
                             </button>
                         </div>
-                        <input type="file" id="file_image" (change)="setFileData($event, stock, 'image', true)" accept="image/*" jhiTranslate="entity.action.addimage"/>
+                        <input type="file" id="file_image" (change)="setFileData($event, stock, 'image', true)" accept="image/*"
+                            jhiTranslate="entity.action.addimage" />
                     </div>
-                    <input type="hidden" class="form-control" name="image" id="field_image"
-                           [(ngModel)]="stock.image" />
+                    <input type="hidden" class="form-control" name="image" id="field_image" [(ngModel)]="stock.image" />
                     <input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
-                           [(ngModel)]="stock.imageContentType" />
+                        [(ngModel)]="stock.imageContentType" />
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.expiryDate" for="field_expiryDate">Expiry Date</label>
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.expiryDate" for="field_expiryDate">Expiry
+                        Date</label>
                     <div class="d-flex">
-                        <input id="field_expiryDate" type="date" min="{{currentDate}}" class="form-control" name="expiryDate" [(ngModel)]="expiryDate"
-                        />
+                        <input id="field_expiryDate" type="date" min="{{currentDate}}" class="form-control" name="expiryDate"
+                            [(ngModel)]="expiryDate" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.quantityInit" for="field_quantityInit">Quantity Init</label>
-                    <input type="number" class="form-control" name="quantityInit" id="field_quantityInit"
-                           [(ngModel)]="stock.quantityInit" />
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.quantityInit" for="field_quantityInit">Quantity
+                        Init</label>
+                    <input type="number" class="form-control" name="quantityInit" id="field_quantityInit" [(ngModel)]="stock.quantityInit" />
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.bio" for="field_bio">Bio</label>
-                    <input type="checkbox" class="form-control" name="bio" id="field_bio"
-                           [(ngModel)]="stock.bio" />
+                    <input type="checkbox" class="form-control" name="bio" id="field_bio" [(ngModel)]="stock.bio" />
                 </div>
-                <!--<div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.quantityRemaining" for="field_quantityRemaining">Quantity Remaining</label>
-                    <input type="number" class="form-control" name="quantityRemaining" id="field_quantityRemaining"
-                        [(ngModel)]="stock.quantityRemaining" />
-                </div>-->
+
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.priceUnit" for="field_priceUnit">Price Unit</label>
-                    <input type="number" class="form-control" name="priceUnit" id="field_priceUnit"
-                        [(ngModel)]="stock.priceUnit" />
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.priceUnit" for="field_priceUnit">Price
+                        Unit</label>
+                    <input type="number" class="form-control" name="priceUnit" id="field_priceUnit" [(ngModel)]="stock.priceUnit" />
                 </div>
-                <!--<div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.onSaleDate" for="field_onSaleDate">On Sale Date</label>
-                    <div class="d-flex">
-                        <input id="field_onSaleDate" type="datetime-local" class="form-control" name="onSaleDate" [(ngModel)]="onSaleDate"
-                        />
-                    </div>
-                </div>-->
-                <!--<div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.available" for="field_available">Available</label>
-                    <input type="checkbox" class="form-control" name="available" id="field_available"
-                        [(ngModel)]="stock.available" />
-                </div>-->
+
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.holding" for="field_holding">Holding</label>
-                    <select class="form-control" id="field_holding" name="holding" [(ngModel)]="stock.holding" >
+                    <select class="form-control" id="field_holding" name="holding" [(ngModel)]="stock.holding">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="holdingOption.id === stock.holding?.id ? stock.holding : holdingOption" *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">{{holdingOption.name}}</option>
+                        <option [ngValue]="holdingOption.id === stock.holding?.id ? stock.holding : holdingOption"
+                            *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">{{holdingOption.name}}</option>
                     </select>
                 </div>
-                <!--<div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.seller" for="field_seller">Seller</label>
-                    <select class="form-control" id="field_seller" name="seller" [(ngModel)]="stock.seller" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="userOption.id === stock.seller?.id ? stock.seller : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
-                    </select>
-                </div>-->
+
             </div>
             <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
                     <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                 </button>
                 <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
@@ -107,4 +238,6 @@
             </div>
         </form>
     </div>
+-->
+
 </div>

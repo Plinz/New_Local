@@ -21,15 +21,13 @@ import { IUser, UserService } from '../core';
 export class StockManagementUpdateComponent implements OnInit {
     stock: IStock;
     isSaving: boolean;
-
     producttypes: IProductType[];
-
     holdings: IHolding[];
-
     users: IUser[];
     // onSaleDate: string;
     expiryDate: string;
     currentDate: string;
+    btnValiderTypeproduit: boolean;
 
     constructor(
         private dataUtils: JhiDataUtils,
@@ -44,6 +42,7 @@ export class StockManagementUpdateComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
+        this.btnValiderTypeproduit = false;
         this.activatedRoute.data.subscribe(({ stock }) => {
             this.stock = stock;
             // this.onSaleDate = this.stock.onSaleDate != null ? this.stock.onSaleDate.format(DATE_TIME_FORMAT) : null;
@@ -135,5 +134,9 @@ export class StockManagementUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
+    }
+
+    clicBtnValiderTypeproduit() {
+        this.btnValiderTypeproduit = true;
     }
 }
