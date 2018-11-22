@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Optional;
 
 /**
@@ -171,6 +172,19 @@ public class StockResource {
         Page<Stock> page = stockService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/stocks");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+     /**
+     * SEARCH Random Product Bio
+     *
+     */
+    @GetMapping("/stocks/bio")
+    @Timed
+    public String getProductBio() {
+        log.debug("REST request to search a product Bio");
+        List <Stock>  stockBio= stockService.getProductBio();
+        return "Test"+stockBio.get((new Random()).nextInt(stockBio.size())).toString();
+        
     }
 
 }

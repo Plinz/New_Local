@@ -93,4 +93,14 @@ public class StockService {
     public Page<Stock> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Stocks for query {}", query);
         return stockSearchRepository.search(queryStringQuery(query), pageable);    }
+
+             /**
+     * Search for the stock bio
+     *
+     */
+    @Transactional(readOnly = true)
+    public List<Stock> getProductBio() {
+        log.debug("Request to search for Product Bio {}");
+        return stockRepository.getProductBio();
+    }
 }

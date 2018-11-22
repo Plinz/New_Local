@@ -16,4 +16,7 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
     @Query("select stock from Stock stock where stock.seller.login = ?#{principal.username}")
     List<Stock> findBySellerIsCurrentUser();
 
+    @Query("select stock from Stock stock where stock.bio = true")
+    List<Stock> getProductBio();
+
 }
