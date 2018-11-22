@@ -95,4 +95,14 @@ public class HoldingService {
             .stream(holdingSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
+
+        /**
+     * Get one holding by id.
+     *
+     * @return the entity
+     */
+    @Transactional(readOnly = true)
+    public List<Holding> getHoldingsCurrentUser() {
+        return holdingRepository.findByOwnerIsCurrentUser();
+    }
 }

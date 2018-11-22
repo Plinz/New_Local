@@ -54,6 +54,12 @@ export class StockManagementUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+        this.holdingService.getCurrentUser().subscribe(
+            (res: HttpResponse<IHolding[]>) => {
+                this.holdings = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
         /*this.holdingService.query().subscribe(
             (res: HttpResponse<IHolding[]>) => {
                 this.holdings = res.body;
