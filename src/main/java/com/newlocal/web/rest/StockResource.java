@@ -180,12 +180,14 @@ public class StockResource {
      */
     @GetMapping("/stocks/bio")
     @Timed
+
     public ResponseEntity<Stock> getProductBio() {
         log.debug("REST request to search a product Bio");
         List<Stock> stockBio= stockService.getProductBio();
         Stock stock=stockBio.get((new Random()).nextInt(stockBio.size()));
         return ResponseEntity.ok().body(stock);
     }
+
 
 
     /**
