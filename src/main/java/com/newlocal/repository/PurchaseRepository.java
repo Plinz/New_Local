@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Spring Data  repository for the Purchase entity.
@@ -15,5 +16,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long>, JpaSp
 
     @Query("select purchase from Purchase purchase where purchase.client.login = ?#{principal.username}")
     List<Purchase> findByClientIsCurrentUser();
+
+
 
 }

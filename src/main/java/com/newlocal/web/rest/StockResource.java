@@ -200,4 +200,17 @@ public class StockResource {
     }
 
 
+
+    /**
+     * SEARCH 
+     *
+     */
+    @GetMapping("/stocks/bestPurchase")
+    @Timed
+    public String getBestPurchase() {
+        log.debug("REST request to search the best purchase");
+        return "Test"+stockService.getBestPurchase().toString();
+        
+    }
+
 }

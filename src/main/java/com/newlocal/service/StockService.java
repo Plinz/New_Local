@@ -123,4 +123,16 @@ public class StockService {
         return ListOrder;
     }
 
+         /**
+     * Search the best purchase
+     *
+     */
+     
+    @Transactional(readOnly = true)
+    public List<Stock> getBestPurchase() {
+        log.debug("Request to search the best purchase {}");
+        return stockRepository.getBestPurchase();
+   
+    }
+
 }

@@ -24,6 +24,9 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
     @Query("select stock from Stock stock")
     List<Stock> findAllStocks(Sort sort);
     
-    
+    @Query(value="select * from stock where quantity_init-quantity_remaining = (SELECT MAX(quantity_init-quantity_remaining) FROM stock )",nativeQuery = true)
+    List<Stock> getBestPurchase();
 
+    
 }
+
