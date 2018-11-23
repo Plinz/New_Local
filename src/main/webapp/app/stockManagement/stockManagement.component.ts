@@ -13,6 +13,8 @@ import { StockService } from '../entities/stock/stock.service';
 import { CategoryService } from '../entities/category/category.service';
 import { ICategory } from '../shared/model/category.model';
 
+import { PopupModalService } from './popup/popup-modal.service';
+
 @Component({
     selector: 'jhi-stock',
     templateUrl: './stockManagement.component.html'
@@ -38,9 +40,11 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     optionCategory: number;
     categories: ICategory[];
     bAllcheckbox: boolean;
+    cptElementcheckbox: number;
     list: any[];
 
     constructor(
+        private popupModalService: PopupModalService,
         private stockService: StockService,
         private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
@@ -54,6 +58,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         this.stocks = null;
         this.count = 1;
         this.optionCategory = -1;
+        this.cptElementcheckbox = 0;
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
@@ -185,6 +190,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         this.queryCount = this.totalItems;
         this.stocks = data;
+        this.checkboxcopie(false);
     }
 
     private onError(errorMessage: string) {
@@ -256,7 +262,9 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     checkboxcopie(bval: boolean) {
         const a: any[] = [];
         for (const j of this.stocks) {
-            a.push({ id: j.id, bol: bval });
+            if (!j.available) {
+                a.push({ id: j.id, bol: bval });
+            }
         }
         this.list = a;
     }
@@ -267,6 +275,11 @@ export class StockManagementComponent implements OnInit, OnDestroy {
             i++;
         }
         if (i !== this.list.length) {
+            if (this.list[i].bol === false) {
+                this.cptElementcheckbox++;
+            } else {
+                this.cptElementcheckbox--;
+            }
             this.list[i].bol = !this.list[i].bol;
         }
     }
@@ -281,9 +294,11 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         if (this.bAllcheckbox) {
             this.bAllcheckbox = false;
             this.checkboxallcheck(false);
+            this.cptElementcheckbox = 0;
         } else {
             this.bAllcheckbox = true;
             this.checkboxallcheck(true);
+            this.cptElementcheckbox = this.list.length;
         }
     }
 
@@ -294,11 +309,23 @@ export class StockManagementComponent implements OnInit, OnDestroy {
             if (j.bol === true) {
                 this.stocks.splice(i, 1);
                 i--;
+                this.stockService.delete(j.id).subscribe(response => {
+                    this.eventManager.broadcast({
+                        name: 'stockListModification',
+                        content: 'Deleted an stock'
+                    });
+                });
             } else {
                 updatedArray.push(j);
             }
             i++;
         }
         this.list = updatedArray;
+    }
+
+    // Test
+    clickk() {
+        const tmp = this.popupModalService.open();
+        tmp.result.then(() => this.checkboxsuppr(), () => '');
     }
 }

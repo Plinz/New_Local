@@ -12,6 +12,7 @@ import {
     stockManagementRoute,
     stockManagementPopupRoute
 } from './';
+import { PopupComponent } from './popup/popup.component';
 
 const ENTITY_STATES = [...stockManagementRoute, ...stockManagementPopupRoute];
 
@@ -22,13 +23,15 @@ const ENTITY_STATES = [...stockManagementRoute, ...stockManagementPopupRoute];
         StockManagementDetailComponent,
         StockManagementUpdateComponent,
         StockManagementDeleteDialogComponent,
-        StockManagementDeletePopupComponent
+        StockManagementDeletePopupComponent,
+        PopupComponent
     ],
     entryComponents: [
         StockManagementComponent,
         StockManagementUpdateComponent,
         StockManagementDeleteDialogComponent,
-        StockManagementDeletePopupComponent
+        StockManagementDeletePopupComponent,
+        PopupComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

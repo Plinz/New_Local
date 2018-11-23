@@ -104,7 +104,7 @@
                                     <td class="pt-3-half">
                                         <div class="container">
                                             <div class="row">
-                                                <div class="col-md-1">
+                                                <div *ngIf="count!=3 && count!=1" class="col-md-1">
                                                     <input type="checkbox" [checked]="bAllcheckbox" (click)="checkboxcheck(stock.id)" />
                                                 </div>
                                                 <div class="col-md-4">
@@ -135,7 +135,7 @@
                                                 <fa-icon [icon]="'pencil-alt'"></fa-icon>
                                                 <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                                             </button>
-                                            <button *ngIf="count!=3" ype="submit" [routerLink]="['/', { outlets: { popup: 'stockManagement/'+ stock.id + '/delete'} }]"
+                                            <button *ngIf="count!=3 && count!=1" ype="submit" [routerLink]="['/', { outlets: { popup: 'stockManagement/'+ stock.id + '/delete'} }]"
                                                 replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
                                                 <fa-icon [icon]="'times'"></fa-icon>
                                                 <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
@@ -146,20 +146,16 @@
                             </tbody>
                         </table>
 
-                        <div class="container-fluid" *ngIf="stocks.length>0">
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <div *ngIf="count!=3" class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="defaultChecked2"
-                                            (click)="checkboxonClickMe()">
-                                        <label class="custom-control-label" for="defaultChecked2">Tout séléctionner</label>
-                                        <button class="btn btn-danger btn-sm" (click)="nextPage()">
-                                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                                        </button>
-                                        <a [routerLink]="['/', { outlets: { popup: 'stockManagement/alldelete'} }]">hhhahah</a>
-                                    </div>
-                                </div>
+                        <div class="container-fluid  text-left" *ngIf="list.length > 0">
+
+                            <div *ngIf="count!=3 && count!=1" class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="defaultChecked2" (click)="checkboxonClickMe()">
+                                <label class="custom-control-label" for="defaultChecked2">Tout séléctionner</label>
+                                <button *ngIf="cptElementcheckbox > 0" class="btn btn-danger btn-sm" (click)="clickk()">
+                                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                                </button>
                             </div>
+
                         </div>
                     </div>
                 </div>
