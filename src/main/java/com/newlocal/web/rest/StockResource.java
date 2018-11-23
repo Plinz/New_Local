@@ -180,12 +180,15 @@ public class StockResource {
      */
     @GetMapping("/stocks/bio")
     @Timed
-    public String getProductBio() {
+    public ResponseEntity<Stock>  getProductBio() {
         log.debug("REST request to search a product Bio");
         List <Stock>  stockBio= stockService.getProductBio();
-        return "Test"+stockBio.get((new Random()).nextInt(stockBio.size())).toString();
-        
+        Stock stock=stockBio.get((new Random()).nextInt(stockBio.size()));
+              return ResponseEntity.ok().body(result);
     }
+
+     
+  
 
     /**
      * SEARCH last New Stock
