@@ -47,7 +47,7 @@
     <div id="main">
             div class="card-group" >
             <div  class="card" style="width: 18rem;" *ngFor="let stock of stocks ;trackBy: trackId" >
-                *ngIf="stock.productType.category.id==selectedCategory || !selectedCategory"
+                <!--*ngIf="stock.productType.category.id==selectedCategory || !selectedCategory"-->
                 <a class="image fit"*ngIf="stock.image" (click)="openFile(stock.imageContentType, stock.image)"></a>
                 <img class="card-img-top" [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" alt="Card image cap"/>
                 <span *ngIf="stock.image">{{stock.imageContentType}}, {{byteSize(stock.image)}}</span>

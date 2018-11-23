@@ -180,37 +180,39 @@ public class StockResource {
      */
     @GetMapping("/stocks/bio")
     @Timed
-    public String getProductBio() {
+    public ResponseEntity<Stock> getProductBio() {
         log.debug("REST request to search a product Bio");
-        List <Stock>  stockBio= stockService.getProductBio();
-        return "Test"+stockBio.get((new Random()).nextInt(stockBio.size())).toString();
-        
+        List<Stock> stockBio= stockService.getProductBio();
+        Stock stock=stockBio.get((new Random()).nextInt(stockBio.size()));
+        return ResponseEntity.ok().body(stock);
     }
+
 
     /**
      * SEARCH last New Stock
      *
      */
+     /*
     @GetMapping("/stocks/new_stock")
     @Timed
-    public String getNewStock() {
+    public ResponseEntity<Stock> getNewStock() {
         log.debug("REST request to search a new stock");
-        return "Test"+stockService.getNewStock().get(0).toString();
-        
+        Stock stock=stockService.getNewStock().get(0);
+        return ResponseEntity.ok().body(stock);
     }
-
-
 
     /**
      * SEARCH 
      *
      */
+     /*
     @GetMapping("/stocks/bestPurchase")
     @Timed
-    public String getBestPurchase() {
+    public ResponseEntity<Stock>  getBestPurchase() {
         log.debug("REST request to search the best purchase");
-        return "Test"+stockService.getBestPurchase().toString();
+        Stock stock=stockService.getBestPurchase().get(0);
+        return ResponseEntity.ok().body(stock);
         
-    }
+    }*/
 
 }
