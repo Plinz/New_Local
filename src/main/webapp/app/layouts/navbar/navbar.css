@@ -90,13 +90,13 @@ Logo styles
 
 .logo-img {
     height: 100%;
-    background: url('../../../content/images/logo.svg') no-repeat left;
+    background: url('../../../content/images/logo.png') no-repeat left;
     background-size: contain;
     width: 100%;
 }
 
 .logo .logo-img {
-    height: 50px;
+    height: 45px;
     display: inline-block;
     width: 80px;
 }

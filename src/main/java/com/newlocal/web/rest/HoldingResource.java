@@ -131,7 +131,7 @@ public class HoldingResource {
      *
      * @return the ResponseEntity with status 200 (OK) and with body the holdings, or with status 404 (Not Found)
      */
-    @GetMapping("/holding/currentUser")
+    @GetMapping("/holdings/currentUser")
     @Timed
     public ResponseEntity<List<Holding>> getHoldingsByCurrentUser(){
         log.debug("REST request to get Holdings of the current user : {}");
