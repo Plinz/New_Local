@@ -20,4 +20,6 @@
     <include file="config/liquibase/changelog/20181107090806_added_entity_constraints_Stock.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181108152600_added_entity_constraints_Holding.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <include file="execution_script_SQL.xml" relativeToChangelogFile="true"/>
+    <!-- Execution du script pour peupler artificiellement la BDD -->
 </databaseChangeLog>
