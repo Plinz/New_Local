@@ -47,4 +47,9 @@ node {
             sh "./mvnw sonar:sonar"
         }
     }
+
+    stage('deploy') {
+        sh "./mvnw package -Pprod jib:dockerBuild"
+        sh "docker-compose -f src/main/docker/app.yml up"
+    }
 }
