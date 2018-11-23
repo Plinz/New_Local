@@ -10,6 +10,8 @@ import { Principal } from 'app/core';
 import { ITEMS_PER_PAGE } from 'app/shared';
 import { StockService } from '../entities/stock/stock.service';
 
+import { ICategory } from 'app/shared/model/category.model';
+import { CategoryService } from 'app/entities/category';
 @Component({
     selector: 'jhi-stock',
     templateUrl: './mainSearch.component.html'
@@ -31,6 +33,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
 
+    categories: ICategory[];
+
     constructor(
         private stockService: StockService,
         private parseLinks: JhiParseLinks,
@@ -39,7 +43,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private dataUtils: JhiDataUtils,
         private router: Router,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private categoryService: CategoryService
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
@@ -135,6 +140,12 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             this.currentAccount = account;
         });
         this.registerChangeInStocks();
+        this.categoryService.query().subscribe(
+            (res: HttpResponse<ICategory[]>) => {
+                this.categories = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     ngOnDestroy() {

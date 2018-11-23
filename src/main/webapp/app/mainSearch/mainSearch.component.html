@@ -1,5 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="../../content/css/main.css" />
+		<!--<link rel="stylesheet" href="../../content/css/main.css" />-->
 <div>
     <h2 id="page-heading">
         <span jhiTranslate="newLocalApp.stock.home.title">Stocks</span>
@@ -11,7 +11,24 @@
         </button>
     </h2>
     <jhi-alert></jhi-alert>
+        <!--<mat-select>
+                <mat-option *ngFor="let categoryOption of categories; trackBy: trackCategoryById" [value]="categoryOption.id">{{categoryOption.name}}</mat-option>
+        </mat-select>-->
+        <!--<div><h4>catégorie</h4>
+            <mat-form-field>
+              <mat-select class="custom-select-sm form-control form-control-sm" placeholder="category">
+                <mat-option *ngFor="let categoryOption of categories" [value]="categoryOption.id">
+                  {{categoryOption.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field></div>-->
     <div class="row">
+            <!--<a><label for="catégorie">catégorie</label>
+                <select matNativeControl placeholder="categoryOption" *ngIf="categories" [(ngModel)]="selectedCategory" name="catégorie">
+                    <option value="1" (click)="option(-1)">Tout</option>
+                    <option *ngFor="let categoryOption of categories; trackBy: trackCategoryById ;" [value]="categoryOption.id">{{categoryOption.name}}</option>
+              </select></a>
+              <br>-->
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
                 <div class="input-group w-100 mt-3">
@@ -28,13 +45,32 @@
     </div>
     <br/>
     <div id="main">
-            <!--<a><label for="catégorie">catégorie</label>
-                <select id="catégorie" name="catégorie">
-                <option *ngFor="let c of Categories" value="c.idCat">{{c.nomCat}} </option>
-              </select></a>
-              <br>-->
+            div class="card-group" >
+            <div  class="card" style="width: 18rem;" *ngFor="let stock of stocks ;trackBy: trackId" >
+                *ngIf="stock.productType.category.id==selectedCategory || !selectedCategory"
+                <a class="image fit"*ngIf="stock.image" (click)="openFile(stock.imageContentType, stock.image)"></a>
+                <img class="card-img-top" [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" alt="Card image cap"/>
+                <span *ngIf="stock.image">{{stock.imageContentType}}, {{byteSize(stock.image)}}</span>
+                    <div class="card-body">
+                      <h5 class="card-title">{{stock.name}}</h5>
+                      <p class="card-text">Prix: {{stock.priceUnit}} €/kg</p>
+                      <a>
+                          <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                            [routerLink]="['/stock', stock.id, 'view' ]"
+                            class="btn btn-info btn-sm">
+                        <fa-icon [icon]="'eye'"></fa-icon>
+                        <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                    </button>
+                        <a href="#" class="btn btn-primary">Acheter</a>
+                            </div>
+                    </div>
+            </a>
+        
+    </div>
+          </div>
         <!-- Boxes -->
-            <div class="thumbnails" >
+            <!--<div class="thumbnails" >
 
                 <div class="box" *ngFor="let stock of stocks ;trackBy: trackId">
                     <a class="image fit"*ngIf="stock.image" (click)="openFile(stock.imageContentType, stock.image)">
@@ -63,7 +99,7 @@
             </div>
 
         
-    </div>
+    </div>-->
     <!--<div class="table-responsive" *ngIf="stocks">
         <table class="table table-striped">
             <thead>

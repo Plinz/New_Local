@@ -28,7 +28,7 @@
                                     <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productType">
                                         <option [ngValue]="null"></option>
                                         <option [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption"
-                                            *ngFor="let productTypeOption of producttypes; trackBy: trackProductTypeById">{{productTypeOption.name}}</option>
+                                            *ngFor="let productTypeOption of productTypes; trackBy: trackProductTypeById">{{productTypeOption.name}}</option>
                                     </select>
                                 </div>
 
