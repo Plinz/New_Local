@@ -17,6 +17,8 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     eventSubscriber: Subscription;
     currentSearch: string;
     total: number;
+    btimeout: boolean;
+    fintimeout: boolean;
 
     constructor(
         private purchaseService: PurchaseService,
@@ -26,6 +28,8 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     ) {
         this.total = 0;
         this.purchases = [];
+        this.btimeout = false;
+        this.fintimeout = true;
     }
 
     loadAll() {
@@ -45,6 +49,23 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         });
         this.registerChangeInPurchases();
         this.calculTotal();
+        this.timeout();
+    }
+
+    timeout() {
+        setTimeout(() => {
+            if (this.fintimeout) {
+                for (const k of this.purchases) {
+                    this.confirmDelete(k.id);
+                }
+                this.btimeout = true;
+                this.purchases = [];
+            }
+        }, 10000);
+    }
+
+    endTimeout() {
+        this.fintimeout = false;
     }
 
     calculTotal() {
@@ -67,5 +88,14 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
+    }
+
+    confirmDelete(id: number) {
+        this.purchaseService.delete(id).subscribe(response => {
+            this.eventManager.broadcast({
+                name: 'purchaseListModification',
+                content: 'Deleted an purchase'
+            });
+        });
     }
 }
