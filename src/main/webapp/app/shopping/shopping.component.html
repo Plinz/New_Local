@@ -1,0 +1,99 @@
+<div class="container">
+    <div class="mt-3 mb-4">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <span>Retrait une heure après dans une boutique</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-warning mt-3">
+                    <span class="d-none d-md-inline">Continuer shopping</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="purchases">
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Articles du panier</h4>
+                    <table class="mt-3 table table-hover table-condensed text-left">
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th>Prix</th>
+                                <th>Quantité</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let purchase of purchases ;trackBy: trackId">
+                                <td data-th="Product">
+                                    <div class="row">
+                                        <div class="col-sm-2 hidden-xs">
+                                            <a *ngIf="purchase.stock?.image">
+                                                <img [src]="'data:' + purchase.stock?.imageContentType + ';base64,' + purchase.stock?.image" style="max-height:50px" alt="stock image" />
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <h4 class="nomargin">{{ purchase.stock?.name }}</h4>
+                                            <p>{{purchase.stock?.description }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td data-th="Price">{{purchase.stock?.priceUnit * purchase.quantity}}$</td>
+                                <td data-th="Quantity">
+                                    <input type="number" class="form-control text-center" min="1" value="{{purchase.quantity}}">
+                                </td>
+                                <td class="actions" data-th="">
+                                    <button type="submit" [routerLink]="['/', { outlets: { popup: 'shopping/'+ purchase.id + '/delete'} }]" replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
+                                        <fa-icon [icon]="'times'"></fa-icon>
+                                        <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                                    </button>
+                                    <div>
+                                        <small class="text-muted">Numéro de réference:{{ purchase.stock?.id }}</small>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Récapitulatif</h4>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h6 class="my-0">Panier</h6>
+                            <small class="text-muted">Nombre d'élement</small>
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="badge badge-secondary badge-pill">{{ purchases.length }}</span>
+                        </div>
+                        <div class="col-md-12 mt-3"></div>
+                        <div class="col-sm-8">
+                            <span>TOTAL</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <strong>{{ total }}$</strong>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-success">
+                            <span class="d-none d-md-inline">Valider</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

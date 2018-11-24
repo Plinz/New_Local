@@ -135,7 +135,7 @@
                                                 <fa-icon [icon]="'pencil-alt'"></fa-icon>
                                                 <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                                             </button>
-                                            <button *ngIf="count!=3 && count!=1" ype="submit" [routerLink]="['/', { outlets: { popup: 'stockManagement/'+ stock.id + '/delete'} }]"
+                                            <button *ngIf="count!=3 && count!=1" type="submit" [routerLink]="['/', { outlets: { popup: 'stockManagement/'+ stock.id + '/delete'} }]"
                                                 replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
                                                 <fa-icon [icon]="'times'"></fa-icon>
                                                 <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
