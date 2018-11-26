@@ -16,7 +16,10 @@ import { LoginModalService, Principal, Account } from 'app/core';
 export class HomeComponent implements OnInit {
     account: Account;
     modalRef: NgbModalRef;
-    stock: IStock;
+    stockBio: IStock;
+    stockNewProduit: IStock;
+    stockBestPurchase: IStock;
+    stockGrade: IStock;
 
     constructor(
         private principal: Principal,
@@ -33,7 +36,25 @@ export class HomeComponent implements OnInit {
         this.registerAuthenticationSuccess();
         this.stockService.findProduitBio().subscribe(
             (res: HttpResponse<IStock>) => {
-                this.stock = res.body;
+                this.stockBio = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.stockService.findNewProduit().subscribe(
+            (res: HttpResponse<IStock>) => {
+                this.stockNewProduit = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.stockService.findBestPurchase().subscribe(
+            (res: HttpResponse<IStock>) => {
+                this.stockBestPurchase = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.stockService.findGrade().subscribe(
+            (res: HttpResponse<IStock>) => {
+                this.stockGrade = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
