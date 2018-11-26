@@ -32,12 +32,12 @@ export class HomeComponent implements OnInit {
         });
         this.registerAuthenticationSuccess();
 
-        this.stockService.findProduitBio().subscribe(
+        /* this.stockService.findProduitBio().subscribe(
             (res: HttpResponse<IStock>) => {
                 this.stock = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        );*/
     }
 
     registerAuthenticationSuccess() {
@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit {
     login() {
         this.modalRef = this.loginModalService.open();
     }
-    onError(errorMessage: string) {
+    /* onError(errorMessage: string) {
         // this.jhiAlertService.error(errorMessage, null, null);
-    }
+    }*/
 }

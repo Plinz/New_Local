@@ -79,7 +79,7 @@ export class StockService {
         return res;
     }
 
-    findProduitBio(): Observable<EntityResponseType> {
+    /*findProduitBio(): Observable<EntityResponseType> {
         return this.http.get<IStock>(`${this.resourceUrl}/bio`, { observe: 'response' });
-    }
+    }*/
 }
