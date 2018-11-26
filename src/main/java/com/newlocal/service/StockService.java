@@ -135,4 +135,15 @@ public class StockService {
    
     }
 
+        /**
+     * Search the best grade
+     *
+     */
+     
+    @Transactional(readOnly = true)
+    public List<Stock> getBestGrade() {
+        log.debug("Request to search the best grade {}");
+        return stockRepository.getBestGrade();
+   
+    }
 }

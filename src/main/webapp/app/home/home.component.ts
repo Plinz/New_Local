@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { JhiEventManager } from 'ng-jhipster';
+import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
+import { IStock } from '../shared/model/stock.model';
+import { StockService } from 'app/entities/stock';
 
 import { LoginModalService, Principal, Account } from 'app/core';
 
@@ -12,14 +16,27 @@ import { LoginModalService, Principal, Account } from 'app/core';
 export class HomeComponent implements OnInit {
     account: Account;
     modalRef: NgbModalRef;
+    stock: IStock;
 
-    constructor(private principal: Principal, private loginModalService: LoginModalService, private eventManager: JhiEventManager) {}
+    constructor(
+        private principal: Principal,
+        private loginModalService: LoginModalService,
+        private eventManager: JhiEventManager,
+        private stockService: StockService,
+        private jhiAlertService: JhiAlertService
+    ) {}
 
     ngOnInit() {
         this.principal.identity().then(account => {
             this.account = account;
         });
         this.registerAuthenticationSuccess();
+        this.stockService.findProduitBio().subscribe(
+            (res: HttpResponse<IStock>) => {
+                this.stock = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     registerAuthenticationSuccess() {
@@ -29,7 +46,9 @@ export class HomeComponent implements OnInit {
             });
         });
     }
-
+    private onError(errorMessage: string) {
+        this.jhiAlertService.error(errorMessage, null, null);
+    }
     isAuthenticated() {
         return this.principal.isAuthenticated();
     }
