@@ -34,55 +34,58 @@
                     <div class="row wow fadeIn">
                         <!--Grid colum-->
                         <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
-                        <div class="card"><h4 class="a-color-base headline truncate-1line">Produit Bio</h4>
+                            
+                        <div class="card">
                         <div class="view overlay">
                             <img class="card-img-top" src="../../content/images/m1.png" alt="">
                         </div>
                         <div class="card-body text-center"></div>
+                        
+
                         <h4 class="font-weight-bold blue-text">
-                                <strong>test nom produit</strong></h4>
-                                 test prix produit
-                                <a class="a-link-normal see-more truncate-1line" href="">Voir plus sur le produit</a>
+                                <strong>{{stockBio.name}}</strong></h4>
+                                <h6>{{stockBio.priceUnit}} €/Kg     <span class="badge badge-success">Produit Bio</span></h6>
+                                <a class="a-link-normal see-more truncate-1line" href="">description</a>
                         </div>
                         </div>
             
                         <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
-                        <div class="card"><h4 class="a-color-base headline truncate-1line">Nouveau Produit</h4>
+                        <div class="card">
                             <div class="view overlay">
                                 <img class="card-img-top" src="../../content/images/m2.png" alt="">
              
                             </div>
                             <div class="card-body text-center"></div>
                             <h4 class="font-weight-bold blue-text">
-                                    <strong>test nom produit</strong></h4>
-                                     <h6>test prix produit <span class="badge badge-pill badge-danger">New</span></h6>
-                                    <a class="a-link-normal see-more truncate-1line" href="">Voir plus sur le produit</a>
+                                    <strong>{{stockNewProduit.name}}</strong></h4>
+                                     <h6>{{stockNewProduit.priceUnit}} €/Kg    <span class="badge badge-pill badge-danger">Nouveau Produit</span></h6>
+                                    <a class="a-link-normal see-more truncate-1line" href="">description</a>
                             </div>
                             </div>
 
                         <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
-                        <div class="card"><h4 class="a-color-base headline truncate-1line">Meuilleur Vente</h4>
+                        <div class="card">
                                 <div class="view overlay">
                                     <img class="card-img-top" src="../../content/images/m3.png" alt="">
                                 </div>
                                 <div class="card-body text-center"></div>
                                 <h4 class="font-weight-bold blue-text">
-                                        <strong>test nom produit</strong></h4>
-                                         test prix produit
-                                        <a class="a-link-normal see-more truncate-1line" href="">Voir plus sur le produit</a>
+                                        <strong>{{stockBestPurchase.name}}</strong></h4>
+                                        <h6>{{stockBestPurchase.priceUnit}} €/Kg     <span class="badge badge-info">Meilleur Vente</span></h6>
+                                        <a class="a-link-normal see-more truncate-1line" href="">description</a>
                                 </div>
                                 </div>
 
                         <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
-                        <div class="card"><h4 class="a-color-base headline truncate-1line">Meuilleur Anotation</h4>
+                        <div class="card">
                                     <div class="view overlay">
                                         <img class="card-img-top" src="../../content/images/m4.png" alt="">
                                     </div>
                                     <div class="card-body text-center"></div>
                                     <h4 class="font-weight-bold blue-text">
-                                            <strong>test nom produit</strong></h4>
-                                             test prix produit
-                                            <a class="a-link-normal see-more truncate-1line" href="">Voir plus sur le produit</a>
+                                            <strong>{{stockGrade.name}}</strong></h4>
+                                            <h6>{{stockGrade.priceUnit}} €/Kg     <span class="badge badge-primary">Mieux noté</span></h6>
+                                            <a class="a-link-normal see-more truncate-1line" href="">description</a>
                                     </div>
                                     </div>
                     </div>
@@ -140,4 +143,3 @@
             </div>
          </main>
      </body>
-

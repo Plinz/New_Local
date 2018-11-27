@@ -27,7 +27,12 @@ export class HomeComponent implements OnInit {
         private eventManager: JhiEventManager,
         private stockService: StockService,
         private jhiAlertService: JhiAlertService
-    ) {}
+    ) {
+        this.stockBio = { name: 'coucou' };
+        this.stockNewProduit = { name: 'coucou' };
+        this.stockBestPurchase = { name: 'coucou' };
+        this.stockGrade = { name: 'coucou' };
+    }
 
     ngOnInit() {
         this.principal.identity().then(account => {

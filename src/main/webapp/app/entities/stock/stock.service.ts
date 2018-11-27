@@ -84,14 +84,14 @@ export class StockService {
     }
 
     findNewProduit(): Observable<EntityResponseType> {
-        return this.http.get<IStock>(`${this.resourceUrl}/new_stock"`, { observe: 'response' });
+        return this.http.get<IStock>(`${this.resourceUrl}/newStock`, { observe: 'response' });
     }
 
     findBestPurchase(): Observable<EntityResponseType> {
-        return this.http.get<IStock>(`${this.resourceUrl}/bestPurchase"`, { observe: 'response' });
+        return this.http.get<IStock>(`${this.resourceUrl}/bestPurchase`, { observe: 'response' });
     }
 
     findGrade(): Observable<EntityResponseType> {
-        return this.http.get<IStock>(`${this.resourceUrl}/grade"`, { observe: 'response' });
+        return this.http.get<IStock>(`${this.resourceUrl}/grade`, { observe: 'response' });
     }
 }

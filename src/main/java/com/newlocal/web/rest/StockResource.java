@@ -191,7 +191,7 @@ public class StockResource {
      * SEARCH last New Stock
      *
      */
-    @GetMapping("/stocks/new_stock")
+    @GetMapping("/stocks/newStock")
     @Timed
     public ResponseEntity<Stock>  getNewStock() {
         log.debug("REST request to search a new stock");
