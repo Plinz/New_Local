@@ -19,6 +19,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     total: number;
     btimeout: boolean;
     fintimeout: boolean;
+    isOkpanier: boolean;
 
     constructor(
         private purchaseService: PurchaseService,
@@ -26,6 +27,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         private eventManager: JhiEventManager,
         private principal: Principal
     ) {
+        this.isOkpanier = true;
         this.total = 0;
         this.purchases = [];
         this.btimeout = false;
@@ -49,7 +51,6 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         });
         this.registerChangeInPurchases();
         this.calculTotal();
-        this.timeout();
     }
 
     timeout() {
@@ -64,8 +65,24 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         }, 10000);
     }
 
+    startTimeout() {
+        this.fintimeout = true;
+        this.timeout();
+        this.isOkpanier = false;
+    }
+
     endTimeout() {
         this.fintimeout = false;
+        // suppr
+        for (const k of this.purchases) {
+            this.confirmDelete(k.id);
+        }
+        this.purchases = [];
+    }
+
+    abandonner() {
+        this.fintimeout = false;
+        this.isOkpanier = true;
     }
 
     calculTotal() {
