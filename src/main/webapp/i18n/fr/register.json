@@ -11,6 +11,20 @@
                     "minlength": "Votre nom d'utilisateur doit contenir plus d'un caractère.",
                     "maxlength": "Votre nom d'utilisateur ne peut pas contenir plus de 50 caractères.",
                     "pattern": "Votre nom d'utilisateur ne peut contenir que des lettres minuscules ou des nombres."
+                },
+                "holdingName": {
+                    "required": "Votre nom d'exploitation est obligatoire.",
+                    "minlength": "Votre nom d'exploitation doit contenir plus d'un caractère.",
+                    "maxlength": "Votre nom d'exploitation ne peut pas contenir plus de 50 caractères.",
+                    "pattern": "Votre nom d'exploitation ne peut contenir que des lettres minuscules ou des nombres."
+                },
+                "siret": {
+                    "required": "Votre numéro SIRET est obligatoire.",
+                    "length": "Votre numéro SIRET doit contenir 14 chiffres.",
+                    "pattern": "Votre numéro SIRET ne peut contenir que des chiffres."
+                },
+                "holdingDescription": {
+                    "maxlength": "La description de votre exploitation ne peut pas contenir plus de 50 caractères."
                 }
             },
             "success": "<strong>Compte enregistré !</strong> Merci de vérifier votre email de confirmation.",
@@ -19,6 +33,7 @@
                 "userexists": "<strong>Ce compte utilisateur existe déjà !</strong> Veuillez en choisir un autre.",
                 "emailexists": "<strong>Cet email est déjà utilisé !</strong> Veuillez en choisir un autre."
             }
-        }
+        },
+        "holding": "Exploitation"
     }
 }
