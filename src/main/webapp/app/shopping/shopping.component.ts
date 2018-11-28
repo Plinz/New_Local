@@ -35,10 +35,12 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
+        // this.purchaseService.query().toPromise().then()subscribe()
         this.purchaseService.query().subscribe(
             (res: HttpResponse<IPurchase[]>) => {
                 this.purchases = res.body;
                 this.currentSearch = '';
+                this.calculTotal();
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -50,7 +52,6 @@ export class ShoppingComponent implements OnInit, OnDestroy {
             this.currentAccount = account;
         });
         this.registerChangeInPurchases();
-        this.calculTotal();
     }
 
     timeout() {
@@ -87,7 +88,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     calculTotal() {
         for (const k of this.purchases) {
-            this.total = this.total + k.quantity * k.stock.priceUnit;
+            this.total = k.quantity * k.stock.priceUnit + this.total;
         }
     }
 
