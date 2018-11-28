@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-warning mt-3">
+                <button class="btn btn-warning mt-3" (click)="backcliked()">
                     <span class="d-none d-md-inline">Continuer shopping</span>
                 </button>
             </div>
@@ -147,7 +147,7 @@
                             <strong>{{ total }}$</strong>
                         </div>
                     </div>
-                    <div class="text-center" *ngIf="isOkpanier">
+                    <div class="text-center" *ngIf="isOkpanier && (purchases.length > 0)">
                         <button class="btn btn-success" (click)="startTimeout()" >
                             <span class="d-none d-md-inline">Valider</span>
                         </button>

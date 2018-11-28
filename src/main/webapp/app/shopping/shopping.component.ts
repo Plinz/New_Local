@@ -7,6 +7,7 @@ import { IPurchase } from '../shared/model/purchase.model';
 import { Principal } from '../core';
 import { PurchaseService } from '../entities/purchase/purchase.service';
 
+import { Location } from '@angular/common';
 @Component({
     selector: 'jhi-purchase',
     templateUrl: './shopping.component.html'
@@ -25,7 +26,8 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         private purchaseService: PurchaseService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
-        private principal: Principal
+        private principal: Principal,
+        private location: Location
     ) {
         this.isOkpanier = true;
         this.total = 0;
@@ -115,5 +117,9 @@ export class ShoppingComponent implements OnInit, OnDestroy {
                 content: 'Deleted an purchase'
             });
         });
+    }
+
+    backcliked() {
+        this.location.back();
     }
 }
