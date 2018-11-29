@@ -13,7 +13,6 @@ import java.util.Optional;
 /**
  * Spring Data  repository for the Holding entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface HoldingRepository extends JpaRepository<Holding, Long>, JpaSpecificationExecutor<Holding> {
 

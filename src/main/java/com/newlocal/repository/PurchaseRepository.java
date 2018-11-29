@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * Spring Data  repository for the Purchase entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface PurchaseRepository extends JpaRepository<Purchase, Long>, JpaSpecificationExecutor<Purchase> {
 

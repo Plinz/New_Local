@@ -1,17 +1,27 @@
 package com.newlocal.web.rest;
 
-import com.newlocal.NewLocalApp;
+import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.newlocal.domain.Holding;
-import com.newlocal.domain.Location;
-import com.newlocal.domain.User;
-import com.newlocal.domain.Image;
-import com.newlocal.repository.HoldingRepository;
-import com.newlocal.repository.search.HoldingSearchRepository;
-import com.newlocal.service.HoldingService;
-import com.newlocal.web.rest.errors.ExceptionTranslator;
-import com.newlocal.service.dto.HoldingCriteria;
-import com.newlocal.service.HoldingQueryService;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,19 +40,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.newlocal.NewLocalApp;
+import com.newlocal.domain.Holding;
+import com.newlocal.domain.Image;
+import com.newlocal.domain.Location;
+import com.newlocal.domain.User;
+import com.newlocal.repository.HoldingRepository;
+import com.newlocal.repository.search.HoldingSearchRepository;
+import com.newlocal.service.HoldingQueryService;
+import com.newlocal.service.HoldingService;
+import com.newlocal.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the HoldingResource REST controller.
@@ -241,7 +248,7 @@ public class HoldingResourceIntTest {
     
     public void getAllHoldingsWithEagerRelationshipsIsEnabled() throws Exception {
         HoldingResource holdingResource = new HoldingResource(holdingServiceMock, holdingQueryService);
-        when(holdingServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(holdingServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Holding>(new ArrayList<>()));
 
         MockMvc restHoldingMockMvc = MockMvcBuilders.standaloneSetup(holdingResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -257,7 +264,7 @@ public class HoldingResourceIntTest {
 
     public void getAllHoldingsWithEagerRelationshipsIsNotEnabled() throws Exception {
         HoldingResource holdingResource = new HoldingResource(holdingServiceMock, holdingQueryService);
-            when(holdingServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            when(holdingServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Holding>(new ArrayList<>()));
             MockMvc restHoldingMockMvc = MockMvcBuilders.standaloneSetup(holdingResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

@@ -13,7 +13,6 @@ import java.util.Optional;
 /**
  * Spring Data  repository for the Warehouse entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long>, JpaSpecificationExecutor<Warehouse> {
 

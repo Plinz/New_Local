@@ -13,7 +13,6 @@ import java.util.Optional;
 /**
  * Spring Data  repository for the ProductType entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface ProductTypeRepository extends JpaRepository<ProductType, Long>, JpaSpecificationExecutor<ProductType> {
 

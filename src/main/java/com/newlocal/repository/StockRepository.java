@@ -14,7 +14,6 @@ import java.util.Optional;
 /**
  * Spring Data  repository for the Stock entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecificationExecutor<Stock> {
 

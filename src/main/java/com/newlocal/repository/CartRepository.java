@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * Spring Data  repository for the Cart entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long>, JpaSpecificationExecutor<Cart> {
 

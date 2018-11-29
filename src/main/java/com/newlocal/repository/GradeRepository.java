@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * Spring Data  repository for the Grade entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long>, JpaSpecificationExecutor<Grade> {
 

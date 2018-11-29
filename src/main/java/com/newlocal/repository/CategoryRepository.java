@@ -13,7 +13,6 @@ import java.util.Optional;
 /**
  * Spring Data  repository for the Category entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
 

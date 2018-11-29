@@ -1,20 +1,29 @@
 package com.newlocal.web.rest;
 
-import com.newlocal.NewLocalApp;
+import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.newlocal.domain.Stock;
-import com.newlocal.domain.ProductType;
-import com.newlocal.domain.Holding;
-import com.newlocal.domain.User;
-import com.newlocal.domain.Warehouse;
-import com.newlocal.domain.Image;
-import com.newlocal.repository.UserRepository;
-import com.newlocal.repository.StockRepository;
-import com.newlocal.repository.search.StockSearchRepository;
-import com.newlocal.service.StockService;
-import com.newlocal.web.rest.errors.ExceptionTranslator;
-import com.newlocal.service.dto.StockCriteria;
-import com.newlocal.service.StockQueryService;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,21 +43,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.newlocal.NewLocalApp;
+import com.newlocal.domain.Holding;
+import com.newlocal.domain.Image;
+import com.newlocal.domain.ProductType;
+import com.newlocal.domain.Stock;
+import com.newlocal.domain.User;
+import com.newlocal.domain.Warehouse;
+import com.newlocal.repository.StockRepository;
+import com.newlocal.repository.UserRepository;
+import com.newlocal.repository.search.StockSearchRepository;
+import com.newlocal.service.StockQueryService;
+import com.newlocal.service.StockService;
+import com.newlocal.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the StockResource REST controller.
@@ -404,7 +411,7 @@ public class StockResourceIntTest {
 
     public void getAllStocksWithEagerRelationshipsIsEnabled() throws Exception {
         StockResource stockResource = new StockResource(stockService, stockQueryService, userRepository, new UserDAO(new JdbcTemplate()));
-        when(stockServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(stockServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Stock>(new ArrayList<>()));
 
         MockMvc restStockMockMvc = MockMvcBuilders.standaloneSetup(stockResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -420,7 +427,7 @@ public class StockResourceIntTest {
 
     public void getAllStocksWithEagerRelationshipsIsNotEnabled() throws Exception {
         StockResource stockResource = new StockResource(stockService, stockQueryService, userRepository, new UserDAO(new JdbcTemplate()));
-            when(stockServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            when(stockServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Stock>(new ArrayList<>()));
             MockMvc restStockMockMvc = MockMvcBuilders.standaloneSetup(stockResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

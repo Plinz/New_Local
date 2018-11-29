@@ -1,16 +1,27 @@
 package com.newlocal.web.rest;
 
-import com.newlocal.NewLocalApp;
+import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.newlocal.domain.Purchase;
-import com.newlocal.domain.Stock;
-import com.newlocal.domain.User;
-import com.newlocal.repository.PurchaseRepository;
-import com.newlocal.repository.search.PurchaseSearchRepository;
-import com.newlocal.service.PurchaseService;
-import com.newlocal.web.rest.errors.ExceptionTranslator;
-import com.newlocal.service.dto.PurchaseCriteria;
-import com.newlocal.service.PurchaseQueryService;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,20 +39,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.newlocal.NewLocalApp;
+import com.newlocal.domain.Purchase;
+import com.newlocal.domain.Stock;
+import com.newlocal.domain.User;
+import com.newlocal.repository.PurchaseRepository;
+import com.newlocal.repository.search.PurchaseSearchRepository;
+import com.newlocal.service.PurchaseQueryService;
+import com.newlocal.service.PurchaseService;
+import com.newlocal.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the PurchaseResource REST controller.
