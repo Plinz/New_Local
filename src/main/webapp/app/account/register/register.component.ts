@@ -18,8 +18,12 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     errorEmailExists: string;
     errorUserExists: string;
     registerAccount: any;
+    registerHolding: any;
     success: boolean;
+    isseller: boolean;
     modalRef: NgbModalRef;
+    holdingName: string;
+    siret: string;
 
     constructor(
         private languageService: JhiLanguageService,
@@ -31,7 +35,9 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.success = false;
+        this.isseller = false;
         this.registerAccount = {};
+        this.registerHolding = {};
     }
 
     ngAfterViewInit() {
@@ -48,7 +54,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
             this.errorEmailExists = null;
             this.languageService.getCurrent().then(key => {
                 this.registerAccount.langKey = key;
-                this.registerService.save(this.registerAccount).subscribe(
+                this.registerService.save(this.registerAccount, this.isseller).subscribe(
                     () => {
                         this.success = true;
                     },
@@ -71,5 +77,14 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         } else {
             this.error = 'ERROR';
         }
+    }
+
+    updateIsSeller() {
+        this.isseller = !this.isseller;
+    }
+
+    checkIsSeller() {
+        console.log('toto' + this.isseller);
+        return this.isseller;
     }
 }

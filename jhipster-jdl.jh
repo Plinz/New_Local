@@ -42,8 +42,9 @@ entity Stock {
 }
 
 entity Holding {
-	name String,
+	name String required,
 	description String,
+	siret String required unique,
 	image ImageBlob	
 }
 

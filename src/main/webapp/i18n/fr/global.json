@@ -56,7 +56,14 @@
             "confirmpassword": "Confirmation du nouveau mot de passe",
             "confirmpassword.placeholder": "Confirmation du nouveau mot de passe",
             "email": "Email",
-            "email.placeholder": "Votre email"
+            "email.placeholder": "Votre email",
+            "isseller": "Je suis un(e) vendeu(r)(se)",
+            "holdingName": "Nom de l'exploitation",
+            "holdingName.placeholder": "Votre nom d'exploitation",
+            "siret": "Numéro SIRET",
+            "siret.placeholder": "Votre numéro SIRET",
+            "holdingDescription": "Description de l'exploitation",
+            "holdingDescription.placeholder": "Description de votre exploitation"
         },
         "messages": {
             "info": {

@@ -3,14 +3,14 @@
         <header>
             <ngb-carousel>
                 <ng-template ngbSlide>
-                    <img class="imgCarousel" src="../../content/images/c1.png" height="600%" width="90%" alt="Random first slide">
+                    <img class="imgCarousel" src="../../content/images/c1.png" height="200%" width="100%" alt="Random first slide">
                     <div class="carousel-caption">
                         <h3></h3>
                         <p></p>
                     </div>
                 </ng-template>
                 <ng-template ngbSlide>
-                    <img class="imgCarousel" src="../../content/images/c2.png" height="90%" width="90%" style="max-width: width 9px; margin: 0% auto"
+                    <img class="imgCarousel" src="../../content/images/c2.png" height="200%" width="100%" style="max-width: width 9px; margin: 0% auto"
                         alt="Random second slide">
                     <div class="carousel-caption">
                         <h3></h3>
@@ -18,7 +18,7 @@
                     </div>
                 </ng-template>
                 <ng-template ngbSlide>
-                    <img class="imgCarousel" src="../../content/images/c3.png" height="90%" width="90%" alt="Random third slide">
+                    <img class="imgCarousel" src="../../content/images/c3.png" height="200%" width="100%" alt="Random third slide">
                     <div class="carousel-caption">
                         <h3></h3>
                         <p></p>
@@ -34,24 +34,21 @@
                     <div class="row wow fadeIn">
                         <!--Grid colum-->
                         <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
+                            
                         <div class="card">
                         <div class="view overlay">
                             <img class="card-img-top" src="../../content/images/m1.png" alt="">
-                            <a>
-                                <div class="mask rgba-white-slight wave-effect wave-light"></div>
-                            </a>
                         </div>
                         <div class="card-body text-center"></div>
-                        <h5>
-                            <strong>
-                                <a class="dark-grey-text" href="">
-                                    <span class="badge badge-pill danger-color">Nouveau</span>
-                                </a>
-                            </strong>
-                        </h5>
+                        
+
                         <h4 class="font-weight-bold blue-text">
-                            <strong>1,2 e/Kg</strong>
-                        </h4>
+                                <strong>{{stockBio.name}}</strong></h4>
+                                <h6>{{stockBio.priceUnit}} €/Kg     <span class="badge badge-success">Produit Bio</span></h6>
+                                <a routerLink="/stock/{{stockBio.id}}/view" routerLinkActive="active">description</a>
+                              
+
+                             
                         </div>
                         </div>
             
@@ -59,67 +56,41 @@
                         <div class="card">
                             <div class="view overlay">
                                 <img class="card-img-top" src="../../content/images/m2.png" alt="">
-                                <a>
-                                    <div class="mask rgba-white-slight wave-effect wave-light"></div>
-                                </a>
+             
                             </div>
                             <div class="card-body text-center"></div>
-                            <h5>
-                                <strong>
-                                    <a class="dark-grey-text" href="">
-                                        <span class="badge badge-pill danger-color">Nouveau</span>
-                                    </a>
-                                </strong>
-                            </h5>
                             <h4 class="font-weight-bold blue-text">
-                                <strong>1,2 e/Kg</strong>
-                            </h4>
-                        </div>
-                        </div>
+                                    <strong>{{stockNewProduit.name}}</strong></h4>
+                                     <h6>{{stockNewProduit.priceUnit}} €/Kg    <span class="badge badge-pill badge-danger">Nouveau Produit</span></h6>
+                                     <a routerLink="/stock/{{stockNewProduit.id}}/view" routerLinkActive="active">description</a>
+                            </div>
+                            </div>
 
                         <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
                         <div class="card">
                                 <div class="view overlay">
                                     <img class="card-img-top" src="../../content/images/m3.png" alt="">
-                                    <a>
-                                        <div class="mask rgba-white-slight wave-effect wave-light"></div>
-                                    </a>
                                 </div>
                                 <div class="card-body text-center"></div>
-                                <h5>
-                                    <strong>
-                                        <a class="dark-grey-text" href="">
-                                            <span class="badge badge-pill danger-color">Nouveau</span>
-                                        </a>
-                                    </strong>
-                                </h5>
                                 <h4 class="font-weight-bold blue-text">
-                                    <strong>1,2 e/Kg</strong>
-                                </h4>
-                        </div>
-                        </div>
+                                        <strong>{{stockBestPurchase.name}}</strong></h4>
+                                        <h6>{{stockBestPurchase.priceUnit}} €/Kg     <span class="badge badge-info">Meilleur Vente</span></h6>
+                                        <a routerLink="/stock/{{stockBestPurchase.id}}/view" routerLinkActive="active">description</a>
+                                </div>
+                                </div>
 
                         <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
                         <div class="card">
                                     <div class="view overlay">
                                         <img class="card-img-top" src="../../content/images/m4.png" alt="">
-                                        <a>
-                                            <div class="mask rgba-white-slight wave-effect wave-light"></div>
-                                        </a>
                                     </div>
                                     <div class="card-body text-center"></div>
-                                    <h5>
-                                        <strong>
-                                            <a class="dark-grey-text" href="">
-                                                <span class="badge badge-pill danger-color">Nouveau</span>
-                                            </a>
-                                        </strong>
-                                    </h5>
                                     <h4 class="font-weight-bold blue-text">
-                                        <strong>1,2 e/Kg</strong>
-                                    </h4>
-                        </div>
-                        </div>
+                                            <strong>{{stockGrade.name}}</strong></h4>
+                                            <h6>{{stockGrade.priceUnit}} €/Kg     <span class="badge badge-primary">Mieux noté</span></h6>
+                                            <a routerLink="/stock/{{stockGrade.id}}/view" routerLinkActive="active">description</a>
+                                    </div>
+                                    </div>
                     </div>
                 </section>
 
@@ -137,11 +108,8 @@
                                 </div>
                                 <div class="col-md-11 col-10" style="background-color: white;">
                                     <h5 class="font-weight-bold mb-3">A propos de nous</h5>
-                                    <h6>Notre histoire</h6>
                                     <p class="grey-text mb-0">
-                                    Fonde en 2018
-                                    <br>
-                                    bla bla
+                                    Notre objectif est de répondre aux besoins des producteurs locaux et des clients avec réactivité et proximité. Une démarche qualité au cœur de notre organisation et de nos prestations qui permet de bâtir une relation de confiance.
                                     </p>
                                 </div>
                             </div>
@@ -162,7 +130,7 @@
                                     <p class="dark-grey-text">
                                             Lundi - Vendredi : de 9h à 19h
                                     <br> 
-                                            Samedi : de 9 à 18h
+                                            Samedi : de 9h à 18h
                                     <br> 
                                             Dimanche : Fermé 
                                     </p>
@@ -178,4 +146,3 @@
             </div>
          </main>
      </body>
-

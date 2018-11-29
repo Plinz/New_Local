@@ -78,4 +78,20 @@ export class StockService {
         });
         return res;
     }
+
+    findProduitBio(): Observable<EntityResponseType> {
+        return this.http.get<IStock>(`${this.resourceUrl}/bio`, { observe: 'response' });
+    }
+
+    findNewProduit(): Observable<EntityResponseType> {
+        return this.http.get<IStock>(`${this.resourceUrl}/newStock`, { observe: 'response' });
+    }
+
+    findBestPurchase(): Observable<EntityResponseType> {
+        return this.http.get<IStock>(`${this.resourceUrl}/bestPurchase`, { observe: 'response' });
+    }
+
+    findGrade(): Observable<EntityResponseType> {
+        return this.http.get<IStock>(`${this.resourceUrl}/grade`, { observe: 'response' });
+    }
 }
