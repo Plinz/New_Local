@@ -1,7 +1,60 @@
-<div class="row justify-content-center">
-    <div class="col-8">
-        <div *ngIf="stock">
-            <h2><span jhiTranslate="newLocalApp.stock.detail.title">Stock</span> {{stock.id}}</h2>
+<div class="row justify-content-center ">
+        <div class="w-75 p-3 border border-secondary" *ngIf="stock" >
+
+                <div class="card-group" >
+                        <div  class="card border border-secondary" style="max-width: 40%; max-height: 40%;" >
+                                <div class="card-header bg-light h-3" >
+                                  <h2 class="card-title">{{stock.name}}</h2>
+                                </div>
+                            <img class="card-img-bottom img-responsive img-thumbnail h-97" [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" alt="Card image cap"/>
+                    
+                        </div>
+                        <div class="card border border-secondary" style="max-width: 60%; max-height: 60%;">
+                            <div class="card-header">
+                                Détails produit:
+                                <br>
+                                <br>
+                              </div>
+                            <div class="card-body">
+                              <h5 class="card-title">Prix: {{stock.priceUnit}}</h5>
+                              <h5 class="card-title">Catégorie: {{stock.category?.name}}</h5>
+                              <h5 class="card-title">Description: {{stock.description}}</h5>
+                              <h5 class="card-title">Exploitation:</h5>
+                              <h6 class="card-subtitle mb-2 text-muted">Nom: {{stock.holding?.name}}</h6>
+                              <h6 class="card-subtitle mb-2 text-muted">Localisation: {{stock.holding?.location?.city}}</h6>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" class="card-link">Card link</a>
+                                <a href="#" class="card-link">Another link</a>
+                            </div>
+                          </div>
+                    <!--<div class="row">
+                        <div class="w-50 p-3">
+                            <img class="img-responsive img-thumbnail" [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" alt="" />
+                        </div>
+                        <div class="w-50 p-3 bg-secondary text-white">
+                            <h2>{{stock.name}}</h2>
+                            <h2>{{stock.priceUnit}}</h2>
+                            <h3>{{stock.description}}</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h2>{{stock.name}}</h2>
+                            <h2>{{stock.priceUnit}}</h2>
+                            <h3>{{stock.description}}</h3>
+                        </div>
+                        <div class="col-sm-8"></div>
+                    </div>
+                    <div class="row">
+                            <div class="col-sm-6"></div>
+                            <div class="col-sm-6 text-center">
+                                <a href="#" class="btn btn-primary">Retout</a>&nbsp;
+                                <a href="#" class="btn btn-primary">Achat</a>
+                            </div>
+                        </div>-->
+                
+            <!--<h2><span jhiTranslate="newLocalApp.stock.detail.title">Stock</span> {{stock.id}}</h2>
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
@@ -60,7 +113,6 @@
                     [routerLink]="['/stock', stock.id, 'edit']"
                     class="btn btn-primary">
                 <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-            </button>
+            </button>-->
         </div>
     </div>
-</div>

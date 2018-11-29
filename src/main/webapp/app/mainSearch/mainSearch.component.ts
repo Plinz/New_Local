@@ -34,6 +34,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     reverse: any;
 
     categories: ICategory[];
+    optionCategory: number;
 
     constructor(
         private stockService: StockService,
@@ -47,6 +48,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         private categoryService: CategoryService
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
+        this.optionCategory = -1;
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
@@ -58,6 +60,17 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         });
     }
 
+    option(x: number) {
+        this.optionCategory = x;
+    }
+
+    checkoption(o: number) {
+        if (o === this.optionCategory || this.optionCategory === -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     loadAll() {
         if (this.currentSearch) {
             this.stockService
