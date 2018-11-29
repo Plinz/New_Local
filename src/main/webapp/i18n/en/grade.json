@@ -18,7 +18,8 @@
                 "title": "Grade"
             },
             "grade": "Grade",
-            "user": "User",
+            "nbVoter": "Nb Voter",
+            "seller": "Seller",
             "productType": "Product Type"
         }
     }

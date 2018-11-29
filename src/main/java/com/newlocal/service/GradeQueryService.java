@@ -90,9 +90,12 @@ public class GradeQueryService extends QueryService<Grade> {
             if (criteria.getGrade() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getGrade(), Grade_.grade));
             }
-            if (criteria.getUserId() != null) {
-                specification = specification.and(buildSpecification(criteria.getUserId(),
-                    root -> root.join(Grade_.user, JoinType.LEFT).get(User_.id)));
+            if (criteria.getNbVoter() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getNbVoter(), Grade_.nbVoter));
+            }
+            if (criteria.getSellerId() != null) {
+                specification = specification.and(buildSpecification(criteria.getSellerId(),
+                    root -> root.join(Grade_.seller, JoinType.LEFT).get(User_.id)));
             }
             if (criteria.getProductTypeId() != null) {
                 specification = specification.and(buildSpecification(criteria.getProductTypeId(),

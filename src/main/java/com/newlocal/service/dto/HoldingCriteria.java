@@ -24,6 +24,8 @@ public class HoldingCriteria implements Serializable {
 
     private LongFilter id;
 
+    private StringFilter siret;
+
     private StringFilter name;
 
     private StringFilter description;
@@ -31,6 +33,8 @@ public class HoldingCriteria implements Serializable {
     private LongFilter locationId;
 
     private LongFilter ownerId;
+
+    private LongFilter imageId;
 
     public HoldingCriteria() {
     }
@@ -41,6 +45,14 @@ public class HoldingCriteria implements Serializable {
 
     public void setId(LongFilter id) {
         this.id = id;
+    }
+
+    public StringFilter getSiret() {
+        return siret;
+    }
+
+    public void setSiret(StringFilter siret) {
+        this.siret = siret;
     }
 
     public StringFilter getName() {
@@ -75,6 +87,14 @@ public class HoldingCriteria implements Serializable {
         this.ownerId = ownerId;
     }
 
+    public LongFilter getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(LongFilter imageId) {
+        this.imageId = imageId;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -87,20 +107,24 @@ public class HoldingCriteria implements Serializable {
         final HoldingCriteria that = (HoldingCriteria) o;
         return
             Objects.equals(id, that.id) &&
+            Objects.equals(siret, that.siret) &&
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
             Objects.equals(locationId, that.locationId) &&
-            Objects.equals(ownerId, that.ownerId);
+            Objects.equals(ownerId, that.ownerId) &&
+            Objects.equals(imageId, that.imageId);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
         id,
+        siret,
         name,
         description,
         locationId,
-        ownerId
+        ownerId,
+        imageId
         );
     }
 
@@ -108,10 +132,12 @@ public class HoldingCriteria implements Serializable {
     public String toString() {
         return "HoldingCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
+                (siret != null ? "siret=" + siret + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
                 (locationId != null ? "locationId=" + locationId + ", " : "") +
                 (ownerId != null ? "ownerId=" + ownerId + ", " : "") +
+                (imageId != null ? "imageId=" + imageId + ", " : "") +
             "}";
     }
 

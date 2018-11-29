@@ -31,7 +31,6 @@ export class StockUpdatePage {
     quantityInitInput = element(by.id('field_quantityInit'));
     quantityRemainingInput = element(by.id('field_quantityRemaining'));
     priceUnitInput = element(by.id('field_priceUnit'));
-    imageInput = element(by.id('file_image'));
     onSaleDateInput = element(by.id('field_onSaleDate'));
     expiryDateInput = element(by.id('field_expiryDate'));
     bioInput = element(by.id('field_bio'));
@@ -39,6 +38,8 @@ export class StockUpdatePage {
     productTypeSelect = element(by.id('field_productType'));
     holdingSelect = element(by.id('field_holding'));
     sellerSelect = element(by.id('field_seller'));
+    warehouseSelect = element(by.id('field_warehouse'));
+    imageSelect = element(by.id('field_image'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -82,14 +83,6 @@ export class StockUpdatePage {
 
     async getPriceUnitInput() {
         return this.priceUnitInput.getAttribute('value');
-    }
-
-    async setImageInput(image) {
-        await this.imageInput.sendKeys(image);
-    }
-
-    async getImageInput() {
-        return this.imageInput.getAttribute('value');
     }
 
     async setOnSaleDateInput(onSaleDate) {
@@ -170,6 +163,44 @@ export class StockUpdatePage {
 
     async getSellerSelectedOption() {
         return this.sellerSelect.element(by.css('option:checked')).getText();
+    }
+
+    async warehouseSelectLastOption() {
+        await this.warehouseSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async warehouseSelectOption(option) {
+        await this.warehouseSelect.sendKeys(option);
+    }
+
+    getWarehouseSelect(): ElementFinder {
+        return this.warehouseSelect;
+    }
+
+    async getWarehouseSelectedOption() {
+        return this.warehouseSelect.element(by.css('option:checked')).getText();
+    }
+
+    async imageSelectLastOption() {
+        await this.imageSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async imageSelectOption(option) {
+        await this.imageSelect.sendKeys(option);
+    }
+
+    getImageSelect(): ElementFinder {
+        return this.imageSelect;
+    }
+
+    async getImageSelectedOption() {
+        return this.imageSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

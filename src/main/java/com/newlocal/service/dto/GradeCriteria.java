@@ -24,9 +24,11 @@ public class GradeCriteria implements Serializable {
 
     private LongFilter id;
 
-    private IntegerFilter grade;
+    private DoubleFilter grade;
 
-    private LongFilter userId;
+    private IntegerFilter nbVoter;
+
+    private LongFilter sellerId;
 
     private LongFilter productTypeId;
 
@@ -41,20 +43,28 @@ public class GradeCriteria implements Serializable {
         this.id = id;
     }
 
-    public IntegerFilter getGrade() {
+    public DoubleFilter getGrade() {
         return grade;
     }
 
-    public void setGrade(IntegerFilter grade) {
+    public void setGrade(DoubleFilter grade) {
         this.grade = grade;
     }
 
-    public LongFilter getUserId() {
-        return userId;
+    public IntegerFilter getNbVoter() {
+        return nbVoter;
     }
 
-    public void setUserId(LongFilter userId) {
-        this.userId = userId;
+    public void setNbVoter(IntegerFilter nbVoter) {
+        this.nbVoter = nbVoter;
+    }
+
+    public LongFilter getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(LongFilter sellerId) {
+        this.sellerId = sellerId;
     }
 
     public LongFilter getProductTypeId() {
@@ -78,7 +88,8 @@ public class GradeCriteria implements Serializable {
         return
             Objects.equals(id, that.id) &&
             Objects.equals(grade, that.grade) &&
-            Objects.equals(userId, that.userId) &&
+            Objects.equals(nbVoter, that.nbVoter) &&
+            Objects.equals(sellerId, that.sellerId) &&
             Objects.equals(productTypeId, that.productTypeId);
     }
 
@@ -87,7 +98,8 @@ public class GradeCriteria implements Serializable {
         return Objects.hash(
         id,
         grade,
-        userId,
+        nbVoter,
+        sellerId,
         productTypeId
         );
     }
@@ -97,7 +109,8 @@ public class GradeCriteria implements Serializable {
         return "GradeCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
                 (grade != null ? "grade=" + grade + ", " : "") +
-                (userId != null ? "userId=" + userId + ", " : "") +
+                (nbVoter != null ? "nbVoter=" + nbVoter + ", " : "") +
+                (sellerId != null ? "sellerId=" + sellerId + ", " : "") +
                 (productTypeId != null ? "productTypeId=" + productTypeId + ", " : "") +
             "}";
     }

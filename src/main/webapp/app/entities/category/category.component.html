@@ -28,12 +28,11 @@
     <div class="table-responsive" *ngIf="categories">
         <table class="table table-striped">
             <thead>
-            <tr>
-            <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="newLocalApp.category.name">Name</span></th>
-            <th><span jhiTranslate="newLocalApp.category.description">Description</span></th>
-            <th><span jhiTranslate="newLocalApp.category.image">Image</span></th>
-            <th><span jhiTranslate="newLocalApp.category.categoryParent">Category Parent</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="name"><span jhiTranslate="newLocalApp.category.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="description"><span jhiTranslate="newLocalApp.category.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="categoyParent.id"><span jhiTranslate="newLocalApp.category.categoyParent">Categoy Parent</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -43,14 +42,8 @@
                 <td>{{category.name}}</td>
                 <td>{{category.description}}</td>
                 <td>
-                    <a *ngIf="category.image" (click)="openFile(category.imageContentType, category.image)">
-                        <img [src]="'data:' + category.imageContentType + ';base64,' + category.image" style="max-height: 30px;" alt="category image"/>
-                    </a>
-                    <span *ngIf="category.image">{{category.imageContentType}}, {{byteSize(category.image)}}</span>
-                </td>
-                <td>
-                    <div *ngIf="category.categoryParent">
-                        <a [routerLink]="['../category', category.categoryParent?.id, 'view' ]" >{{category.categoryParent?.id}}</a>
+                    <div *ngIf="category.categoyParent">
+                        <a [routerLink]="['../category', category.categoyParent?.id, 'view' ]" >{{category.categoyParent?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">
@@ -80,5 +73,14 @@
             </tr>
             </tbody>
         </table>
+    </div>
+    <!-- Pager is not implemented yet, so this is normal pagination instead -->
+    <div *ngIf="categories && categories.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
     </div>
 </div>

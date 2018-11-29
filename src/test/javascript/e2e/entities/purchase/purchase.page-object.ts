@@ -28,6 +28,7 @@ export class PurchaseUpdatePage {
     cancelButton = element(by.id('cancel-save'));
     saleDateInput = element(by.id('field_saleDate'));
     quantityInput = element(by.id('field_quantity'));
+    withdrawInput = element(by.id('field_withdraw'));
     stockSelect = element(by.id('field_stock'));
     clientSelect = element(by.id('field_client'));
 
@@ -49,6 +50,10 @@ export class PurchaseUpdatePage {
 
     async getQuantityInput() {
         return this.quantityInput.getAttribute('value');
+    }
+
+    getWithdrawInput() {
+        return this.withdrawInput;
     }
 
     async stockSelectLastOption() {

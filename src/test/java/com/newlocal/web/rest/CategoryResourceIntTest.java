@@ -4,6 +4,7 @@ import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.Category;
 import com.newlocal.domain.Category;
+import com.newlocal.domain.Image;
 import com.newlocal.repository.CategoryRepository;
 import com.newlocal.repository.search.CategorySearchRepository;
 import com.newlocal.service.CategoryService;
@@ -14,9 +15,12 @@ import com.newlocal.service.CategoryQueryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -24,9 +28,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,14 +58,16 @@ public class CategoryResourceIntTest {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final byte[] DEFAULT_IMAGE = TestUtil.createByteArray(1, "0");
-    private static final byte[] UPDATED_IMAGE = TestUtil.createByteArray(1, "1");
-    private static final String DEFAULT_IMAGE_CONTENT_TYPE = "image/jpg";
-    private static final String UPDATED_IMAGE_CONTENT_TYPE = "image/png";
-
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Mock
+    private CategoryRepository categoryRepositoryMock;
     
+
+    @Mock
+    private CategoryService categoryServiceMock;
+
     @Autowired
     private CategoryService categoryService;
 
@@ -112,9 +118,7 @@ public class CategoryResourceIntTest {
     public static Category createEntity(EntityManager em) {
         Category category = new Category()
             .name(DEFAULT_NAME)
-            .description(DEFAULT_DESCRIPTION)
-            .image(DEFAULT_IMAGE)
-            .imageContentType(DEFAULT_IMAGE_CONTENT_TYPE);
+            .description(DEFAULT_DESCRIPTION);
         return category;
     }
 
@@ -140,8 +144,6 @@ public class CategoryResourceIntTest {
         Category testCategory = categoryList.get(categoryList.size() - 1);
         assertThat(testCategory.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testCategory.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testCategory.getImage()).isEqualTo(DEFAULT_IMAGE);
-        assertThat(testCategory.getImageContentType()).isEqualTo(DEFAULT_IMAGE_CONTENT_TYPE);
 
         // Validate the Category in Elasticsearch
         verify(mockCategorySearchRepository, times(1)).save(testCategory);
@@ -171,6 +173,24 @@ public class CategoryResourceIntTest {
 
     @Test
     @Transactional
+    public void checkNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = categoryRepository.findAll().size();
+        // set the field null
+        category.setName(null);
+
+        // Create the Category, which fails.
+
+        restCategoryMockMvc.perform(post("/api/categories")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(category)))
+            .andExpect(status().isBadRequest());
+
+        List<Category> categoryList = categoryRepository.findAll();
+        assertThat(categoryList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllCategories() throws Exception {
         // Initialize the database
         categoryRepository.saveAndFlush(category);
@@ -181,11 +201,40 @@ public class CategoryResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(category.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
     
+    public void getAllCategoriesWithEagerRelationshipsIsEnabled() throws Exception {
+        CategoryResource categoryResource = new CategoryResource(categoryServiceMock, categoryQueryService);
+        when(categoryServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restCategoryMockMvc.perform(get("/api/categories?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(categoryServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    public void getAllCategoriesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        CategoryResource categoryResource = new CategoryResource(categoryServiceMock, categoryQueryService);
+            when(categoryServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restCategoryMockMvc.perform(get("/api/categories?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(categoryServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
     @Test
     @Transactional
     public void getCategory() throws Exception {
@@ -198,9 +247,7 @@ public class CategoryResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(category.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-            .andExpect(jsonPath("$.imageContentType").value(DEFAULT_IMAGE_CONTENT_TYPE))
-            .andExpect(jsonPath("$.image").value(Base64Utils.encodeToString(DEFAULT_IMAGE)));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
     }
 
     @Test
@@ -283,20 +330,39 @@ public class CategoryResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllCategoriesByCategoryParentIsEqualToSomething() throws Exception {
+    public void getAllCategoriesByCategoyParentIsEqualToSomething() throws Exception {
         // Initialize the database
-        Category categoryParent = CategoryResourceIntTest.createEntity(em);
-        em.persist(categoryParent);
+        Category categoyParent = CategoryResourceIntTest.createEntity(em);
+        em.persist(categoyParent);
         em.flush();
-        category.setCategoryParent(categoryParent);
+        category.setCategoyParent(categoyParent);
         categoryRepository.saveAndFlush(category);
-        Long categoryParentId = categoryParent.getId();
+        Long categoyParentId = categoyParent.getId();
 
-        // Get all the categoryList where categoryParent equals to categoryParentId
-        defaultCategoryShouldBeFound("categoryParentId.equals=" + categoryParentId);
+        // Get all the categoryList where categoyParent equals to categoyParentId
+        defaultCategoryShouldBeFound("categoyParentId.equals=" + categoyParentId);
 
-        // Get all the categoryList where categoryParent equals to categoryParentId + 1
-        defaultCategoryShouldNotBeFound("categoryParentId.equals=" + (categoryParentId + 1));
+        // Get all the categoryList where categoyParent equals to categoyParentId + 1
+        defaultCategoryShouldNotBeFound("categoyParentId.equals=" + (categoyParentId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByImageIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Image image = ImageResourceIntTest.createEntity(em);
+        em.persist(image);
+        em.flush();
+        category.addImage(image);
+        categoryRepository.saveAndFlush(category);
+        Long imageId = image.getId();
+
+        // Get all the categoryList where image equals to imageId
+        defaultCategoryShouldBeFound("imageId.equals=" + imageId);
+
+        // Get all the categoryList where image equals to imageId + 1
+        defaultCategoryShouldNotBeFound("imageId.equals=" + (imageId + 1));
     }
 
     /**
@@ -308,9 +374,7 @@ public class CategoryResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(category.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
 
         // Check, that the count call also returns 1
         restCategoryMockMvc.perform(get("/api/categories/count?sort=id,desc&" + filter))
@@ -361,9 +425,7 @@ public class CategoryResourceIntTest {
         em.detach(updatedCategory);
         updatedCategory
             .name(UPDATED_NAME)
-            .description(UPDATED_DESCRIPTION)
-            .image(UPDATED_IMAGE)
-            .imageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+            .description(UPDATED_DESCRIPTION);
 
         restCategoryMockMvc.perform(put("/api/categories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -376,8 +438,6 @@ public class CategoryResourceIntTest {
         Category testCategory = categoryList.get(categoryList.size() - 1);
         assertThat(testCategory.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testCategory.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testCategory.getImage()).isEqualTo(UPDATED_IMAGE);
-        assertThat(testCategory.getImageContentType()).isEqualTo(UPDATED_IMAGE_CONTENT_TYPE);
 
         // Validate the Category in Elasticsearch
         verify(mockCategorySearchRepository, times(1)).save(testCategory);
@@ -430,17 +490,15 @@ public class CategoryResourceIntTest {
     public void searchCategory() throws Exception {
         // Initialize the database
         categoryService.save(category);
-        when(mockCategorySearchRepository.search(queryStringQuery("id:" + category.getId())))
-            .thenReturn(Collections.singletonList(category));
+        when(mockCategorySearchRepository.search(queryStringQuery("id:" + category.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(category), PageRequest.of(0, 1), 1));
         // Search the category
         restCategoryMockMvc.perform(get("/api/_search/categories?query=id:" + category.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(category.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
 
     @Test

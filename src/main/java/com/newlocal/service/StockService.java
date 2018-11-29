@@ -5,18 +5,15 @@ import com.newlocal.repository.StockRepository;
 import com.newlocal.repository.search.StockSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Sort;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.List;
-import java.lang.Object;
-
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
@@ -62,6 +59,15 @@ public class StockService {
         return stockRepository.findAll(pageable);
     }
 
+    /**
+     * Get all the Stock with eager load of many-to-many relationships.
+     *
+     * @return the list of entities
+     */
+    public Page<Stock> findAllWithEagerRelationships(Pageable pageable) {
+        return stockRepository.findAllWithEagerRelationships(pageable);
+    }
+
 
     /**
      * Get one stock by id.
@@ -72,7 +78,7 @@ public class StockService {
     @Transactional(readOnly = true)
     public Optional<Stock> findOne(Long id) {
         log.debug("Request to get Stock : {}", id);
-        return stockRepository.findById(id);
+        return stockRepository.findOneWithEagerRelationships(id);
     }
 
     /**
@@ -96,9 +102,8 @@ public class StockService {
     @Transactional(readOnly = true)
     public Page<Stock> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Stocks for query {}", query);
-        return stockSearchRepository.search(queryStringQuery(query), pageable);    }
-
-
+        return stockSearchRepository.search(queryStringQuery(query), pageable);
+    }
 
     /**
      * Search for the stock bio
@@ -110,12 +115,11 @@ public class StockService {
         return stockRepository.getProductBio();
     }
 
-
-     /**
+    /**
      * Search last new stock
      *
      */
-     
+
     @Transactional(readOnly = true)
     public List<Stock> getNewStock() {
         log.debug("Request to search a new stock {}");
@@ -123,27 +127,25 @@ public class StockService {
         return ListOrder;
     }
 
-         /**
+    /**
      * Search the best purchase
      *
      */
-     
+
     @Transactional(readOnly = true)
     public List<Stock> getBestPurchase() {
         log.debug("Request to search the best purchase {}");
         return stockRepository.getBestPurchase();
-   
     }
 
-        /**
+    /**
      * Search the best grade
      *
      */
-     
+
     @Transactional(readOnly = true)
     public List<Stock> getBestGrade() {
         log.debug("Request to search the best grade {}");
         return stockRepository.getBestGrade();
-   
     }
 }

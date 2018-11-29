@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JhiDataUtils } from 'ng-jhipster';
 
 import { ICategory } from 'app/shared/model/category.model';
 
@@ -11,7 +10,7 @@ import { ICategory } from 'app/shared/model/category.model';
 export class CategoryDetailComponent implements OnInit {
     category: ICategory;
 
-    constructor(private dataUtils: JhiDataUtils, private activatedRoute: ActivatedRoute) {}
+    constructor(private activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
         this.activatedRoute.data.subscribe(({ category }) => {
@@ -19,13 +18,6 @@ export class CategoryDetailComponent implements OnInit {
         });
     }
 
-    byteSize(field) {
-        return this.dataUtils.byteSize(field);
-    }
-
-    openFile(contentType, field) {
-        return this.dataUtils.openFile(contentType, field);
-    }
     previousState() {
         window.history.back();
     }

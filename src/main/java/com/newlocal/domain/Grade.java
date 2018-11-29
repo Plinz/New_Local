@@ -28,14 +28,23 @@ public class Grade implements Serializable {
     private Long id;
 
     @NotNull
+    @DecimalMin(value = "0")
+    @DecimalMax(value = "5")
     @Column(name = "grade", nullable = false)
-    private Integer grade;
+    private Double grade;
 
-    @ManyToOne
+    @NotNull
+    @Min(value = 0)
+    @Column(name = "nb_voter", nullable = false)
+    private Integer nbVoter;
+
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("")
-    private User user;
+    private User seller;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("")
     private ProductType productType;
 
@@ -48,30 +57,43 @@ public class Grade implements Serializable {
         this.id = id;
     }
 
-    public Integer getGrade() {
+    public Double getGrade() {
         return grade;
     }
 
-    public Grade grade(Integer grade) {
+    public Grade grade(Double grade) {
         this.grade = grade;
         return this;
     }
 
-    public void setGrade(Integer grade) {
+    public void setGrade(Double grade) {
         this.grade = grade;
     }
 
-    public User getUser() {
-        return user;
+    public Integer getNbVoter() {
+        return nbVoter;
     }
 
-    public Grade user(User user) {
-        this.user = user;
+    public Grade nbVoter(Integer nbVoter) {
+        this.nbVoter = nbVoter;
         return this;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setNbVoter(Integer nbVoter) {
+        this.nbVoter = nbVoter;
+    }
+
+    public User getSeller() {
+        return seller;
+    }
+
+    public Grade seller(User user) {
+        this.seller = user;
+        return this;
+    }
+
+    public void setSeller(User user) {
+        this.seller = user;
     }
 
     public ProductType getProductType() {
@@ -113,6 +135,7 @@ public class Grade implements Serializable {
         return "Grade{" +
             "id=" + getId() +
             ", grade=" + getGrade() +
+            ", nbVoter=" + getNbVoter() +
             "}";
     }
 }

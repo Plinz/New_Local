@@ -2,8 +2,8 @@ package com.newlocal.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.newlocal.domain.Stock;
-import com.newlocal.repository.UserRepository;
 import com.newlocal.service.StockService;
+import com.newlocal.repository.UserRepository;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
@@ -19,12 +19,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
-import java.util.Random;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
+import java.util.Random;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Stock.
@@ -61,15 +65,15 @@ public class StockResource {
      */
     @PostMapping("/stocks")
     @Timed
-    public ResponseEntity<Stock> createStock(@RequestBody Stock stock) throws URISyntaxException {
+    public ResponseEntity<Stock> createStock(@Valid @RequestBody Stock stock) throws URISyntaxException {
         log.debug("REST request to save Stock : {}", stock);
         if (stock.getId() != null) {
             throw new BadRequestAlertException("A new stock cannot already have an ID", ENTITY_NAME, "idexists");
         }
         long idCurrentUser = userDAO.getUserIdByCurrentLogin();
-        if (idCurrentUser != 0){
+        if (idCurrentUser > 0) {
             stock.setSeller(userRepository.findById(idCurrentUser).get());
-        }else{
+        } else {
             stock.setSeller(null);
         }
         Stock result = stockService.save(stock);
@@ -89,7 +93,7 @@ public class StockResource {
      */
     @PutMapping("/stocks")
     @Timed
-    public ResponseEntity<Stock> updateStock(@RequestBody Stock stock) throws URISyntaxException {
+    public ResponseEntity<Stock> updateStock(@Valid @RequestBody Stock stock) throws URISyntaxException {
         log.debug("REST request to update Stock : {}", stock);
         if (stock.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -184,7 +188,7 @@ public class StockResource {
         log.debug("REST request to search a product Bio");
         List<Stock>  stockBio= stockService.getProductBio();
         Stock stockb=stockBio.get((new Random()).nextInt(stockBio.size()));
-              return ResponseEntity.ok().body(stockb);
+        return ResponseEntity.ok().body(stockb);
     }
 
     /**
@@ -197,9 +201,8 @@ public class StockResource {
         log.debug("REST request to search a new stock");
         Stock stockNew=stockService.getNewStock().get(0);
         return ResponseEntity.ok().body(stockNew);
-        
-    }
 
+    }
 
     /**
      * SEARCH the best purchase
@@ -209,24 +212,22 @@ public class StockResource {
     @Timed
     public ResponseEntity<Stock> getBestPurchase() {
         log.debug("REST request to search the best purchase");
-       List<Stock>  stockBestPurchase=stockService.getBestPurchase();
+        List<Stock>  stockBestPurchase=stockService.getBestPurchase();
         Stock stockBest=stockBestPurchase.get((new Random()).nextInt(stockBestPurchase.size()));
-              return ResponseEntity.ok().body(stockBest); 
+        return ResponseEntity.ok().body(stockBest);
     }
-
 
     /**
      * SEARCH the best purchase
      *
      */
-     
+
     @GetMapping("/stocks/grade")
     @Timed
     public ResponseEntity<Stock> getBestGrade() {
         log.debug("REST request to search the best grade");
         List<Stock>  gradeList=stockService.getBestGrade();
         Stock stockGrade=gradeList.get((new Random()).nextInt(gradeList.size()));
-        return ResponseEntity.ok().body(stockGrade); 
+        return ResponseEntity.ok().body(stockGrade);
     }
-
 }

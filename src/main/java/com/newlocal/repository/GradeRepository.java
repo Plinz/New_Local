@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long>, JpaSpecificationExecutor<Grade> {
 
-    @Query("select grade from Grade grade where grade.user.login = ?#{principal.username}")
-    List<Grade> findByUserIsCurrentUser();
+    @Query("select grade from Grade grade where grade.seller.login = ?#{principal.username}")
+    List<Grade> findBySellerIsCurrentUser();
 
 }

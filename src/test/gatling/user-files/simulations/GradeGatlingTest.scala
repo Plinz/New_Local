@@ -72,7 +72,8 @@ class GradeGatlingTest extends Simulation {
             .headers(headers_http_authenticated)
             .body(StringBody("""{
                 "id":null
-                , "grade":"0"
+                , "grade":null
+                , "nbVoter":"0"
                 }""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_grade_url"))).exitHereIfFailed

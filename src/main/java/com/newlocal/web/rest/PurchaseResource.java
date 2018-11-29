@@ -5,11 +5,16 @@ import com.newlocal.domain.Purchase;
 import com.newlocal.service.PurchaseService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.web.rest.util.PaginationUtil;
 import com.newlocal.service.dto.PurchaseCriteria;
 import com.newlocal.service.PurchaseQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,15 +93,17 @@ public class PurchaseResource {
     /**
      * GET  /purchases : get all the purchases.
      *
+     * @param pageable the pagination information
      * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of purchases in body
      */
     @GetMapping("/purchases")
     @Timed
-    public ResponseEntity<List<Purchase>> getAllPurchases(PurchaseCriteria criteria) {
+    public ResponseEntity<List<Purchase>> getAllPurchases(PurchaseCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Purchases by criteria: {}", criteria);
-        List<Purchase> entityList = purchaseQueryService.findByCriteria(criteria);
-        return ResponseEntity.ok().body(entityList);
+        Page<Purchase> page = purchaseQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/purchases");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -145,17 +152,16 @@ public class PurchaseResource {
      * to the query.
      *
      * @param query the query of the purchase search
+     * @param pageable the pagination information
      * @return the result of the search
      */
     @GetMapping("/_search/purchases")
     @Timed
-    public List<Purchase> searchPurchases(@RequestParam String query) {
-        log.debug("REST request to search Purchases for query {}", query);
-        return purchaseService.search(query);
+    public ResponseEntity<List<Purchase>> searchPurchases(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of Purchases for query {}", query);
+        Page<Purchase> page = purchaseService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/purchases");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
-
-
-
 
 }

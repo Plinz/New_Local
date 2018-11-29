@@ -72,9 +72,9 @@ class HoldingGatlingTest extends Simulation {
             .headers(headers_http_authenticated)
             .body(StringBody("""{
                 "id":null
+                , "siret":"SAMPLE_TEXT"
                 , "name":"SAMPLE_TEXT"
                 , "description":"SAMPLE_TEXT"
-                , "image":null
                 }""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_holding_url"))).exitHereIfFailed

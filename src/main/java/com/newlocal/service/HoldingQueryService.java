@@ -87,6 +87,9 @@ public class HoldingQueryService extends QueryService<Holding> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), Holding_.id));
             }
+            if (criteria.getSiret() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getSiret(), Holding_.siret));
+            }
             if (criteria.getName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getName(), Holding_.name));
             }
@@ -100,6 +103,10 @@ public class HoldingQueryService extends QueryService<Holding> {
             if (criteria.getOwnerId() != null) {
                 specification = specification.and(buildSpecification(criteria.getOwnerId(),
                     root -> root.join(Holding_.owner, JoinType.LEFT).get(User_.id)));
+            }
+            if (criteria.getImageId() != null) {
+                specification = specification.and(buildSpecification(criteria.getImageId(),
+                    root -> root.join(Holding_.images, JoinType.LEFT).get(Image_.id)));
             }
         }
         return specification;

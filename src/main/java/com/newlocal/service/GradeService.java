@@ -6,13 +6,12 @@ import com.newlocal.repository.search.GradeSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -50,12 +49,13 @@ public class GradeService {
     /**
      * Get all the grades.
      *
+     * @param pageable the pagination information
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<Grade> findAll() {
+    public Page<Grade> findAll(Pageable pageable) {
         log.debug("Request to get all Grades");
-        return gradeRepository.findAll();
+        return gradeRepository.findAll(pageable);
     }
 
 
@@ -86,13 +86,11 @@ public class GradeService {
      * Search for the grade corresponding to the query.
      *
      * @param query the query of the search
+     * @param pageable the pagination information
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<Grade> search(String query) {
-        log.debug("Request to search Grades for query {}", query);
-        return StreamSupport
-            .stream(gradeSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
-    }
+    public Page<Grade> search(String query, Pageable pageable) {
+        log.debug("Request to search for a page of Grades for query {}", query);
+        return gradeSearchRepository.search(queryStringQuery(query), pageable);    }
 }

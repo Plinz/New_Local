@@ -20,5 +20,16 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 
+        <addForeignKeyConstraint baseColumnNames="holdings_id"
+                                 baseTableName="holding_image"
+                                 constraintName="fk_holding_image_holdings_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="holding"/>
+        <addForeignKeyConstraint baseColumnNames="images_id"
+                                 baseTableName="holding_image"
+                                 constraintName="fk_holding_image_images_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="image"/>
+        
     </changeSet>
 </databaseChangeLog>

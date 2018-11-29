@@ -8,13 +8,16 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entités",
-                "purchase": "Purchase",
-                "grade": "Grade",
-                "category": "Category",
-                "productType": "Product Type",
-                "location": "Location",
+                "purchase": "Achat",
+                "grade": "Note",
+                "category": "Categorie",
+                "productType": "Type Produit",
+                "location": "Localisation",
                 "stock": "Stock",
-                "holding": "Holding",
+                "holding": "Exploitation",
+                "cart": "Panier",
+                "warehouse": "Entrepot",
+                "image": "Image",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

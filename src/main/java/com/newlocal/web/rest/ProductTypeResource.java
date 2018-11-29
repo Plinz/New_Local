@@ -5,14 +5,20 @@ import com.newlocal.domain.ProductType;
 import com.newlocal.service.ProductTypeService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.web.rest.util.PaginationUtil;
 import com.newlocal.service.dto.ProductTypeCriteria;
 import com.newlocal.service.ProductTypeQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -51,7 +57,7 @@ public class ProductTypeResource {
      */
     @PostMapping("/product-types")
     @Timed
-    public ResponseEntity<ProductType> createProductType(@RequestBody ProductType productType) throws URISyntaxException {
+    public ResponseEntity<ProductType> createProductType(@Valid @RequestBody ProductType productType) throws URISyntaxException {
         log.debug("REST request to save ProductType : {}", productType);
         if (productType.getId() != null) {
             throw new BadRequestAlertException("A new productType cannot already have an ID", ENTITY_NAME, "idexists");
@@ -73,7 +79,7 @@ public class ProductTypeResource {
      */
     @PutMapping("/product-types")
     @Timed
-    public ResponseEntity<ProductType> updateProductType(@RequestBody ProductType productType) throws URISyntaxException {
+    public ResponseEntity<ProductType> updateProductType(@Valid @RequestBody ProductType productType) throws URISyntaxException {
         log.debug("REST request to update ProductType : {}", productType);
         if (productType.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -87,15 +93,17 @@ public class ProductTypeResource {
     /**
      * GET  /product-types : get all the productTypes.
      *
+     * @param pageable the pagination information
      * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of productTypes in body
      */
     @GetMapping("/product-types")
     @Timed
-    public ResponseEntity<List<ProductType>> getAllProductTypes(ProductTypeCriteria criteria) {
+    public ResponseEntity<List<ProductType>> getAllProductTypes(ProductTypeCriteria criteria, Pageable pageable) {
         log.debug("REST request to get ProductTypes by criteria: {}", criteria);
-        List<ProductType> entityList = productTypeQueryService.findByCriteria(criteria);
-        return ResponseEntity.ok().body(entityList);
+        Page<ProductType> page = productTypeQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/product-types");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -144,13 +152,16 @@ public class ProductTypeResource {
      * to the query.
      *
      * @param query the query of the productType search
+     * @param pageable the pagination information
      * @return the result of the search
      */
     @GetMapping("/_search/product-types")
     @Timed
-    public List<ProductType> searchProductTypes(@RequestParam String query) {
-        log.debug("REST request to search ProductTypes for query {}", query);
-        return productTypeService.search(query);
+    public ResponseEntity<List<ProductType>> searchProductTypes(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of ProductTypes for query {}", query);
+        Page<ProductType> page = productTypeService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/product-types");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
 }

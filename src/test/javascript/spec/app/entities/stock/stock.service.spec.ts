@@ -25,7 +25,7 @@ describe('Service Tests', () => {
             httpMock = injector.get(HttpTestingController);
             currentDate = moment();
 
-            elemDefault = new Stock(0, 'AAAAAAA', 'AAAAAAA', 0, 0, 0, 'image/png', 'AAAAAAA', currentDate, currentDate, false, false);
+            elemDefault = new Stock(0, 'AAAAAAA', 'AAAAAAA', 0, 0, 0, currentDate, currentDate, false, false);
         });
 
         describe('Service methods', async () => {
@@ -78,7 +78,6 @@ describe('Service Tests', () => {
                         quantityInit: 1,
                         quantityRemaining: 1,
                         priceUnit: 1,
-                        image: 'BBBBBB',
                         onSaleDate: currentDate.format(DATE_TIME_FORMAT),
                         expiryDate: currentDate.format(DATE_TIME_FORMAT),
                         bio: true,
@@ -110,7 +109,6 @@ describe('Service Tests', () => {
                         quantityInit: 1,
                         quantityRemaining: 1,
                         priceUnit: 1,
-                        image: 'BBBBBB',
                         onSaleDate: currentDate.format(DATE_TIME_FORMAT),
                         expiryDate: currentDate.format(DATE_TIME_FORMAT),
                         bio: true,

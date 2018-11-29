@@ -5,14 +5,20 @@ import com.newlocal.domain.Category;
 import com.newlocal.service.CategoryService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.web.rest.util.PaginationUtil;
 import com.newlocal.service.dto.CategoryCriteria;
 import com.newlocal.service.CategoryQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -51,7 +57,7 @@ public class CategoryResource {
      */
     @PostMapping("/categories")
     @Timed
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) throws URISyntaxException {
+    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) throws URISyntaxException {
         log.debug("REST request to save Category : {}", category);
         if (category.getId() != null) {
             throw new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists");
@@ -73,7 +79,7 @@ public class CategoryResource {
      */
     @PutMapping("/categories")
     @Timed
-    public ResponseEntity<Category> updateCategory(@RequestBody Category category) throws URISyntaxException {
+    public ResponseEntity<Category> updateCategory(@Valid @RequestBody Category category) throws URISyntaxException {
         log.debug("REST request to update Category : {}", category);
         if (category.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -87,15 +93,17 @@ public class CategoryResource {
     /**
      * GET  /categories : get all the categories.
      *
+     * @param pageable the pagination information
      * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of categories in body
      */
     @GetMapping("/categories")
     @Timed
-    public ResponseEntity<List<Category>> getAllCategories(CategoryCriteria criteria) {
+    public ResponseEntity<List<Category>> getAllCategories(CategoryCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Categories by criteria: {}", criteria);
-        List<Category> entityList = categoryQueryService.findByCriteria(criteria);
-        return ResponseEntity.ok().body(entityList);
+        Page<Category> page = categoryQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/categories");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -144,13 +152,16 @@ public class CategoryResource {
      * to the query.
      *
      * @param query the query of the category search
+     * @param pageable the pagination information
      * @return the result of the search
      */
     @GetMapping("/_search/categories")
     @Timed
-    public List<Category> searchCategories(@RequestParam String query) {
-        log.debug("REST request to search Categories for query {}", query);
-        return categoryService.search(query);
+    public ResponseEntity<List<Category>> searchCategories(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of Categories for query {}", query);
+        Page<Category> page = categoryService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/categories");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
 }

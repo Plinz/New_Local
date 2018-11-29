@@ -14,5 +14,16 @@
                                  referencedColumnNames="id"
                                  referencedTableName="category"/>
 
+        <addForeignKeyConstraint baseColumnNames="product_types_id"
+                                 baseTableName="product_type_image"
+                                 constraintName="fk_product_type_image_product_types_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="product_type"/>
+        <addForeignKeyConstraint baseColumnNames="images_id"
+                                 baseTableName="product_type_image"
+                                 constraintName="fk_product_type_image_images_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="image"/>
+        
     </changeSet>
 </databaseChangeLog>

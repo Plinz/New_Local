@@ -5,14 +5,20 @@ import com.newlocal.domain.Location;
 import com.newlocal.service.LocationService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.web.rest.util.PaginationUtil;
 import com.newlocal.service.dto.LocationCriteria;
 import com.newlocal.service.LocationQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -51,7 +57,7 @@ public class LocationResource {
      */
     @PostMapping("/locations")
     @Timed
-    public ResponseEntity<Location> createLocation(@RequestBody Location location) throws URISyntaxException {
+    public ResponseEntity<Location> createLocation(@Valid @RequestBody Location location) throws URISyntaxException {
         log.debug("REST request to save Location : {}", location);
         if (location.getId() != null) {
             throw new BadRequestAlertException("A new location cannot already have an ID", ENTITY_NAME, "idexists");
@@ -73,7 +79,7 @@ public class LocationResource {
      */
     @PutMapping("/locations")
     @Timed
-    public ResponseEntity<Location> updateLocation(@RequestBody Location location) throws URISyntaxException {
+    public ResponseEntity<Location> updateLocation(@Valid @RequestBody Location location) throws URISyntaxException {
         log.debug("REST request to update Location : {}", location);
         if (location.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -87,15 +93,17 @@ public class LocationResource {
     /**
      * GET  /locations : get all the locations.
      *
+     * @param pageable the pagination information
      * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of locations in body
      */
     @GetMapping("/locations")
     @Timed
-    public ResponseEntity<List<Location>> getAllLocations(LocationCriteria criteria) {
+    public ResponseEntity<List<Location>> getAllLocations(LocationCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Locations by criteria: {}", criteria);
-        List<Location> entityList = locationQueryService.findByCriteria(criteria);
-        return ResponseEntity.ok().body(entityList);
+        Page<Location> page = locationQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/locations");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -144,13 +152,16 @@ public class LocationResource {
      * to the query.
      *
      * @param query the query of the location search
+     * @param pageable the pagination information
      * @return the result of the search
      */
     @GetMapping("/_search/locations")
     @Timed
-    public List<Location> searchLocations(@RequestParam String query) {
-        log.debug("REST request to search Locations for query {}", query);
-        return locationService.search(query);
+    public ResponseEntity<List<Location>> searchLocations(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of Locations for query {}", query);
+        Page<Location> page = locationService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/locations");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
 }

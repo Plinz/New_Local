@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -48,8 +50,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = NewLocalApp.class)
 public class GradeResourceIntTest {
 
-    private static final Integer DEFAULT_GRADE = 1;
-    private static final Integer UPDATED_GRADE = 2;
+    private static final Double DEFAULT_GRADE = 0D;
+    private static final Double UPDATED_GRADE = 1D;
+
+    private static final Integer DEFAULT_NB_VOTER = 0;
+    private static final Integer UPDATED_NB_VOTER = 1;
 
     @Autowired
     private GradeRepository gradeRepository;
@@ -103,7 +108,18 @@ public class GradeResourceIntTest {
      */
     public static Grade createEntity(EntityManager em) {
         Grade grade = new Grade()
-            .grade(DEFAULT_GRADE);
+            .grade(DEFAULT_GRADE)
+            .nbVoter(DEFAULT_NB_VOTER);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        grade.setSeller(user);
+        // Add required entity
+        ProductType productType = ProductTypeResourceIntTest.createEntity(em);
+        em.persist(productType);
+        em.flush();
+        grade.setProductType(productType);
         return grade;
     }
 
@@ -128,6 +144,7 @@ public class GradeResourceIntTest {
         assertThat(gradeList).hasSize(databaseSizeBeforeCreate + 1);
         Grade testGrade = gradeList.get(gradeList.size() - 1);
         assertThat(testGrade.getGrade()).isEqualTo(DEFAULT_GRADE);
+        assertThat(testGrade.getNbVoter()).isEqualTo(DEFAULT_NB_VOTER);
 
         // Validate the Grade in Elasticsearch
         verify(mockGradeSearchRepository, times(1)).save(testGrade);
@@ -175,6 +192,24 @@ public class GradeResourceIntTest {
 
     @Test
     @Transactional
+    public void checkNbVoterIsRequired() throws Exception {
+        int databaseSizeBeforeTest = gradeRepository.findAll().size();
+        // set the field null
+        grade.setNbVoter(null);
+
+        // Create the Grade, which fails.
+
+        restGradeMockMvc.perform(post("/api/grades")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(grade)))
+            .andExpect(status().isBadRequest());
+
+        List<Grade> gradeList = gradeRepository.findAll();
+        assertThat(gradeList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllGrades() throws Exception {
         // Initialize the database
         gradeRepository.saveAndFlush(grade);
@@ -184,7 +219,8 @@ public class GradeResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(grade.getId().intValue())))
-            .andExpect(jsonPath("$.[*].grade").value(hasItem(DEFAULT_GRADE)));
+            .andExpect(jsonPath("$.[*].grade").value(hasItem(DEFAULT_GRADE.doubleValue())))
+            .andExpect(jsonPath("$.[*].nbVoter").value(hasItem(DEFAULT_NB_VOTER)));
     }
     
     @Test
@@ -198,7 +234,8 @@ public class GradeResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(grade.getId().intValue()))
-            .andExpect(jsonPath("$.grade").value(DEFAULT_GRADE));
+            .andExpect(jsonPath("$.grade").value(DEFAULT_GRADE.doubleValue()))
+            .andExpect(jsonPath("$.nbVoter").value(DEFAULT_NB_VOTER));
     }
 
     @Test
@@ -242,47 +279,86 @@ public class GradeResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllGradesByGradeIsGreaterThanOrEqualToSomething() throws Exception {
+    public void getAllGradesByNbVoterIsEqualToSomething() throws Exception {
         // Initialize the database
         gradeRepository.saveAndFlush(grade);
 
-        // Get all the gradeList where grade greater than or equals to DEFAULT_GRADE
-        defaultGradeShouldBeFound("grade.greaterOrEqualThan=" + DEFAULT_GRADE);
+        // Get all the gradeList where nbVoter equals to DEFAULT_NB_VOTER
+        defaultGradeShouldBeFound("nbVoter.equals=" + DEFAULT_NB_VOTER);
 
-        // Get all the gradeList where grade greater than or equals to UPDATED_GRADE
-        defaultGradeShouldNotBeFound("grade.greaterOrEqualThan=" + UPDATED_GRADE);
+        // Get all the gradeList where nbVoter equals to UPDATED_NB_VOTER
+        defaultGradeShouldNotBeFound("nbVoter.equals=" + UPDATED_NB_VOTER);
     }
 
     @Test
     @Transactional
-    public void getAllGradesByGradeIsLessThanSomething() throws Exception {
+    public void getAllGradesByNbVoterIsInShouldWork() throws Exception {
         // Initialize the database
         gradeRepository.saveAndFlush(grade);
 
-        // Get all the gradeList where grade less than or equals to DEFAULT_GRADE
-        defaultGradeShouldNotBeFound("grade.lessThan=" + DEFAULT_GRADE);
+        // Get all the gradeList where nbVoter in DEFAULT_NB_VOTER or UPDATED_NB_VOTER
+        defaultGradeShouldBeFound("nbVoter.in=" + DEFAULT_NB_VOTER + "," + UPDATED_NB_VOTER);
 
-        // Get all the gradeList where grade less than or equals to UPDATED_GRADE
-        defaultGradeShouldBeFound("grade.lessThan=" + UPDATED_GRADE);
+        // Get all the gradeList where nbVoter equals to UPDATED_NB_VOTER
+        defaultGradeShouldNotBeFound("nbVoter.in=" + UPDATED_NB_VOTER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllGradesByNbVoterIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        gradeRepository.saveAndFlush(grade);
+
+        // Get all the gradeList where nbVoter is not null
+        defaultGradeShouldBeFound("nbVoter.specified=true");
+
+        // Get all the gradeList where nbVoter is null
+        defaultGradeShouldNotBeFound("nbVoter.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllGradesByNbVoterIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        gradeRepository.saveAndFlush(grade);
+
+        // Get all the gradeList where nbVoter greater than or equals to DEFAULT_NB_VOTER
+        defaultGradeShouldBeFound("nbVoter.greaterOrEqualThan=" + DEFAULT_NB_VOTER);
+
+        // Get all the gradeList where nbVoter greater than or equals to UPDATED_NB_VOTER
+        defaultGradeShouldNotBeFound("nbVoter.greaterOrEqualThan=" + UPDATED_NB_VOTER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllGradesByNbVoterIsLessThanSomething() throws Exception {
+        // Initialize the database
+        gradeRepository.saveAndFlush(grade);
+
+        // Get all the gradeList where nbVoter less than or equals to DEFAULT_NB_VOTER
+        defaultGradeShouldNotBeFound("nbVoter.lessThan=" + DEFAULT_NB_VOTER);
+
+        // Get all the gradeList where nbVoter less than or equals to UPDATED_NB_VOTER
+        defaultGradeShouldBeFound("nbVoter.lessThan=" + UPDATED_NB_VOTER);
     }
 
 
     @Test
     @Transactional
-    public void getAllGradesByUserIsEqualToSomething() throws Exception {
+    public void getAllGradesBySellerIsEqualToSomething() throws Exception {
         // Initialize the database
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
+        User seller = UserResourceIntTest.createEntity(em);
+        em.persist(seller);
         em.flush();
-        grade.setUser(user);
+        grade.setSeller(seller);
         gradeRepository.saveAndFlush(grade);
-        Long userId = user.getId();
+        Long sellerId = seller.getId();
 
-        // Get all the gradeList where user equals to userId
-        defaultGradeShouldBeFound("userId.equals=" + userId);
+        // Get all the gradeList where seller equals to sellerId
+        defaultGradeShouldBeFound("sellerId.equals=" + sellerId);
 
-        // Get all the gradeList where user equals to userId + 1
-        defaultGradeShouldNotBeFound("userId.equals=" + (userId + 1));
+        // Get all the gradeList where seller equals to sellerId + 1
+        defaultGradeShouldNotBeFound("sellerId.equals=" + (sellerId + 1));
     }
 
 
@@ -312,7 +388,8 @@ public class GradeResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(grade.getId().intValue())))
-            .andExpect(jsonPath("$.[*].grade").value(hasItem(DEFAULT_GRADE)));
+            .andExpect(jsonPath("$.[*].grade").value(hasItem(DEFAULT_GRADE.doubleValue())))
+            .andExpect(jsonPath("$.[*].nbVoter").value(hasItem(DEFAULT_NB_VOTER)));
 
         // Check, that the count call also returns 1
         restGradeMockMvc.perform(get("/api/grades/count?sort=id,desc&" + filter))
@@ -362,7 +439,8 @@ public class GradeResourceIntTest {
         // Disconnect from session so that the updates on updatedGrade are not directly saved in db
         em.detach(updatedGrade);
         updatedGrade
-            .grade(UPDATED_GRADE);
+            .grade(UPDATED_GRADE)
+            .nbVoter(UPDATED_NB_VOTER);
 
         restGradeMockMvc.perform(put("/api/grades")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -374,6 +452,7 @@ public class GradeResourceIntTest {
         assertThat(gradeList).hasSize(databaseSizeBeforeUpdate);
         Grade testGrade = gradeList.get(gradeList.size() - 1);
         assertThat(testGrade.getGrade()).isEqualTo(UPDATED_GRADE);
+        assertThat(testGrade.getNbVoter()).isEqualTo(UPDATED_NB_VOTER);
 
         // Validate the Grade in Elasticsearch
         verify(mockGradeSearchRepository, times(1)).save(testGrade);
@@ -426,14 +505,15 @@ public class GradeResourceIntTest {
     public void searchGrade() throws Exception {
         // Initialize the database
         gradeService.save(grade);
-        when(mockGradeSearchRepository.search(queryStringQuery("id:" + grade.getId())))
-            .thenReturn(Collections.singletonList(grade));
+        when(mockGradeSearchRepository.search(queryStringQuery("id:" + grade.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(grade), PageRequest.of(0, 1), 1));
         // Search the grade
         restGradeMockMvc.perform(get("/api/_search/grades?query=id:" + grade.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(grade.getId().intValue())))
-            .andExpect(jsonPath("$.[*].grade").value(hasItem(DEFAULT_GRADE)));
+            .andExpect(jsonPath("$.[*].grade").value(hasItem(DEFAULT_GRADE.doubleValue())))
+            .andExpect(jsonPath("$.[*].nbVoter").value(hasItem(DEFAULT_NB_VOTER)));
     }
 
     @Test

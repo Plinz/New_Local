@@ -21,7 +21,7 @@ describe('Service Tests', () => {
             service = injector.get(HoldingService);
             httpMock = injector.get(HttpTestingController);
 
-            elemDefault = new Holding(0, 'AAAAAAA', 'AAAAAAA', 'image/png', 'AAAAAAA');
+            elemDefault = new Holding(0, 'AAAAAAA', 'AAAAAAA', 'AAAAAAA');
         });
 
         describe('Service methods', async () => {
@@ -55,9 +55,9 @@ describe('Service Tests', () => {
             it('should update a Holding', async () => {
                 const returnedFromService = Object.assign(
                     {
+                        siret: 'BBBBBB',
                         name: 'BBBBBB',
-                        description: 'BBBBBB',
-                        image: 'BBBBBB'
+                        description: 'BBBBBB'
                     },
                     elemDefault
                 );
@@ -74,9 +74,9 @@ describe('Service Tests', () => {
             it('should return a list of Holding', async () => {
                 const returnedFromService = Object.assign(
                     {
+                        siret: 'BBBBBB',
                         name: 'BBBBBB',
-                        description: 'BBBBBB',
-                        image: 'BBBBBB'
+                        description: 'BBBBBB'
                     },
                     elemDefault
                 );

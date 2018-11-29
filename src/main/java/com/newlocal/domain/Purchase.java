@@ -28,18 +28,26 @@ public class Purchase implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "sale_date")
+    @NotNull
+    @Column(name = "sale_date", nullable = false)
     private Instant saleDate;
 
     @NotNull
+    @Min(value = 1)
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @ManyToOne
+    @NotNull
+    @Column(name = "withdraw", nullable = false)
+    private Boolean withdraw;
+
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("")
     private Stock stock;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("")
     private User client;
 
@@ -76,6 +84,19 @@ public class Purchase implements Serializable {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Boolean isWithdraw() {
+        return withdraw;
+    }
+
+    public Purchase withdraw(Boolean withdraw) {
+        this.withdraw = withdraw;
+        return this;
+    }
+
+    public void setWithdraw(Boolean withdraw) {
+        this.withdraw = withdraw;
     }
 
     public Stock getStock() {
@@ -131,6 +152,7 @@ public class Purchase implements Serializable {
             "id=" + getId() +
             ", saleDate='" + getSaleDate() + "'" +
             ", quantity=" + getQuantity() +
+            ", withdraw='" + isWithdraw() + "'" +
             "}";
     }
 }

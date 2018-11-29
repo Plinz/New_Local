@@ -3,33 +3,48 @@
     "fields": [
         {
             "fieldName": "name",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "minlength",
+                "maxlength"
+            ],
+            "fieldValidateRulesMinlength": 1,
+            "fieldValidateRulesMaxlength": 100
         },
         {
             "fieldName": "description",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "image",
-            "fieldType": "byte[]",
-            "fieldTypeBlobContent": "image"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 300
         }
     ],
     "relationships": [
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "categoryParent",
+            "relationshipName": "categoyParent",
             "otherEntityName": "category",
             "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "category",
+            "relationshipName": "image",
+            "otherEntityName": "image",
+            "otherEntityField": "id",
+            "ownerSide": true
         }
     ],
     "changelogDate": "20181107090803",
     "entityTableName": "category",
     "dto": "no",
-    "pagination": "no",
+    "pagination": "pager",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*"
+    "applications": "*",
+    "searchEngine": "elasticsearch"
 }

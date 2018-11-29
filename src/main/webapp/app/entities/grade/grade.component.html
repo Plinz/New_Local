@@ -28,11 +28,12 @@
     <div class="table-responsive" *ngIf="grades">
         <table class="table table-striped">
             <thead>
-            <tr>
-            <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="newLocalApp.grade.grade">Grade</span></th>
-            <th><span jhiTranslate="newLocalApp.grade.user">User</span></th>
-            <th><span jhiTranslate="newLocalApp.grade.productType">Product Type</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="grade"><span jhiTranslate="newLocalApp.grade.grade">Grade</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="nbVoter"><span jhiTranslate="newLocalApp.grade.nbVoter">Nb Voter</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="seller.id"><span jhiTranslate="newLocalApp.grade.seller">Seller</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="productType.id"><span jhiTranslate="newLocalApp.grade.productType">Product Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -40,8 +41,9 @@
             <tr *ngFor="let grade of grades ;trackBy: trackId">
                 <td><a [routerLink]="['/grade', grade.id, 'view' ]">{{grade.id}}</a></td>
                 <td>{{grade.grade}}</td>
+                <td>{{grade.nbVoter}}</td>
                 <td>
-                    {{grade.user?.id}}
+                    {{grade.seller?.id}}
                 </td>
                 <td>
                     <div *ngIf="grade.productType">
@@ -75,5 +77,14 @@
             </tr>
             </tbody>
         </table>
+    </div>
+    <!-- Pager is not implemented yet, so this is normal pagination instead -->
+    <div *ngIf="grades && grades.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
     </div>
 </div>

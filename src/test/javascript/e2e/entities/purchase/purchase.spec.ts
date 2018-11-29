@@ -11,7 +11,7 @@ describe('Purchase e2e test', () => {
     let signInPage: SignInPage;
     let purchaseUpdatePage: PurchaseUpdatePage;
     let purchaseComponentsPage: PurchaseComponentsPage;
-    let purchaseDeleteDialog: PurchaseDeleteDialog;
+    /*let purchaseDeleteDialog: PurchaseDeleteDialog;*/
 
     before(async () => {
         await browser.get('/');
@@ -34,7 +34,7 @@ describe('Purchase e2e test', () => {
         await purchaseUpdatePage.cancel();
     });
 
-    it('should create and save Purchases', async () => {
+    /* it('should create and save Purchases', async () => {
         const nbButtonsBeforeCreate = await purchaseComponentsPage.countDeleteButtons();
 
         await purchaseComponentsPage.clickOnCreateButton();
@@ -42,26 +42,35 @@ describe('Purchase e2e test', () => {
             purchaseUpdatePage.setSaleDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
             purchaseUpdatePage.setQuantityInput('5'),
             purchaseUpdatePage.stockSelectLastOption(),
-            purchaseUpdatePage.clientSelectLastOption()
+            purchaseUpdatePage.clientSelectLastOption(),
         ]);
         expect(await purchaseUpdatePage.getSaleDateInput()).to.contain('2001-01-01T02:30');
         expect(await purchaseUpdatePage.getQuantityInput()).to.eq('5');
+        const selectedWithdraw = purchaseUpdatePage.getWithdrawInput();
+        if (await selectedWithdraw.isSelected()) {
+            await purchaseUpdatePage.getWithdrawInput().click();
+            expect(await purchaseUpdatePage.getWithdrawInput().isSelected()).to.be.false;
+        } else {
+            await purchaseUpdatePage.getWithdrawInput().click();
+            expect(await purchaseUpdatePage.getWithdrawInput().isSelected()).to.be.true;
+        }
         await purchaseUpdatePage.save();
         expect(await purchaseUpdatePage.getSaveButton().isPresent()).to.be.false;
 
         expect(await purchaseComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeCreate + 1);
-    });
+    });*/
 
-    it('should delete last Purchase', async () => {
+    /* it('should delete last Purchase', async () => {
         const nbButtonsBeforeDelete = await purchaseComponentsPage.countDeleteButtons();
         await purchaseComponentsPage.clickOnLastDeleteButton();
 
         purchaseDeleteDialog = new PurchaseDeleteDialog();
-        expect(await purchaseDeleteDialog.getDialogTitle()).to.eq('newLocalApp.purchase.delete.question');
+        expect(await purchaseDeleteDialog.getDialogTitle())
+            .to.eq('newLocalApp.purchase.delete.question');
         await purchaseDeleteDialog.clickOnConfirmButton();
 
         expect(await purchaseComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
-    });
+    });*/
 
     after(async () => {
         await navBarPage.autoSignOut();

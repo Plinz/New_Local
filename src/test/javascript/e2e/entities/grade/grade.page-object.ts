@@ -27,7 +27,8 @@ export class GradeUpdatePage {
     saveButton = element(by.id('save-entity'));
     cancelButton = element(by.id('cancel-save'));
     gradeInput = element(by.id('field_grade'));
-    userSelect = element(by.id('field_user'));
+    nbVoterInput = element(by.id('field_nbVoter'));
+    sellerSelect = element(by.id('field_seller'));
     productTypeSelect = element(by.id('field_productType'));
 
     async getPageTitle() {
@@ -42,23 +43,31 @@ export class GradeUpdatePage {
         return this.gradeInput.getAttribute('value');
     }
 
-    async userSelectLastOption() {
-        await this.userSelect
+    async setNbVoterInput(nbVoter) {
+        await this.nbVoterInput.sendKeys(nbVoter);
+    }
+
+    async getNbVoterInput() {
+        return this.nbVoterInput.getAttribute('value');
+    }
+
+    async sellerSelectLastOption() {
+        await this.sellerSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    async userSelectOption(option) {
-        await this.userSelect.sendKeys(option);
+    async sellerSelectOption(option) {
+        await this.sellerSelect.sendKeys(option);
     }
 
-    getUserSelect(): ElementFinder {
-        return this.userSelect;
+    getSellerSelect(): ElementFinder {
+        return this.sellerSelect;
     }
 
-    async getUserSelectedOption() {
-        return this.userSelect.element(by.css('option:checked')).getText();
+    async getSellerSelectedOption() {
+        return this.sellerSelect.element(by.css('option:checked')).getText();
     }
 
     async productTypeSelectLastOption() {

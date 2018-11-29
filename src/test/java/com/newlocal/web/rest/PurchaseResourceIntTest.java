@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -56,9 +58,12 @@ public class PurchaseResourceIntTest {
     private static final Integer DEFAULT_QUANTITY = 1;
     private static final Integer UPDATED_QUANTITY = 2;
 
+    private static final Boolean DEFAULT_WITHDRAW = false;
+    private static final Boolean UPDATED_WITHDRAW = true;
+
     @Autowired
     private PurchaseRepository purchaseRepository;
-    
+
     @Autowired
     private PurchaseService purchaseService;
 
@@ -109,7 +114,18 @@ public class PurchaseResourceIntTest {
     public static Purchase createEntity(EntityManager em) {
         Purchase purchase = new Purchase()
             .saleDate(DEFAULT_SALE_DATE)
-            .quantity(DEFAULT_QUANTITY);
+            .quantity(DEFAULT_QUANTITY)
+            .withdraw(DEFAULT_WITHDRAW);
+        // Add required entity
+        Stock stock = StockResourceIntTest.createEntity(em);
+        em.persist(stock);
+        em.flush();
+        purchase.setStock(stock);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        purchase.setClient(user);
         return purchase;
     }
 
@@ -135,6 +151,7 @@ public class PurchaseResourceIntTest {
         Purchase testPurchase = purchaseList.get(purchaseList.size() - 1);
         assertThat(testPurchase.getSaleDate()).isEqualTo(DEFAULT_SALE_DATE);
         assertThat(testPurchase.getQuantity()).isEqualTo(DEFAULT_QUANTITY);
+        assertThat(testPurchase.isWithdraw()).isEqualTo(DEFAULT_WITHDRAW);
 
         // Validate the Purchase in Elasticsearch
         verify(mockPurchaseSearchRepository, times(1)).save(testPurchase);
@@ -164,6 +181,24 @@ public class PurchaseResourceIntTest {
 
     @Test
     @Transactional
+    public void checkSaleDateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = purchaseRepository.findAll().size();
+        // set the field null
+        purchase.setSaleDate(null);
+
+        // Create the Purchase, which fails.
+
+        restPurchaseMockMvc.perform(post("/api/purchases")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(purchase)))
+            .andExpect(status().isBadRequest());
+
+        List<Purchase> purchaseList = purchaseRepository.findAll();
+        assertThat(purchaseList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void checkQuantityIsRequired() throws Exception {
         int databaseSizeBeforeTest = purchaseRepository.findAll().size();
         // set the field null
@@ -182,7 +217,25 @@ public class PurchaseResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllpurchases() throws Exception {
+    public void checkWithdrawIsRequired() throws Exception {
+        int databaseSizeBeforeTest = purchaseRepository.findAll().size();
+        // set the field null
+        purchase.setWithdraw(null);
+
+        // Create the Purchase, which fails.
+
+        restPurchaseMockMvc.perform(post("/api/purchases")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(purchase)))
+            .andExpect(status().isBadRequest());
+
+        List<Purchase> purchaseList = purchaseRepository.findAll();
+        assertThat(purchaseList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchases() throws Exception {
         // Initialize the database
         purchaseRepository.saveAndFlush(purchase);
 
@@ -192,12 +245,13 @@ public class PurchaseResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(purchase.getId().intValue())))
             .andExpect(jsonPath("$.[*].saleDate").value(hasItem(DEFAULT_SALE_DATE.toString())))
-            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)));
+            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)))
+            .andExpect(jsonPath("$.[*].withdraw").value(hasItem(DEFAULT_WITHDRAW.booleanValue())));
     }
-    
+
     @Test
     @Transactional
-    public void getpurchase() throws Exception {
+    public void getPurchase() throws Exception {
         // Initialize the database
         purchaseRepository.saveAndFlush(purchase);
 
@@ -207,136 +261,176 @@ public class PurchaseResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(purchase.getId().intValue()))
             .andExpect(jsonPath("$.saleDate").value(DEFAULT_SALE_DATE.toString()))
-            .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY));
+            .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY))
+            .andExpect(jsonPath("$.withdraw").value(DEFAULT_WITHDRAW.booleanValue()));
     }
 
     @Test
     @Transactional
-    public void getAllpurchasesBySaleDateIsEqualToSomething() throws Exception {
+    public void getAllPurchasesBySaleDateIsEqualToSomething() throws Exception {
         // Initialize the database
         purchaseRepository.saveAndFlush(purchase);
 
         // Get all the purchaseList where saleDate equals to DEFAULT_SALE_DATE
-        defaultpurchaseShouldBeFound("saleDate.equals=" + DEFAULT_SALE_DATE);
+        defaultPurchaseShouldBeFound("saleDate.equals=" + DEFAULT_SALE_DATE);
 
         // Get all the purchaseList where saleDate equals to UPDATED_SALE_DATE
-        defaultpurchaseShouldNotBeFound("saleDate.equals=" + UPDATED_SALE_DATE);
+        defaultPurchaseShouldNotBeFound("saleDate.equals=" + UPDATED_SALE_DATE);
     }
 
     @Test
     @Transactional
-    public void getAllpurchasesBySaleDateIsInShouldWork() throws Exception {
+    public void getAllPurchasesBySaleDateIsInShouldWork() throws Exception {
         // Initialize the database
         purchaseRepository.saveAndFlush(purchase);
 
         // Get all the purchaseList where saleDate in DEFAULT_SALE_DATE or UPDATED_SALE_DATE
-        defaultpurchaseShouldBeFound("saleDate.in=" + DEFAULT_SALE_DATE + "," + UPDATED_SALE_DATE);
+        defaultPurchaseShouldBeFound("saleDate.in=" + DEFAULT_SALE_DATE + "," + UPDATED_SALE_DATE);
 
         // Get all the purchaseList where saleDate equals to UPDATED_SALE_DATE
-        defaultpurchaseShouldNotBeFound("saleDate.in=" + UPDATED_SALE_DATE);
+        defaultPurchaseShouldNotBeFound("saleDate.in=" + UPDATED_SALE_DATE);
     }
 
     @Test
     @Transactional
-    public void getAllpurchasesBySaleDateIsNullOrNotNull() throws Exception {
+    public void getAllPurchasesBySaleDateIsNullOrNotNull() throws Exception {
         // Initialize the database
         purchaseRepository.saveAndFlush(purchase);
 
         // Get all the purchaseList where saleDate is not null
-        defaultpurchaseShouldBeFound("saleDate.specified=true");
+        defaultPurchaseShouldBeFound("saleDate.specified=true");
 
         // Get all the purchaseList where saleDate is null
-        defaultpurchaseShouldNotBeFound("saleDate.specified=false");
+        defaultPurchaseShouldNotBeFound("saleDate.specified=false");
     }
 
     @Test
     @Transactional
-    public void getAllpurchasesByQuantityIsEqualToSomething() throws Exception {
+    public void getAllPurchasesByQuantityIsEqualToSomething() throws Exception {
         // Initialize the database
         purchaseRepository.saveAndFlush(purchase);
 
         // Get all the purchaseList where quantity equals to DEFAULT_QUANTITY
-        defaultpurchaseShouldBeFound("quantity.equals=" + DEFAULT_QUANTITY);
+        defaultPurchaseShouldBeFound("quantity.equals=" + DEFAULT_QUANTITY);
 
         // Get all the purchaseList where quantity equals to UPDATED_QUANTITY
-        defaultpurchaseShouldNotBeFound("quantity.equals=" + UPDATED_QUANTITY);
+        defaultPurchaseShouldNotBeFound("quantity.equals=" + UPDATED_QUANTITY);
     }
 
     @Test
     @Transactional
-    public void getAllpurchasesByQuantityIsInShouldWork() throws Exception {
+    public void getAllPurchasesByQuantityIsInShouldWork() throws Exception {
         // Initialize the database
         purchaseRepository.saveAndFlush(purchase);
 
         // Get all the purchaseList where quantity in DEFAULT_QUANTITY or UPDATED_QUANTITY
-        defaultpurchaseShouldBeFound("quantity.in=" + DEFAULT_QUANTITY + "," + UPDATED_QUANTITY);
+        defaultPurchaseShouldBeFound("quantity.in=" + DEFAULT_QUANTITY + "," + UPDATED_QUANTITY);
 
         // Get all the purchaseList where quantity equals to UPDATED_QUANTITY
-        defaultpurchaseShouldNotBeFound("quantity.in=" + UPDATED_QUANTITY);
+        defaultPurchaseShouldNotBeFound("quantity.in=" + UPDATED_QUANTITY);
     }
 
     @Test
     @Transactional
-    public void getAllpurchasesByQuantityIsNullOrNotNull() throws Exception {
+    public void getAllPurchasesByQuantityIsNullOrNotNull() throws Exception {
         // Initialize the database
         purchaseRepository.saveAndFlush(purchase);
 
         // Get all the purchaseList where quantity is not null
-        defaultpurchaseShouldBeFound("quantity.specified=true");
+        defaultPurchaseShouldBeFound("quantity.specified=true");
 
         // Get all the purchaseList where quantity is null
-        defaultpurchaseShouldNotBeFound("quantity.specified=false");
+        defaultPurchaseShouldNotBeFound("quantity.specified=false");
     }
 
     @Test
     @Transactional
-    public void getAllpurchasesByQuantityIsGreaterThanOrEqualToSomething() throws Exception {
+    public void getAllPurchasesByQuantityIsGreaterThanOrEqualToSomething() throws Exception {
         // Initialize the database
         purchaseRepository.saveAndFlush(purchase);
 
         // Get all the purchaseList where quantity greater than or equals to DEFAULT_QUANTITY
-        defaultpurchaseShouldBeFound("quantity.greaterOrEqualThan=" + DEFAULT_QUANTITY);
+        defaultPurchaseShouldBeFound("quantity.greaterOrEqualThan=" + DEFAULT_QUANTITY);
 
         // Get all the purchaseList where quantity greater than or equals to UPDATED_QUANTITY
-        defaultpurchaseShouldNotBeFound("quantity.greaterOrEqualThan=" + UPDATED_QUANTITY);
+        defaultPurchaseShouldNotBeFound("quantity.greaterOrEqualThan=" + UPDATED_QUANTITY);
     }
 
     @Test
     @Transactional
-    public void getAllpurchasesByQuantityIsLessThanSomething() throws Exception {
+    public void getAllPurchasesByQuantityIsLessThanSomething() throws Exception {
         // Initialize the database
         purchaseRepository.saveAndFlush(purchase);
 
         // Get all the purchaseList where quantity less than or equals to DEFAULT_QUANTITY
-        defaultpurchaseShouldNotBeFound("quantity.lessThan=" + DEFAULT_QUANTITY);
+        defaultPurchaseShouldNotBeFound("quantity.lessThan=" + DEFAULT_QUANTITY);
 
         // Get all the purchaseList where quantity less than or equals to UPDATED_QUANTITY
-        defaultpurchaseShouldBeFound("quantity.lessThan=" + UPDATED_QUANTITY);
+        defaultPurchaseShouldBeFound("quantity.lessThan=" + UPDATED_QUANTITY);
     }
 
 
     @Test
     @Transactional
-    public void getAllpurchasesByStockIsEqualToSomething() throws Exception {
+    public void getAllPurchasesByWithdrawIsEqualToSomething() throws Exception {
         // Initialize the database
-        Stock stock = StockResourceIntTest.createEntity(em);
-        em.persist(stock);
-        em.flush();
-        purchase.setStock(stock);
         purchaseRepository.saveAndFlush(purchase);
-        Long stockId = stock.getId();
 
-        // Get all the purchaseList where stock equals to stockId
-        defaultpurchaseShouldBeFound("stockId.equals=" + stockId);
+        // Get all the purchaseList where withdraw equals to DEFAULT_WITHDRAW
+        defaultPurchaseShouldBeFound("withdraw.equals=" + DEFAULT_WITHDRAW);
 
-        // Get all the purchaseList where stock equals to stockId + 1
-        defaultpurchaseShouldNotBeFound("stockId.equals=" + (stockId + 1));
+        // Get all the purchaseList where withdraw equals to UPDATED_WITHDRAW
+        defaultPurchaseShouldNotBeFound("withdraw.equals=" + UPDATED_WITHDRAW);
     }
+
+    @Test
+    @Transactional
+    public void getAllPurchasesByWithdrawIsInShouldWork() throws Exception {
+        // Initialize the database
+        purchaseRepository.saveAndFlush(purchase);
+
+        // Get all the purchaseList where withdraw in DEFAULT_WITHDRAW or UPDATED_WITHDRAW
+        defaultPurchaseShouldBeFound("withdraw.in=" + DEFAULT_WITHDRAW + "," + UPDATED_WITHDRAW);
+
+        // Get all the purchaseList where withdraw equals to UPDATED_WITHDRAW
+        defaultPurchaseShouldNotBeFound("withdraw.in=" + UPDATED_WITHDRAW);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPurchasesByWithdrawIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        purchaseRepository.saveAndFlush(purchase);
+
+        // Get all the purchaseList where withdraw is not null
+        defaultPurchaseShouldBeFound("withdraw.specified=true");
+
+        // Get all the purchaseList where withdraw is null
+        defaultPurchaseShouldNotBeFound("withdraw.specified=false");
+    }
+
+    // @Test
+    // @Transactional
+    // public void getAllPurchasesByStockIsEqualToSomething() throws Exception {
+    //     // Initialize the database
+    //     Stock stock = StockResourceIntTest.createEntity(em);
+    //     em.persist(stock);
+    //     em.flush();
+    //     purchase.setStock(stock);
+    //     purchaseRepository.saveAndFlush(purchase);
+    //     Long stockId = stock.getId();
+    //
+    //     // Get all the purchaseList where stock equals to stockId
+    //     defaultPurchaseShouldBeFound("stockId.equals=" + stockId);
+    //
+    //     // Get all the purchaseList where stock equals to stockId + 1
+    //     defaultPurchaseShouldNotBeFound("stockId.equals=" + (stockId + 1));
+    // }
 
 
     @Test
     @Transactional
-    public void getAllpurchasesByClientIsEqualToSomething() throws Exception {
+    public void getAllPurchasesByClientIsEqualToSomething() throws Exception {
         // Initialize the database
         User client = UserResourceIntTest.createEntity(em);
         em.persist(client);
@@ -346,22 +440,23 @@ public class PurchaseResourceIntTest {
         Long clientId = client.getId();
 
         // Get all the purchaseList where client equals to clientId
-        defaultpurchaseShouldBeFound("clientId.equals=" + clientId);
+        defaultPurchaseShouldBeFound("clientId.equals=" + clientId);
 
         // Get all the purchaseList where client equals to clientId + 1
-        defaultpurchaseShouldNotBeFound("clientId.equals=" + (clientId + 1));
+        defaultPurchaseShouldNotBeFound("clientId.equals=" + (clientId + 1));
     }
 
     /**
      * Executes the search, and checks that the default entity is returned
      */
-    private void defaultpurchaseShouldBeFound(String filter) throws Exception {
+    private void defaultPurchaseShouldBeFound(String filter) throws Exception {
         restPurchaseMockMvc.perform(get("/api/purchases?sort=id,desc&" + filter))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(purchase.getId().intValue())))
             .andExpect(jsonPath("$.[*].saleDate").value(hasItem(DEFAULT_SALE_DATE.toString())))
-            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)));
+            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)))
+            .andExpect(jsonPath("$.[*].withdraw").value(hasItem(DEFAULT_WITHDRAW.booleanValue())));
 
         // Check, that the count call also returns 1
         restPurchaseMockMvc.perform(get("/api/purchases/count?sort=id,desc&" + filter))
@@ -373,7 +468,7 @@ public class PurchaseResourceIntTest {
     /**
      * Executes the search, and checks that the default entity is not returned
      */
-    private void defaultpurchaseShouldNotBeFound(String filter) throws Exception {
+    private void defaultPurchaseShouldNotBeFound(String filter) throws Exception {
         restPurchaseMockMvc.perform(get("/api/purchases?sort=id,desc&" + filter))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -390,7 +485,7 @@ public class PurchaseResourceIntTest {
 
     @Test
     @Transactional
-    public void getNonExistingpurchase() throws Exception {
+    public void getNonExistingPurchase() throws Exception {
         // Get the purchase
         restPurchaseMockMvc.perform(get("/api/purchases/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
@@ -398,7 +493,7 @@ public class PurchaseResourceIntTest {
 
     @Test
     @Transactional
-    public void updatepurchase() throws Exception {
+    public void updatePurchase() throws Exception {
         // Initialize the database
         purchaseService.save(purchase);
         // As the test used the service layer, reset the Elasticsearch mock repository
@@ -407,35 +502,37 @@ public class PurchaseResourceIntTest {
         int databaseSizeBeforeUpdate = purchaseRepository.findAll().size();
 
         // Update the purchase
-        Purchase updatedpurchase = purchaseRepository.findById(purchase.getId()).get();
-        // Disconnect from session so that the updates on updatedpurchase are not directly saved in db
-        em.detach(updatedpurchase);
-        updatedpurchase
+        Purchase updatedPurchase = purchaseRepository.findById(purchase.getId()).get();
+        // Disconnect from session so that the updates on updatedPurchase are not directly saved in db
+        em.detach(updatedPurchase);
+        updatedPurchase
             .saleDate(UPDATED_SALE_DATE)
-            .quantity(UPDATED_QUANTITY);
+            .quantity(UPDATED_QUANTITY)
+            .withdraw(UPDATED_WITHDRAW);
 
         restPurchaseMockMvc.perform(put("/api/purchases")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedpurchase)))
+            .content(TestUtil.convertObjectToJsonBytes(updatedPurchase)))
             .andExpect(status().isOk());
 
-        // Validate the purchase in the database
+        // Validate the Purchase in the database
         List<Purchase> purchaseList = purchaseRepository.findAll();
         assertThat(purchaseList).hasSize(databaseSizeBeforeUpdate);
-        Purchase testpurchase = purchaseList.get(purchaseList.size() - 1);
-        assertThat(testpurchase.getSaleDate()).isEqualTo(UPDATED_SALE_DATE);
-        assertThat(testpurchase.getQuantity()).isEqualTo(UPDATED_QUANTITY);
+        Purchase testPurchase = purchaseList.get(purchaseList.size() - 1);
+        assertThat(testPurchase.getSaleDate()).isEqualTo(UPDATED_SALE_DATE);
+        assertThat(testPurchase.getQuantity()).isEqualTo(UPDATED_QUANTITY);
+        assertThat(testPurchase.isWithdraw()).isEqualTo(UPDATED_WITHDRAW);
 
-        // Validate the purchase in Elasticsearch
-        verify(mockPurchaseSearchRepository, times(1)).save(testpurchase);
+        // Validate the Purchase in Elasticsearch
+        verify(mockPurchaseSearchRepository, times(1)).save(testPurchase);
     }
 
     @Test
     @Transactional
-    public void updateNonExistingpurchase() throws Exception {
+    public void updateNonExistingPurchase() throws Exception {
         int databaseSizeBeforeUpdate = purchaseRepository.findAll().size();
 
-        // Create the purchase
+        // Create the Purchase
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPurchaseMockMvc.perform(put("/api/purchases")
@@ -443,17 +540,17 @@ public class PurchaseResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(purchase)))
             .andExpect(status().isBadRequest());
 
-        // Validate the purchase in the database
+        // Validate the Purchase in the database
         List<Purchase> purchaseList = purchaseRepository.findAll();
         assertThat(purchaseList).hasSize(databaseSizeBeforeUpdate);
 
-        // Validate the purchase in Elasticsearch
+        // Validate the Purchase in Elasticsearch
         verify(mockPurchaseSearchRepository, times(0)).save(purchase);
     }
 
     @Test
     @Transactional
-    public void deletepurchase() throws Exception {
+    public void deletePurchase() throws Exception {
         // Initialize the database
         purchaseService.save(purchase);
 
@@ -468,24 +565,25 @@ public class PurchaseResourceIntTest {
         List<Purchase> purchaseList = purchaseRepository.findAll();
         assertThat(purchaseList).hasSize(databaseSizeBeforeDelete - 1);
 
-        // Validate the purchase in Elasticsearch
+        // Validate the Purchase in Elasticsearch
         verify(mockPurchaseSearchRepository, times(1)).deleteById(purchase.getId());
     }
 
     @Test
     @Transactional
-    public void searchpurchase() throws Exception {
+    public void searchPurchase() throws Exception {
         // Initialize the database
         purchaseService.save(purchase);
-        when(mockPurchaseSearchRepository.search(queryStringQuery("id:" + purchase.getId())))
-            .thenReturn(Collections.singletonList(purchase));
+        when(mockPurchaseSearchRepository.search(queryStringQuery("id:" + purchase.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(purchase), PageRequest.of(0, 1), 1));
         // Search the purchase
         restPurchaseMockMvc.perform(get("/api/_search/purchases?query=id:" + purchase.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(purchase.getId().intValue())))
             .andExpect(jsonPath("$.[*].saleDate").value(hasItem(DEFAULT_SALE_DATE.toString())))
-            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)));
+            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)))
+            .andExpect(jsonPath("$.[*].withdraw").value(hasItem(DEFAULT_WITHDRAW.booleanValue())));
     }
 
     @Test

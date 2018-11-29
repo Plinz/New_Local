@@ -35,7 +35,6 @@
             <th jhiSortBy="quantityInit"><span jhiTranslate="newLocalApp.stock.quantityInit">Quantity Init</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="quantityRemaining"><span jhiTranslate="newLocalApp.stock.quantityRemaining">Quantity Remaining</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="priceUnit"><span jhiTranslate="newLocalApp.stock.priceUnit">Price Unit</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="image"><span jhiTranslate="newLocalApp.stock.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="onSaleDate"><span jhiTranslate="newLocalApp.stock.onSaleDate">On Sale Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="expiryDate"><span jhiTranslate="newLocalApp.stock.expiryDate">Expiry Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="bio"><span jhiTranslate="newLocalApp.stock.bio">Bio</span> <fa-icon [icon]="'sort'"></fa-icon></th>
@@ -43,6 +42,7 @@
             <th jhiSortBy="productType.id"><span jhiTranslate="newLocalApp.stock.productType">Product Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="holding.id"><span jhiTranslate="newLocalApp.stock.holding">Holding</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="seller.id"><span jhiTranslate="newLocalApp.stock.seller">Seller</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="warehouse.id"><span jhiTranslate="newLocalApp.stock.warehouse">Warehouse</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -54,12 +54,6 @@
                 <td>{{stock.quantityInit}}</td>
                 <td>{{stock.quantityRemaining}}</td>
                 <td>{{stock.priceUnit}}</td>
-                <td>
-                    <a *ngIf="stock.image" (click)="openFile(stock.imageContentType, stock.image)">
-                        <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" style="max-height: 30px;" alt="stock image"/>
-                    </a>
-                    <span *ngIf="stock.image">{{stock.imageContentType}}, {{byteSize(stock.image)}}</span>
-                </td>
                 <td>{{stock.onSaleDate | date:'medium'}}</td>
                 <td>{{stock.expiryDate | date:'medium'}}</td>
                 <td>{{stock.bio}}</td>
@@ -76,6 +70,11 @@
                 </td>
                 <td>
                     {{stock.seller?.id}}
+                </td>
+                <td>
+                    <div *ngIf="stock.warehouse">
+                        <a [routerLink]="['../warehouse', stock.warehouse?.id, 'view' ]" >{{stock.warehouse?.id}}</a>
+                    </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
@@ -105,9 +104,10 @@
             </tbody>
         </table>
     </div>
+    <!-- Pager is not implemented yet, so this is normal pagination instead -->
     <div *ngIf="stocks && stocks.length">
         <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
         <div class="row justify-content-center">
             <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>

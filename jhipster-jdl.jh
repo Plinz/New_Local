@@ -1,86 +1,94 @@
+entity Stock {
+    name String required minlength(1) maxlength(100),
+    description String maxlength(300),
+    quantityInit Integer required min(0),
+    quantityRemaining Integer required min(0),
+    priceUnit Double required min(0),
+    onSaleDate Instant required,
+    expiryDate Instant required,
+    bio Boolean required,
+    available Boolean required
+}
+
+entity Cart {
+    quantity Integer required min(1)
+}
+
 entity Purchase {
-	saleDate Instant,
-    quantity Integer required 
+    saleDate Instant required,
+    quantity Integer required min(1),
+    withdraw Boolean required
 }
 
 entity Grade {
-	grade Integer required
+    grade Double required min(0) max(5),
+    nbVoter Integer required min(0),
 }
 
 entity Category {
-	name String,
-    description String,
-    image ImageBlob
+    name String required minlength(1) maxlength(100),
+    description String maxlength(300),
 }
 
 entity ProductType {
-	name String,
-    description String,
-    image ImageBlob
+    name String required minlength(1) maxlength(100),
+    description String maxlength(300),
+}
+
+entity Warehouse {
+    name String required minlength(1) maxlength(100),
+    description String maxlength(300),
+    tel String required minlength(4) maxlength(15),
 }
 
 entity Location {
-	city String,
-    country String,
-    zip String,
-    address String,
-    lon Double,
-    lat Double
-}
-
-entity Stock {
-	name String,
-	description String,
-	quantityInit Integer,
-    quantityRemaining Integer,
-    priceUnit Double,
-    image ImageBlob,
-    onSaleDate Instant,
-    expiryDate Instant,
-    bio Boolean,
-    available Boolean
-}
+    city String minlength(1) maxlength(100),
+    country String minlength(1) maxlength(100),
+    zip String required minlength(1) maxlength(30),
+    address String minlength(1) maxlength(200),
+    lon Double min(-180) max(180),
+    lat Double min(-90) max(90)
+} 
 
 entity Holding {
-	name String required,
-	description String,
-	siret String required unique,
-	image ImageBlob	
+    siret String required minlength(14) maxlength(14) unique,
+    name String required minlength(1) maxlength(100),
+    description String maxlength(300)
+}
+
+entity Image {
+    name String required minlength(1) maxlength(100),
+    description String maxlength(300),
+    image ImageBlob required
 }
 
 relationship ManyToOne {
-	ProductType{category} to Category,
-    Category{categoryParent} to Category,
-    Purchase{stock} to Stock,
-    Stock{productType} to ProductType,
-    Holding{location} to Location,
-    Stock{holding} to Holding,
-    Stock{seller} to User,
-    Grade{user} to User,
-    Purchase{client} to User,
-    Location{user} to User,
-    Holding{owner} to User
-    Grade{productType} to ProductType
+    Stock{productType required} to ProductType,
+    Stock{holding required} to Holding,
+    Stock{seller required} to User,
+    Stock{warehouse required} to Warehouse,
+    Cart{stock required} to Stock,
+    Cart{client required} to User,
+    Purchase{stock required} to Stock,
+    Purchase{client required} to User,
+    Grade{seller required} to User,
+    Grade{productType required} to ProductType,
+    Category{categoyParent} to Category,
+    ProductType{category required} to Category,
+    Warehouse{location required} to Location,
+    Holding{location required} to Location,
+    Holding{owner required} to User,
+    Location{user} to User
 }
 
+relationship ManyToMany {
+    Stock{image} to Image{stock},
+    Category{image} to Image{category},
+    ProductType{image} to Image{productType},
+    Holding{image} to Image{holding},
+    Warehouse{image} to Image{warehouse},
+}
 
-// Set pagination options
-paginate Stock with pagination
-//paginate Grade with pagination
-
-filter Stock
-filter Purchase
-filter Grade
-filter Location
-filter Holding
-filter ProductType
-filter Category
-
-// Use Data Transfert Objects (DTO)
-// dto * with mapstruct
-
-// Set service options to all except few
-//service all with serviceImpl except Stock
-
-// Set an angular suffix
-// angularSuffix * with mySuffix
+paginate all with pager
+search all with elasticsearch
+filter all

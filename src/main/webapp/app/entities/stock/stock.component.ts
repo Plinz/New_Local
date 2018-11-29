@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { JhiEventManager, JhiParseLinks, JhiAlertService, JhiDataUtils } from 'ng-jhipster';
+import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
 import { IStock } from 'app/shared/model/stock.model';
 import { Principal } from 'app/core';
@@ -37,7 +37,6 @@ export class StockComponent implements OnInit, OnDestroy {
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
         private activatedRoute: ActivatedRoute,
-        private dataUtils: JhiDataUtils,
         private router: Router,
         private eventManager: JhiEventManager
     ) {
@@ -144,14 +143,6 @@ export class StockComponent implements OnInit, OnDestroy {
 
     trackId(index: number, item: IStock) {
         return item.id;
-    }
-
-    byteSize(field) {
-        return this.dataUtils.byteSize(field);
-    }
-
-    openFile(contentType, field) {
-        return this.dataUtils.openFile(contentType, field);
     }
 
     registerChangeInStocks() {

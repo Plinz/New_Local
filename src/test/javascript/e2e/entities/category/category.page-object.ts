@@ -28,8 +28,8 @@ export class CategoryUpdatePage {
     cancelButton = element(by.id('cancel-save'));
     nameInput = element(by.id('field_name'));
     descriptionInput = element(by.id('field_description'));
-    imageInput = element(by.id('file_image'));
-    categoryParentSelect = element(by.id('field_categoryParent'));
+    categoyParentSelect = element(by.id('field_categoyParent'));
+    imageSelect = element(by.id('field_image'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -51,31 +51,42 @@ export class CategoryUpdatePage {
         return this.descriptionInput.getAttribute('value');
     }
 
-    async setImageInput(image) {
-        await this.imageInput.sendKeys(image);
-    }
-
-    async getImageInput() {
-        return this.imageInput.getAttribute('value');
-    }
-
-    async categoryParentSelectLastOption() {
-        await this.categoryParentSelect
+    async categoyParentSelectLastOption() {
+        await this.categoyParentSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    async categoryParentSelectOption(option) {
-        await this.categoryParentSelect.sendKeys(option);
+    async categoyParentSelectOption(option) {
+        await this.categoyParentSelect.sendKeys(option);
     }
 
-    getCategoryParentSelect(): ElementFinder {
-        return this.categoryParentSelect;
+    getCategoyParentSelect(): ElementFinder {
+        return this.categoyParentSelect;
     }
 
-    async getCategoryParentSelectedOption() {
-        return this.categoryParentSelect.element(by.css('option:checked')).getText();
+    async getCategoyParentSelectedOption() {
+        return this.categoyParentSelect.element(by.css('option:checked')).getText();
+    }
+
+    async imageSelectLastOption() {
+        await this.imageSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async imageSelectOption(option) {
+        await this.imageSelect.sendKeys(option);
+    }
+
+    getImageSelect(): ElementFinder {
+        return this.imageSelect;
+    }
+
+    async getImageSelectedOption() {
+        return this.imageSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

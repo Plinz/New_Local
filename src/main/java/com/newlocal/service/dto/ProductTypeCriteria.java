@@ -30,6 +30,8 @@ public class ProductTypeCriteria implements Serializable {
 
     private LongFilter categoryId;
 
+    private LongFilter imageId;
+
     public ProductTypeCriteria() {
     }
 
@@ -65,6 +67,14 @@ public class ProductTypeCriteria implements Serializable {
         this.categoryId = categoryId;
     }
 
+    public LongFilter getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(LongFilter imageId) {
+        this.imageId = imageId;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -79,7 +89,8 @@ public class ProductTypeCriteria implements Serializable {
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
-            Objects.equals(categoryId, that.categoryId);
+            Objects.equals(categoryId, that.categoryId) &&
+            Objects.equals(imageId, that.imageId);
     }
 
     @Override
@@ -88,7 +99,8 @@ public class ProductTypeCriteria implements Serializable {
         id,
         name,
         description,
-        categoryId
+        categoryId,
+        imageId
         );
     }
 
@@ -99,6 +111,7 @@ public class ProductTypeCriteria implements Serializable {
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
                 (categoryId != null ? "categoryId=" + categoryId + ", " : "") +
+                (imageId != null ? "imageId=" + imageId + ", " : "") +
             "}";
     }
 

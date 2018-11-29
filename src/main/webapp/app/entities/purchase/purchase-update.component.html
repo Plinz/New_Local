@@ -13,17 +13,31 @@
                     <label class="form-control-label" jhiTranslate="newLocalApp.purchase.saleDate" for="field_saleDate">Sale Date</label>
                     <div class="d-flex">
                         <input id="field_saleDate" type="datetime-local" class="form-control" name="saleDate" [(ngModel)]="saleDate"
-                        />
+                        required/>
+                    </div>
+                    <div [hidden]="!(editForm.controls.saleDate?.dirty && editForm.controls.saleDate?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.saleDate?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                            [hidden]="!editForm.controls.saleDate?.errors?.ZonedDateTimelocal" jhiTranslate="entity.validation.ZonedDateTimelocal">
+                            This field should be a date and time.
+                        </small>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.purchase.quantity" for="field_quantity">Quantity</label>
                     <input type="number" class="form-control" name="quantity" id="field_quantity"
-                        [(ngModel)]="purchase.quantity" required/>
+                        [(ngModel)]="purchase.quantity" required min="1" jhiMin="1"/>
                     <div [hidden]="!(editForm.controls.quantity?.dirty && editForm.controls.quantity?.invalid)">
                         <small class="form-text text-danger"
                         [hidden]="!editForm.controls.quantity?.errors?.required" jhiTranslate="entity.validation.required">
                         This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                            [hidden]="!editForm.controls.quantity?.errors?.min" jhiTranslate="entity.validation.min" translateValues="{ min: 1 }">
+                            This field should be at least 1.
                         </small>
                         <small class="form-text text-danger"
                             [hidden]="!editForm.controls.quantity?.errors?.number" jhiTranslate="entity.validation.number">
@@ -31,20 +45,43 @@
                         </small>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.purchase.withdraw" for="field_withdraw">Withdraw</label>
+                    <input type="checkbox" class="form-control" name="withdraw" id="field_withdraw"
+                        [(ngModel)]="purchase.withdraw" />
+                    <div [hidden]="!(editForm.controls.withdraw?.dirty && editForm.controls.withdraw?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.withdraw?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.purchase.stock" for="field_stock">Stock</label>
-                    <select class="form-control" id="field_stock" name="stock" [(ngModel)]="purchase.stock" >
-                        <option [ngValue]="null"></option>
+                    <select class="form-control" id="field_stock" name="stock" [(ngModel)]="purchase.stock"  required>
+                        <option *ngIf="!editForm.value.stock" [ngValue]="null" selected></option>
                         <option [ngValue]="stockOption.id === purchase.stock?.id ? purchase.stock : stockOption" *ngFor="let stockOption of stocks; trackBy: trackStockById">{{stockOption.id}}</option>
                     </select>
                 </div>
+                <div [hidden]="!(editForm.controls.stock?.dirty && editForm.controls.stock?.invalid)">
+                    <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.stock?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                    </small>
+                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.purchase.client" for="field_client">Client</label>
-                    <select class="form-control" id="field_client" name="client" [(ngModel)]="purchase.client" >
-                        <option [ngValue]="null"></option>
+                    <select class="form-control" id="field_client" name="client" [(ngModel)]="purchase.client"  required>
+                        <option *ngIf="!editForm.value.client" [ngValue]="null" selected></option>
                         <option [ngValue]="userOption.id === purchase.client?.id ? purchase.client : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
                     </select>
+                </div>
+                <div [hidden]="!(editForm.controls.client?.dirty && editForm.controls.client?.invalid)">
+                    <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.client?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                    </small>
                 </div>
             </div>
             <div>

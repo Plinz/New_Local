@@ -43,10 +43,7 @@ export class PurchaseDeletePopupComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.activatedRoute.data.subscribe(({ purchase }) => {
             setTimeout(() => {
-                this.ngbModalRef = this.modalService.open(PurchaseDeleteDialogComponent as Component, {
-                    size: 'lg',
-                    backdrop: 'static'
-                });
+                this.ngbModalRef = this.modalService.open(PurchaseDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
                 this.ngbModalRef.componentInstance.purchase = purchase;
                 this.ngbModalRef.result.then(
                     result => {

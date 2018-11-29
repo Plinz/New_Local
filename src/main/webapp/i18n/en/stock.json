@@ -22,14 +22,15 @@
             "quantityInit": "Quantity Init",
             "quantityRemaining": "Quantity Remaining",
             "priceUnit": "Price Unit",
-            "image": "Image",
             "onSaleDate": "On Sale Date",
             "expiryDate": "Expiry Date",
             "bio": "Bio",
             "available": "Available",
             "productType": "Product Type",
             "holding": "Holding",
-            "seller": "Seller"
+            "seller": "Seller",
+            "warehouse": "Warehouse",
+            "image": "Image"
         }
     }
 }

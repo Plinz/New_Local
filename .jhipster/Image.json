@@ -1,0 +1,79 @@
+{
+    "name": "Image",
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "minlength",
+                "maxlength"
+            ],
+            "fieldValidateRulesMinlength": 1,
+            "fieldValidateRulesMaxlength": 100
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 300
+        },
+        {
+            "fieldName": "image",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "image",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "stock",
+            "otherEntityName": "stock",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "image"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "category",
+            "otherEntityName": "category",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "image"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "productType",
+            "otherEntityName": "productType",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "image"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "holding",
+            "otherEntityName": "holding",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "image"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "warehouse",
+            "otherEntityName": "warehouse",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "image"
+        }
+    ],
+    "changelogDate": "20181129140951",
+    "entityTableName": "image",
+    "dto": "no",
+    "pagination": "pager",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "searchEngine": "elasticsearch"
+}

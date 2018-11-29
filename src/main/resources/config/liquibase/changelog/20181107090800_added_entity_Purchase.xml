@@ -22,19 +22,23 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="sale_date" type="datetime">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
 
             <column name="quantity" type="integer">
                 <constraints nullable="false" />
             </column>
 
+            <column name="withdraw" type="boolean">
+                <constraints nullable="false" />
+            </column>
+
             <column name="stock_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
 
             <column name="client_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->

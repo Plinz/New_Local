@@ -3,7 +3,6 @@ import { browser, ExpectedConditions as ec, promise } from 'protractor';
 import { NavBarPage, SignInPage } from '../../page-objects/jhi-page-objects';
 
 import { CategoryComponentsPage, CategoryDeleteDialog, CategoryUpdatePage } from './category.page-object';
-import * as path from 'path';
 
 const expect = chai.expect;
 
@@ -13,9 +12,6 @@ describe('Category e2e test', () => {
     let categoryUpdatePage: CategoryUpdatePage;
     let categoryComponentsPage: CategoryComponentsPage;
     let categoryDeleteDialog: CategoryDeleteDialog;
-    const fileNameToUpload = 'logo-jhipster.png';
-    const fileToUpload = '../../../../../main/webapp/content/images/' + fileNameToUpload;
-    const absolutePath = path.resolve(__dirname, fileToUpload);
 
     before(async () => {
         await browser.get('/');
@@ -45,12 +41,11 @@ describe('Category e2e test', () => {
         await promise.all([
             categoryUpdatePage.setNameInput('name'),
             categoryUpdatePage.setDescriptionInput('description'),
-            categoryUpdatePage.setImageInput(absolutePath),
-            categoryUpdatePage.categoryParentSelectLastOption()
+            categoryUpdatePage.categoyParentSelectLastOption()
+            // categoryUpdatePage.imageSelectLastOption(),
         ]);
         expect(await categoryUpdatePage.getNameInput()).to.eq('name');
         expect(await categoryUpdatePage.getDescriptionInput()).to.eq('description');
-        expect(await categoryUpdatePage.getImageInput()).to.endsWith(fileNameToUpload);
         await categoryUpdatePage.save();
         expect(await categoryUpdatePage.getSaveButton().isPresent()).to.be.false;
 

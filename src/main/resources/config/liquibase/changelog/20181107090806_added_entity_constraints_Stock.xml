@@ -26,5 +26,22 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 
+        <addForeignKeyConstraint baseColumnNames="warehouse_id"
+                                 baseTableName="stock"
+                                 constraintName="fk_stock_warehouse_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="warehouse"/>
+
+        <addForeignKeyConstraint baseColumnNames="stocks_id"
+                                 baseTableName="stock_image"
+                                 constraintName="fk_stock_image_stocks_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="stock"/>
+        <addForeignKeyConstraint baseColumnNames="images_id"
+                                 baseTableName="stock_image"
+                                 constraintName="fk_stock_image_images_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="image"/>
+        
     </changeSet>
 </databaseChangeLog>

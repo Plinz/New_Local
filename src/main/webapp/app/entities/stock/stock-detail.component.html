@@ -25,15 +25,6 @@
                 <dd>
                     <span>{{stock.priceUnit}}</span>
                 </dd>
-                <dt><span jhiTranslate="newLocalApp.stock.image">Image</span></dt>
-                <dd>
-                    <div *ngIf="stock.image">
-                        <a (click)="openFile(stock.imageContentType, stock.image)">
-                            <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" style="max-width: 100%;" alt="stock image"/>
-                        </a>
-                        {{stock.imageContentType}}, {{byteSize(stock.image)}}
-                    </div>
-                </dd>
                 <dt><span jhiTranslate="newLocalApp.stock.onSaleDate">On Sale Date</span></dt>
                 <dd>
                     <span>{{stock.onSaleDate}}</span>
@@ -65,6 +56,18 @@
                 <dt><span jhiTranslate="newLocalApp.stock.seller">Seller</span></dt>
                 <dd>
                     {{stock.seller?.id}}
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.stock.warehouse">Warehouse</span></dt>
+                <dd>
+                    <div *ngIf="stock.warehouse">
+                        <a [routerLink]="['/warehouse', stock.warehouse?.id, 'view']">{{stock.warehouse?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.stock.image">Image</span></dt>
+                <dd>
+                    <span *ngFor="let image of stock.images; let last = last">
+                        <a [routerLink]="['/image', image?.id, 'view' ]">{{image.id}}</a>{{last ? '' : ', '}}
+                    </span>
                 </dd>
             </dl>
 

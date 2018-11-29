@@ -49,6 +49,10 @@ public class StockCriteria implements Serializable {
 
     private LongFilter sellerId;
 
+    private LongFilter warehouseId;
+
+    private LongFilter imageId;
+
     public StockCriteria() {
     }
 
@@ -156,6 +160,22 @@ public class StockCriteria implements Serializable {
         this.sellerId = sellerId;
     }
 
+    public LongFilter getWarehouseId() {
+        return warehouseId;
+    }
+
+    public void setWarehouseId(LongFilter warehouseId) {
+        this.warehouseId = warehouseId;
+    }
+
+    public LongFilter getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(LongFilter imageId) {
+        this.imageId = imageId;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -179,7 +199,9 @@ public class StockCriteria implements Serializable {
             Objects.equals(available, that.available) &&
             Objects.equals(productTypeId, that.productTypeId) &&
             Objects.equals(holdingId, that.holdingId) &&
-            Objects.equals(sellerId, that.sellerId);
+            Objects.equals(sellerId, that.sellerId) &&
+            Objects.equals(warehouseId, that.warehouseId) &&
+            Objects.equals(imageId, that.imageId);
     }
 
     @Override
@@ -197,7 +219,9 @@ public class StockCriteria implements Serializable {
         available,
         productTypeId,
         holdingId,
-        sellerId
+        sellerId,
+        warehouseId,
+        imageId
         );
     }
 
@@ -217,6 +241,8 @@ public class StockCriteria implements Serializable {
                 (productTypeId != null ? "productTypeId=" + productTypeId + ", " : "") +
                 (holdingId != null ? "holdingId=" + holdingId + ", " : "") +
                 (sellerId != null ? "sellerId=" + sellerId + ", " : "") +
+                (warehouseId != null ? "warehouseId=" + warehouseId + ", " : "") +
+                (imageId != null ? "imageId=" + imageId + ", " : "") +
             "}";
     }
 

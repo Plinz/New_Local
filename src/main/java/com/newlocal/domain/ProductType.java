@@ -5,9 +5,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -26,22 +29,26 @@ public class ProductType implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "name")
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "name", length = 100, nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Size(max = 300)
+    @Column(name = "description", length = 300)
     private String description;
 
-    @Lob
-    @Column(name = "image")
-    private byte[] image;
-
-    @Column(name = "image_content_type")
-    private String imageContentType;
-
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("")
     private Category category;
+
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "product_type_image",
+               joinColumns = @JoinColumn(name = "product_types_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "images_id", referencedColumnName = "id"))
+    private Set<Image> images = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -78,32 +85,6 @@ public class ProductType implements Serializable {
         this.description = description;
     }
 
-    public byte[] getImage() {
-        return image;
-    }
-
-    public ProductType image(byte[] image) {
-        this.image = image;
-        return this;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public String getImageContentType() {
-        return imageContentType;
-    }
-
-    public ProductType imageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-        return this;
-    }
-
-    public void setImageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-    }
-
     public Category getCategory() {
         return category;
     }
@@ -115,6 +96,31 @@ public class ProductType implements Serializable {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Set<Image> getImages() {
+        return images;
+    }
+
+    public ProductType images(Set<Image> images) {
+        this.images = images;
+        return this;
+    }
+
+    public ProductType addImage(Image image) {
+        this.images.add(image);
+        image.getProductTypes().add(this);
+        return this;
+    }
+
+    public ProductType removeImage(Image image) {
+        this.images.remove(image);
+        image.getProductTypes().remove(this);
+        return this;
+    }
+
+    public void setImages(Set<Image> images) {
+        this.images = images;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -144,8 +150,6 @@ public class ProductType implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", image='" + getImage() + "'" +
-            ", imageContentType='" + getImageContentType() + "'" +
             "}";
     }
 }

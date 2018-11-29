@@ -5,10 +5,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -27,51 +30,72 @@ public class Stock implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "name")
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "name", length = 100, nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Size(max = 300)
+    @Column(name = "description", length = 300)
     private String description;
 
-    @Column(name = "quantity_init")
+    @NotNull
+    @Min(value = 0)
+    @Column(name = "quantity_init", nullable = false)
     private Integer quantityInit;
 
-    @Column(name = "quantity_remaining")
+    @NotNull
+    @Min(value = 0)
+    @Column(name = "quantity_remaining", nullable = false)
     private Integer quantityRemaining;
 
-    @Column(name = "price_unit")
+    @NotNull
+    @DecimalMin(value = "0")
+    @Column(name = "price_unit", nullable = false)
     private Double priceUnit;
 
-    @Lob
-    @Column(name = "image")
-    private byte[] image;
-
-    @Column(name = "image_content_type")
-    private String imageContentType;
-
-    @Column(name = "on_sale_date")
+    @NotNull
+    @Column(name = "on_sale_date", nullable = false)
     private Instant onSaleDate;
 
-    @Column(name = "expiry_date")
+    @NotNull
+    @Column(name = "expiry_date", nullable = false)
     private Instant expiryDate;
 
-    @Column(name = "bio")
+    @NotNull
+    @Column(name = "bio", nullable = false)
     private Boolean bio;
 
-    @Column(name = "available")
+    @NotNull
+    @Column(name = "available", nullable = false)
     private Boolean available;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("")
     private ProductType productType;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("")
     private Holding holding;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @NotNull
     @JsonIgnoreProperties("")
     private User seller;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("")
+    private Warehouse warehouse;
+
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "stock_image",
+               joinColumns = @JoinColumn(name = "stocks_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "images_id", referencedColumnName = "id"))
+    private Set<Image> images = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -145,32 +169,6 @@ public class Stock implements Serializable {
 
     public void setPriceUnit(Double priceUnit) {
         this.priceUnit = priceUnit;
-    }
-
-    public byte[] getImage() {
-        return image;
-    }
-
-    public Stock image(byte[] image) {
-        this.image = image;
-        return this;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public String getImageContentType() {
-        return imageContentType;
-    }
-
-    public Stock imageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-        return this;
-    }
-
-    public void setImageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
     }
 
     public Instant getOnSaleDate() {
@@ -263,6 +261,44 @@ public class Stock implements Serializable {
     public void setSeller(User user) {
         this.seller = user;
     }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public Stock warehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+        return this;
+    }
+
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+    }
+
+    public Set<Image> getImages() {
+        return images;
+    }
+
+    public Stock images(Set<Image> images) {
+        this.images = images;
+        return this;
+    }
+
+    public Stock addImage(Image image) {
+        this.images.add(image);
+        image.getStocks().add(this);
+        return this;
+    }
+
+    public Stock removeImage(Image image) {
+        this.images.remove(image);
+        image.getStocks().remove(this);
+        return this;
+    }
+
+    public void setImages(Set<Image> images) {
+        this.images = images;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -294,8 +330,6 @@ public class Stock implements Serializable {
             ", quantityInit=" + getQuantityInit() +
             ", quantityRemaining=" + getQuantityRemaining() +
             ", priceUnit=" + getPriceUnit() +
-            ", image='" + getImage() + "'" +
-            ", imageContentType='" + getImageContentType() + "'" +
             ", onSaleDate='" + getOnSaleDate() + "'" +
             ", expiryDate='" + getExpiryDate() + "'" +
             ", bio='" + isBio() + "'" +

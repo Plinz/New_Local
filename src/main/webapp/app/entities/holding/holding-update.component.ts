@@ -1,14 +1,16 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 
 import { IHolding } from 'app/shared/model/holding.model';
 import { HoldingService } from './holding.service';
 import { ILocation } from 'app/shared/model/location.model';
 import { LocationService } from 'app/entities/location';
 import { IUser, UserService } from 'app/core';
+import { IImage } from 'app/shared/model/image.model';
+import { ImageService } from 'app/entities/image';
 
 @Component({
     selector: 'jhi-holding-update',
@@ -22,13 +24,14 @@ export class HoldingUpdateComponent implements OnInit {
 
     users: IUser[];
 
+    images: IImage[];
+
     constructor(
-        private dataUtils: JhiDataUtils,
         private jhiAlertService: JhiAlertService,
         private holdingService: HoldingService,
         private locationService: LocationService,
         private userService: UserService,
-        private elementRef: ElementRef,
+        private imageService: ImageService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -49,22 +52,12 @@ export class HoldingUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-    }
-
-    byteSize(field) {
-        return this.dataUtils.byteSize(field);
-    }
-
-    openFile(contentType, field) {
-        return this.dataUtils.openFile(contentType, field);
-    }
-
-    setFileData(event, entity, field, isImage) {
-        this.dataUtils.setFileData(event, entity, field, isImage);
-    }
-
-    clearInputImage(field: string, fieldContentType: string, idInput: string) {
-        this.dataUtils.clearInputImage(this.holding, this.elementRef, field, fieldContentType, idInput);
+        this.imageService.query().subscribe(
+            (res: HttpResponse<IImage[]>) => {
+                this.images = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     previousState() {
@@ -103,5 +96,20 @@ export class HoldingUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
+    }
+
+    trackImageById(index: number, item: IImage) {
+        return item.id;
+    }
+
+    getSelected(selectedVals: Array<any>, option: any) {
+        if (selectedVals) {
+            for (let i = 0; i < selectedVals.length; i++) {
+                if (option.id === selectedVals[i].id) {
+                    return selectedVals[i];
+                }
+            }
+        }
+        return option;
     }
 }

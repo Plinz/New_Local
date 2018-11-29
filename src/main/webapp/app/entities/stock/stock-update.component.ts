@@ -1,10 +1,10 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
-import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 
 import { IStock } from 'app/shared/model/stock.model';
 import { StockService } from './stock.service';
@@ -13,6 +13,10 @@ import { ProductTypeService } from 'app/entities/product-type';
 import { IHolding } from 'app/shared/model/holding.model';
 import { HoldingService } from 'app/entities/holding';
 import { IUser, UserService } from 'app/core';
+import { IWarehouse } from 'app/shared/model/warehouse.model';
+import { WarehouseService } from 'app/entities/warehouse';
+import { IImage } from 'app/shared/model/image.model';
+import { ImageService } from 'app/entities/image';
 
 @Component({
     selector: 'jhi-stock-update',
@@ -27,18 +31,21 @@ export class StockUpdateComponent implements OnInit {
     holdings: IHolding[];
 
     users: IUser[];
-    // onSaleDate: string;
+
+    warehouses: IWarehouse[];
+
+    images: IImage[];
+    onSaleDate: string;
     expiryDate: string;
-    currentDate: string;
 
     constructor(
-        private dataUtils: JhiDataUtils,
         private jhiAlertService: JhiAlertService,
         private stockService: StockService,
         private productTypeService: ProductTypeService,
         private holdingService: HoldingService,
-        // private userService: UserService,
-        private elementRef: ElementRef,
+        private userService: UserService,
+        private warehouseService: WarehouseService,
+        private imageService: ImageService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -46,7 +53,7 @@ export class StockUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ stock }) => {
             this.stock = stock;
-            // this.onSaleDate = this.stock.onSaleDate != null ? this.stock.onSaleDate.format(DATE_TIME_FORMAT) : null;
+            this.onSaleDate = this.stock.onSaleDate != null ? this.stock.onSaleDate.format(DATE_TIME_FORMAT) : null;
             this.expiryDate = this.stock.expiryDate != null ? this.stock.expiryDate.format(DATE_TIME_FORMAT) : null;
         });
         this.productTypeService.query().subscribe(
@@ -55,7 +62,7 @@ export class StockUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        /*this.holdingService.query().subscribe(
+        this.holdingService.query().subscribe(
             (res: HttpResponse<IHolding[]>) => {
                 this.holdings = res.body;
             },
@@ -66,29 +73,19 @@ export class StockUpdateComponent implements OnInit {
                 this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
-        );*/
-        const myDate = new Date();
-        if (myDate.getDate() < 10) {
-            this.currentDate = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-0${myDate.getDate()}`;
-        } else {
-            this.currentDate = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`;
-        }
-    }
-
-    byteSize(field) {
-        return this.dataUtils.byteSize(field);
-    }
-
-    openFile(contentType, field) {
-        return this.dataUtils.openFile(contentType, field);
-    }
-
-    setFileData(event, entity, field, isImage) {
-        this.dataUtils.setFileData(event, entity, field, isImage);
-    }
-
-    clearInputImage(field: string, fieldContentType: string, idInput: string) {
-        this.dataUtils.clearInputImage(this.stock, this.elementRef, field, fieldContentType, idInput);
+        );
+        this.warehouseService.query().subscribe(
+            (res: HttpResponse<IWarehouse[]>) => {
+                this.warehouses = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.imageService.query().subscribe(
+            (res: HttpResponse<IImage[]>) => {
+                this.images = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     previousState() {
@@ -97,10 +94,8 @@ export class StockUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        // this.stock.onSaleDate = this.onSaleDate != null ? moment(this.onSaleDate, DATE_TIME_FORMAT) : null;
-        this.stock.onSaleDate = moment(new Date(), DATE_TIME_FORMAT);
+        this.stock.onSaleDate = this.onSaleDate != null ? moment(this.onSaleDate, DATE_TIME_FORMAT) : null;
         this.stock.expiryDate = this.expiryDate != null ? moment(this.expiryDate, DATE_TIME_FORMAT) : null;
-        this.stock.quantityRemaining = this.stock.quantityInit;
         if (this.stock.id !== undefined) {
             this.subscribeToSaveResponse(this.stockService.update(this.stock));
         } else {
@@ -135,5 +130,24 @@ export class StockUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
+    }
+
+    trackWarehouseById(index: number, item: IWarehouse) {
+        return item.id;
+    }
+
+    trackImageById(index: number, item: IImage) {
+        return item.id;
+    }
+
+    getSelected(selectedVals: Array<any>, option: any) {
+        if (selectedVals) {
+            for (let i = 0; i < selectedVals.length; i++) {
+                if (option.id === selectedVals[i].id) {
+                    return selectedVals[i];
+                }
+            }
+        }
+        return option;
     }
 }

@@ -28,8 +28,8 @@ export class ProductTypeUpdatePage {
     cancelButton = element(by.id('cancel-save'));
     nameInput = element(by.id('field_name'));
     descriptionInput = element(by.id('field_description'));
-    imageInput = element(by.id('file_image'));
     categorySelect = element(by.id('field_category'));
+    imageSelect = element(by.id('field_image'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -51,14 +51,6 @@ export class ProductTypeUpdatePage {
         return this.descriptionInput.getAttribute('value');
     }
 
-    async setImageInput(image) {
-        await this.imageInput.sendKeys(image);
-    }
-
-    async getImageInput() {
-        return this.imageInput.getAttribute('value');
-    }
-
     async categorySelectLastOption() {
         await this.categorySelect
             .all(by.tagName('option'))
@@ -76,6 +68,25 @@ export class ProductTypeUpdatePage {
 
     async getCategorySelectedOption() {
         return this.categorySelect.element(by.css('option:checked')).getText();
+    }
+
+    async imageSelectLastOption() {
+        await this.imageSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async imageSelectOption(option) {
+        await this.imageSelect.sendKeys(option);
+    }
+
+    getImageSelect(): ElementFinder {
+        return this.imageSelect;
+    }
+
+    async getImageSelectedOption() {
+        return this.imageSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

@@ -19,6 +19,7 @@
             },
             "saleDate": "Sale Date",
             "quantity": "Quantity",
+            "withdraw": "Withdraw",
             "stock": "Stock",
             "client": "Client"
         }

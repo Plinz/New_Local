@@ -3,21 +3,36 @@
     "fields": [
         {
             "fieldName": "grade",
+            "fieldType": "Double",
+            "fieldValidateRules": [
+                "required",
+                "min",
+                "max"
+            ],
+            "fieldValidateRulesMin": 0,
+            "fieldValidateRulesMax": 5
+        },
+        {
+            "fieldName": "nbVoter",
             "fieldType": "Integer",
             "fieldValidateRules": [
-                "required"
-            ]
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": 0
         }
     ],
     "relationships": [
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "user",
+            "relationshipValidateRules": "required",
+            "relationshipName": "seller",
             "otherEntityName": "user",
             "otherEntityField": "id"
         },
         {
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "productType",
             "otherEntityName": "productType",
             "otherEntityField": "id"
@@ -26,10 +41,11 @@
     "changelogDate": "20181107090802",
     "entityTableName": "grade",
     "dto": "no",
-    "pagination": "no",
+    "pagination": "pager",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*"
+    "applications": "*",
+    "searchEngine": "elasticsearch"
 }

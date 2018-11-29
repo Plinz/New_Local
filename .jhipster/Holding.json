@@ -2,40 +2,69 @@
     "name": "Holding",
     "fields": [
         {
+            "fieldName": "siret",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "minlength",
+                "maxlength",
+                "unique"
+            ],
+            "fieldValidateRulesMinlength": 14,
+            "fieldValidateRulesMaxlength": 14
+        },
+        {
             "fieldName": "name",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "minlength",
+                "maxlength"
+            ],
+            "fieldValidateRulesMinlength": 1,
+            "fieldValidateRulesMaxlength": 100
         },
         {
             "fieldName": "description",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "image",
-            "fieldType": "byte[]",
-            "fieldTypeBlobContent": "image"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 300
         }
     ],
     "relationships": [
         {
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "location",
             "otherEntityName": "location",
             "otherEntityField": "id"
         },
         {
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "owner",
             "otherEntityName": "user",
             "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "holding",
+            "relationshipName": "image",
+            "otherEntityName": "image",
+            "otherEntityField": "id",
+            "ownerSide": true
         }
     ],
     "changelogDate": "20181108152600",
     "entityTableName": "holding",
     "dto": "no",
-    "pagination": "no",
+    "pagination": "pager",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*"
+    "applications": "*",
+    "searchEngine": "elasticsearch"
 }

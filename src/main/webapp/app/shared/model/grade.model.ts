@@ -4,10 +4,17 @@ import { IProductType } from 'app/shared/model//product-type.model';
 export interface IGrade {
     id?: number;
     grade?: number;
-    user?: IUser;
+    nbVoter?: number;
+    seller?: IUser;
     productType?: IProductType;
 }
 
 export class Grade implements IGrade {
-    constructor(public id?: number, public grade?: number, public user?: IUser, public productType?: IProductType) {}
+    constructor(
+        public id?: number,
+        public grade?: number,
+        public nbVoter?: number,
+        public seller?: IUser,
+        public productType?: IProductType
+    ) {}
 }

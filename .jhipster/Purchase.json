@@ -3,11 +3,23 @@
     "fields": [
         {
             "fieldName": "saleDate",
-            "fieldType": "Instant"
+            "fieldType": "Instant",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "quantity",
             "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required",
+                "min"
+            ],
+            "fieldValidateRulesMin": 1
+        },
+        {
+            "fieldName": "withdraw",
+            "fieldType": "Boolean",
             "fieldValidateRules": [
                 "required"
             ]
@@ -16,12 +28,14 @@
     "relationships": [
         {
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "stock",
             "otherEntityName": "stock",
             "otherEntityField": "id"
         },
         {
             "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "client",
             "otherEntityName": "user",
             "otherEntityField": "id"
@@ -30,10 +44,11 @@
     "changelogDate": "20181107090800",
     "entityTableName": "purchase",
     "dto": "no",
-    "pagination": "no",
+    "pagination": "pager",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*"
+    "applications": "*",
+    "searchEngine": "elasticsearch"
 }

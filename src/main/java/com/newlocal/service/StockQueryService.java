@@ -126,6 +126,14 @@ public class StockQueryService extends QueryService<Stock> {
                 specification = specification.and(buildSpecification(criteria.getSellerId(),
                     root -> root.join(Stock_.seller, JoinType.LEFT).get(User_.id)));
             }
+            if (criteria.getWarehouseId() != null) {
+                specification = specification.and(buildSpecification(criteria.getWarehouseId(),
+                    root -> root.join(Stock_.warehouse, JoinType.LEFT).get(Warehouse_.id)));
+            }
+            if (criteria.getImageId() != null) {
+                specification = specification.and(buildSpecification(criteria.getImageId(),
+                    root -> root.join(Stock_.images, JoinType.LEFT).get(Image_.id)));
+            }
         }
         return specification;
     }

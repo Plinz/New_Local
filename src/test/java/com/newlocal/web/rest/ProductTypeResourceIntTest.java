@@ -4,6 +4,7 @@ import com.newlocal.NewLocalApp;
 
 import com.newlocal.domain.ProductType;
 import com.newlocal.domain.Category;
+import com.newlocal.domain.Image;
 import com.newlocal.repository.ProductTypeRepository;
 import com.newlocal.repository.search.ProductTypeSearchRepository;
 import com.newlocal.service.ProductTypeService;
@@ -14,9 +15,12 @@ import com.newlocal.service.ProductTypeQueryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -24,9 +28,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,14 +58,16 @@ public class ProductTypeResourceIntTest {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final byte[] DEFAULT_IMAGE = TestUtil.createByteArray(1, "0");
-    private static final byte[] UPDATED_IMAGE = TestUtil.createByteArray(1, "1");
-    private static final String DEFAULT_IMAGE_CONTENT_TYPE = "image/jpg";
-    private static final String UPDATED_IMAGE_CONTENT_TYPE = "image/png";
-
     @Autowired
     private ProductTypeRepository productTypeRepository;
+
+    @Mock
+    private ProductTypeRepository productTypeRepositoryMock;
     
+
+    @Mock
+    private ProductTypeService productTypeServiceMock;
+
     @Autowired
     private ProductTypeService productTypeService;
 
@@ -112,9 +118,12 @@ public class ProductTypeResourceIntTest {
     public static ProductType createEntity(EntityManager em) {
         ProductType productType = new ProductType()
             .name(DEFAULT_NAME)
-            .description(DEFAULT_DESCRIPTION)
-            .image(DEFAULT_IMAGE)
-            .imageContentType(DEFAULT_IMAGE_CONTENT_TYPE);
+            .description(DEFAULT_DESCRIPTION);
+        // Add required entity
+        Category category = CategoryResourceIntTest.createEntity(em);
+        em.persist(category);
+        em.flush();
+        productType.setCategory(category);
         return productType;
     }
 
@@ -140,8 +149,6 @@ public class ProductTypeResourceIntTest {
         ProductType testProductType = productTypeList.get(productTypeList.size() - 1);
         assertThat(testProductType.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testProductType.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testProductType.getImage()).isEqualTo(DEFAULT_IMAGE);
-        assertThat(testProductType.getImageContentType()).isEqualTo(DEFAULT_IMAGE_CONTENT_TYPE);
 
         // Validate the ProductType in Elasticsearch
         verify(mockProductTypeSearchRepository, times(1)).save(testProductType);
@@ -171,6 +178,24 @@ public class ProductTypeResourceIntTest {
 
     @Test
     @Transactional
+    public void checkNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = productTypeRepository.findAll().size();
+        // set the field null
+        productType.setName(null);
+
+        // Create the ProductType, which fails.
+
+        restProductTypeMockMvc.perform(post("/api/product-types")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(productType)))
+            .andExpect(status().isBadRequest());
+
+        List<ProductType> productTypeList = productTypeRepository.findAll();
+        assertThat(productTypeList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllProductTypes() throws Exception {
         // Initialize the database
         productTypeRepository.saveAndFlush(productType);
@@ -181,11 +206,40 @@ public class ProductTypeResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productType.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
     
+    public void getAllProductTypesWithEagerRelationshipsIsEnabled() throws Exception {
+        ProductTypeResource productTypeResource = new ProductTypeResource(productTypeServiceMock, productTypeQueryService);
+        when(productTypeServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restProductTypeMockMvc = MockMvcBuilders.standaloneSetup(productTypeResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restProductTypeMockMvc.perform(get("/api/product-types?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(productTypeServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    public void getAllProductTypesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        ProductTypeResource productTypeResource = new ProductTypeResource(productTypeServiceMock, productTypeQueryService);
+            when(productTypeServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restProductTypeMockMvc = MockMvcBuilders.standaloneSetup(productTypeResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restProductTypeMockMvc.perform(get("/api/product-types?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(productTypeServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
     @Test
     @Transactional
     public void getProductType() throws Exception {
@@ -198,9 +252,7 @@ public class ProductTypeResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(productType.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-            .andExpect(jsonPath("$.imageContentType").value(DEFAULT_IMAGE_CONTENT_TYPE))
-            .andExpect(jsonPath("$.image").value(Base64Utils.encodeToString(DEFAULT_IMAGE)));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
     }
 
     @Test
@@ -299,6 +351,25 @@ public class ProductTypeResourceIntTest {
         defaultProductTypeShouldNotBeFound("categoryId.equals=" + (categoryId + 1));
     }
 
+
+    @Test
+    @Transactional
+    public void getAllProductTypesByImageIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Image image = ImageResourceIntTest.createEntity(em);
+        em.persist(image);
+        em.flush();
+        productType.addImage(image);
+        productTypeRepository.saveAndFlush(productType);
+        Long imageId = image.getId();
+
+        // Get all the productTypeList where image equals to imageId
+        defaultProductTypeShouldBeFound("imageId.equals=" + imageId);
+
+        // Get all the productTypeList where image equals to imageId + 1
+        defaultProductTypeShouldNotBeFound("imageId.equals=" + (imageId + 1));
+    }
+
     /**
      * Executes the search, and checks that the default entity is returned
      */
@@ -308,9 +379,7 @@ public class ProductTypeResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productType.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
 
         // Check, that the count call also returns 1
         restProductTypeMockMvc.perform(get("/api/product-types/count?sort=id,desc&" + filter))
@@ -361,9 +430,7 @@ public class ProductTypeResourceIntTest {
         em.detach(updatedProductType);
         updatedProductType
             .name(UPDATED_NAME)
-            .description(UPDATED_DESCRIPTION)
-            .image(UPDATED_IMAGE)
-            .imageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+            .description(UPDATED_DESCRIPTION);
 
         restProductTypeMockMvc.perform(put("/api/product-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -376,8 +443,6 @@ public class ProductTypeResourceIntTest {
         ProductType testProductType = productTypeList.get(productTypeList.size() - 1);
         assertThat(testProductType.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testProductType.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testProductType.getImage()).isEqualTo(UPDATED_IMAGE);
-        assertThat(testProductType.getImageContentType()).isEqualTo(UPDATED_IMAGE_CONTENT_TYPE);
 
         // Validate the ProductType in Elasticsearch
         verify(mockProductTypeSearchRepository, times(1)).save(testProductType);
@@ -430,17 +495,15 @@ public class ProductTypeResourceIntTest {
     public void searchProductType() throws Exception {
         // Initialize the database
         productTypeService.save(productType);
-        when(mockProductTypeSearchRepository.search(queryStringQuery("id:" + productType.getId())))
-            .thenReturn(Collections.singletonList(productType));
+        when(mockProductTypeSearchRepository.search(queryStringQuery("id:" + productType.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(productType), PageRequest.of(0, 1), 1));
         // Search the productType
         restProductTypeMockMvc.perform(get("/api/_search/product-types?query=id:" + productType.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productType.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
 
     @Test

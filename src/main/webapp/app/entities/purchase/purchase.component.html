@@ -28,12 +28,13 @@
     <div class="table-responsive" *ngIf="purchases">
         <table class="table table-striped">
             <thead>
-            <tr>
-            <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="newLocalApp.purchase.saleDate">Sale Date</span></th>
-            <th><span jhiTranslate="newLocalApp.purchase.quantity">Quantity</span></th>
-            <th><span jhiTranslate="newLocalApp.purchase.stock">Stock</span></th>
-            <th><span jhiTranslate="newLocalApp.purchase.client">Client</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="saleDate"><span jhiTranslate="newLocalApp.purchase.saleDate">Sale Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="quantity"><span jhiTranslate="newLocalApp.purchase.quantity">Quantity</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="withdraw"><span jhiTranslate="newLocalApp.purchase.withdraw">Withdraw</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="stock.id"><span jhiTranslate="newLocalApp.purchase.stock">Stock</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="client.id"><span jhiTranslate="newLocalApp.purchase.client">Client</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -42,6 +43,7 @@
                 <td><a [routerLink]="['/purchase', purchase.id, 'view' ]">{{purchase.id}}</a></td>
                 <td>{{purchase.saleDate | date:'medium'}}</td>
                 <td>{{purchase.quantity}}</td>
+                <td>{{purchase.withdraw}}</td>
                 <td>
                     <div *ngIf="purchase.stock">
                         <a [routerLink]="['../stock', purchase.stock?.id, 'view' ]" >{{purchase.stock?.id}}</a>
@@ -77,5 +79,14 @@
             </tr>
             </tbody>
         </table>
+    </div>
+    <!-- Pager is not implemented yet, so this is normal pagination instead -->
+    <div *ngIf="purchases && purchases.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
     </div>
 </div>

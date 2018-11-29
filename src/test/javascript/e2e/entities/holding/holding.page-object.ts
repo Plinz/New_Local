@@ -26,14 +26,23 @@ export class HoldingUpdatePage {
     pageTitle = element(by.id('jhi-holding-heading'));
     saveButton = element(by.id('save-entity'));
     cancelButton = element(by.id('cancel-save'));
+    siretInput = element(by.id('field_siret'));
     nameInput = element(by.id('field_name'));
     descriptionInput = element(by.id('field_description'));
-    imageInput = element(by.id('file_image'));
     locationSelect = element(by.id('field_location'));
     ownerSelect = element(by.id('field_owner'));
+    imageSelect = element(by.id('field_image'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
+    }
+
+    async setSiretInput(siret) {
+        await this.siretInput.sendKeys(siret);
+    }
+
+    async getSiretInput() {
+        return this.siretInput.getAttribute('value');
     }
 
     async setNameInput(name) {
@@ -50,14 +59,6 @@ export class HoldingUpdatePage {
 
     async getDescriptionInput() {
         return this.descriptionInput.getAttribute('value');
-    }
-
-    async setImageInput(image) {
-        await this.imageInput.sendKeys(image);
-    }
-
-    async getImageInput() {
-        return this.imageInput.getAttribute('value');
     }
 
     async locationSelectLastOption() {
@@ -96,6 +97,25 @@ export class HoldingUpdatePage {
 
     async getOwnerSelectedOption() {
         return this.ownerSelect.element(by.css('option:checked')).getText();
+    }
+
+    async imageSelectLastOption() {
+        await this.imageSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async imageSelectOption(option) {
+        await this.imageSelect.sendKeys(option);
+    }
+
+    getImageSelect(): ElementFinder {
+        return this.imageSelect;
+    }
+
+    async getImageSelectedOption() {
+        return this.imageSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

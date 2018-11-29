@@ -2,6 +2,8 @@ import { Moment } from 'moment';
 import { IProductType } from 'app/shared/model//product-type.model';
 import { IHolding } from 'app/shared/model//holding.model';
 import { IUser } from 'app/core/user/user.model';
+import { IWarehouse } from 'app/shared/model//warehouse.model';
+import { IImage } from 'app/shared/model//image.model';
 
 export interface IStock {
     id?: number;
@@ -10,8 +12,6 @@ export interface IStock {
     quantityInit?: number;
     quantityRemaining?: number;
     priceUnit?: number;
-    imageContentType?: string;
-    image?: any;
     onSaleDate?: Moment;
     expiryDate?: Moment;
     bio?: boolean;
@@ -19,6 +19,8 @@ export interface IStock {
     productType?: IProductType;
     holding?: IHolding;
     seller?: IUser;
+    warehouse?: IWarehouse;
+    images?: IImage[];
 }
 
 export class Stock implements IStock {
@@ -29,15 +31,15 @@ export class Stock implements IStock {
         public quantityInit?: number,
         public quantityRemaining?: number,
         public priceUnit?: number,
-        public imageContentType?: string,
-        public image?: any,
         public onSaleDate?: Moment,
         public expiryDate?: Moment,
         public bio?: boolean,
         public available?: boolean,
         public productType?: IProductType,
         public holding?: IHolding,
-        public seller?: IUser
+        public seller?: IUser,
+        public warehouse?: IWarehouse,
+        public images?: IImage[]
     ) {
         this.bio = this.bio || false;
         this.available = this.available || false;

@@ -1,13 +1,15 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 
 import { IProductType } from 'app/shared/model/product-type.model';
 import { ProductTypeService } from './product-type.service';
 import { ICategory } from 'app/shared/model/category.model';
 import { CategoryService } from 'app/entities/category';
+import { IImage } from 'app/shared/model/image.model';
+import { ImageService } from 'app/entities/image';
 
 @Component({
     selector: 'jhi-product-type-update',
@@ -19,12 +21,13 @@ export class ProductTypeUpdateComponent implements OnInit {
 
     categories: ICategory[];
 
+    images: IImage[];
+
     constructor(
-        private dataUtils: JhiDataUtils,
         private jhiAlertService: JhiAlertService,
         private productTypeService: ProductTypeService,
         private categoryService: CategoryService,
-        private elementRef: ElementRef,
+        private imageService: ImageService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -39,22 +42,12 @@ export class ProductTypeUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-    }
-
-    byteSize(field) {
-        return this.dataUtils.byteSize(field);
-    }
-
-    openFile(contentType, field) {
-        return this.dataUtils.openFile(contentType, field);
-    }
-
-    setFileData(event, entity, field, isImage) {
-        this.dataUtils.setFileData(event, entity, field, isImage);
-    }
-
-    clearInputImage(field: string, fieldContentType: string, idInput: string) {
-        this.dataUtils.clearInputImage(this.productType, this.elementRef, field, fieldContentType, idInput);
+        this.imageService.query().subscribe(
+            (res: HttpResponse<IImage[]>) => {
+                this.images = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     previousState() {
@@ -89,5 +82,20 @@ export class ProductTypeUpdateComponent implements OnInit {
 
     trackCategoryById(index: number, item: ICategory) {
         return item.id;
+    }
+
+    trackImageById(index: number, item: IImage) {
+        return item.id;
+    }
+
+    getSelected(selectedVals: Array<any>, option: any) {
+        if (selectedVals) {
+            for (let i = 0; i < selectedVals.length; i++) {
+                if (option.id === selectedVals[i].id) {
+                    return selectedVals[i];
+                }
+            }
+        }
+        return option;
     }
 }

@@ -17,11 +17,12 @@
             "detail": {
                 "title": "Holding"
             },
+            "siret": "Siret",
             "name": "Name",
             "description": "Description",
-            "image": "Image",
             "location": "Location",
-            "owner": "Owner"
+            "owner": "Owner",
+            "image": "Image"
         }
     }
 }

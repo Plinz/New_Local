@@ -74,6 +74,7 @@ class PurchaseGatlingTest extends Simulation {
                 "id":null
                 , "saleDate":"2020-01-01T00:00:00.000Z"
                 , "quantity":"0"
+                , "withdraw":null
                 }""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_purchase_url"))).exitHereIfFailed

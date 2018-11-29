@@ -46,6 +46,19 @@ public class CacheConfiguration {
             cm.createCache(com.newlocal.domain.Location.class.getName(), jcacheConfiguration);
             cm.createCache(com.newlocal.domain.Stock.class.getName(), jcacheConfiguration);
             cm.createCache(com.newlocal.domain.Holding.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Stock.class.getName() + ".images", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Cart.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Category.class.getName() + ".images", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.ProductType.class.getName() + ".images", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Warehouse.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Warehouse.class.getName() + ".images", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Holding.class.getName() + ".images", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Image.class.getName(), jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Image.class.getName() + ".stocks", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Image.class.getName() + ".categories", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Image.class.getName() + ".productTypes", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Image.class.getName() + ".holdings", jcacheConfiguration);
+            cm.createCache(com.newlocal.domain.Image.class.getName() + ".warehouses", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

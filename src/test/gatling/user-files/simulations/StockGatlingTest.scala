@@ -77,7 +77,6 @@ class StockGatlingTest extends Simulation {
                 , "quantityInit":"0"
                 , "quantityRemaining":"0"
                 , "priceUnit":null
-                , "image":null
                 , "onSaleDate":"2020-01-01T00:00:00.000Z"
                 , "expiryDate":"2020-01-01T00:00:00.000Z"
                 , "bio":null

@@ -1,0 +1,69 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-cart-heading" jhiTranslate="newLocalApp.cart.home.createOrEditLabel">Create or edit a Cart</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!cart.id">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="cart.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.cart.quantity" for="field_quantity">Quantity</label>
+                    <input type="number" class="form-control" name="quantity" id="field_quantity"
+                        [(ngModel)]="cart.quantity" required min="1" jhiMin="1"/>
+                    <div [hidden]="!(editForm.controls.quantity?.dirty && editForm.controls.quantity?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.quantity?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                            [hidden]="!editForm.controls.quantity?.errors?.min" jhiTranslate="entity.validation.min" translateValues="{ min: 1 }">
+                            This field should be at least 1.
+                        </small>
+                        <small class="form-text text-danger"
+                            [hidden]="!editForm.controls.quantity?.errors?.number" jhiTranslate="entity.validation.number">
+                            This field should be a number.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.cart.stock" for="field_stock">Stock</label>
+                    <select class="form-control" id="field_stock" name="stock" [(ngModel)]="cart.stock"  required>
+                        <option *ngIf="!editForm.value.stock" [ngValue]="null" selected></option>
+                        <option [ngValue]="stockOption.id === cart.stock?.id ? cart.stock : stockOption" *ngFor="let stockOption of stocks; trackBy: trackStockById">{{stockOption.id}}</option>
+                    </select>
+                </div>
+                <div [hidden]="!(editForm.controls.stock?.dirty && editForm.controls.stock?.invalid)">
+                    <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.stock?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.cart.client" for="field_client">Client</label>
+                    <select class="form-control" id="field_client" name="client" [(ngModel)]="cart.client"  required>
+                        <option *ngIf="!editForm.value.client" [ngValue]="null" selected></option>
+                        <option [ngValue]="userOption.id === cart.client?.id ? cart.client : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
+                    </select>
+                </div>
+                <div [hidden]="!(editForm.controls.client?.dirty && editForm.controls.client?.invalid)">
+                    <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.client?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                    </small>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

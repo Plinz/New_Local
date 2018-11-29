@@ -1,12 +1,12 @@
 import { ICategory } from 'app/shared/model//category.model';
+import { IImage } from 'app/shared/model//image.model';
 
 export interface ICategory {
     id?: number;
     name?: string;
     description?: string;
-    imageContentType?: string;
-    image?: any;
-    categoryParent?: ICategory;
+    categoyParent?: ICategory;
+    images?: IImage[];
 }
 
 export class Category implements ICategory {
@@ -14,8 +14,7 @@ export class Category implements ICategory {
         public id?: number,
         public name?: string,
         public description?: string,
-        public imageContentType?: string,
-        public image?: any,
-        public categoryParent?: ICategory
+        public categoyParent?: ICategory,
+        public images?: IImage[]
     ) {}
 }

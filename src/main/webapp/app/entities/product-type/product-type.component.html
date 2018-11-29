@@ -28,12 +28,11 @@
     <div class="table-responsive" *ngIf="productTypes">
         <table class="table table-striped">
             <thead>
-            <tr>
-            <th><span jhiTranslate="global.field.id">ID</span></th>
-            <th><span jhiTranslate="newLocalApp.productType.name">Name</span></th>
-            <th><span jhiTranslate="newLocalApp.productType.description">Description</span></th>
-            <th><span jhiTranslate="newLocalApp.productType.image">Image</span></th>
-            <th><span jhiTranslate="newLocalApp.productType.category">Category</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="name"><span jhiTranslate="newLocalApp.productType.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="description"><span jhiTranslate="newLocalApp.productType.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="category.id"><span jhiTranslate="newLocalApp.productType.category">Category</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -42,12 +41,6 @@
                 <td><a [routerLink]="['/product-type', productType.id, 'view' ]">{{productType.id}}</a></td>
                 <td>{{productType.name}}</td>
                 <td>{{productType.description}}</td>
-                <td>
-                    <a *ngIf="productType.image" (click)="openFile(productType.imageContentType, productType.image)">
-                        <img [src]="'data:' + productType.imageContentType + ';base64,' + productType.image" style="max-height: 30px;" alt="productType image"/>
-                    </a>
-                    <span *ngIf="productType.image">{{productType.imageContentType}}, {{byteSize(productType.image)}}</span>
-                </td>
                 <td>
                     <div *ngIf="productType.category">
                         <a [routerLink]="['../category', productType.category?.id, 'view' ]" >{{productType.category?.id}}</a>
@@ -80,5 +73,14 @@
             </tr>
             </tbody>
         </table>
+    </div>
+    <!-- Pager is not implemented yet, so this is normal pagination instead -->
+    <div *ngIf="productTypes && productTypes.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
     </div>
 </div>

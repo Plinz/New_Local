@@ -13,20 +13,17 @@
                 <dd>
                     <span>{{productType.description}}</span>
                 </dd>
-                <dt><span jhiTranslate="newLocalApp.productType.image">Image</span></dt>
-                <dd>
-                    <div *ngIf="productType.image">
-                        <a (click)="openFile(productType.imageContentType, productType.image)">
-                            <img [src]="'data:' + productType.imageContentType + ';base64,' + productType.image" style="max-width: 100%;" alt="productType image"/>
-                        </a>
-                        {{productType.imageContentType}}, {{byteSize(productType.image)}}
-                    </div>
-                </dd>
                 <dt><span jhiTranslate="newLocalApp.productType.category">Category</span></dt>
                 <dd>
                     <div *ngIf="productType.category">
                         <a [routerLink]="['/category', productType.category?.id, 'view']">{{productType.category?.id}}</a>
                     </div>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.productType.image">Image</span></dt>
+                <dd>
+                    <span *ngFor="let image of productType.images; let last = last">
+                        <a [routerLink]="['/image', image?.id, 'view' ]">{{image.id}}</a>{{last ? '' : ', '}}
+                    </span>
                 </dd>
             </dl>
 

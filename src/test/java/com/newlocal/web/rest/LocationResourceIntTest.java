@@ -17,6 +17,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -59,11 +61,11 @@ public class LocationResourceIntTest {
     private static final String DEFAULT_ADDRESS = "AAAAAAAAAA";
     private static final String UPDATED_ADDRESS = "BBBBBBBBBB";
 
-    private static final Double DEFAULT_LON = 1D;
-    private static final Double UPDATED_LON = 2D;
+    private static final Double DEFAULT_LON = -180D;
+    private static final Double UPDATED_LON = -179D;
 
-    private static final Double DEFAULT_LAT = 1D;
-    private static final Double UPDATED_LAT = 2D;
+    private static final Double DEFAULT_LAT = -90D;
+    private static final Double UPDATED_LAT = -89D;
 
     @Autowired
     private LocationRepository locationRepository;
@@ -177,6 +179,24 @@ public class LocationResourceIntTest {
 
         // Validate the Location in Elasticsearch
         verify(mockLocationSearchRepository, times(0)).save(location);
+    }
+
+    @Test
+    @Transactional
+    public void checkZipIsRequired() throws Exception {
+        int databaseSizeBeforeTest = locationRepository.findAll().size();
+        // set the field null
+        location.setZip(null);
+
+        // Create the Location, which fails.
+
+        restLocationMockMvc.perform(post("/api/locations")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(location)))
+            .andExpect(status().isBadRequest());
+
+        List<Location> locationList = locationRepository.findAll();
+        assertThat(locationList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -606,8 +626,8 @@ public class LocationResourceIntTest {
     public void searchLocation() throws Exception {
         // Initialize the database
         locationService.save(location);
-        when(mockLocationSearchRepository.search(queryStringQuery("id:" + location.getId())))
-            .thenReturn(Collections.singletonList(location));
+        when(mockLocationSearchRepository.search(queryStringQuery("id:" + location.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(location), PageRequest.of(0, 1), 1));
         // Search the location
         restLocationMockMvc.perform(get("/api/_search/locations?query=id:" + location.getId()))
             .andExpect(status().isOk())

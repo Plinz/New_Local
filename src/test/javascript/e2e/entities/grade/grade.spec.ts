@@ -11,7 +11,7 @@ describe('Grade e2e test', () => {
     let signInPage: SignInPage;
     let gradeUpdatePage: GradeUpdatePage;
     let gradeComponentsPage: GradeComponentsPage;
-    let gradeDeleteDialog: GradeDeleteDialog;
+    /*let gradeDeleteDialog: GradeDeleteDialog;*/
 
     before(async () => {
         await browser.get('/');
@@ -34,32 +34,35 @@ describe('Grade e2e test', () => {
         await gradeUpdatePage.cancel();
     });
 
-    it('should create and save Grades', async () => {
+    /* it('should create and save Grades', async () => {
         const nbButtonsBeforeCreate = await gradeComponentsPage.countDeleteButtons();
 
         await gradeComponentsPage.clickOnCreateButton();
         await promise.all([
             gradeUpdatePage.setGradeInput('5'),
-            gradeUpdatePage.userSelectLastOption(),
-            gradeUpdatePage.productTypeSelectLastOption()
+            gradeUpdatePage.setNbVoterInput('5'),
+            gradeUpdatePage.sellerSelectLastOption(),
+            gradeUpdatePage.productTypeSelectLastOption(),
         ]);
         expect(await gradeUpdatePage.getGradeInput()).to.eq('5');
+        expect(await gradeUpdatePage.getNbVoterInput()).to.eq('5');
         await gradeUpdatePage.save();
         expect(await gradeUpdatePage.getSaveButton().isPresent()).to.be.false;
 
         expect(await gradeComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeCreate + 1);
-    });
+    });*/
 
-    it('should delete last Grade', async () => {
+    /* it('should delete last Grade', async () => {
         const nbButtonsBeforeDelete = await gradeComponentsPage.countDeleteButtons();
         await gradeComponentsPage.clickOnLastDeleteButton();
 
         gradeDeleteDialog = new GradeDeleteDialog();
-        expect(await gradeDeleteDialog.getDialogTitle()).to.eq('newLocalApp.grade.delete.question');
+        expect(await gradeDeleteDialog.getDialogTitle())
+            .to.eq('newLocalApp.grade.delete.question');
         await gradeDeleteDialog.clickOnConfirmButton();
 
         expect(await gradeComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
-    });
+    });*/
 
     after(async () => {
         await navBarPage.autoSignOut();

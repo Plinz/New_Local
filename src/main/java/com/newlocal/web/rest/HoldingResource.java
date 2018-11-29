@@ -5,15 +5,20 @@ import com.newlocal.domain.Holding;
 import com.newlocal.service.HoldingService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.web.rest.util.PaginationUtil;
 import com.newlocal.service.dto.HoldingCriteria;
 import com.newlocal.service.HoldingQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -52,7 +57,7 @@ public class HoldingResource {
      */
     @PostMapping("/holdings")
     @Timed
-    public ResponseEntity<Holding> createHolding(@RequestBody Holding holding) throws URISyntaxException {
+    public ResponseEntity<Holding> createHolding(@Valid @RequestBody Holding holding) throws URISyntaxException {
         log.debug("REST request to save Holding : {}", holding);
         if (holding.getId() != null) {
             throw new BadRequestAlertException("A new holding cannot already have an ID", ENTITY_NAME, "idexists");
@@ -74,7 +79,7 @@ public class HoldingResource {
      */
     @PutMapping("/holdings")
     @Timed
-    public ResponseEntity<Holding> updateHolding(@RequestBody Holding holding) throws URISyntaxException {
+    public ResponseEntity<Holding> updateHolding(@Valid @RequestBody Holding holding) throws URISyntaxException {
         log.debug("REST request to update Holding : {}", holding);
         if (holding.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -88,15 +93,17 @@ public class HoldingResource {
     /**
      * GET  /holdings : get all the holdings.
      *
+     * @param pageable the pagination information
      * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of holdings in body
      */
     @GetMapping("/holdings")
     @Timed
-    public ResponseEntity<List<Holding>> getAllHoldings(HoldingCriteria criteria) {
+    public ResponseEntity<List<Holding>> getAllHoldings(HoldingCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Holdings by criteria: {}", criteria);
-        List<Holding> entityList = holdingQueryService.findByCriteria(criteria);
-        return ResponseEntity.ok().body(entityList);
+        Page<Holding> page = holdingQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/holdings");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -158,12 +165,16 @@ public class HoldingResource {
      * to the query.
      *
      * @param query the query of the holding search
+     * @param pageable the pagination information
      * @return the result of the search
      */
     @GetMapping("/_search/holdings")
     @Timed
-    public List<Holding> searchHoldings(@RequestParam String query) {
-        log.debug("REST request to search Holdings for query {}", query);
-        return holdingService.search(query);
+    public ResponseEntity<List<Holding>> searchHoldings(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of Holdings for query {}", query);
+        Page<Holding> page = holdingService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/holdings");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+
 }

@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
@@ -26,21 +27,30 @@ public class Location implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "city")
+    @Size(min = 1, max = 100)
+    @Column(name = "city", length = 100)
     private String city;
 
-    @Column(name = "country")
+    @Size(min = 1, max = 100)
+    @Column(name = "country", length = 100)
     private String country;
 
-    @Column(name = "zip")
+    @NotNull
+    @Size(min = 1, max = 30)
+    @Column(name = "zip", length = 30, nullable = false)
     private String zip;
 
-    @Column(name = "address")
+    @Size(min = 1, max = 200)
+    @Column(name = "address", length = 200)
     private String address;
 
+    @DecimalMin(value = "-180")
+    @DecimalMax(value = "180")
     @Column(name = "lon")
     private Double lon;
 
+    @DecimalMin(value = "-90")
+    @DecimalMax(value = "90")
     @Column(name = "lat")
     private Double lat;
 

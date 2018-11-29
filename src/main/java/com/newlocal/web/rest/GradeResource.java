@@ -5,11 +5,16 @@ import com.newlocal.domain.Grade;
 import com.newlocal.service.GradeService;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.web.rest.util.PaginationUtil;
 import com.newlocal.service.dto.GradeCriteria;
 import com.newlocal.service.GradeQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,15 +93,17 @@ public class GradeResource {
     /**
      * GET  /grades : get all the grades.
      *
+     * @param pageable the pagination information
      * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of grades in body
      */
     @GetMapping("/grades")
     @Timed
-    public ResponseEntity<List<Grade>> getAllGrades(GradeCriteria criteria) {
+    public ResponseEntity<List<Grade>> getAllGrades(GradeCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Grades by criteria: {}", criteria);
-        List<Grade> entityList = gradeQueryService.findByCriteria(criteria);
-        return ResponseEntity.ok().body(entityList);
+        Page<Grade> page = gradeQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/grades");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -145,13 +152,16 @@ public class GradeResource {
      * to the query.
      *
      * @param query the query of the grade search
+     * @param pageable the pagination information
      * @return the result of the search
      */
     @GetMapping("/_search/grades")
     @Timed
-    public List<Grade> searchGrades(@RequestParam String query) {
-        log.debug("REST request to search Grades for query {}", query);
-        return gradeService.search(query);
+    public ResponseEntity<List<Grade>> searchGrades(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of Grades for query {}", query);
+        Page<Grade> page = gradeService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/grades");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
 }

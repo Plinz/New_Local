@@ -93,6 +93,9 @@ public class PurchaseQueryService extends QueryService<Purchase> {
             if (criteria.getQuantity() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getQuantity(), Purchase_.quantity));
             }
+            if (criteria.getWithdraw() != null) {
+                specification = specification.and(buildSpecification(criteria.getWithdraw(), Purchase_.withdraw));
+            }
             if (criteria.getStockId() != null) {
                 specification = specification.and(buildSpecification(criteria.getStockId(),
                     root -> root.join(Purchase_.stock, JoinType.LEFT).get(Stock_.id)));

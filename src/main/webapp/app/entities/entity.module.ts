@@ -7,6 +7,9 @@ import { NewLocalProductTypeModule } from './product-type/product-type.module';
 import { NewLocalLocationModule } from './location/location.module';
 import { NewLocalStockModule } from './stock/stock.module';
 import { NewLocalHoldingModule } from './holding/holding.module';
+import { NewLocalCartModule } from './cart/cart.module';
+import { NewLocalWarehouseModule } from './warehouse/warehouse.module';
+import { NewLocalImageModule } from './image/image.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -19,6 +22,9 @@ import { NewLocalHoldingModule } from './holding/holding.module';
         NewLocalLocationModule,
         NewLocalStockModule,
         NewLocalHoldingModule,
+        NewLocalCartModule,
+        NewLocalWarehouseModule,
+        NewLocalImageModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

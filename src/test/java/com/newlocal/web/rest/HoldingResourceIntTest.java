@@ -5,6 +5,7 @@ import com.newlocal.NewLocalApp;
 import com.newlocal.domain.Holding;
 import com.newlocal.domain.Location;
 import com.newlocal.domain.User;
+import com.newlocal.domain.Image;
 import com.newlocal.repository.HoldingRepository;
 import com.newlocal.repository.search.HoldingSearchRepository;
 import com.newlocal.service.HoldingService;
@@ -15,9 +16,12 @@ import com.newlocal.service.HoldingQueryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -25,9 +29,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,20 +53,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = NewLocalApp.class)
 public class HoldingResourceIntTest {
 
+    private static final String DEFAULT_SIRET = "AAAAAAAAAAAAAA";
+    private static final String UPDATED_SIRET = "BBBBBBBBBBBBBB";
+
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final byte[] DEFAULT_IMAGE = TestUtil.createByteArray(1, "0");
-    private static final byte[] UPDATED_IMAGE = TestUtil.createByteArray(1, "1");
-    private static final String DEFAULT_IMAGE_CONTENT_TYPE = "image/jpg";
-    private static final String UPDATED_IMAGE_CONTENT_TYPE = "image/png";
-
     @Autowired
     private HoldingRepository holdingRepository;
+
+    @Mock
+    private HoldingRepository holdingRepositoryMock;
     
+
+    @Mock
+    private HoldingService holdingServiceMock;
+
     @Autowired
     private HoldingService holdingService;
 
@@ -112,10 +121,19 @@ public class HoldingResourceIntTest {
      */
     public static Holding createEntity(EntityManager em) {
         Holding holding = new Holding()
+            .siret(DEFAULT_SIRET)
             .name(DEFAULT_NAME)
-            .description(DEFAULT_DESCRIPTION)
-            .image(DEFAULT_IMAGE)
-            .imageContentType(DEFAULT_IMAGE_CONTENT_TYPE);
+            .description(DEFAULT_DESCRIPTION);
+        // Add required entity
+        Location location = LocationResourceIntTest.createEntity(em);
+        em.persist(location);
+        em.flush();
+        holding.setLocation(location);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        holding.setOwner(user);
         return holding;
     }
 
@@ -139,10 +157,9 @@ public class HoldingResourceIntTest {
         List<Holding> holdingList = holdingRepository.findAll();
         assertThat(holdingList).hasSize(databaseSizeBeforeCreate + 1);
         Holding testHolding = holdingList.get(holdingList.size() - 1);
+        assertThat(testHolding.getSiret()).isEqualTo(DEFAULT_SIRET);
         assertThat(testHolding.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testHolding.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testHolding.getImage()).isEqualTo(DEFAULT_IMAGE);
-        assertThat(testHolding.getImageContentType()).isEqualTo(DEFAULT_IMAGE_CONTENT_TYPE);
 
         // Validate the Holding in Elasticsearch
         verify(mockHoldingSearchRepository, times(1)).save(testHolding);
@@ -172,6 +189,42 @@ public class HoldingResourceIntTest {
 
     @Test
     @Transactional
+    public void checkSiretIsRequired() throws Exception {
+        int databaseSizeBeforeTest = holdingRepository.findAll().size();
+        // set the field null
+        holding.setSiret(null);
+
+        // Create the Holding, which fails.
+
+        restHoldingMockMvc.perform(post("/api/holdings")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(holding)))
+            .andExpect(status().isBadRequest());
+
+        List<Holding> holdingList = holdingRepository.findAll();
+        assertThat(holdingList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = holdingRepository.findAll().size();
+        // set the field null
+        holding.setName(null);
+
+        // Create the Holding, which fails.
+
+        restHoldingMockMvc.perform(post("/api/holdings")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(holding)))
+            .andExpect(status().isBadRequest());
+
+        List<Holding> holdingList = holdingRepository.findAll();
+        assertThat(holdingList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllHoldings() throws Exception {
         // Initialize the database
         holdingRepository.saveAndFlush(holding);
@@ -181,12 +234,42 @@ public class HoldingResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(holding.getId().intValue())))
+            .andExpect(jsonPath("$.[*].siret").value(hasItem(DEFAULT_SIRET.toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
     
+    public void getAllHoldingsWithEagerRelationshipsIsEnabled() throws Exception {
+        HoldingResource holdingResource = new HoldingResource(holdingServiceMock, holdingQueryService);
+        when(holdingServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restHoldingMockMvc = MockMvcBuilders.standaloneSetup(holdingResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restHoldingMockMvc.perform(get("/api/holdings?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(holdingServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    public void getAllHoldingsWithEagerRelationshipsIsNotEnabled() throws Exception {
+        HoldingResource holdingResource = new HoldingResource(holdingServiceMock, holdingQueryService);
+            when(holdingServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restHoldingMockMvc = MockMvcBuilders.standaloneSetup(holdingResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restHoldingMockMvc.perform(get("/api/holdings?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(holdingServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
     @Test
     @Transactional
     public void getHolding() throws Exception {
@@ -198,10 +281,48 @@ public class HoldingResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(holding.getId().intValue()))
+            .andExpect(jsonPath("$.siret").value(DEFAULT_SIRET.toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-            .andExpect(jsonPath("$.imageContentType").value(DEFAULT_IMAGE_CONTENT_TYPE))
-            .andExpect(jsonPath("$.image").value(Base64Utils.encodeToString(DEFAULT_IMAGE)));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()));
+    }
+
+    @Test
+    @Transactional
+    public void getAllHoldingsBySiretIsEqualToSomething() throws Exception {
+        // Initialize the database
+        holdingRepository.saveAndFlush(holding);
+
+        // Get all the holdingList where siret equals to DEFAULT_SIRET
+        defaultHoldingShouldBeFound("siret.equals=" + DEFAULT_SIRET);
+
+        // Get all the holdingList where siret equals to UPDATED_SIRET
+        defaultHoldingShouldNotBeFound("siret.equals=" + UPDATED_SIRET);
+    }
+
+    @Test
+    @Transactional
+    public void getAllHoldingsBySiretIsInShouldWork() throws Exception {
+        // Initialize the database
+        holdingRepository.saveAndFlush(holding);
+
+        // Get all the holdingList where siret in DEFAULT_SIRET or UPDATED_SIRET
+        defaultHoldingShouldBeFound("siret.in=" + DEFAULT_SIRET + "," + UPDATED_SIRET);
+
+        // Get all the holdingList where siret equals to UPDATED_SIRET
+        defaultHoldingShouldNotBeFound("siret.in=" + UPDATED_SIRET);
+    }
+
+    @Test
+    @Transactional
+    public void getAllHoldingsBySiretIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        holdingRepository.saveAndFlush(holding);
+
+        // Get all the holdingList where siret is not null
+        defaultHoldingShouldBeFound("siret.specified=true");
+
+        // Get all the holdingList where siret is null
+        defaultHoldingShouldNotBeFound("siret.specified=false");
     }
 
     @Test
@@ -319,6 +440,25 @@ public class HoldingResourceIntTest {
         defaultHoldingShouldNotBeFound("ownerId.equals=" + (ownerId + 1));
     }
 
+
+    @Test
+    @Transactional
+    public void getAllHoldingsByImageIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Image image = ImageResourceIntTest.createEntity(em);
+        em.persist(image);
+        em.flush();
+        holding.addImage(image);
+        holdingRepository.saveAndFlush(holding);
+        Long imageId = image.getId();
+
+        // Get all the holdingList where image equals to imageId
+        defaultHoldingShouldBeFound("imageId.equals=" + imageId);
+
+        // Get all the holdingList where image equals to imageId + 1
+        defaultHoldingShouldNotBeFound("imageId.equals=" + (imageId + 1));
+    }
+
     /**
      * Executes the search, and checks that the default entity is returned
      */
@@ -327,10 +467,9 @@ public class HoldingResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(holding.getId().intValue())))
+            .andExpect(jsonPath("$.[*].siret").value(hasItem(DEFAULT_SIRET.toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
 
         // Check, that the count call also returns 1
         restHoldingMockMvc.perform(get("/api/holdings/count?sort=id,desc&" + filter))
@@ -380,10 +519,9 @@ public class HoldingResourceIntTest {
         // Disconnect from session so that the updates on updatedHolding are not directly saved in db
         em.detach(updatedHolding);
         updatedHolding
+            .siret(UPDATED_SIRET)
             .name(UPDATED_NAME)
-            .description(UPDATED_DESCRIPTION)
-            .image(UPDATED_IMAGE)
-            .imageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+            .description(UPDATED_DESCRIPTION);
 
         restHoldingMockMvc.perform(put("/api/holdings")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -394,10 +532,9 @@ public class HoldingResourceIntTest {
         List<Holding> holdingList = holdingRepository.findAll();
         assertThat(holdingList).hasSize(databaseSizeBeforeUpdate);
         Holding testHolding = holdingList.get(holdingList.size() - 1);
+        assertThat(testHolding.getSiret()).isEqualTo(UPDATED_SIRET);
         assertThat(testHolding.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testHolding.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testHolding.getImage()).isEqualTo(UPDATED_IMAGE);
-        assertThat(testHolding.getImageContentType()).isEqualTo(UPDATED_IMAGE_CONTENT_TYPE);
 
         // Validate the Holding in Elasticsearch
         verify(mockHoldingSearchRepository, times(1)).save(testHolding);
@@ -450,17 +587,16 @@ public class HoldingResourceIntTest {
     public void searchHolding() throws Exception {
         // Initialize the database
         holdingService.save(holding);
-        when(mockHoldingSearchRepository.search(queryStringQuery("id:" + holding.getId())))
-            .thenReturn(Collections.singletonList(holding));
+        when(mockHoldingSearchRepository.search(queryStringQuery("id:" + holding.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(holding), PageRequest.of(0, 1), 1));
         // Search the holding
         restHoldingMockMvc.perform(get("/api/_search/holdings?query=id:" + holding.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(holding.getId().intValue())))
+            .andExpect(jsonPath("$.[*].siret").value(hasItem(DEFAULT_SIRET.toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
 
     @Test

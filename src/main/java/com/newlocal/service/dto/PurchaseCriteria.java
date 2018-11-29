@@ -15,7 +15,7 @@ import io.github.jhipster.service.filter.InstantFilter;
  * Criteria class for the Purchase entity. This class is used in PurchaseResource to
  * receive all the possible filtering options from the Http GET request parameters.
  * For example the following could be a valid requests:
- * <code> /purchase-dones?id.greaterThan=5&amp;attr1.contains=something&amp;attr2.specified=false</code>
+ * <code> /purchases?id.greaterThan=5&amp;attr1.contains=something&amp;attr2.specified=false</code>
  * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
  * fix type specific filters.
  */
@@ -28,6 +28,8 @@ public class PurchaseCriteria implements Serializable {
     private InstantFilter saleDate;
 
     private IntegerFilter quantity;
+
+    private BooleanFilter withdraw;
 
     private LongFilter stockId;
 
@@ -60,6 +62,14 @@ public class PurchaseCriteria implements Serializable {
         this.quantity = quantity;
     }
 
+    public BooleanFilter getWithdraw() {
+        return withdraw;
+    }
+
+    public void setWithdraw(BooleanFilter withdraw) {
+        this.withdraw = withdraw;
+    }
+
     public LongFilter getStockId() {
         return stockId;
     }
@@ -90,6 +100,7 @@ public class PurchaseCriteria implements Serializable {
             Objects.equals(id, that.id) &&
             Objects.equals(saleDate, that.saleDate) &&
             Objects.equals(quantity, that.quantity) &&
+            Objects.equals(withdraw, that.withdraw) &&
             Objects.equals(stockId, that.stockId) &&
             Objects.equals(clientId, that.clientId);
     }
@@ -100,6 +111,7 @@ public class PurchaseCriteria implements Serializable {
         id,
         saleDate,
         quantity,
+        withdraw,
         stockId,
         clientId
         );
@@ -111,6 +123,7 @@ public class PurchaseCriteria implements Serializable {
                 (id != null ? "id=" + id + ", " : "") +
                 (saleDate != null ? "saleDate=" + saleDate + ", " : "") +
                 (quantity != null ? "quantity=" + quantity + ", " : "") +
+                (withdraw != null ? "withdraw=" + withdraw + ", " : "") +
                 (stockId != null ? "stockId=" + stockId + ", " : "") +
                 (clientId != null ? "clientId=" + clientId + ", " : "") +
             "}";

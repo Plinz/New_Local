@@ -6,13 +6,12 @@ import com.newlocal.repository.search.LocationSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -50,12 +49,13 @@ public class LocationService {
     /**
      * Get all the locations.
      *
+     * @param pageable the pagination information
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<Location> findAll() {
+    public Page<Location> findAll(Pageable pageable) {
         log.debug("Request to get all Locations");
-        return locationRepository.findAll();
+        return locationRepository.findAll(pageable);
     }
 
 
@@ -86,13 +86,11 @@ public class LocationService {
      * Search for the location corresponding to the query.
      *
      * @param query the query of the search
+     * @param pageable the pagination information
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<Location> search(String query) {
-        log.debug("Request to search Locations for query {}", query);
-        return StreamSupport
-            .stream(locationSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
-    }
+    public Page<Location> search(String query, Pageable pageable) {
+        log.debug("Request to search for a page of Locations for query {}", query);
+        return locationSearchRepository.search(queryStringQuery(query), pageable);    }
 }

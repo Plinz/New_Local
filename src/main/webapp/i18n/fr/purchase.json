@@ -3,22 +3,23 @@
     "newLocalApp": {
         "purchase" : {
             "home": {
-                "title": "Achats",
-                "createLabel": "Créer un nouveau achat",
-                "createOrEditLabel": "Créer ou éditer un achat",
-                "search": "Recherche pour achat"
+                "title": "Purchases",
+                "createLabel": "Créer un nouveau Purchase",
+                "createOrEditLabel": "Créer ou éditer un Purchase",
+                "search": "Recherche pour Purchase"
             },
-            "created": "Un nouveau achat a été créé avec l'identifiant {{ param }}",
-            "updated": "L'achat avec l'identifiant {{ param }} a été mis à jour",
-            "deleted": "L'achat avec l'identifiant {{ param }} a été supprimé",
+            "created": "Un nouveau Purchase a été créé avec l'identifiant {{ param }}",
+            "updated": "Le Purchase avec l'identifiant {{ param }} a été mis à jour",
+            "deleted": "Le Purchase avec l'identifiant {{ param }} a été supprimé",
             "delete": {
-                "question": "Etes-vous certain de vouloir supprimer l'achat {{ id }} ?"
+                "question": "Etes-vous certain de vouloir supprimer le Purchase {{ id }} ?"
             },
             "detail": {
-                "title": "Achat"
+                "title": "Purchase"
             },
-            "saleDate": "Date de vente",
-            "quantity": "Quantité",
+            "saleDate": "Sale Date",
+            "quantity": "Quantity",
+            "withdraw": "Withdraw",
             "stock": "Stock",
             "client": "Client"
         }

@@ -3,7 +3,6 @@ import { browser, ExpectedConditions as ec, promise } from 'protractor';
 import { NavBarPage, SignInPage } from '../../page-objects/jhi-page-objects';
 
 import { HoldingComponentsPage, HoldingDeleteDialog, HoldingUpdatePage } from './holding.page-object';
-import * as path from 'path';
 
 const expect = chai.expect;
 
@@ -12,10 +11,7 @@ describe('Holding e2e test', () => {
     let signInPage: SignInPage;
     let holdingUpdatePage: HoldingUpdatePage;
     let holdingComponentsPage: HoldingComponentsPage;
-    let holdingDeleteDialog: HoldingDeleteDialog;
-    const fileNameToUpload = 'logo-jhipster.png';
-    const fileToUpload = '../../../../../main/webapp/content/images/' + fileNameToUpload;
-    const absolutePath = path.resolve(__dirname, fileToUpload);
+    /*let holdingDeleteDialog: HoldingDeleteDialog;*/
 
     before(async () => {
         await browser.get('/');
@@ -38,36 +34,38 @@ describe('Holding e2e test', () => {
         await holdingUpdatePage.cancel();
     });
 
-    it('should create and save Holdings', async () => {
+    /* it('should create and save Holdings', async () => {
         const nbButtonsBeforeCreate = await holdingComponentsPage.countDeleteButtons();
 
         await holdingComponentsPage.clickOnCreateButton();
         await promise.all([
+            holdingUpdatePage.setSiretInput('siret'),
             holdingUpdatePage.setNameInput('name'),
             holdingUpdatePage.setDescriptionInput('description'),
-            holdingUpdatePage.setImageInput(absolutePath),
             holdingUpdatePage.locationSelectLastOption(),
-            holdingUpdatePage.ownerSelectLastOption()
+            holdingUpdatePage.ownerSelectLastOption(),
+            // holdingUpdatePage.imageSelectLastOption(),
         ]);
+        expect(await holdingUpdatePage.getSiretInput()).to.eq('siret');
         expect(await holdingUpdatePage.getNameInput()).to.eq('name');
         expect(await holdingUpdatePage.getDescriptionInput()).to.eq('description');
-        expect(await holdingUpdatePage.getImageInput()).to.endsWith(fileNameToUpload);
         await holdingUpdatePage.save();
         expect(await holdingUpdatePage.getSaveButton().isPresent()).to.be.false;
 
         expect(await holdingComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeCreate + 1);
-    });
+    });*/
 
-    it('should delete last Holding', async () => {
+    /* it('should delete last Holding', async () => {
         const nbButtonsBeforeDelete = await holdingComponentsPage.countDeleteButtons();
         await holdingComponentsPage.clickOnLastDeleteButton();
 
         holdingDeleteDialog = new HoldingDeleteDialog();
-        expect(await holdingDeleteDialog.getDialogTitle()).to.eq('newLocalApp.holding.delete.question');
+        expect(await holdingDeleteDialog.getDialogTitle())
+            .to.eq('newLocalApp.holding.delete.question');
         await holdingDeleteDialog.clickOnConfirmButton();
 
         expect(await holdingComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
-    });
+    });*/
 
     after(async () => {
         await navBarPage.autoSignOut();
