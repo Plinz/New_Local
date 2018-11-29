@@ -59,13 +59,13 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     timeout() {
         setTimeout(() => {
             if (this.fintimeout) {
-                for (const k of this.purchases) {
+                /* for (const k of this.purchases) {
                     this.confirmDelete(k.id);
                 }
+                this.purchases = []; */
                 this.btimeout = true;
-                this.purchases = [];
             }
-        }, 10000);
+        }, 3000);
     }
 
     startTimeout() {
@@ -86,6 +86,12 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     abandonner() {
         this.fintimeout = false;
         this.isOkpanier = true;
+    }
+
+    returnCard() {
+        this.isOkpanier = true;
+        this.btimeout = false;
+        this.fintimeout = false;
     }
 
     calculTotal() {

@@ -148,7 +148,7 @@
                         </div>
                     </div>
                     <div class="text-center" *ngIf="isOkpanier && (purchases.length > 0)">
-                        <button class="btn btn-success" (click)="startTimeout()" >
+                        <button class="btn btn-success" (click)="startTimeout()">
                             <span class="d-none d-md-inline">Valider</span>
                         </button>
                     </div>
@@ -160,7 +160,17 @@
 
     <div class="card" *ngIf="btimeout">
         <div class="card-body">
-            <span>Trop longtemps inactive</span>
+            <div class="row">
+                <div class="col-sm-9">
+                    <span>Trop longtemps inactive</span>
+                </div>
+                <div class="col-sm-3 text-right">
+                    <button class="btn btn-warning" (click)="returnCard()">
+                        <span class="d-none d-md-inline">Revenir au panier</span>
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
