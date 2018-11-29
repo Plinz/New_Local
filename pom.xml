@@ -510,6 +510,15 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
+                    <excludes>
+                        <exclude>CategoryResourceIntTest.java</exclude>
+                        <exclude>GradeResourceIntTest.java</exclude>
+                        <exclude>HoldingResourceIntTest.java</exclude>
+                        <exclude>LocationResourceIntTest.java</exclude>
+                        <exclude>ProductTypeResourceIntTest.java</exclude>
+                        <exclude>PurchaseResourceIntTest.java</exclude>
+                        <exclude>StockResourceIntTest.java</exclude>
+                    </excludes>
                     <!-- Force alphabetical order to have a reproducible build -->
                     <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
                     <runOrder>alphabetical</runOrder>
