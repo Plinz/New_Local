@@ -13,9 +13,14 @@
                 <dd>
                     <span>{{image.description}}</span>
                 </dd>
-                <dt><span jhiTranslate="newLocalApp.image.imagePath">Image Path</span></dt>
+                <dt><span jhiTranslate="newLocalApp.image.image">Image</span></dt>
                 <dd>
-                    <span>{{image.imagePath}}</span>
+                    <div *ngIf="image.image">
+                        <a (click)="openFile(image.imageContentType, image.image)">
+                            <img [src]="'data:' + image.imageContentType + ';base64,' + image.image" style="max-width: 100%;" alt="image image"/>
+                        </a>
+                        {{image.imageContentType}}, {{byteSize(image.image)}}
+                    </div>
                 </dd>
             </dl>
 
