@@ -43,6 +43,8 @@ public class StockCriteria implements Serializable {
 
     private BooleanFilter available;
 
+    private LongFilter imageId;
+
     private LongFilter productTypeId;
 
     private LongFilter holdingId;
@@ -50,8 +52,6 @@ public class StockCriteria implements Serializable {
     private LongFilter sellerId;
 
     private LongFilter warehouseId;
-
-    private LongFilter imageId;
 
     public StockCriteria() {
     }
@@ -136,6 +136,14 @@ public class StockCriteria implements Serializable {
         this.available = available;
     }
 
+    public LongFilter getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(LongFilter imageId) {
+        this.imageId = imageId;
+    }
+
     public LongFilter getProductTypeId() {
         return productTypeId;
     }
@@ -168,14 +176,6 @@ public class StockCriteria implements Serializable {
         this.warehouseId = warehouseId;
     }
 
-    public LongFilter getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(LongFilter imageId) {
-        this.imageId = imageId;
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -197,11 +197,11 @@ public class StockCriteria implements Serializable {
             Objects.equals(expiryDate, that.expiryDate) &&
             Objects.equals(bio, that.bio) &&
             Objects.equals(available, that.available) &&
+            Objects.equals(imageId, that.imageId) &&
             Objects.equals(productTypeId, that.productTypeId) &&
             Objects.equals(holdingId, that.holdingId) &&
             Objects.equals(sellerId, that.sellerId) &&
-            Objects.equals(warehouseId, that.warehouseId) &&
-            Objects.equals(imageId, that.imageId);
+            Objects.equals(warehouseId, that.warehouseId);
     }
 
     @Override
@@ -217,11 +217,11 @@ public class StockCriteria implements Serializable {
         expiryDate,
         bio,
         available,
+        imageId,
         productTypeId,
         holdingId,
         sellerId,
-        warehouseId,
-        imageId
+        warehouseId
         );
     }
 
@@ -238,11 +238,11 @@ public class StockCriteria implements Serializable {
                 (expiryDate != null ? "expiryDate=" + expiryDate + ", " : "") +
                 (bio != null ? "bio=" + bio + ", " : "") +
                 (available != null ? "available=" + available + ", " : "") +
+                (imageId != null ? "imageId=" + imageId + ", " : "") +
                 (productTypeId != null ? "productTypeId=" + productTypeId + ", " : "") +
                 (holdingId != null ? "holdingId=" + holdingId + ", " : "") +
                 (sellerId != null ? "sellerId=" + sellerId + ", " : "") +
                 (warehouseId != null ? "warehouseId=" + warehouseId + ", " : "") +
-                (imageId != null ? "imageId=" + imageId + ", " : "") +
             "}";
     }
 

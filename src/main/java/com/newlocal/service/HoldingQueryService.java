@@ -34,11 +34,11 @@ public class HoldingQueryService extends QueryService<Holding> {
 
     private HoldingRepository holdingRepository;
 
-    private HoldingSearchRepository holdingSearchRepository;
+//    private HoldingSearchRepository holdingSearchRepository;
 
     public HoldingQueryService(HoldingRepository holdingRepository, HoldingSearchRepository holdingSearchRepository) {
         this.holdingRepository = holdingRepository;
-        this.holdingSearchRepository = holdingSearchRepository;
+//        this.holdingSearchRepository = holdingSearchRepository;
     }
 
     /**
@@ -96,6 +96,10 @@ public class HoldingQueryService extends QueryService<Holding> {
             if (criteria.getDescription() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDescription(), Holding_.description));
             }
+            if (criteria.getImageId() != null) {
+                specification = specification.and(buildSpecification(criteria.getImageId(),
+                    root -> root.join(Holding_.image, JoinType.LEFT).get(Image_.id)));
+            }
             if (criteria.getLocationId() != null) {
                 specification = specification.and(buildSpecification(criteria.getLocationId(),
                     root -> root.join(Holding_.location, JoinType.LEFT).get(Location_.id)));
@@ -103,10 +107,6 @@ public class HoldingQueryService extends QueryService<Holding> {
             if (criteria.getOwnerId() != null) {
                 specification = specification.and(buildSpecification(criteria.getOwnerId(),
                     root -> root.join(Holding_.owner, JoinType.LEFT).get(User_.id)));
-            }
-            if (criteria.getImageId() != null) {
-                specification = specification.and(buildSpecification(criteria.getImageId(),
-                    root -> root.join(Holding_.images, JoinType.LEFT).get(Image_.id)));
             }
         }
         return specification;

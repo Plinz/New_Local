@@ -48,7 +48,7 @@ entity Location {
     address String minlength(1) maxlength(200),
     lon Double min(-180) max(180),
     lat Double min(-90) max(90)
-} 
+}
 
 entity Holding {
     siret String required minlength(14) maxlength(14) unique,
@@ -73,7 +73,7 @@ relationship ManyToOne {
     Purchase{client required} to User,
     Grade{seller required} to User,
     Grade{productType required} to ProductType,
-    Category{categoyParent} to Category,
+    Category{categoryParent} to Category,
     ProductType{category required} to Category,
     Warehouse{location required} to Location,
     Holding{location required} to Location,
@@ -81,12 +81,12 @@ relationship ManyToOne {
     Location{user} to User
 }
 
-relationship ManyToMany {
-    Stock{image} to Image{stock},
-    Category{image} to Image{category},
-    ProductType{image} to Image{productType},
-    Holding{image} to Image{holding},
-    Warehouse{image} to Image{warehouse},
+relationship OneToOne {
+    Stock{image required} to Image,
+    Category{image} to Image,
+    ProductType{image} to Image,
+    Holding{image} to Image,
+    Warehouse{image} to Image,
 }
 
 paginate all with pager

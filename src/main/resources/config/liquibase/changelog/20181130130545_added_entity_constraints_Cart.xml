@@ -4,19 +4,19 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <!--
-        Added the constraints for entity Purchase.
+        Added the constraints for entity Cart.
     -->
-    <changeSet id="20181107090800-2" author="jhipster">
+    <changeSet id="20181130130545-2" author="jhipster">
         
         <addForeignKeyConstraint baseColumnNames="stock_id"
-                                 baseTableName="purchase"
-                                 constraintName="fk_purchase_stock_id"
+                                 baseTableName="cart"
+                                 constraintName="fk_cart_stock_id"
                                  referencedColumnNames="id"
                                  referencedTableName="stock"/>
 
         <addForeignKeyConstraint baseColumnNames="client_id"
-                                 baseTableName="purchase"
-                                 constraintName="fk_purchase_client_id"
+                                 baseTableName="cart"
+                                 constraintName="fk_cart_client_id"
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 

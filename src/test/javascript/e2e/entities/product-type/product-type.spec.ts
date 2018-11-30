@@ -41,8 +41,8 @@ describe('ProductType e2e test', () => {
         await promise.all([
             productTypeUpdatePage.setNameInput('name'),
             productTypeUpdatePage.setDescriptionInput('description'),
+            productTypeUpdatePage.imageSelectLastOption(),
             productTypeUpdatePage.categorySelectLastOption(),
-            // productTypeUpdatePage.imageSelectLastOption(),
         ]);
         expect(await productTypeUpdatePage.getNameInput()).to.eq('name');
         expect(await productTypeUpdatePage.getDescriptionInput()).to.eq('description');

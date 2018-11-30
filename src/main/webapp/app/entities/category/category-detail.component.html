@@ -13,17 +13,17 @@
                 <dd>
                     <span>{{category.description}}</span>
                 </dd>
-                <dt><span jhiTranslate="newLocalApp.category.categoyParent">Categoy Parent</span></dt>
-                <dd>
-                    <div *ngIf="category.categoyParent">
-                        <a [routerLink]="['/category', category.categoyParent?.id, 'view']">{{category.categoyParent?.id}}</a>
-                    </div>
-                </dd>
                 <dt><span jhiTranslate="newLocalApp.category.image">Image</span></dt>
                 <dd>
-                    <span *ngFor="let image of category.images; let last = last">
-                        <a [routerLink]="['/image', image?.id, 'view' ]">{{image.id}}</a>{{last ? '' : ', '}}
-                    </span>
+                    <div *ngIf="category.image">
+                        <a [routerLink]="['/image', category.image?.id, 'view']">{{category.image?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.category.categoryParent">Category Parent</span></dt>
+                <dd>
+                    <div *ngIf="category.categoryParent">
+                        <a [routerLink]="['/category', category.categoryParent?.id, 'view']">{{category.categoryParent?.id}}</a>
+                    </div>
                 </dd>
             </dl>
 

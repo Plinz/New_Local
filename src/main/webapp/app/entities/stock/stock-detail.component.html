@@ -41,6 +41,12 @@
                 <dd>
                     <span>{{stock.available}}</span>
                 </dd>
+                <dt><span jhiTranslate="newLocalApp.stock.image">Image</span></dt>
+                <dd>
+                    <div *ngIf="stock.image">
+                        <a [routerLink]="['/image', stock.image?.id, 'view']">{{stock.image?.id}}</a>
+                    </div>
+                </dd>
                 <dt><span jhiTranslate="newLocalApp.stock.productType">Product Type</span></dt>
                 <dd>
                     <div *ngIf="stock.productType">
@@ -62,12 +68,6 @@
                     <div *ngIf="stock.warehouse">
                         <a [routerLink]="['/warehouse', stock.warehouse?.id, 'view']">{{stock.warehouse?.id}}</a>
                     </div>
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.stock.image">Image</span></dt>
-                <dd>
-                    <span *ngFor="let image of stock.images; let last = last">
-                        <a [routerLink]="['/image', image?.id, 'view' ]">{{image.id}}</a>{{last ? '' : ', '}}
-                    </span>
                 </dd>
             </dl>
 

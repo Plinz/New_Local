@@ -32,7 +32,8 @@
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="name"><span jhiTranslate="newLocalApp.category.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="description"><span jhiTranslate="newLocalApp.category.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="categoyParent.id"><span jhiTranslate="newLocalApp.category.categoyParent">Categoy Parent</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="image.id"><span jhiTranslate="newLocalApp.category.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="categoryParent.id"><span jhiTranslate="newLocalApp.category.categoryParent">Category Parent</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -42,8 +43,13 @@
                 <td>{{category.name}}</td>
                 <td>{{category.description}}</td>
                 <td>
-                    <div *ngIf="category.categoyParent">
-                        <a [routerLink]="['../category', category.categoyParent?.id, 'view' ]" >{{category.categoyParent?.id}}</a>
+                    <div *ngIf="category.image">
+                        <a [routerLink]="['../image', category.image?.id, 'view' ]" >{{category.image?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="category.categoryParent">
+                        <a [routerLink]="['../category', category.categoryParent?.id, 'view' ]" >{{category.categoryParent?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

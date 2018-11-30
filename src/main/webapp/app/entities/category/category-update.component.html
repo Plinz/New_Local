@@ -41,16 +41,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.category.categoyParent" for="field_categoyParent">Categoy Parent</label>
-                    <select class="form-control" id="field_categoyParent" name="categoyParent" [(ngModel)]="category.categoyParent" >
+                    <label class="form-control-label" jhiTranslate="newLocalApp.category.image" for="field_image">Image</label>
+                    <select class="form-control" id="field_image" name="image" [(ngModel)]="category.image">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="categoryOption.id === category.categoyParent?.id ? category.categoyParent : categoryOption" *ngFor="let categoryOption of categories; trackBy: trackCategoryById">{{categoryOption.id}}</option>
+                        <option [ngValue]="imageOption.id === category.image?.id ? category.image : imageOption" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label jhiTranslate="newLocalApp.category.image" for="field_image">Image</label>
-                    <select class="form-control" id="field_image" multiple name="image" [(ngModel)]="category.images">
-                        <option [ngValue]="getSelected(category.images, imageOption)" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
+                    <label class="form-control-label" jhiTranslate="newLocalApp.category.categoryParent" for="field_categoryParent">Category Parent</label>
+                    <select class="form-control" id="field_categoryParent" name="categoryParent" [(ngModel)]="category.categoryParent" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="categoryOption.id === category.categoryParent?.id ? category.categoryParent : categoryOption" *ngFor="let categoryOption of categories; trackBy: trackCategoryById">{{categoryOption.id}}</option>
                     </select>
                 </div>
             </div>

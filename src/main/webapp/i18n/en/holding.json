@@ -20,9 +20,9 @@
             "siret": "Siret",
             "name": "Name",
             "description": "Description",
+            "image": "Image",
             "location": "Location",
-            "owner": "Owner",
-            "image": "Image"
+            "owner": "Owner"
         }
     }
 }

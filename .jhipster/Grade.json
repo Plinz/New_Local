@@ -38,7 +38,7 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20181107090802",
+    "changelogDate": "20181130130547",
     "entityTableName": "grade",
     "dto": "no",
     "pagination": "pager",

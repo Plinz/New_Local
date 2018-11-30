@@ -6,10 +6,10 @@ import { JhiAlertService } from 'ng-jhipster';
 
 import { IProductType } from 'app/shared/model/product-type.model';
 import { ProductTypeService } from './product-type.service';
-import { ICategory } from 'app/shared/model/category.model';
-import { CategoryService } from 'app/entities/category';
 import { IImage } from 'app/shared/model/image.model';
 import { ImageService } from 'app/entities/image';
+import { ICategory } from 'app/shared/model/category.model';
+import { CategoryService } from 'app/entities/category';
 
 @Component({
     selector: 'jhi-product-type-update',
@@ -19,15 +19,15 @@ export class ProductTypeUpdateComponent implements OnInit {
     productType: IProductType;
     isSaving: boolean;
 
-    categories: ICategory[];
-
     images: IImage[];
+
+    categories: ICategory[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private productTypeService: ProductTypeService,
-        private categoryService: CategoryService,
         private imageService: ImageService,
+        private categoryService: CategoryService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -36,15 +36,24 @@ export class ProductTypeUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ productType }) => {
             this.productType = productType;
         });
-        this.categoryService.query().subscribe(
-            (res: HttpResponse<ICategory[]>) => {
-                this.categories = res.body;
+        this.imageService.query({ 'productTypeId.specified': 'false' }).subscribe(
+            (res: HttpResponse<IImage[]>) => {
+                if (!this.productType.image || !this.productType.image.id) {
+                    this.images = res.body;
+                } else {
+                    this.imageService.find(this.productType.image.id).subscribe(
+                        (subRes: HttpResponse<IImage>) => {
+                            this.images = [subRes.body].concat(res.body);
+                        },
+                        (subRes: HttpErrorResponse) => this.onError(subRes.message)
+                    );
+                }
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.imageService.query().subscribe(
-            (res: HttpResponse<IImage[]>) => {
-                this.images = res.body;
+        this.categoryService.query().subscribe(
+            (res: HttpResponse<ICategory[]>) => {
+                this.categories = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -80,22 +89,11 @@ export class ProductTypeUpdateComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    trackCategoryById(index: number, item: ICategory) {
-        return item.id;
-    }
-
     trackImageById(index: number, item: IImage) {
         return item.id;
     }
 
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
+    trackCategoryById(index: number, item: ICategory) {
+        return item.id;
     }
 }

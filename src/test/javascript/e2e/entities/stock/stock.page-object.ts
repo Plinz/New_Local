@@ -35,11 +35,11 @@ export class StockUpdatePage {
     expiryDateInput = element(by.id('field_expiryDate'));
     bioInput = element(by.id('field_bio'));
     availableInput = element(by.id('field_available'));
+    imageSelect = element(by.id('field_image'));
     productTypeSelect = element(by.id('field_productType'));
     holdingSelect = element(by.id('field_holding'));
     sellerSelect = element(by.id('field_seller'));
     warehouseSelect = element(by.id('field_warehouse'));
-    imageSelect = element(by.id('field_image'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -106,6 +106,25 @@ export class StockUpdatePage {
     }
     getAvailableInput() {
         return this.availableInput;
+    }
+
+    async imageSelectLastOption() {
+        await this.imageSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async imageSelectOption(option) {
+        await this.imageSelect.sendKeys(option);
+    }
+
+    getImageSelect(): ElementFinder {
+        return this.imageSelect;
+    }
+
+    async getImageSelectedOption() {
+        return this.imageSelect.element(by.css('option:checked')).getText();
     }
 
     async productTypeSelectLastOption() {
@@ -182,25 +201,6 @@ export class StockUpdatePage {
 
     async getWarehouseSelectedOption() {
         return this.warehouseSelect.element(by.css('option:checked')).getText();
-    }
-
-    async imageSelectLastOption() {
-        await this.imageSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
-
-    async imageSelectOption(option) {
-        await this.imageSelect.sendKeys(option);
-    }
-
-    getImageSelect(): ElementFinder {
-        return this.imageSelect;
-    }
-
-    async getImageSelectedOption() {
-        return this.imageSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

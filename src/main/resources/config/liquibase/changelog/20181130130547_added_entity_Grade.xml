@@ -14,38 +14,31 @@
     <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
 
     <!--
-        Added the entity Category.
+        Added the entity Grade.
     -->
-    <changeSet id="20181107090803-1" author="jhipster">
-        <createTable tableName="category">
+    <changeSet id="20181130130547-1" author="jhipster">
+        <createTable tableName="grade">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(100)">
+            <column name="grade" type="double">
                 <constraints nullable="false" />
             </column>
 
-            <column name="description" type="varchar(300)">
-                <constraints nullable="true" />
+            <column name="nb_voter" type="integer">
+                <constraints nullable="false" />
             </column>
 
-            <column name="categoy_parent_id" type="bigint">
-                <constraints nullable="true" />
+            <column name="seller_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="product_type_id" type="bigint">
+                <constraints nullable="false" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
-        <createTable tableName="category_image">
-            <column name="images_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="categories_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="categories_id, images_id" tableName="category_image"/>
         
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->

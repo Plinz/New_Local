@@ -29,44 +29,8 @@
             ]
         }
     ],
-    "relationships": [
-        {
-            "relationshipType": "many-to-many",
-            "relationshipName": "stock",
-            "otherEntityName": "stock",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "image"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "relationshipName": "category",
-            "otherEntityName": "category",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "image"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "relationshipName": "productType",
-            "otherEntityName": "productType",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "image"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "relationshipName": "holding",
-            "otherEntityName": "holding",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "image"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "relationshipName": "warehouse",
-            "otherEntityName": "warehouse",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "image"
-        }
-    ],
-    "changelogDate": "20181129140951",
+    "relationships": [],
+    "changelogDate": "20181130133550",
     "entityTableName": "image",
     "dto": "no",
     "pagination": "pager",

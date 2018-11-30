@@ -34,11 +34,11 @@ public class GradeQueryService extends QueryService<Grade> {
 
     private GradeRepository gradeRepository;
 
-    private GradeSearchRepository gradeSearchRepository;
+//    private GradeSearchRepository gradeSearchRepository;
 
     public GradeQueryService(GradeRepository gradeRepository, GradeSearchRepository gradeSearchRepository) {
         this.gradeRepository = gradeRepository;
-        this.gradeSearchRepository = gradeSearchRepository;
+//        this.gradeSearchRepository = gradeSearchRepository;
     }
 
     /**

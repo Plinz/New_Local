@@ -17,17 +17,17 @@
                 <dd>
                     <span>{{warehouse.tel}}</span>
                 </dd>
+                <dt><span jhiTranslate="newLocalApp.warehouse.image">Image</span></dt>
+                <dd>
+                    <div *ngIf="warehouse.image">
+                        <a [routerLink]="['/image', warehouse.image?.id, 'view']">{{warehouse.image?.id}}</a>
+                    </div>
+                </dd>
                 <dt><span jhiTranslate="newLocalApp.warehouse.location">Location</span></dt>
                 <dd>
                     <div *ngIf="warehouse.location">
                         <a [routerLink]="['/location', warehouse.location?.id, 'view']">{{warehouse.location?.id}}</a>
                     </div>
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.warehouse.image">Image</span></dt>
-                <dd>
-                    <span *ngFor="let image of warehouse.images; let last = last">
-                        <a [routerLink]="['/image', image?.id, 'view' ]">{{image.id}}</a>{{last ? '' : ', '}}
-                    </span>
                 </dd>
             </dl>
 

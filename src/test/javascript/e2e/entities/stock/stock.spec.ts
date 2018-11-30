@@ -46,11 +46,11 @@ describe('Stock e2e test', () => {
             stockUpdatePage.setPriceUnitInput('5'),
             stockUpdatePage.setOnSaleDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
             stockUpdatePage.setExpiryDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
+            stockUpdatePage.imageSelectLastOption(),
             stockUpdatePage.productTypeSelectLastOption(),
             stockUpdatePage.holdingSelectLastOption(),
             stockUpdatePage.sellerSelectLastOption(),
             stockUpdatePage.warehouseSelectLastOption(),
-            // stockUpdatePage.imageSelectLastOption(),
         ]);
         expect(await stockUpdatePage.getNameInput()).to.eq('name');
         expect(await stockUpdatePage.getDescriptionInput()).to.eq('description');

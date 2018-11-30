@@ -58,15 +58,6 @@ public class ProductTypeService {
         return productTypeRepository.findAll(pageable);
     }
 
-    /**
-     * Get all the ProductType with eager load of many-to-many relationships.
-     *
-     * @return the list of entities
-     */
-    public Page<ProductType> findAllWithEagerRelationships(Pageable pageable) {
-        return productTypeRepository.findAllWithEagerRelationships(pageable);
-    }
-    
 
     /**
      * Get one productType by id.
@@ -77,7 +68,7 @@ public class ProductTypeService {
     @Transactional(readOnly = true)
     public Optional<ProductType> findOne(Long id) {
         log.debug("Request to get ProductType : {}", id);
-        return productTypeRepository.findOneWithEagerRelationships(id);
+        return productTypeRepository.findById(id);
     }
 
     /**

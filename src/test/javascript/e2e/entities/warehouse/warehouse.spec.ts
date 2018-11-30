@@ -42,8 +42,8 @@ describe('Warehouse e2e test', () => {
             warehouseUpdatePage.setNameInput('name'),
             warehouseUpdatePage.setDescriptionInput('description'),
             warehouseUpdatePage.setTelInput('tel'),
+            warehouseUpdatePage.imageSelectLastOption(),
             warehouseUpdatePage.locationSelectLastOption(),
-            // warehouseUpdatePage.imageSelectLastOption(),
         ]);
         expect(await warehouseUpdatePage.getNameInput()).to.eq('name');
         expect(await warehouseUpdatePage.getDescriptionInput()).to.eq('description');

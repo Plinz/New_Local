@@ -9,8 +9,6 @@ import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -43,6 +41,9 @@ public class Holding implements Serializable {
     @Column(name = "description", length = 300)
     private String description;
 
+    @OneToOne    @JoinColumn(unique = true)
+    private Image image;
+
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("")
@@ -52,13 +53,6 @@ public class Holding implements Serializable {
     @NotNull
     @JsonIgnoreProperties("")
     private User owner;
-
-    @ManyToMany
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "holding_image",
-               joinColumns = @JoinColumn(name = "holdings_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "images_id", referencedColumnName = "id"))
-    private Set<Image> images = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -108,6 +102,19 @@ public class Holding implements Serializable {
         this.description = description;
     }
 
+    public Image getImage() {
+        return image;
+    }
+
+    public Holding image(Image image) {
+        this.image = image;
+        return this;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
     public Location getLocation() {
         return location;
     }
@@ -132,31 +139,6 @@ public class Holding implements Serializable {
 
     public void setOwner(User user) {
         this.owner = user;
-    }
-
-    public Set<Image> getImages() {
-        return images;
-    }
-
-    public Holding images(Set<Image> images) {
-        this.images = images;
-        return this;
-    }
-
-    public Holding addImage(Image image) {
-        this.images.add(image);
-        image.getHoldings().add(this);
-        return this;
-    }
-
-    public Holding removeImage(Image image) {
-        this.images.remove(image);
-        image.getHoldings().remove(this);
-        return this;
-    }
-
-    public void setImages(Set<Image> images) {
-        this.images = images;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

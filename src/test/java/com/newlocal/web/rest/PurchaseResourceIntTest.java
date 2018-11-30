@@ -69,7 +69,7 @@ public class PurchaseResourceIntTest {
 
     @Autowired
     private PurchaseRepository purchaseRepository;
-
+    
     @Autowired
     private PurchaseService purchaseService;
 
@@ -254,7 +254,7 @@ public class PurchaseResourceIntTest {
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)))
             .andExpect(jsonPath("$.[*].withdraw").value(hasItem(DEFAULT_WITHDRAW.booleanValue())));
     }
-
+    
     @Test
     @Transactional
     public void getPurchase() throws Exception {
@@ -415,23 +415,23 @@ public class PurchaseResourceIntTest {
         defaultPurchaseShouldNotBeFound("withdraw.specified=false");
     }
 
-    // @Test
-    // @Transactional
-    // public void getAllPurchasesByStockIsEqualToSomething() throws Exception {
-    //     // Initialize the database
-    //     Stock stock = StockResourceIntTest.createEntity(em);
-    //     em.persist(stock);
-    //     em.flush();
-    //     purchase.setStock(stock);
-    //     purchaseRepository.saveAndFlush(purchase);
-    //     Long stockId = stock.getId();
-    //
-    //     // Get all the purchaseList where stock equals to stockId
-    //     defaultPurchaseShouldBeFound("stockId.equals=" + stockId);
-    //
-    //     // Get all the purchaseList where stock equals to stockId + 1
-    //     defaultPurchaseShouldNotBeFound("stockId.equals=" + (stockId + 1));
-    // }
+    @Test
+    @Transactional
+    public void getAllPurchasesByStockIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Stock stock = StockResourceIntTest.createEntity(em);
+        em.persist(stock);
+        em.flush();
+        purchase.setStock(stock);
+        purchaseRepository.saveAndFlush(purchase);
+        Long stockId = stock.getId();
+
+        // Get all the purchaseList where stock equals to stockId
+        defaultPurchaseShouldBeFound("stockId.equals=" + stockId);
+
+        // Get all the purchaseList where stock equals to stockId + 1
+        defaultPurchaseShouldNotBeFound("stockId.equals=" + (stockId + 1));
+    }
 
 
     @Test

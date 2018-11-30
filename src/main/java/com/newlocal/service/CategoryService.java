@@ -58,15 +58,6 @@ public class CategoryService {
         return categoryRepository.findAll(pageable);
     }
 
-    /**
-     * Get all the Category with eager load of many-to-many relationships.
-     *
-     * @return the list of entities
-     */
-    public Page<Category> findAllWithEagerRelationships(Pageable pageable) {
-        return categoryRepository.findAllWithEagerRelationships(pageable);
-    }
-    
 
     /**
      * Get one category by id.
@@ -77,7 +68,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public Optional<Category> findOne(Long id) {
         log.debug("Request to get Category : {}", id);
-        return categoryRepository.findOneWithEagerRelationships(id);
+        return categoryRepository.findById(id);
     }
 
     /**

@@ -60,16 +60,6 @@ public class StockService {
     }
 
     /**
-     * Get all the Stock with eager load of many-to-many relationships.
-     *
-     * @return the list of entities
-     */
-    public Page<Stock> findAllWithEagerRelationships(Pageable pageable) {
-        return stockRepository.findAllWithEagerRelationships(pageable);
-    }
-
-
-    /**
      * Get one stock by id.
      *
      * @param id the id of the entity
@@ -78,7 +68,7 @@ public class StockService {
     @Transactional(readOnly = true)
     public Optional<Stock> findOne(Long id) {
         log.debug("Request to get Stock : {}", id);
-        return stockRepository.findOneWithEagerRelationships(id);
+        return stockRepository.findById(id);
     }
 
     /**

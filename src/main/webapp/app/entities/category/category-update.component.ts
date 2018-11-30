@@ -17,9 +17,9 @@ export class CategoryUpdateComponent implements OnInit {
     category: ICategory;
     isSaving: boolean;
 
-    categories: ICategory[];
-
     images: IImage[];
+
+    categories: ICategory[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
@@ -33,15 +33,24 @@ export class CategoryUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ category }) => {
             this.category = category;
         });
-        this.categoryService.query().subscribe(
-            (res: HttpResponse<ICategory[]>) => {
-                this.categories = res.body;
+        this.imageService.query({ 'categoryId.specified': 'false' }).subscribe(
+            (res: HttpResponse<IImage[]>) => {
+                if (!this.category.image || !this.category.image.id) {
+                    this.images = res.body;
+                } else {
+                    this.imageService.find(this.category.image.id).subscribe(
+                        (subRes: HttpResponse<IImage>) => {
+                            this.images = [subRes.body].concat(res.body);
+                        },
+                        (subRes: HttpErrorResponse) => this.onError(subRes.message)
+                    );
+                }
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.imageService.query().subscribe(
-            (res: HttpResponse<IImage[]>) => {
-                this.images = res.body;
+        this.categoryService.query().subscribe(
+            (res: HttpResponse<ICategory[]>) => {
+                this.categories = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -77,22 +86,11 @@ export class CategoryUpdateComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    trackCategoryById(index: number, item: ICategory) {
-        return item.id;
-    }
-
     trackImageById(index: number, item: IImage) {
         return item.id;
     }
 
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
+    trackCategoryById(index: number, item: ICategory) {
+        return item.id;
     }
 }

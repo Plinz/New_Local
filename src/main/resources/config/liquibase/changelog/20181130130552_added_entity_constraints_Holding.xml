@@ -6,8 +6,14 @@
     <!--
         Added the constraints for entity Holding.
     -->
-    <changeSet id="20181108152600-2" author="jhipster">
+    <changeSet id="20181130130552-2" author="jhipster">
         
+        <addForeignKeyConstraint baseColumnNames="image_id"
+                                 baseTableName="holding"
+                                 constraintName="fk_holding_image_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="image"/>
+
         <addForeignKeyConstraint baseColumnNames="location_id"
                                  baseTableName="holding"
                                  constraintName="fk_holding_location_id"
@@ -20,16 +26,5 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 
-        <addForeignKeyConstraint baseColumnNames="holdings_id"
-                                 baseTableName="holding_image"
-                                 constraintName="fk_holding_image_holdings_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="holding"/>
-        <addForeignKeyConstraint baseColumnNames="images_id"
-                                 baseTableName="holding_image"
-                                 constraintName="fk_holding_image_images_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="image"/>
-        
     </changeSet>
 </databaseChangeLog>

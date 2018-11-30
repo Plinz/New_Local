@@ -1,15 +1,14 @@
 package com.newlocal.repository;
 
-import com.newlocal.domain.Stock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-import org.springframework.data.domain.Sort;
-
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.newlocal.domain.Stock;
 
 /**
  * Spring Data  repository for the Stock entity.
@@ -19,16 +18,6 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
 
     @Query("select stock from Stock stock where stock.seller.login = ?#{principal.username}")
     List<Stock> findBySellerIsCurrentUser();
-
-    @Query(value = "select distinct stock from Stock stock left join fetch stock.images",
-        countQuery = "select count(distinct stock) from Stock stock")
-    Page<Stock> findAllWithEagerRelationships(Pageable pageable);
-
-    @Query(value = "select distinct stock from Stock stock left join fetch stock.images")
-    List<Stock> findAllWithEagerRelationships();
-
-    @Query("select stock from Stock stock left join fetch stock.images where stock.id =:id")
-    Optional<Stock> findOneWithEagerRelationships(@Param("id") Long id);
 
     @Query("select stock from Stock stock where stock.bio = true")
     List<Stock> getProductBio();

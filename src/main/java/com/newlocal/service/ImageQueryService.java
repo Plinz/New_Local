@@ -93,26 +93,6 @@ public class ImageQueryService extends QueryService<Image> {
             if (criteria.getDescription() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDescription(), Image_.description));
             }
-            if (criteria.getStockId() != null) {
-                specification = specification.and(buildSpecification(criteria.getStockId(),
-                    root -> root.join(Image_.stocks, JoinType.LEFT).get(Stock_.id)));
-            }
-            if (criteria.getCategoryId() != null) {
-                specification = specification.and(buildSpecification(criteria.getCategoryId(),
-                    root -> root.join(Image_.categories, JoinType.LEFT).get(Category_.id)));
-            }
-            if (criteria.getProductTypeId() != null) {
-                specification = specification.and(buildSpecification(criteria.getProductTypeId(),
-                    root -> root.join(Image_.productTypes, JoinType.LEFT).get(ProductType_.id)));
-            }
-            if (criteria.getHoldingId() != null) {
-                specification = specification.and(buildSpecification(criteria.getHoldingId(),
-                    root -> root.join(Image_.holdings, JoinType.LEFT).get(Holding_.id)));
-            }
-            if (criteria.getWarehouseId() != null) {
-                specification = specification.and(buildSpecification(criteria.getWarehouseId(),
-                    root -> root.join(Image_.warehouses, JoinType.LEFT).get(Warehouse_.id)));
-            }
         }
         return specification;
     }

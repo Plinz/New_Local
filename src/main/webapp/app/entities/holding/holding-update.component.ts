@@ -6,11 +6,11 @@ import { JhiAlertService } from 'ng-jhipster';
 
 import { IHolding } from 'app/shared/model/holding.model';
 import { HoldingService } from './holding.service';
+import { IImage } from 'app/shared/model/image.model';
+import { ImageService } from 'app/entities/image';
 import { ILocation } from 'app/shared/model/location.model';
 import { LocationService } from 'app/entities/location';
 import { IUser, UserService } from 'app/core';
-import { IImage } from 'app/shared/model/image.model';
-import { ImageService } from 'app/entities/image';
 
 @Component({
     selector: 'jhi-holding-update',
@@ -20,18 +20,18 @@ export class HoldingUpdateComponent implements OnInit {
     holding: IHolding;
     isSaving: boolean;
 
+    images: IImage[];
+
     locations: ILocation[];
 
     users: IUser[];
 
-    images: IImage[];
-
     constructor(
         private jhiAlertService: JhiAlertService,
         private holdingService: HoldingService,
+        private imageService: ImageService,
         private locationService: LocationService,
         private userService: UserService,
-        private imageService: ImageService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -40,6 +40,21 @@ export class HoldingUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ holding }) => {
             this.holding = holding;
         });
+        this.imageService.query({ 'holdingId.specified': 'false' }).subscribe(
+            (res: HttpResponse<IImage[]>) => {
+                if (!this.holding.image || !this.holding.image.id) {
+                    this.images = res.body;
+                } else {
+                    this.imageService.find(this.holding.image.id).subscribe(
+                        (subRes: HttpResponse<IImage>) => {
+                            this.images = [subRes.body].concat(res.body);
+                        },
+                        (subRes: HttpErrorResponse) => this.onError(subRes.message)
+                    );
+                }
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
         this.locationService.query().subscribe(
             (res: HttpResponse<ILocation[]>) => {
                 this.locations = res.body;
@@ -49,12 +64,6 @@ export class HoldingUpdateComponent implements OnInit {
         this.userService.query().subscribe(
             (res: HttpResponse<IUser[]>) => {
                 this.users = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.imageService.query().subscribe(
-            (res: HttpResponse<IImage[]>) => {
-                this.images = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -90,26 +99,15 @@ export class HoldingUpdateComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
+    trackImageById(index: number, item: IImage) {
+        return item.id;
+    }
+
     trackLocationById(index: number, item: ILocation) {
         return item.id;
     }
 
     trackUserById(index: number, item: IUser) {
         return item.id;
-    }
-
-    trackImageById(index: number, item: IImage) {
-        return item.id;
-    }
-
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
     }
 }

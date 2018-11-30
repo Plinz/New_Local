@@ -4,7 +4,6 @@ import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +24,6 @@ import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -67,14 +64,7 @@ public class ProductTypeResourceIntTest {
 
     @Autowired
     private ProductTypeRepository productTypeRepository;
-
-    @Mock
-    private ProductTypeRepository productTypeRepositoryMock;
     
-
-    @Mock
-    private ProductTypeService productTypeServiceMock;
-
     @Autowired
     private ProductTypeService productTypeService;
 
@@ -216,37 +206,6 @@ public class ProductTypeResourceIntTest {
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
     
-    public void getAllProductTypesWithEagerRelationshipsIsEnabled() throws Exception {
-        ProductTypeResource productTypeResource = new ProductTypeResource(productTypeServiceMock, productTypeQueryService);
-        when(productTypeServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<ProductType>(new ArrayList<>()));
-
-        MockMvc restProductTypeMockMvc = MockMvcBuilders.standaloneSetup(productTypeResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restProductTypeMockMvc.perform(get("/api/product-types?eagerload=true"))
-        .andExpect(status().isOk());
-
-        verify(productTypeServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    public void getAllProductTypesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        ProductTypeResource productTypeResource = new ProductTypeResource(productTypeServiceMock, productTypeQueryService);
-            when(productTypeServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<ProductType>(new ArrayList<>()));
-            MockMvc restProductTypeMockMvc = MockMvcBuilders.standaloneSetup(productTypeResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restProductTypeMockMvc.perform(get("/api/product-types?eagerload=true"))
-        .andExpect(status().isOk());
-
-            verify(productTypeServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
     @Test
     @Transactional
     public void getProductType() throws Exception {
@@ -342,6 +301,25 @@ public class ProductTypeResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllProductTypesByImageIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Image image = ImageResourceIntTest.createEntity(em);
+        em.persist(image);
+        em.flush();
+        productType.setImage(image);
+        productTypeRepository.saveAndFlush(productType);
+        Long imageId = image.getId();
+
+        // Get all the productTypeList where image equals to imageId
+        defaultProductTypeShouldBeFound("imageId.equals=" + imageId);
+
+        // Get all the productTypeList where image equals to imageId + 1
+        defaultProductTypeShouldNotBeFound("imageId.equals=" + (imageId + 1));
+    }
+
+
+    @Test
+    @Transactional
     public void getAllProductTypesByCategoryIsEqualToSomething() throws Exception {
         // Initialize the database
         Category category = CategoryResourceIntTest.createEntity(em);
@@ -356,25 +334,6 @@ public class ProductTypeResourceIntTest {
 
         // Get all the productTypeList where category equals to categoryId + 1
         defaultProductTypeShouldNotBeFound("categoryId.equals=" + (categoryId + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllProductTypesByImageIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Image image = ImageResourceIntTest.createEntity(em);
-        em.persist(image);
-        em.flush();
-        productType.addImage(image);
-        productTypeRepository.saveAndFlush(productType);
-        Long imageId = image.getId();
-
-        // Get all the productTypeList where image equals to imageId
-        defaultProductTypeShouldBeFound("imageId.equals=" + imageId);
-
-        // Get all the productTypeList where image equals to imageId + 1
-        defaultProductTypeShouldNotBeFound("imageId.equals=" + (imageId + 1));
     }
 
     /**

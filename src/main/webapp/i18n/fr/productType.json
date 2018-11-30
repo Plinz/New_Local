@@ -19,8 +19,8 @@
             },
             "name": "Name",
             "description": "Description",
-            "category": "Category",
-            "image": "Image"
+            "image": "Image",
+            "category": "Category"
         }
     }
 }

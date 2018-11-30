@@ -35,6 +35,14 @@
     ],
     "relationships": [
         {
+            "relationshipType": "one-to-one",
+            "relationshipName": "image",
+            "otherEntityName": "image",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "holding"
+        },
+        {
             "relationshipType": "many-to-one",
             "relationshipValidateRules": "required",
             "relationshipName": "location",
@@ -47,17 +55,9 @@
             "relationshipName": "owner",
             "otherEntityName": "user",
             "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "otherEntityRelationshipName": "holding",
-            "relationshipName": "image",
-            "otherEntityName": "image",
-            "otherEntityField": "id",
-            "ownerSide": true
         }
     ],
-    "changelogDate": "20181108152600",
+    "changelogDate": "20181130130552",
     "entityTableName": "holding",
     "dto": "no",
     "pagination": "pager",

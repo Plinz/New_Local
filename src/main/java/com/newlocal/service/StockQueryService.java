@@ -34,11 +34,11 @@ public class StockQueryService extends QueryService<Stock> {
 
     private StockRepository stockRepository;
 
-    private StockSearchRepository stockSearchRepository;
+//    private StockSearchRepository stockSearchRepository;
 
     public StockQueryService(StockRepository stockRepository, StockSearchRepository stockSearchRepository) {
         this.stockRepository = stockRepository;
-        this.stockSearchRepository = stockSearchRepository;
+//        this.stockSearchRepository = stockSearchRepository;
     }
 
     /**
@@ -114,6 +114,10 @@ public class StockQueryService extends QueryService<Stock> {
             if (criteria.getAvailable() != null) {
                 specification = specification.and(buildSpecification(criteria.getAvailable(), Stock_.available));
             }
+            if (criteria.getImageId() != null) {
+                specification = specification.and(buildSpecification(criteria.getImageId(),
+                    root -> root.join(Stock_.image, JoinType.LEFT).get(Image_.id)));
+            }
             if (criteria.getProductTypeId() != null) {
                 specification = specification.and(buildSpecification(criteria.getProductTypeId(),
                     root -> root.join(Stock_.productType, JoinType.LEFT).get(ProductType_.id)));
@@ -129,10 +133,6 @@ public class StockQueryService extends QueryService<Stock> {
             if (criteria.getWarehouseId() != null) {
                 specification = specification.and(buildSpecification(criteria.getWarehouseId(),
                     root -> root.join(Stock_.warehouse, JoinType.LEFT).get(Warehouse_.id)));
-            }
-            if (criteria.getImageId() != null) {
-                specification = specification.and(buildSpecification(criteria.getImageId(),
-                    root -> root.join(Stock_.images, JoinType.LEFT).get(Image_.id)));
             }
         }
         return specification;

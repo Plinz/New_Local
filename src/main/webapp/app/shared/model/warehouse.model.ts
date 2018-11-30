@@ -1,13 +1,13 @@
-import { ILocation } from 'app/shared/model//location.model';
 import { IImage } from 'app/shared/model//image.model';
+import { ILocation } from 'app/shared/model//location.model';
 
 export interface IWarehouse {
     id?: number;
     name?: string;
     description?: string;
     tel?: string;
+    image?: IImage;
     location?: ILocation;
-    images?: IImage[];
 }
 
 export class Warehouse implements IWarehouse {
@@ -16,7 +16,7 @@ export class Warehouse implements IWarehouse {
         public name?: string,
         public description?: string,
         public tel?: string,
-        public location?: ILocation,
-        public images?: IImage[]
+        public image?: IImage,
+        public location?: ILocation
     ) {}
 }

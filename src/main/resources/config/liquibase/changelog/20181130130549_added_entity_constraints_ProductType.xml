@@ -6,24 +6,19 @@
     <!--
         Added the constraints for entity ProductType.
     -->
-    <changeSet id="20181107090804-2" author="jhipster">
+    <changeSet id="20181130130549-2" author="jhipster">
         
+        <addForeignKeyConstraint baseColumnNames="image_id"
+                                 baseTableName="product_type"
+                                 constraintName="fk_product_type_image_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="image"/>
+
         <addForeignKeyConstraint baseColumnNames="category_id"
                                  baseTableName="product_type"
                                  constraintName="fk_product_type_category_id"
                                  referencedColumnNames="id"
                                  referencedTableName="category"/>
 
-        <addForeignKeyConstraint baseColumnNames="product_types_id"
-                                 baseTableName="product_type_image"
-                                 constraintName="fk_product_type_image_product_types_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="product_type"/>
-        <addForeignKeyConstraint baseColumnNames="images_id"
-                                 baseTableName="product_type_image"
-                                 constraintName="fk_product_type_image_images_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="image"/>
-        
     </changeSet>
 </databaseChangeLog>

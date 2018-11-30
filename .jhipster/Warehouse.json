@@ -34,22 +34,22 @@
     ],
     "relationships": [
         {
+            "relationshipType": "one-to-one",
+            "relationshipName": "image",
+            "otherEntityName": "image",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "warehouse"
+        },
+        {
             "relationshipType": "many-to-one",
             "relationshipValidateRules": "required",
             "relationshipName": "location",
             "otherEntityName": "location",
             "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "otherEntityRelationshipName": "warehouse",
-            "relationshipName": "image",
-            "otherEntityName": "image",
-            "otherEntityField": "id",
-            "ownerSide": true
         }
     ],
-    "changelogDate": "20181129140948",
+    "changelogDate": "20181130130550",
     "entityTableName": "warehouse",
     "dto": "no",
     "pagination": "pager",

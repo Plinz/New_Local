@@ -29,8 +29,8 @@ export class WarehouseUpdatePage {
     nameInput = element(by.id('field_name'));
     descriptionInput = element(by.id('field_description'));
     telInput = element(by.id('field_tel'));
-    locationSelect = element(by.id('field_location'));
     imageSelect = element(by.id('field_image'));
+    locationSelect = element(by.id('field_location'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -60,25 +60,6 @@ export class WarehouseUpdatePage {
         return this.telInput.getAttribute('value');
     }
 
-    async locationSelectLastOption() {
-        await this.locationSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
-
-    async locationSelectOption(option) {
-        await this.locationSelect.sendKeys(option);
-    }
-
-    getLocationSelect(): ElementFinder {
-        return this.locationSelect;
-    }
-
-    async getLocationSelectedOption() {
-        return this.locationSelect.element(by.css('option:checked')).getText();
-    }
-
     async imageSelectLastOption() {
         await this.imageSelect
             .all(by.tagName('option'))
@@ -96,6 +77,25 @@ export class WarehouseUpdatePage {
 
     async getImageSelectedOption() {
         return this.imageSelect.element(by.css('option:checked')).getText();
+    }
+
+    async locationSelectLastOption() {
+        await this.locationSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async locationSelectOption(option) {
+        await this.locationSelect.sendKeys(option);
+    }
+
+    getLocationSelect(): ElementFinder {
+        return this.locationSelect;
+    }
+
+    async getLocationSelectedOption() {
+        return this.locationSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

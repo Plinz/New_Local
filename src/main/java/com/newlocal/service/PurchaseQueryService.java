@@ -34,11 +34,11 @@ public class PurchaseQueryService extends QueryService<Purchase> {
 
     private PurchaseRepository purchaseRepository;
 
-    private PurchaseSearchRepository purchaseSearchRepository;
+//    private PurchaseSearchRepository purchaseSearchRepository;
 
     public PurchaseQueryService(PurchaseRepository purchaseRepository, PurchaseSearchRepository purchaseSearchRepository) {
         this.purchaseRepository = purchaseRepository;
-        this.purchaseSearchRepository = purchaseSearchRepository;
+//        this.purchaseSearchRepository = purchaseSearchRepository;
     }
 
     /**

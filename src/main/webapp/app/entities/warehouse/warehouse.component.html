@@ -33,6 +33,7 @@
             <th jhiSortBy="name"><span jhiTranslate="newLocalApp.warehouse.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="description"><span jhiTranslate="newLocalApp.warehouse.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="tel"><span jhiTranslate="newLocalApp.warehouse.tel">Tel</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="image.id"><span jhiTranslate="newLocalApp.warehouse.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="location.id"><span jhiTranslate="newLocalApp.warehouse.location">Location</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
@@ -43,6 +44,11 @@
                 <td>{{warehouse.name}}</td>
                 <td>{{warehouse.description}}</td>
                 <td>{{warehouse.tel}}</td>
+                <td>
+                    <div *ngIf="warehouse.image">
+                        <a [routerLink]="['../image', warehouse.image?.id, 'view' ]" >{{warehouse.image?.id}}</a>
+                    </div>
+                </td>
                 <td>
                     <div *ngIf="warehouse.location">
                         <a [routerLink]="['../location', warehouse.location?.id, 'view' ]" >{{warehouse.location?.id}}</a>
