@@ -9,6 +9,9 @@ import com.newlocal.web.rest.util.PaginationUtil;
 import com.newlocal.service.dto.ImageCriteria;
 import com.newlocal.service.ImageQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,11 +22,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -62,6 +69,19 @@ public class ImageResource {
         if (image.getId() != null) {
             throw new BadRequestAlertException("A new image cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        if (image.getImage() != null){
+	        try {
+	        	Random r = new Random();
+	        	File imageFile = new File(getClass().getResource("images/"+image.getName()).getFile());
+		        while(imageFile.exists() || imageFile.isDirectory()){
+		        	imageFile = new File(getClass().getResource("images/"+image.getName()+"_"+r.nextInt(999999999)).getFile());
+		        }
+				FileUtils.writeByteArrayToFile(imageFile, image.getImage());
+				image.setImagePath(imageFile.getPath());
+	        } catch (IOException e) {
+	        	e.printStackTrace();
+	        }
+        }
         Image result = imageService.save(image);
         return ResponseEntity.created(new URI("/api/images/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -84,6 +104,19 @@ public class ImageResource {
         if (image.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+        if (image.getImage() != null){
+	        try {
+	        	Random r = new Random();
+	        	File imageFile = new File(getClass().getResource("images/"+image.getName()).getFile());
+		        while(imageFile.exists() || imageFile.isDirectory()){
+		        	imageFile = new File(getClass().getResource("images/"+image.getName()+"_"+r.nextInt(999999999)).getFile());
+		        }
+				FileUtils.writeByteArrayToFile(imageFile, image.getImage());
+				image.setImagePath(imageFile.getPath());
+	        } catch (IOException e) {
+	        	e.printStackTrace();
+	        }
+        }
         Image result = imageService.save(image);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, image.getId().toString()))
@@ -102,6 +135,16 @@ public class ImageResource {
     public ResponseEntity<List<Image>> getAllImages(ImageCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Images by criteria: {}", criteria);
         Page<Image> page = imageQueryService.findByCriteria(criteria, pageable);
+        page.forEach(image -> {
+        	File imageFile = new File(image.getImagePath());
+        	if (imageFile.exists() && imageFile.isFile()) {
+        		try {
+					image.setImage(Files.readAllBytes(imageFile.toPath()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+        	}
+        });
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/images");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -130,6 +173,16 @@ public class ImageResource {
     public ResponseEntity<Image> getImage(@PathVariable Long id) {
         log.debug("REST request to get Image : {}", id);
         Optional<Image> image = imageService.findOne(id);
+        if (image.isPresent()) {
+        	File imageFile = new File(image.get().getImagePath());
+        	if (imageFile.exists() && imageFile.isFile()) {
+        		try {
+					image.get().setImage(Files.readAllBytes(imageFile.toPath()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+        	}
+        }
         return ResponseUtil.wrapOrNotFound(image);
     }
 
@@ -143,6 +196,13 @@ public class ImageResource {
     @Timed
     public ResponseEntity<Void> deleteImage(@PathVariable Long id) {
         log.debug("REST request to delete Image : {}", id);
+        Optional<Image> image = imageService.findOne(id);
+        if (image.isPresent()) {
+        	File imageFile = new File(image.get().getImagePath());
+        	if (imageFile.exists() && imageFile.isFile()) {
+        		imageFile.delete();
+        	}
+        }
         imageService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
@@ -160,6 +220,16 @@ public class ImageResource {
     public ResponseEntity<List<Image>> searchImages(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Images for query {}", query);
         Page<Image> page = imageService.search(query, pageable);
+        page.forEach(image -> {
+        	File imageFile = new File(image.getImagePath());
+        	if (imageFile.exists() && imageFile.isFile()) {
+        		try {
+					image.setImage(Files.readAllBytes(imageFile.toPath()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+        	}
+        });
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/images");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

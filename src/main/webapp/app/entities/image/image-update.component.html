@@ -40,17 +40,28 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.image.imagePath" for="field_imagePath">Image Path</label>
-                    <input type="text" class="form-control" name="imagePath" id="field_imagePath"
-                        [(ngModel)]="image.imagePath" required/>
-                    <div [hidden]="!(editForm.controls.imagePath?.dirty && editForm.controls.imagePath?.invalid)">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.image.image" for="field_image">Image</label>
+                    <div>
+                        <img [src]="'data:' + image.imageContentType + ';base64,' + image.image" style="max-height: 100px;" *ngIf="image.image" alt="image image"/>
+                        <div *ngIf="image.image" class="form-text text-danger clearfix">
+                            <span class="pull-left">{{image.imageContentType}}, {{byteSize(image.image)}}</span>
+                            <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')" class="btn btn-secondary btn-xs pull-right">
+                                <fa-icon [icon]="'times'"></fa-icon>
+                            </button>
+                        </div>
+                        <input type="file" id="file_image" (change)="setFileData($event, image, 'image', true)" accept="image/*" jhiTranslate="entity.action.addimage"/>
+                    </div>
+                    <input type="hidden" class="form-control" name="image" id="field_image"
+                        [(ngModel)]="image.image" required/>
+                    <input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
+                        [(ngModel)]="image.imageContentType" />
+                    <div [hidden]="!(editForm.controls.image?.dirty && editForm.controls.image?.invalid)">
                         <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.imagePath?.errors?.required" jhiTranslate="entity.validation.required">
+                        [hidden]="!editForm.controls.image?.errors?.required" jhiTranslate="entity.validation.required">
                         This field is required.
                         </small>
                     </div>
                 </div>
-
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
