@@ -12,7 +12,6 @@ export class SettingsComponent implements OnInit {
     success: string;
     settingsAccount: any;
     languages: any[];
-    userAutorite: 'ROLE_USER';
 
     constructor(
         private account: AccountService,

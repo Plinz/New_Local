@@ -10,7 +10,8 @@
             "password.placeholder": "Votre mot de passe",
             "language": "Langue",
             "buttonSave": "Sauvegarder",
-            "buttonModifier": "Modifier"
+            "buttonModifier": "Modifier",
+            "buttonCancel": "Anuler"
 
         },
         "messages": {
