@@ -23,21 +23,21 @@
     ],
     "relationships": [
         {
-            "relationshipType": "many-to-one",
-            "relationshipName": "categoyParent",
-            "otherEntityName": "category",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "otherEntityRelationshipName": "category",
+            "relationshipType": "one-to-one",
             "relationshipName": "image",
             "otherEntityName": "image",
             "otherEntityField": "id",
-            "ownerSide": true
+            "ownerSide": true,
+            "otherEntityRelationshipName": "category"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "categoryParent",
+            "otherEntityName": "category",
+            "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20181107090803",
+    "changelogDate": "20181130130548",
     "entityTableName": "category",
     "dto": "no",
     "pagination": "pager",

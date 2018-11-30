@@ -8,6 +8,8 @@ import { JhiAlertService } from 'ng-jhipster';
 
 import { IStock } from 'app/shared/model/stock.model';
 import { StockService } from './stock.service';
+import { IImage } from 'app/shared/model/image.model';
+import { ImageService } from 'app/entities/image';
 import { IProductType } from 'app/shared/model/product-type.model';
 import { ProductTypeService } from 'app/entities/product-type';
 import { IHolding } from 'app/shared/model/holding.model';
@@ -15,8 +17,6 @@ import { HoldingService } from 'app/entities/holding';
 import { IUser, UserService } from 'app/core';
 import { IWarehouse } from 'app/shared/model/warehouse.model';
 import { WarehouseService } from 'app/entities/warehouse';
-import { IImage } from 'app/shared/model/image.model';
-import { ImageService } from 'app/entities/image';
 
 @Component({
     selector: 'jhi-stock-update',
@@ -26,6 +26,8 @@ export class StockUpdateComponent implements OnInit {
     stock: IStock;
     isSaving: boolean;
 
+    images: IImage[];
+
     producttypes: IProductType[];
 
     holdings: IHolding[];
@@ -33,19 +35,17 @@ export class StockUpdateComponent implements OnInit {
     users: IUser[];
 
     warehouses: IWarehouse[];
-
-    images: IImage[];
     onSaleDate: string;
     expiryDate: string;
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private stockService: StockService,
+        private imageService: ImageService,
         private productTypeService: ProductTypeService,
         private holdingService: HoldingService,
         private userService: UserService,
         private warehouseService: WarehouseService,
-        private imageService: ImageService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -56,6 +56,21 @@ export class StockUpdateComponent implements OnInit {
             this.onSaleDate = this.stock.onSaleDate != null ? this.stock.onSaleDate.format(DATE_TIME_FORMAT) : null;
             this.expiryDate = this.stock.expiryDate != null ? this.stock.expiryDate.format(DATE_TIME_FORMAT) : null;
         });
+        this.imageService.query({ 'stockId.specified': 'false' }).subscribe(
+            (res: HttpResponse<IImage[]>) => {
+                if (!this.stock.image || !this.stock.image.id) {
+                    this.images = res.body;
+                } else {
+                    this.imageService.find(this.stock.image.id).subscribe(
+                        (subRes: HttpResponse<IImage>) => {
+                            this.images = [subRes.body].concat(res.body);
+                        },
+                        (subRes: HttpErrorResponse) => this.onError(subRes.message)
+                    );
+                }
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
         this.productTypeService.query().subscribe(
             (res: HttpResponse<IProductType[]>) => {
                 this.producttypes = res.body;
@@ -77,12 +92,6 @@ export class StockUpdateComponent implements OnInit {
         this.warehouseService.query().subscribe(
             (res: HttpResponse<IWarehouse[]>) => {
                 this.warehouses = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.imageService.query().subscribe(
-            (res: HttpResponse<IImage[]>) => {
-                this.images = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -120,6 +129,10 @@ export class StockUpdateComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
+    trackImageById(index: number, item: IImage) {
+        return item.id;
+    }
+
     trackProductTypeById(index: number, item: IProductType) {
         return item.id;
     }
@@ -134,20 +147,5 @@ export class StockUpdateComponent implements OnInit {
 
     trackWarehouseById(index: number, item: IWarehouse) {
         return item.id;
-    }
-
-    trackImageById(index: number, item: IImage) {
-        return item.id;
-    }
-
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
     }
 }

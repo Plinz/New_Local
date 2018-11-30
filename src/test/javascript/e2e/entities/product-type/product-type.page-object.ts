@@ -28,8 +28,8 @@ export class ProductTypeUpdatePage {
     cancelButton = element(by.id('cancel-save'));
     nameInput = element(by.id('field_name'));
     descriptionInput = element(by.id('field_description'));
-    categorySelect = element(by.id('field_category'));
     imageSelect = element(by.id('field_image'));
+    categorySelect = element(by.id('field_category'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -51,25 +51,6 @@ export class ProductTypeUpdatePage {
         return this.descriptionInput.getAttribute('value');
     }
 
-    async categorySelectLastOption() {
-        await this.categorySelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
-
-    async categorySelectOption(option) {
-        await this.categorySelect.sendKeys(option);
-    }
-
-    getCategorySelect(): ElementFinder {
-        return this.categorySelect;
-    }
-
-    async getCategorySelectedOption() {
-        return this.categorySelect.element(by.css('option:checked')).getText();
-    }
-
     async imageSelectLastOption() {
         await this.imageSelect
             .all(by.tagName('option'))
@@ -87,6 +68,25 @@ export class ProductTypeUpdatePage {
 
     async getImageSelectedOption() {
         return this.imageSelect.element(by.css('option:checked')).getText();
+    }
+
+    async categorySelectLastOption() {
+        await this.categorySelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async categorySelectOption(option) {
+        await this.categorySelect.sendKeys(option);
+    }
+
+    getCategorySelect(): ElementFinder {
+        return this.categorySelect;
+    }
+
+    async getCategorySelectedOption() {
+        return this.categorySelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

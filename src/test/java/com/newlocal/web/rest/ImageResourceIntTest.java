@@ -1,25 +1,14 @@
 package com.newlocal.web.rest;
 
-import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.newlocal.NewLocalApp;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.EntityManager;
+import com.newlocal.domain.Image;
+import com.newlocal.repository.ImageRepository;
+import com.newlocal.repository.search.ImageSearchRepository;
+import com.newlocal.service.ImageService;
+import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.dto.ImageCriteria;
+import com.newlocal.service.ImageQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,18 +27,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 
-import com.newlocal.NewLocalApp;
-import com.newlocal.domain.Category;
-import com.newlocal.domain.Holding;
-import com.newlocal.domain.Image;
-import com.newlocal.domain.ProductType;
-import com.newlocal.domain.Stock;
-import com.newlocal.domain.Warehouse;
-import com.newlocal.repository.ImageRepository;
-import com.newlocal.repository.search.ImageSearchRepository;
-import com.newlocal.service.ImageQueryService;
-import com.newlocal.service.ImageService;
-import com.newlocal.web.rest.errors.ExceptionTranslator;
+import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.List;
+
+
+import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the ImageResource REST controller.
@@ -310,101 +299,6 @@ public class ImageResourceIntTest {
         // Get all the imageList where description is null
         defaultImageShouldNotBeFound("description.specified=false");
     }
-
-    @Test
-    @Transactional
-    public void getAllImagesByStockIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Stock stock = StockResourceIntTest.createEntity(em);
-        em.persist(stock);
-        em.flush();
-        image.addStock(stock);
-        imageRepository.saveAndFlush(image);
-        Long stockId = stock.getId();
-
-        // Get all the imageList where stock equals to stockId
-        defaultImageShouldBeFound("stockId.equals=" + stockId);
-
-        // Get all the imageList where stock equals to stockId + 1
-        defaultImageShouldNotBeFound("stockId.equals=" + (stockId + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllImagesByCategoryIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Category category = CategoryResourceIntTest.createEntity(em);
-        em.persist(category);
-        em.flush();
-        image.addCategory(category);
-        imageRepository.saveAndFlush(image);
-        Long categoryId = category.getId();
-
-        // Get all the imageList where category equals to categoryId
-        defaultImageShouldBeFound("categoryId.equals=" + categoryId);
-
-        // Get all the imageList where category equals to categoryId + 1
-        defaultImageShouldNotBeFound("categoryId.equals=" + (categoryId + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllImagesByProductTypeIsEqualToSomething() throws Exception {
-        // Initialize the database
-        ProductType productType = ProductTypeResourceIntTest.createEntity(em);
-        em.persist(productType);
-        em.flush();
-        image.addProductType(productType);
-        imageRepository.saveAndFlush(image);
-        Long productTypeId = productType.getId();
-
-        // Get all the imageList where productType equals to productTypeId
-        defaultImageShouldBeFound("productTypeId.equals=" + productTypeId);
-
-        // Get all the imageList where productType equals to productTypeId + 1
-        defaultImageShouldNotBeFound("productTypeId.equals=" + (productTypeId + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllImagesByHoldingIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Holding holding = HoldingResourceIntTest.createEntity(em);
-        em.persist(holding);
-        em.flush();
-        image.addHolding(holding);
-        imageRepository.saveAndFlush(image);
-        Long holdingId = holding.getId();
-
-        // Get all the imageList where holding equals to holdingId
-        defaultImageShouldBeFound("holdingId.equals=" + holdingId);
-
-        // Get all the imageList where holding equals to holdingId + 1
-        defaultImageShouldNotBeFound("holdingId.equals=" + (holdingId + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllImagesByWarehouseIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Warehouse warehouse = WarehouseResourceIntTest.createEntity(em);
-        em.persist(warehouse);
-        em.flush();
-        image.addWarehouse(warehouse);
-        imageRepository.saveAndFlush(image);
-        Long warehouseId = warehouse.getId();
-
-        // Get all the imageList where warehouse equals to warehouseId
-        defaultImageShouldBeFound("warehouseId.equals=" + warehouseId);
-
-        // Get all the imageList where warehouse equals to warehouseId + 1
-        defaultImageShouldNotBeFound("warehouseId.equals=" + (warehouseId + 1));
-    }
-
     /**
      * Executes the search, and checks that the default entity is returned
      */

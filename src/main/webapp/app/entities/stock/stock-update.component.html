@@ -154,6 +154,19 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.image" for="field_image">Image</label>
+                    <select class="form-control" id="field_image" name="image" [(ngModel)]="stock.image" required>
+                        <option *ngIf="!editForm.value.image" [ngValue]="null" selected></option>
+                        <option [ngValue]="imageOption.id === stock.image?.id ? stock.image : imageOption" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
+                    </select>
+                </div>
+                <div [hidden]="!(editForm.controls.image?.dirty && editForm.controls.image?.invalid)">
+                    <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.image?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                    </small>
+                </div>
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.productType" for="field_productType">Product Type</label>
                     <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productType"  required>
                         <option *ngIf="!editForm.value.productType" [ngValue]="null" selected></option>
@@ -204,12 +217,6 @@
                         [hidden]="!editForm.controls.warehouse?.errors?.required" jhiTranslate="entity.validation.required">
                         This field is required.
                     </small>
-                </div>
-                <div class="form-group">
-                    <label jhiTranslate="newLocalApp.stock.image" for="field_image">Image</label>
-                    <select class="form-control" id="field_image" multiple name="image" [(ngModel)]="stock.images">
-                        <option [ngValue]="getSelected(stock.images, imageOption)" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
-                    </select>
                 </div>
             </div>
             <div>

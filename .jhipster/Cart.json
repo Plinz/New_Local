@@ -27,7 +27,7 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20181129140943",
+    "changelogDate": "20181130130545",
     "entityTableName": "cart",
     "dto": "no",
     "pagination": "pager",

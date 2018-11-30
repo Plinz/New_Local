@@ -34,11 +34,11 @@ public class ProductTypeQueryService extends QueryService<ProductType> {
 
     private ProductTypeRepository productTypeRepository;
 
-    private ProductTypeSearchRepository productTypeSearchRepository;
+//    private ProductTypeSearchRepository productTypeSearchRepository;
 
     public ProductTypeQueryService(ProductTypeRepository productTypeRepository, ProductTypeSearchRepository productTypeSearchRepository) {
         this.productTypeRepository = productTypeRepository;
-        this.productTypeSearchRepository = productTypeSearchRepository;
+//        this.productTypeSearchRepository = productTypeSearchRepository;
     }
 
     /**
@@ -93,13 +93,13 @@ public class ProductTypeQueryService extends QueryService<ProductType> {
             if (criteria.getDescription() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDescription(), ProductType_.description));
             }
+            if (criteria.getImageId() != null) {
+                specification = specification.and(buildSpecification(criteria.getImageId(),
+                    root -> root.join(ProductType_.image, JoinType.LEFT).get(Image_.id)));
+            }
             if (criteria.getCategoryId() != null) {
                 specification = specification.and(buildSpecification(criteria.getCategoryId(),
                     root -> root.join(ProductType_.category, JoinType.LEFT).get(Category_.id)));
-            }
-            if (criteria.getImageId() != null) {
-                specification = specification.and(buildSpecification(criteria.getImageId(),
-                    root -> root.join(ProductType_.images, JoinType.LEFT).get(Image_.id)));
             }
         }
         return specification;

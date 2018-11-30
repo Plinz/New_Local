@@ -28,8 +28,8 @@ export class CategoryUpdatePage {
     cancelButton = element(by.id('cancel-save'));
     nameInput = element(by.id('field_name'));
     descriptionInput = element(by.id('field_description'));
-    categoyParentSelect = element(by.id('field_categoyParent'));
     imageSelect = element(by.id('field_image'));
+    categoryParentSelect = element(by.id('field_categoryParent'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -51,25 +51,6 @@ export class CategoryUpdatePage {
         return this.descriptionInput.getAttribute('value');
     }
 
-    async categoyParentSelectLastOption() {
-        await this.categoyParentSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
-
-    async categoyParentSelectOption(option) {
-        await this.categoyParentSelect.sendKeys(option);
-    }
-
-    getCategoyParentSelect(): ElementFinder {
-        return this.categoyParentSelect;
-    }
-
-    async getCategoyParentSelectedOption() {
-        return this.categoyParentSelect.element(by.css('option:checked')).getText();
-    }
-
     async imageSelectLastOption() {
         await this.imageSelect
             .all(by.tagName('option'))
@@ -87,6 +68,25 @@ export class CategoryUpdatePage {
 
     async getImageSelectedOption() {
         return this.imageSelect.element(by.css('option:checked')).getText();
+    }
+
+    async categoryParentSelectLastOption() {
+        await this.categoryParentSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async categoryParentSelectOption(option) {
+        await this.categoryParentSelect.sendKeys(option);
+    }
+
+    getCategoryParentSelect(): ElementFinder {
+        return this.categoryParentSelect;
+    }
+
+    async getCategoryParentSelectedOption() {
+        return this.categoryParentSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

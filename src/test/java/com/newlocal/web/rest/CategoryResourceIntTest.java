@@ -4,7 +4,6 @@ import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +24,6 @@ import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -66,14 +63,7 @@ public class CategoryResourceIntTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
-    @Mock
-    private CategoryRepository categoryRepositoryMock;
     
-
-    @Mock
-    private CategoryService categoryServiceMock;
-
     @Autowired
     private CategoryService categoryService;
 
@@ -210,37 +200,6 @@ public class CategoryResourceIntTest {
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
     
-    public void getAllCategoriesWithEagerRelationshipsIsEnabled() throws Exception {
-        CategoryResource categoryResource = new CategoryResource(categoryServiceMock, categoryQueryService);
-        when(categoryServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Category>(new ArrayList<>()));
-
-        MockMvc restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restCategoryMockMvc.perform(get("/api/categories?eagerload=true"))
-        .andExpect(status().isOk());
-
-        verify(categoryServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    public void getAllCategoriesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        CategoryResource categoryResource = new CategoryResource(categoryServiceMock, categoryQueryService);
-            when(categoryServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Category>(new ArrayList<>()));
-            MockMvc restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restCategoryMockMvc.perform(get("/api/categories?eagerload=true"))
-        .andExpect(status().isOk());
-
-            verify(categoryServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
     @Test
     @Transactional
     public void getCategory() throws Exception {
@@ -336,31 +295,12 @@ public class CategoryResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllCategoriesByCategoyParentIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Category categoyParent = CategoryResourceIntTest.createEntity(em);
-        em.persist(categoyParent);
-        em.flush();
-        category.setCategoyParent(categoyParent);
-        categoryRepository.saveAndFlush(category);
-        Long categoyParentId = categoyParent.getId();
-
-        // Get all the categoryList where categoyParent equals to categoyParentId
-        defaultCategoryShouldBeFound("categoyParentId.equals=" + categoyParentId);
-
-        // Get all the categoryList where categoyParent equals to categoyParentId + 1
-        defaultCategoryShouldNotBeFound("categoyParentId.equals=" + (categoyParentId + 1));
-    }
-
-
-    @Test
-    @Transactional
     public void getAllCategoriesByImageIsEqualToSomething() throws Exception {
         // Initialize the database
         Image image = ImageResourceIntTest.createEntity(em);
         em.persist(image);
         em.flush();
-        category.addImage(image);
+        category.setImage(image);
         categoryRepository.saveAndFlush(category);
         Long imageId = image.getId();
 
@@ -369,6 +309,25 @@ public class CategoryResourceIntTest {
 
         // Get all the categoryList where image equals to imageId + 1
         defaultCategoryShouldNotBeFound("imageId.equals=" + (imageId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByCategoryParentIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Category categoryParent = CategoryResourceIntTest.createEntity(em);
+        em.persist(categoryParent);
+        em.flush();
+        category.setCategoryParent(categoryParent);
+        categoryRepository.saveAndFlush(category);
+        Long categoryParentId = categoryParent.getId();
+
+        // Get all the categoryList where categoryParent equals to categoryParentId
+        defaultCategoryShouldBeFound("categoryParentId.equals=" + categoryParentId);
+
+        // Get all the categoryList where categoryParent equals to categoryParentId + 1
+        defaultCategoryShouldNotBeFound("categoryParentId.equals=" + (categoryParentId + 1));
     }
 
     /**

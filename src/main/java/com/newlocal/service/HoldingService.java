@@ -60,15 +60,6 @@ public class HoldingService {
     }
 
     /**
-     * Get all the Holding with eager load of many-to-many relationships.
-     *
-     * @return the list of entities
-     */
-    public Page<Holding> findAllWithEagerRelationships(Pageable pageable) {
-        return holdingRepository.findAllWithEagerRelationships(pageable);
-    }
-
-    /**
      * Get one holding by id.
      *
      * @param id the id of the entity
@@ -77,7 +68,7 @@ public class HoldingService {
     @Transactional(readOnly = true)
     public Optional<Holding> findOne(Long id) {
         log.debug("Request to get Holding : {}", id);
-        return holdingRepository.findOneWithEagerRelationships(id);
+        return holdingRepository.findById(id);
     }
 
     /**

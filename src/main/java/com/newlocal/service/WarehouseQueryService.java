@@ -34,11 +34,11 @@ public class WarehouseQueryService extends QueryService<Warehouse> {
 
     private WarehouseRepository warehouseRepository;
 
-    private WarehouseSearchRepository warehouseSearchRepository;
+//    private WarehouseSearchRepository warehouseSearchRepository;
 
     public WarehouseQueryService(WarehouseRepository warehouseRepository, WarehouseSearchRepository warehouseSearchRepository) {
         this.warehouseRepository = warehouseRepository;
-        this.warehouseSearchRepository = warehouseSearchRepository;
+//        this.warehouseSearchRepository = warehouseSearchRepository;
     }
 
     /**
@@ -96,13 +96,13 @@ public class WarehouseQueryService extends QueryService<Warehouse> {
             if (criteria.getTel() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getTel(), Warehouse_.tel));
             }
+            if (criteria.getImageId() != null) {
+                specification = specification.and(buildSpecification(criteria.getImageId(),
+                    root -> root.join(Warehouse_.image, JoinType.LEFT).get(Image_.id)));
+            }
             if (criteria.getLocationId() != null) {
                 specification = specification.and(buildSpecification(criteria.getLocationId(),
                     root -> root.join(Warehouse_.location, JoinType.LEFT).get(Location_.id)));
-            }
-            if (criteria.getImageId() != null) {
-                specification = specification.and(buildSpecification(criteria.getImageId(),
-                    root -> root.join(Warehouse_.images, JoinType.LEFT).get(Image_.id)));
             }
         }
         return specification;

@@ -17,6 +17,12 @@
                 <dd>
                     <span>{{holding.description}}</span>
                 </dd>
+                <dt><span jhiTranslate="newLocalApp.holding.image">Image</span></dt>
+                <dd>
+                    <div *ngIf="holding.image">
+                        <a [routerLink]="['/image', holding.image?.id, 'view']">{{holding.image?.id}}</a>
+                    </div>
+                </dd>
                 <dt><span jhiTranslate="newLocalApp.holding.location">Location</span></dt>
                 <dd>
                     <div *ngIf="holding.location">
@@ -26,12 +32,6 @@
                 <dt><span jhiTranslate="newLocalApp.holding.owner">Owner</span></dt>
                 <dd>
                     {{holding.owner?.id}}
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.holding.image">Image</span></dt>
-                <dd>
-                    <span *ngFor="let image of holding.images; let last = last">
-                        <a [routerLink]="['/image', image?.id, 'view' ]">{{image.id}}</a>{{last ? '' : ', '}}
-                    </span>
                 </dd>
             </dl>
 

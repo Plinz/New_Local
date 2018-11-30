@@ -16,7 +16,7 @@
     <!--
         Added the entity Stock.
     -->
-    <changeSet id="20181107090806-1" author="jhipster">
+    <changeSet id="20181130130544-1" author="jhipster">
         <createTable tableName="stock">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
@@ -56,7 +56,9 @@
             <column name="available" type="boolean">
                 <constraints nullable="false" />
             </column>
-
+            <column name="image_id" type="bigint">
+                <constraints unique="true" nullable="false" uniqueConstraintName="ux_stock_image_id" />
+            </column>
             <column name="product_type_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -77,17 +79,6 @@
         </createTable>
         <dropDefaultValue tableName="stock" columnName="on_sale_date" columnDataType="datetime"/>
         <dropDefaultValue tableName="stock" columnName="expiry_date" columnDataType="datetime"/>
-        
-        <createTable tableName="stock_image">
-            <column name="images_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="stocks_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <addPrimaryKey columnNames="stocks_id, images_id" tableName="stock_image"/>
         
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->

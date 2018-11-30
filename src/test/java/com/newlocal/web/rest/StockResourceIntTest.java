@@ -4,7 +4,6 @@ import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,7 +26,6 @@ import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -96,13 +93,6 @@ public class StockResourceIntTest {
     @Autowired
     private StockRepository stockRepository;
 
-    @Mock
-    private StockRepository stockRepositoryMock;
-
-
-    @Mock
-    private StockService stockServiceMock;
-
     @Autowired
     private StockService stockService;
 
@@ -165,6 +155,11 @@ public class StockResourceIntTest {
             .bio(DEFAULT_BIO)
             .available(DEFAULT_AVAILABLE);
         // Add required entity
+        Image image = ImageResourceIntTest.createEntity(em);
+        em.persist(image);
+        em.flush();
+        stock.setImage(image);
+        // Add required entity
         ProductType productType = ProductTypeResourceIntTest.createEntity(em);
         em.persist(productType);
         em.flush();
@@ -192,34 +187,34 @@ public class StockResourceIntTest {
         stock = createEntity(em);
     }
 
-    // @Test
-    // @Transactional
-    // public void createStock() throws Exception {
-    //     int databaseSizeBeforeCreate = stockRepository.findAll().size();
-    //
-    //     // Create the Stock
-    //     restStockMockMvc.perform(post("/api/stocks")
-    //         .contentType(TestUtil.APPLICATION_JSON_UTF8)
-    //         .content(TestUtil.convertObjectToJsonBytes(stock)))
-    //         .andExpect(status().isCreated());
-    //
-    //     // Validate the Stock in the database
-    //     List<Stock> stockList = stockRepository.findAll();
-    //     assertThat(stockList).hasSize(databaseSizeBeforeCreate + 1);
-    //     Stock testStock = stockList.get(stockList.size() - 1);
-    //     assertThat(testStock.getName()).isEqualTo(DEFAULT_NAME);
-    //     assertThat(testStock.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-    //     assertThat(testStock.getQuantityInit()).isEqualTo(DEFAULT_QUANTITY_INIT);
-    //     assertThat(testStock.getQuantityRemaining()).isEqualTo(DEFAULT_QUANTITY_REMAINING);
-    //     assertThat(testStock.getPriceUnit()).isEqualTo(DEFAULT_PRICE_UNIT);
-    //     assertThat(testStock.getOnSaleDate()).isEqualTo(DEFAULT_ON_SALE_DATE);
-    //     assertThat(testStock.getExpiryDate()).isEqualTo(DEFAULT_EXPIRY_DATE);
-    //     assertThat(testStock.isBio()).isEqualTo(DEFAULT_BIO);
-    //     assertThat(testStock.isAvailable()).isEqualTo(DEFAULT_AVAILABLE);
-    //
-    //     // Validate the Stock in Elasticsearch
-    //     verify(mockStockSearchRepository, times(1)).save(testStock);
-    // }
+    @Test
+    @Transactional
+    public void createStock() throws Exception {
+        int databaseSizeBeforeCreate = stockRepository.findAll().size();
+
+        // Create the Stock
+        restStockMockMvc.perform(post("/api/stocks")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .andExpect(status().isCreated());
+
+        // Validate the Stock in the database
+        List<Stock> stockList = stockRepository.findAll();
+        assertThat(stockList).hasSize(databaseSizeBeforeCreate + 1);
+        Stock testStock = stockList.get(stockList.size() - 1);
+        assertThat(testStock.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testStock.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testStock.getQuantityInit()).isEqualTo(DEFAULT_QUANTITY_INIT);
+        assertThat(testStock.getQuantityRemaining()).isEqualTo(DEFAULT_QUANTITY_REMAINING);
+        assertThat(testStock.getPriceUnit()).isEqualTo(DEFAULT_PRICE_UNIT);
+        assertThat(testStock.getOnSaleDate()).isEqualTo(DEFAULT_ON_SALE_DATE);
+        assertThat(testStock.getExpiryDate()).isEqualTo(DEFAULT_EXPIRY_DATE);
+        assertThat(testStock.isBio()).isEqualTo(DEFAULT_BIO);
+        assertThat(testStock.isAvailable()).isEqualTo(DEFAULT_AVAILABLE);
+
+        // Validate the Stock in Elasticsearch
+        verify(mockStockSearchRepository, times(1)).save(testStock);
+    }
 
     @Test
     @Transactional
@@ -407,37 +402,6 @@ public class StockResourceIntTest {
             .andExpect(jsonPath("$.[*].expiryDate").value(hasItem(DEFAULT_EXPIRY_DATE.toString())))
             .andExpect(jsonPath("$.[*].bio").value(hasItem(DEFAULT_BIO.booleanValue())))
             .andExpect(jsonPath("$.[*].available").value(hasItem(DEFAULT_AVAILABLE.booleanValue())));
-    }
-
-    public void getAllStocksWithEagerRelationshipsIsEnabled() throws Exception {
-        StockResource stockResource = new StockResource(stockService, stockQueryService, userRepository, new UserDAO(new JdbcTemplate()));
-        when(stockServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Stock>(new ArrayList<>()));
-
-        MockMvc restStockMockMvc = MockMvcBuilders.standaloneSetup(stockResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restStockMockMvc.perform(get("/api/stocks?eagerload=true"))
-        .andExpect(status().isOk());
-
-        verify(stockServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    public void getAllStocksWithEagerRelationshipsIsNotEnabled() throws Exception {
-        StockResource stockResource = new StockResource(stockService, stockQueryService, userRepository, new UserDAO(new JdbcTemplate()));
-            when(stockServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Stock>(new ArrayList<>()));
-            MockMvc restStockMockMvc = MockMvcBuilders.standaloneSetup(stockResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restStockMockMvc.perform(get("/api/stocks?eagerload=true"))
-        .andExpect(status().isOk());
-
-            verify(stockServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @Test
@@ -869,6 +833,25 @@ public class StockResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllStocksByImageIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Image image = ImageResourceIntTest.createEntity(em);
+        em.persist(image);
+        em.flush();
+        stock.setImage(image);
+        stockRepository.saveAndFlush(stock);
+        Long imageId = image.getId();
+
+        // Get all the stockList where image equals to imageId
+        defaultStockShouldBeFound("imageId.equals=" + imageId);
+
+        // Get all the stockList where image equals to imageId + 1
+        defaultStockShouldNotBeFound("imageId.equals=" + (imageId + 1));
+    }
+
+
+    @Test
+    @Transactional
     public void getAllStocksByProductTypeIsEqualToSomething() throws Exception {
         // Initialize the database
         ProductType productType = ProductTypeResourceIntTest.createEntity(em);
@@ -886,23 +869,23 @@ public class StockResourceIntTest {
     }
 
 
-    // @Test
-    // @Transactional
-    // public void getAllStocksByHoldingIsEqualToSomething() throws Exception {
-    //     // Initialize the database
-    //     Holding holding = HoldingResourceIntTest.createEntity(em);
-    //     em.persist(holding);
-    //     em.flush();
-    //     stock.setHolding(holding);
-    //     stockRepository.saveAndFlush(stock);
-    //     Long holdingId = holding.getId();
-    //
-    //     // Get all the stockList where holding equals to holdingId
-    //     defaultStockShouldBeFound("holdingId.equals=" + holdingId);
-    //
-    //     // Get all the stockList where holding equals to holdingId + 1
-    //     defaultStockShouldNotBeFound("holdingId.equals=" + (holdingId + 1));
-    // }
+    @Test
+    @Transactional
+    public void getAllStocksByHoldingIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Holding holding = HoldingResourceIntTest.createEntity(em);
+        em.persist(holding);
+        em.flush();
+        stock.setHolding(holding);
+        stockRepository.saveAndFlush(stock);
+        Long holdingId = holding.getId();
+
+        // Get all the stockList where holding equals to holdingId
+        defaultStockShouldBeFound("holdingId.equals=" + holdingId);
+
+        // Get all the stockList where holding equals to holdingId + 1
+        defaultStockShouldNotBeFound("holdingId.equals=" + (holdingId + 1));
+    }
 
 
     @Test
@@ -940,25 +923,6 @@ public class StockResourceIntTest {
 
         // Get all the stockList where warehouse equals to warehouseId + 1
         defaultStockShouldNotBeFound("warehouseId.equals=" + (warehouseId + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllStocksByImageIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Image image = ImageResourceIntTest.createEntity(em);
-        em.persist(image);
-        em.flush();
-        stock.addImage(image);
-        stockRepository.saveAndFlush(stock);
-        Long imageId = image.getId();
-
-        // Get all the stockList where image equals to imageId
-        defaultStockShouldBeFound("imageId.equals=" + imageId);
-
-        // Get all the stockList where image equals to imageId + 1
-        defaultStockShouldNotBeFound("imageId.equals=" + (imageId + 1));
     }
 
     /**

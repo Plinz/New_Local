@@ -34,11 +34,11 @@ public class CategoryQueryService extends QueryService<Category> {
 
     private CategoryRepository categoryRepository;
 
-    private CategorySearchRepository categorySearchRepository;
+//    private CategorySearchRepository categorySearchRepository;
 
     public CategoryQueryService(CategoryRepository categoryRepository, CategorySearchRepository categorySearchRepository) {
         this.categoryRepository = categoryRepository;
-        this.categorySearchRepository = categorySearchRepository;
+//        this.categorySearchRepository = categorySearchRepository;
     }
 
     /**
@@ -93,13 +93,13 @@ public class CategoryQueryService extends QueryService<Category> {
             if (criteria.getDescription() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDescription(), Category_.description));
             }
-            if (criteria.getCategoyParentId() != null) {
-                specification = specification.and(buildSpecification(criteria.getCategoyParentId(),
-                    root -> root.join(Category_.categoyParent, JoinType.LEFT).get(Category_.id)));
-            }
             if (criteria.getImageId() != null) {
                 specification = specification.and(buildSpecification(criteria.getImageId(),
-                    root -> root.join(Category_.images, JoinType.LEFT).get(Image_.id)));
+                    root -> root.join(Category_.image, JoinType.LEFT).get(Image_.id)));
+            }
+            if (criteria.getCategoryParentId() != null) {
+                specification = specification.and(buildSpecification(criteria.getCategoryParentId(),
+                    root -> root.join(Category_.categoryParent, JoinType.LEFT).get(Category_.id)));
             }
         }
         return specification;

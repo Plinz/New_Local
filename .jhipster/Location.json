@@ -71,7 +71,7 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20181107090805",
+    "changelogDate": "20181130130551",
     "entityTableName": "location",
     "dto": "no",
     "pagination": "pager",

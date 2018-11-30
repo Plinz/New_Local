@@ -33,6 +33,7 @@
             <th jhiSortBy="siret"><span jhiTranslate="newLocalApp.holding.siret">Siret</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="name"><span jhiTranslate="newLocalApp.holding.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="description"><span jhiTranslate="newLocalApp.holding.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="image.id"><span jhiTranslate="newLocalApp.holding.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="location.id"><span jhiTranslate="newLocalApp.holding.location">Location</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="owner.id"><span jhiTranslate="newLocalApp.holding.owner">Owner</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
@@ -44,6 +45,11 @@
                 <td>{{holding.siret}}</td>
                 <td>{{holding.name}}</td>
                 <td>{{holding.description}}</td>
+                <td>
+                    <div *ngIf="holding.image">
+                        <a [routerLink]="['../image', holding.image?.id, 'view' ]" >{{holding.image?.id}}</a>
+                    </div>
+                </td>
                 <td>
                     <div *ngIf="holding.location">
                         <a [routerLink]="['../location', holding.location?.id, 'view' ]" >{{holding.location?.id}}</a>

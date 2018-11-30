@@ -2,7 +2,6 @@ package com.newlocal.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
-
 import io.github.jhipster.service.filter.Filter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
@@ -24,16 +23,6 @@ public class ImageCriteria implements Serializable {
     private StringFilter name;
 
     private StringFilter description;
-
-    private LongFilter stockId;
-
-    private LongFilter categoryId;
-
-    private LongFilter productTypeId;
-
-    private LongFilter holdingId;
-
-    private LongFilter warehouseId;
 
     public ImageCriteria() {
     }
@@ -62,46 +51,6 @@ public class ImageCriteria implements Serializable {
         this.description = description;
     }
 
-    public LongFilter getStockId() {
-        return stockId;
-    }
-
-    public void setStockId(LongFilter stockId) {
-        this.stockId = stockId;
-    }
-
-    public LongFilter getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(LongFilter categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public LongFilter getProductTypeId() {
-        return productTypeId;
-    }
-
-    public void setProductTypeId(LongFilter productTypeId) {
-        this.productTypeId = productTypeId;
-    }
-
-    public LongFilter getHoldingId() {
-        return holdingId;
-    }
-
-    public void setHoldingId(LongFilter holdingId) {
-        this.holdingId = holdingId;
-    }
-
-    public LongFilter getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(LongFilter warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -115,12 +64,7 @@ public class ImageCriteria implements Serializable {
         return
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
-            Objects.equals(description, that.description) &&
-            Objects.equals(stockId, that.stockId) &&
-            Objects.equals(categoryId, that.categoryId) &&
-            Objects.equals(productTypeId, that.productTypeId) &&
-            Objects.equals(holdingId, that.holdingId) &&
-            Objects.equals(warehouseId, that.warehouseId);
+            Objects.equals(description, that.description);
     }
 
     @Override
@@ -128,12 +72,7 @@ public class ImageCriteria implements Serializable {
         return Objects.hash(
         id,
         name,
-        description,
-        stockId,
-        categoryId,
-        productTypeId,
-        holdingId,
-        warehouseId
+        description
         );
     }
 
@@ -143,11 +82,6 @@ public class ImageCriteria implements Serializable {
                 (id != null ? "id=" + id + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
-                (stockId != null ? "stockId=" + stockId + ", " : "") +
-                (categoryId != null ? "categoryId=" + categoryId + ", " : "") +
-                (productTypeId != null ? "productTypeId=" + productTypeId + ", " : "") +
-                (holdingId != null ? "holdingId=" + holdingId + ", " : "") +
-                (warehouseId != null ? "warehouseId=" + warehouseId + ", " : "") +
             "}";
     }
 

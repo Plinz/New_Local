@@ -6,10 +6,10 @@ import { JhiAlertService } from 'ng-jhipster';
 
 import { IWarehouse } from 'app/shared/model/warehouse.model';
 import { WarehouseService } from './warehouse.service';
-import { ILocation } from 'app/shared/model/location.model';
-import { LocationService } from 'app/entities/location';
 import { IImage } from 'app/shared/model/image.model';
 import { ImageService } from 'app/entities/image';
+import { ILocation } from 'app/shared/model/location.model';
+import { LocationService } from 'app/entities/location';
 
 @Component({
     selector: 'jhi-warehouse-update',
@@ -19,15 +19,15 @@ export class WarehouseUpdateComponent implements OnInit {
     warehouse: IWarehouse;
     isSaving: boolean;
 
-    locations: ILocation[];
-
     images: IImage[];
+
+    locations: ILocation[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private warehouseService: WarehouseService,
-        private locationService: LocationService,
         private imageService: ImageService,
+        private locationService: LocationService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -36,15 +36,24 @@ export class WarehouseUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ warehouse }) => {
             this.warehouse = warehouse;
         });
-        this.locationService.query().subscribe(
-            (res: HttpResponse<ILocation[]>) => {
-                this.locations = res.body;
+        this.imageService.query({ 'warehouseId.specified': 'false' }).subscribe(
+            (res: HttpResponse<IImage[]>) => {
+                if (!this.warehouse.image || !this.warehouse.image.id) {
+                    this.images = res.body;
+                } else {
+                    this.imageService.find(this.warehouse.image.id).subscribe(
+                        (subRes: HttpResponse<IImage>) => {
+                            this.images = [subRes.body].concat(res.body);
+                        },
+                        (subRes: HttpErrorResponse) => this.onError(subRes.message)
+                    );
+                }
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.imageService.query().subscribe(
-            (res: HttpResponse<IImage[]>) => {
-                this.images = res.body;
+        this.locationService.query().subscribe(
+            (res: HttpResponse<ILocation[]>) => {
+                this.locations = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -80,22 +89,11 @@ export class WarehouseUpdateComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    trackLocationById(index: number, item: ILocation) {
-        return item.id;
-    }
-
     trackImageById(index: number, item: IImage) {
         return item.id;
     }
 
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
+    trackLocationById(index: number, item: ILocation) {
+        return item.id;
     }
 }

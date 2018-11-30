@@ -60,6 +60,13 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.warehouse.image" for="field_image">Image</label>
+                    <select class="form-control" id="field_image" name="image" [(ngModel)]="warehouse.image">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="imageOption.id === warehouse.image?.id ? warehouse.image : imageOption" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.warehouse.location" for="field_location">Location</label>
                     <select class="form-control" id="field_location" name="location" [(ngModel)]="warehouse.location"  required>
                         <option *ngIf="!editForm.value.location" [ngValue]="null" selected></option>
@@ -71,12 +78,6 @@
                         [hidden]="!editForm.controls.location?.errors?.required" jhiTranslate="entity.validation.required">
                         This field is required.
                     </small>
-                </div>
-                <div class="form-group">
-                    <label jhiTranslate="newLocalApp.warehouse.image" for="field_image">Image</label>
-                    <select class="form-control" id="field_image" multiple name="image" [(ngModel)]="warehouse.images">
-                        <option [ngValue]="getSelected(warehouse.images, imageOption)" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
-                    </select>
                 </div>
             </div>
             <div>

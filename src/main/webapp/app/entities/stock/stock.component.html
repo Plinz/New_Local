@@ -39,6 +39,7 @@
             <th jhiSortBy="expiryDate"><span jhiTranslate="newLocalApp.stock.expiryDate">Expiry Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="bio"><span jhiTranslate="newLocalApp.stock.bio">Bio</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="available"><span jhiTranslate="newLocalApp.stock.available">Available</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="image.id"><span jhiTranslate="newLocalApp.stock.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="productType.id"><span jhiTranslate="newLocalApp.stock.productType">Product Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="holding.id"><span jhiTranslate="newLocalApp.stock.holding">Holding</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="seller.id"><span jhiTranslate="newLocalApp.stock.seller">Seller</span> <fa-icon [icon]="'sort'"></fa-icon></th>
@@ -58,6 +59,11 @@
                 <td>{{stock.expiryDate | date:'medium'}}</td>
                 <td>{{stock.bio}}</td>
                 <td>{{stock.available}}</td>
+                <td>
+                    <div *ngIf="stock.image">
+                        <a [routerLink]="['../image', stock.image?.id, 'view' ]" >{{stock.image?.id}}</a>
+                    </div>
+                </td>
                 <td>
                     <div *ngIf="stock.productType">
                         <a [routerLink]="['../product-type', stock.productType?.id, 'view' ]" >{{stock.productType?.id}}</a>

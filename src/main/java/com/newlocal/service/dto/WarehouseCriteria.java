@@ -27,9 +27,9 @@ public class WarehouseCriteria implements Serializable {
 
     private StringFilter tel;
 
-    private LongFilter locationId;
-
     private LongFilter imageId;
+
+    private LongFilter locationId;
 
     public WarehouseCriteria() {
     }
@@ -66,20 +66,20 @@ public class WarehouseCriteria implements Serializable {
         this.tel = tel;
     }
 
-    public LongFilter getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(LongFilter locationId) {
-        this.locationId = locationId;
-    }
-
     public LongFilter getImageId() {
         return imageId;
     }
 
     public void setImageId(LongFilter imageId) {
         this.imageId = imageId;
+    }
+
+    public LongFilter getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(LongFilter locationId) {
+        this.locationId = locationId;
     }
 
 
@@ -97,8 +97,8 @@ public class WarehouseCriteria implements Serializable {
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
             Objects.equals(tel, that.tel) &&
-            Objects.equals(locationId, that.locationId) &&
-            Objects.equals(imageId, that.imageId);
+            Objects.equals(imageId, that.imageId) &&
+            Objects.equals(locationId, that.locationId);
     }
 
     @Override
@@ -108,8 +108,8 @@ public class WarehouseCriteria implements Serializable {
         name,
         description,
         tel,
-        locationId,
-        imageId
+        imageId,
+        locationId
         );
     }
 
@@ -120,8 +120,8 @@ public class WarehouseCriteria implements Serializable {
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
                 (tel != null ? "tel=" + tel + ", " : "") +
-                (locationId != null ? "locationId=" + locationId + ", " : "") +
                 (imageId != null ? "imageId=" + imageId + ", " : "") +
+                (locationId != null ? "locationId=" + locationId + ", " : "") +
             "}";
     }
 

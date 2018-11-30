@@ -4,7 +4,6 @@ import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +24,6 @@ import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,14 +68,7 @@ public class HoldingResourceIntTest {
 
     @Autowired
     private HoldingRepository holdingRepository;
-
-    @Mock
-    private HoldingRepository holdingRepositoryMock;
     
-
-    @Mock
-    private HoldingService holdingServiceMock;
-
     @Autowired
     private HoldingService holdingService;
 
@@ -246,37 +236,6 @@ public class HoldingResourceIntTest {
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())));
     }
     
-    public void getAllHoldingsWithEagerRelationshipsIsEnabled() throws Exception {
-        HoldingResource holdingResource = new HoldingResource(holdingServiceMock, holdingQueryService);
-        when(holdingServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Holding>(new ArrayList<>()));
-
-        MockMvc restHoldingMockMvc = MockMvcBuilders.standaloneSetup(holdingResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restHoldingMockMvc.perform(get("/api/holdings?eagerload=true"))
-        .andExpect(status().isOk());
-
-        verify(holdingServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    public void getAllHoldingsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        HoldingResource holdingResource = new HoldingResource(holdingServiceMock, holdingQueryService);
-            when(holdingServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Holding>(new ArrayList<>()));
-            MockMvc restHoldingMockMvc = MockMvcBuilders.standaloneSetup(holdingResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restHoldingMockMvc.perform(get("/api/holdings?eagerload=true"))
-        .andExpect(status().isOk());
-
-            verify(holdingServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
     @Test
     @Transactional
     public void getHolding() throws Exception {
@@ -412,6 +371,25 @@ public class HoldingResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllHoldingsByImageIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Image image = ImageResourceIntTest.createEntity(em);
+        em.persist(image);
+        em.flush();
+        holding.setImage(image);
+        holdingRepository.saveAndFlush(holding);
+        Long imageId = image.getId();
+
+        // Get all the holdingList where image equals to imageId
+        defaultHoldingShouldBeFound("imageId.equals=" + imageId);
+
+        // Get all the holdingList where image equals to imageId + 1
+        defaultHoldingShouldNotBeFound("imageId.equals=" + (imageId + 1));
+    }
+
+
+    @Test
+    @Transactional
     public void getAllHoldingsByLocationIsEqualToSomething() throws Exception {
         // Initialize the database
         Location location = LocationResourceIntTest.createEntity(em);
@@ -445,25 +423,6 @@ public class HoldingResourceIntTest {
 
         // Get all the holdingList where owner equals to ownerId + 1
         defaultHoldingShouldNotBeFound("ownerId.equals=" + (ownerId + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllHoldingsByImageIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Image image = ImageResourceIntTest.createEntity(em);
-        em.persist(image);
-        em.flush();
-        holding.addImage(image);
-        holdingRepository.saveAndFlush(holding);
-        Long imageId = image.getId();
-
-        // Get all the holdingList where image equals to imageId
-        defaultHoldingShouldBeFound("imageId.equals=" + imageId);
-
-        // Get all the holdingList where image equals to imageId + 1
-        defaultHoldingShouldNotBeFound("imageId.equals=" + (imageId + 1));
     }
 
     /**

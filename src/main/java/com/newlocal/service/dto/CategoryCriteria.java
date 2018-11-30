@@ -25,9 +25,9 @@ public class CategoryCriteria implements Serializable {
 
     private StringFilter description;
 
-    private LongFilter categoyParentId;
-
     private LongFilter imageId;
+
+    private LongFilter categoryParentId;
 
     public CategoryCriteria() {
     }
@@ -56,20 +56,20 @@ public class CategoryCriteria implements Serializable {
         this.description = description;
     }
 
-    public LongFilter getCategoyParentId() {
-        return categoyParentId;
-    }
-
-    public void setCategoyParentId(LongFilter categoyParentId) {
-        this.categoyParentId = categoyParentId;
-    }
-
     public LongFilter getImageId() {
         return imageId;
     }
 
     public void setImageId(LongFilter imageId) {
         this.imageId = imageId;
+    }
+
+    public LongFilter getCategoryParentId() {
+        return categoryParentId;
+    }
+
+    public void setCategoryParentId(LongFilter categoryParentId) {
+        this.categoryParentId = categoryParentId;
     }
 
 
@@ -86,8 +86,8 @@ public class CategoryCriteria implements Serializable {
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
-            Objects.equals(categoyParentId, that.categoyParentId) &&
-            Objects.equals(imageId, that.imageId);
+            Objects.equals(imageId, that.imageId) &&
+            Objects.equals(categoryParentId, that.categoryParentId);
     }
 
     @Override
@@ -96,8 +96,8 @@ public class CategoryCriteria implements Serializable {
         id,
         name,
         description,
-        categoyParentId,
-        imageId
+        imageId,
+        categoryParentId
         );
     }
 
@@ -107,8 +107,8 @@ public class CategoryCriteria implements Serializable {
                 (id != null ? "id=" + id + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
-                (categoyParentId != null ? "categoyParentId=" + categoyParentId + ", " : "") +
                 (imageId != null ? "imageId=" + imageId + ", " : "") +
+                (categoryParentId != null ? "categoryParentId=" + categoryParentId + ", " : "") +
             "}";
     }
 

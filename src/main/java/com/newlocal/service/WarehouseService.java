@@ -58,15 +58,6 @@ public class WarehouseService {
         return warehouseRepository.findAll(pageable);
     }
 
-    /**
-     * Get all the Warehouse with eager load of many-to-many relationships.
-     *
-     * @return the list of entities
-     */
-    public Page<Warehouse> findAllWithEagerRelationships(Pageable pageable) {
-        return warehouseRepository.findAllWithEagerRelationships(pageable);
-    }
-    
 
     /**
      * Get one warehouse by id.
@@ -77,7 +68,7 @@ public class WarehouseService {
     @Transactional(readOnly = true)
     public Optional<Warehouse> findOne(Long id) {
         log.debug("Request to get Warehouse : {}", id);
-        return warehouseRepository.findOneWithEagerRelationships(id);
+        return warehouseRepository.findById(id);
     }
 
     /**

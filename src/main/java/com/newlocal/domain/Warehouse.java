@@ -9,8 +9,6 @@ import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -43,17 +41,13 @@ public class Warehouse implements Serializable {
     @Column(name = "tel", length = 15, nullable = false)
     private String tel;
 
+    @OneToOne    @JoinColumn(unique = true)
+    private Image image;
+
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("")
     private Location location;
-
-    @ManyToMany
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "warehouse_image",
-               joinColumns = @JoinColumn(name = "warehouses_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "images_id", referencedColumnName = "id"))
-    private Set<Image> images = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -103,6 +97,19 @@ public class Warehouse implements Serializable {
         this.tel = tel;
     }
 
+    public Image getImage() {
+        return image;
+    }
+
+    public Warehouse image(Image image) {
+        this.image = image;
+        return this;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
     public Location getLocation() {
         return location;
     }
@@ -114,31 +121,6 @@ public class Warehouse implements Serializable {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public Set<Image> getImages() {
-        return images;
-    }
-
-    public Warehouse images(Set<Image> images) {
-        this.images = images;
-        return this;
-    }
-
-    public Warehouse addImage(Image image) {
-        this.images.add(image);
-        image.getWarehouses().add(this);
-        return this;
-    }
-
-    public Warehouse removeImage(Image image) {
-        this.images.remove(image);
-        image.getWarehouses().remove(this);
-        return this;
-    }
-
-    public void setImages(Set<Image> images) {
-        this.images = images;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

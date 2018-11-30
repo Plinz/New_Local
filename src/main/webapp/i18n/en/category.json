@@ -19,8 +19,8 @@
             },
             "name": "Name",
             "description": "Description",
-            "categoyParent": "Categoy Parent",
-            "image": "Image"
+            "image": "Image",
+            "categoryParent": "Category Parent"
         }
     }
 }

@@ -9,8 +9,6 @@ import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -38,16 +36,12 @@ public class Category implements Serializable {
     @Column(name = "description", length = 300)
     private String description;
 
+    @OneToOne    @JoinColumn(unique = true)
+    private Image image;
+
     @ManyToOne
     @JsonIgnoreProperties("")
-    private Category categoyParent;
-
-    @ManyToMany
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "category_image",
-               joinColumns = @JoinColumn(name = "categories_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "images_id", referencedColumnName = "id"))
-    private Set<Image> images = new HashSet<>();
+    private Category categoryParent;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -84,42 +78,30 @@ public class Category implements Serializable {
         this.description = description;
     }
 
-    public Category getCategoyParent() {
-        return categoyParent;
+    public Image getImage() {
+        return image;
     }
 
-    public Category categoyParent(Category category) {
-        this.categoyParent = category;
+    public Category image(Image image) {
+        this.image = image;
         return this;
     }
 
-    public void setCategoyParent(Category category) {
-        this.categoyParent = category;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
-    public Set<Image> getImages() {
-        return images;
+    public Category getCategoryParent() {
+        return categoryParent;
     }
 
-    public Category images(Set<Image> images) {
-        this.images = images;
+    public Category categoryParent(Category category) {
+        this.categoryParent = category;
         return this;
     }
 
-    public Category addImage(Image image) {
-        this.images.add(image);
-        image.getCategories().add(this);
-        return this;
-    }
-
-    public Category removeImage(Image image) {
-        this.images.remove(image);
-        image.getCategories().remove(this);
-        return this;
-    }
-
-    public void setImages(Set<Image> images) {
-        this.images = images;
+    public void setCategoryParent(Category category) {
+        this.categoryParent = category;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

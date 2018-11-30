@@ -42,7 +42,7 @@
             </span>
         </div>
         <div class="" id="navbarResponsive">
-            <ul class="navbar-nav" [ngSwitch]="isAuthenticated()">
+            <ul class="navbar-collapse collapse navbar-nav" [ngSwitch]="isAuthenticated()">
                 <li *jhiHasAnyAuthority="'ROLE_SELLER'" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                     <a class="nav-link" routerLink="stockManagement" (click)="collapseNavbar()">
                         <span jhiTranslate="global.menu.stockManagement">Stock Management</span>
@@ -157,6 +157,11 @@
                         <fa-icon [icon]="'shopping-cart'" [fixedWidth]="true"></fa-icon>
                     </a>
                 </li>
+                <li *ngSwitchCase="false" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                    <a class="nav-link" routerLink="/" (click)="login()" id="login">
+                        <span jhiTranslate="global.menu.account.login">Sign in</span>
+                    </a>
+                </li>
                 <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" placement="bottom-right" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                     <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu">
                         <span *ngIf="!getImageUrl()">
@@ -184,36 +189,6 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link" routerLink="/" (click)="login()" id="account-menu">
-                        <span jhiTranslate="global.menu.account.login">Sign in</span>
-                    </a>
-                </li>
-                <!-- <li class="nav-item" *ngSwitchCase="false">
-                    <a class="nav-link" (click)="login()" id="login">
-                        <span jhiTranslate="global.menu.account.login">Sign in</span>
-                    </a>
-                </li> -->
-                <!-- <li *ngSwitchCase="false" ngbDropdown class="nav-item dropdown pointer" placement="bottom-right" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu">
-                        <span>
-                            <span jhiTranslate="global.menu.account.login">Sign in</span>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu" ngbDropdownMenu>
-                        <li>
-                            <a class="dropdown-item" (click)="login()" id="login">
-                                <span jhiTranslate="global.menu.account.login">Sign in</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" routerLink="register" routerLinkActive="active" (click)="collapseNavbar()">
-                                <span jhiTranslate="global.menu.account.register">Register</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li> -->
             </ul>
         </div>
     </div>

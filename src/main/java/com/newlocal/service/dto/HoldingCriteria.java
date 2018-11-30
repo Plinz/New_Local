@@ -27,11 +27,11 @@ public class HoldingCriteria implements Serializable {
 
     private StringFilter description;
 
+    private LongFilter imageId;
+
     private LongFilter locationId;
 
     private LongFilter ownerId;
-
-    private LongFilter imageId;
 
     public HoldingCriteria() {
     }
@@ -68,6 +68,14 @@ public class HoldingCriteria implements Serializable {
         this.description = description;
     }
 
+    public LongFilter getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(LongFilter imageId) {
+        this.imageId = imageId;
+    }
+
     public LongFilter getLocationId() {
         return locationId;
     }
@@ -82,14 +90,6 @@ public class HoldingCriteria implements Serializable {
 
     public void setOwnerId(LongFilter ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public LongFilter getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(LongFilter imageId) {
-        this.imageId = imageId;
     }
 
 
@@ -107,9 +107,9 @@ public class HoldingCriteria implements Serializable {
             Objects.equals(siret, that.siret) &&
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
+            Objects.equals(imageId, that.imageId) &&
             Objects.equals(locationId, that.locationId) &&
-            Objects.equals(ownerId, that.ownerId) &&
-            Objects.equals(imageId, that.imageId);
+            Objects.equals(ownerId, that.ownerId);
     }
 
     @Override
@@ -119,9 +119,9 @@ public class HoldingCriteria implements Serializable {
         siret,
         name,
         description,
+        imageId,
         locationId,
-        ownerId,
-        imageId
+        ownerId
         );
     }
 
@@ -132,9 +132,9 @@ public class HoldingCriteria implements Serializable {
                 (siret != null ? "siret=" + siret + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
+                (imageId != null ? "imageId=" + imageId + ", " : "") +
                 (locationId != null ? "locationId=" + locationId + ", " : "") +
                 (ownerId != null ? "ownerId=" + ownerId + ", " : "") +
-                (imageId != null ? "imageId=" + imageId + ", " : "") +
             "}";
     }
 

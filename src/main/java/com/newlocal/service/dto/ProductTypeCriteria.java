@@ -25,9 +25,9 @@ public class ProductTypeCriteria implements Serializable {
 
     private StringFilter description;
 
-    private LongFilter categoryId;
-
     private LongFilter imageId;
+
+    private LongFilter categoryId;
 
     public ProductTypeCriteria() {
     }
@@ -56,20 +56,20 @@ public class ProductTypeCriteria implements Serializable {
         this.description = description;
     }
 
-    public LongFilter getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(LongFilter categoryId) {
-        this.categoryId = categoryId;
-    }
-
     public LongFilter getImageId() {
         return imageId;
     }
 
     public void setImageId(LongFilter imageId) {
         this.imageId = imageId;
+    }
+
+    public LongFilter getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(LongFilter categoryId) {
+        this.categoryId = categoryId;
     }
 
 
@@ -86,8 +86,8 @@ public class ProductTypeCriteria implements Serializable {
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
             Objects.equals(description, that.description) &&
-            Objects.equals(categoryId, that.categoryId) &&
-            Objects.equals(imageId, that.imageId);
+            Objects.equals(imageId, that.imageId) &&
+            Objects.equals(categoryId, that.categoryId);
     }
 
     @Override
@@ -96,8 +96,8 @@ public class ProductTypeCriteria implements Serializable {
         id,
         name,
         description,
-        categoryId,
-        imageId
+        imageId,
+        categoryId
         );
     }
 
@@ -107,8 +107,8 @@ public class ProductTypeCriteria implements Serializable {
                 (id != null ? "id=" + id + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
-                (categoryId != null ? "categoryId=" + categoryId + ", " : "") +
                 (imageId != null ? "imageId=" + imageId + ", " : "") +
+                (categoryId != null ? "categoryId=" + categoryId + ", " : "") +
             "}";
     }
 

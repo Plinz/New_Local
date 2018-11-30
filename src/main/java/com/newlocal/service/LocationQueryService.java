@@ -34,11 +34,11 @@ public class LocationQueryService extends QueryService<Location> {
 
     private LocationRepository locationRepository;
 
-    private LocationSearchRepository locationSearchRepository;
+//    private LocationSearchRepository locationSearchRepository;
 
     public LocationQueryService(LocationRepository locationRepository, LocationSearchRepository locationSearchRepository) {
         this.locationRepository = locationRepository;
-        this.locationSearchRepository = locationSearchRepository;
+//        this.locationSearchRepository = locationSearchRepository;
     }
 
     /**

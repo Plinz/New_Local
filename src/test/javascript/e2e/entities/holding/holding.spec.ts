@@ -42,9 +42,9 @@ describe('Holding e2e test', () => {
             holdingUpdatePage.setSiretInput('siret'),
             holdingUpdatePage.setNameInput('name'),
             holdingUpdatePage.setDescriptionInput('description'),
+            holdingUpdatePage.imageSelectLastOption(),
             holdingUpdatePage.locationSelectLastOption(),
             holdingUpdatePage.ownerSelectLastOption(),
-            // holdingUpdatePage.imageSelectLastOption(),
         ]);
         expect(await holdingUpdatePage.getSiretInput()).to.eq('siret');
         expect(await holdingUpdatePage.getNameInput()).to.eq('name');

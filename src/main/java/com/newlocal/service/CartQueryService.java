@@ -34,11 +34,11 @@ public class CartQueryService extends QueryService<Cart> {
 
     private CartRepository cartRepository;
 
-    private CartSearchRepository cartSearchRepository;
+//    private CartSearchRepository cartSearchRepository;
 
     public CartQueryService(CartRepository cartRepository, CartSearchRepository cartSearchRepository) {
         this.cartRepository = cartRepository;
-        this.cartSearchRepository = cartSearchRepository;
+//        this.cartSearchRepository = cartSearchRepository;
     }
 
     /**

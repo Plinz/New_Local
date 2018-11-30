@@ -4,7 +4,6 @@ import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +24,6 @@ import javax.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -70,14 +67,7 @@ public class WarehouseResourceIntTest {
 
     @Autowired
     private WarehouseRepository warehouseRepository;
-
-    @Mock
-    private WarehouseRepository warehouseRepositoryMock;
     
-
-    @Mock
-    private WarehouseService warehouseServiceMock;
-
     @Autowired
     private WarehouseService warehouseService;
 
@@ -240,37 +230,6 @@ public class WarehouseResourceIntTest {
             .andExpect(jsonPath("$.[*].tel").value(hasItem(DEFAULT_TEL.toString())));
     }
     
-    public void getAllWarehousesWithEagerRelationshipsIsEnabled() throws Exception {
-        WarehouseResource warehouseResource = new WarehouseResource(warehouseServiceMock, warehouseQueryService);
-        when(warehouseServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Warehouse>(new ArrayList<>()));
-
-        MockMvc restWarehouseMockMvc = MockMvcBuilders.standaloneSetup(warehouseResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restWarehouseMockMvc.perform(get("/api/warehouses?eagerload=true"))
-        .andExpect(status().isOk());
-
-        verify(warehouseServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    public void getAllWarehousesWithEagerRelationshipsIsNotEnabled() throws Exception {
-        WarehouseResource warehouseResource = new WarehouseResource(warehouseServiceMock, warehouseQueryService);
-            when(warehouseServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl<Warehouse>(new ArrayList<>()));
-            MockMvc restWarehouseMockMvc = MockMvcBuilders.standaloneSetup(warehouseResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
-
-        restWarehouseMockMvc.perform(get("/api/warehouses?eagerload=true"))
-        .andExpect(status().isOk());
-
-            verify(warehouseServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
     @Test
     @Transactional
     public void getWarehouse() throws Exception {
@@ -406,6 +365,25 @@ public class WarehouseResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllWarehousesByImageIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Image image = ImageResourceIntTest.createEntity(em);
+        em.persist(image);
+        em.flush();
+        warehouse.setImage(image);
+        warehouseRepository.saveAndFlush(warehouse);
+        Long imageId = image.getId();
+
+        // Get all the warehouseList where image equals to imageId
+        defaultWarehouseShouldBeFound("imageId.equals=" + imageId);
+
+        // Get all the warehouseList where image equals to imageId + 1
+        defaultWarehouseShouldNotBeFound("imageId.equals=" + (imageId + 1));
+    }
+
+
+    @Test
+    @Transactional
     public void getAllWarehousesByLocationIsEqualToSomething() throws Exception {
         // Initialize the database
         Location location = LocationResourceIntTest.createEntity(em);
@@ -420,25 +398,6 @@ public class WarehouseResourceIntTest {
 
         // Get all the warehouseList where location equals to locationId + 1
         defaultWarehouseShouldNotBeFound("locationId.equals=" + (locationId + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllWarehousesByImageIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Image image = ImageResourceIntTest.createEntity(em);
-        em.persist(image);
-        em.flush();
-        warehouse.addImage(image);
-        warehouseRepository.saveAndFlush(warehouse);
-        Long imageId = image.getId();
-
-        // Get all the warehouseList where image equals to imageId
-        defaultWarehouseShouldBeFound("imageId.equals=" + imageId);
-
-        // Get all the warehouseList where image equals to imageId + 1
-        defaultWarehouseShouldNotBeFound("imageId.equals=" + (imageId + 1));
     }
 
     /**
