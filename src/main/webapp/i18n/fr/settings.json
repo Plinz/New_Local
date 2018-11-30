@@ -1,13 +1,18 @@
 {
     "settings": {
-        "title": "Profil de l'utilisateur [<b>{{username}}</b>]",
+        "title": "Information personnelle [<b>{{username}}</b>]",
         "form": {
             "firstname": "Prénom",
             "firstname.placeholder": "Votre prénom",
             "lastname": "Nom",
             "lastname.placeholder": "Votre nom",
+            "password":"Mot de passe",
+            "password.placeholder": "Votre mot de passe",
             "language": "Langue",
-            "button": "Sauvegarder"
+            "buttonSave": "Sauvegarder",
+            "buttonModifier": "Modifier",
+            "buttonCancel": "Anuler"
+
         },
         "messages": {
             "error": {
