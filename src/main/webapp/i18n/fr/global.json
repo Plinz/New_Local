@@ -23,7 +23,7 @@
             "account": {
                 "main": "Compte",
                 "settings": "Profil",
-                "password": "Mot de passe",
+                "password": "Holding",
                 "sessions": "Sessions",
                 "login": "Connexion",
                 "logout": "Déconnexion",

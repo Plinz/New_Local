@@ -8,7 +8,6 @@ import { map } from 'rxjs/operators';
 import { Stock } from '../shared/model/stock.model';
 import { StockService } from '../entities/stock/stock.service';
 import { StockManagementComponent } from './stockManagement.component';
-import { StockManagementDetailComponent } from './stockManagement-detail.component';
 import { StockManagementUpdateComponent } from './stockManagement-update.component';
 import { StockManagementDeletePopupComponent } from './stockManagement-delete-dialog.component';
 import { IStock } from '../shared/model/stock.model';
@@ -36,18 +35,6 @@ export const stockManagementRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             defaultSort: 'id,asc',
-            pageTitle: 'newLocalApp.stock.home.title'
-        },
-        canActivate: [UserRouteAccessService]
-    },
-    {
-        path: 'stockManagement/:id/view',
-        component: StockManagementDetailComponent,
-        resolve: {
-            stock: StockManagementResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
             pageTitle: 'newLocalApp.stock.home.title'
         },
         canActivate: [UserRouteAccessService]

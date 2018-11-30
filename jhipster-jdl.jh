@@ -59,7 +59,7 @@ entity Holding {
 entity Image {
     name String required minlength(1) maxlength(100),
     description String maxlength(300),
-    image ImageBlob required
+    imagePath String required
 }
 
 relationship ManyToOne {

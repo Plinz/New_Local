@@ -5,7 +5,6 @@ import { NewLocalSharedModule } from '../shared';
 import { NewLocalAdminModule } from '../admin/admin.module';
 import {
     StockManagementComponent,
-    StockManagementDetailComponent,
     StockManagementUpdateComponent,
     StockManagementDeletePopupComponent,
     StockManagementDeleteDialogComponent,
@@ -20,7 +19,6 @@ const ENTITY_STATES = [...stockManagementRoute, ...stockManagementPopupRoute];
     imports: [NewLocalSharedModule, NewLocalAdminModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         StockManagementComponent,
-        StockManagementDetailComponent,
         StockManagementUpdateComponent,
         StockManagementDeleteDialogComponent,
         StockManagementDeletePopupComponent,

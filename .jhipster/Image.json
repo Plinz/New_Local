@@ -21,9 +21,8 @@
             "fieldValidateRulesMaxlength": 300
         },
         {
-            "fieldName": "image",
-            "fieldType": "byte[]",
-            "fieldTypeBlobContent": "image",
+            "fieldName": "imagePath",
+            "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]

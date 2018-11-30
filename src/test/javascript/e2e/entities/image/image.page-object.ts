@@ -28,7 +28,7 @@ export class ImageUpdatePage {
     cancelButton = element(by.id('cancel-save'));
     nameInput = element(by.id('field_name'));
     descriptionInput = element(by.id('field_description'));
-    imageInput = element(by.id('file_image'));
+    imagePathInput = element(by.id('field_imagePath'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
@@ -50,12 +50,12 @@ export class ImageUpdatePage {
         return this.descriptionInput.getAttribute('value');
     }
 
-    async setImageInput(image) {
-        await this.imageInput.sendKeys(image);
+    async setImagePathInput(imagePath) {
+        await this.imagePathInput.sendKeys(imagePath);
     }
 
-    async getImageInput() {
-        return this.imageInput.getAttribute('value');
+    async getImagePathInput() {
+        return this.imagePathInput.getAttribute('value');
     }
 
     async save() {
