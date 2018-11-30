@@ -32,7 +32,7 @@
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="name"><span jhiTranslate="newLocalApp.image.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="description"><span jhiTranslate="newLocalApp.image.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="image"><span jhiTranslate="newLocalApp.image.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="imagePath"><span jhiTranslate="newLocalApp.image.imagePath">Image Path</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -41,12 +41,7 @@
                 <td><a [routerLink]="['/image', image.id, 'view' ]">{{image.id}}</a></td>
                 <td>{{image.name}}</td>
                 <td>{{image.description}}</td>
-                <td>
-                    <a *ngIf="image.image" (click)="openFile(image.imageContentType, image.image)">
-                        <img [src]="'data:' + image.imageContentType + ';base64,' + image.image" style="max-height: 30px;" alt="image image"/>
-                    </a>
-                    <span *ngIf="image.image">{{image.imageContentType}}, {{byteSize(image.image)}}</span>
-                </td>
+                <td>{{image.imagePath}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

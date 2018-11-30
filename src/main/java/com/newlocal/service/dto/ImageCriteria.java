@@ -2,7 +2,11 @@ package com.newlocal.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+import io.github.jhipster.service.filter.BooleanFilter;
+import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
+import io.github.jhipster.service.filter.FloatFilter;
+import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 
@@ -23,6 +27,8 @@ public class ImageCriteria implements Serializable {
     private StringFilter name;
 
     private StringFilter description;
+
+    private StringFilter imagePath;
 
     public ImageCriteria() {
     }
@@ -51,6 +57,14 @@ public class ImageCriteria implements Serializable {
         this.description = description;
     }
 
+    public StringFilter getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(StringFilter imagePath) {
+        this.imagePath = imagePath;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -64,7 +78,8 @@ public class ImageCriteria implements Serializable {
         return
             Objects.equals(id, that.id) &&
             Objects.equals(name, that.name) &&
-            Objects.equals(description, that.description);
+            Objects.equals(description, that.description) &&
+            Objects.equals(imagePath, that.imagePath);
     }
 
     @Override
@@ -72,7 +87,8 @@ public class ImageCriteria implements Serializable {
         return Objects.hash(
         id,
         name,
-        description
+        description,
+        imagePath
         );
     }
 
@@ -82,6 +98,7 @@ public class ImageCriteria implements Serializable {
                 (id != null ? "id=" + id + ", " : "") +
                 (name != null ? "name=" + name + ", " : "") +
                 (description != null ? "description=" + description + ", " : "") +
+                (imagePath != null ? "imagePath=" + imagePath + ", " : "") +
             "}";
     }
 

@@ -25,7 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 
 import javax.persistence.EntityManager;
 import java.util.Collections;
@@ -55,10 +54,8 @@ public class ImageResourceIntTest {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final byte[] DEFAULT_IMAGE = TestUtil.createByteArray(1, "0");
-    private static final byte[] UPDATED_IMAGE = TestUtil.createByteArray(1, "1");
-    private static final String DEFAULT_IMAGE_CONTENT_TYPE = "image/jpg";
-    private static final String UPDATED_IMAGE_CONTENT_TYPE = "image/png";
+    private static final String DEFAULT_IMAGE_PATH = "AAAAAAAAAA";
+    private static final String UPDATED_IMAGE_PATH = "BBBBBBBBBB";
 
     @Autowired
     private ImageRepository imageRepository;
@@ -114,8 +111,7 @@ public class ImageResourceIntTest {
         Image image = new Image()
             .name(DEFAULT_NAME)
             .description(DEFAULT_DESCRIPTION)
-            .image(DEFAULT_IMAGE)
-            .imageContentType(DEFAULT_IMAGE_CONTENT_TYPE);
+            .imagePath(DEFAULT_IMAGE_PATH);
         return image;
     }
 
@@ -141,8 +137,7 @@ public class ImageResourceIntTest {
         Image testImage = imageList.get(imageList.size() - 1);
         assertThat(testImage.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testImage.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testImage.getImage()).isEqualTo(DEFAULT_IMAGE);
-        assertThat(testImage.getImageContentType()).isEqualTo(DEFAULT_IMAGE_CONTENT_TYPE);
+        assertThat(testImage.getImagePath()).isEqualTo(DEFAULT_IMAGE_PATH);
 
         // Validate the Image in Elasticsearch
         verify(mockImageSearchRepository, times(1)).save(testImage);
@@ -190,6 +185,24 @@ public class ImageResourceIntTest {
 
     @Test
     @Transactional
+    public void checkImagePathIsRequired() throws Exception {
+        int databaseSizeBeforeTest = imageRepository.findAll().size();
+        // set the field null
+        image.setImagePath(null);
+
+        // Create the Image, which fails.
+
+        restImageMockMvc.perform(post("/api/images")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(image)))
+            .andExpect(status().isBadRequest());
+
+        List<Image> imageList = imageRepository.findAll();
+        assertThat(imageList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllImages() throws Exception {
         // Initialize the database
         imageRepository.saveAndFlush(image);
@@ -201,8 +214,7 @@ public class ImageResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(image.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].imagePath").value(hasItem(DEFAULT_IMAGE_PATH.toString())));
     }
     
     @Test
@@ -218,8 +230,7 @@ public class ImageResourceIntTest {
             .andExpect(jsonPath("$.id").value(image.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
-            .andExpect(jsonPath("$.imageContentType").value(DEFAULT_IMAGE_CONTENT_TYPE))
-            .andExpect(jsonPath("$.image").value(Base64Utils.encodeToString(DEFAULT_IMAGE)));
+            .andExpect(jsonPath("$.imagePath").value(DEFAULT_IMAGE_PATH.toString()));
     }
 
     @Test
@@ -299,6 +310,45 @@ public class ImageResourceIntTest {
         // Get all the imageList where description is null
         defaultImageShouldNotBeFound("description.specified=false");
     }
+
+    @Test
+    @Transactional
+    public void getAllImagesByImagePathIsEqualToSomething() throws Exception {
+        // Initialize the database
+        imageRepository.saveAndFlush(image);
+
+        // Get all the imageList where imagePath equals to DEFAULT_IMAGE_PATH
+        defaultImageShouldBeFound("imagePath.equals=" + DEFAULT_IMAGE_PATH);
+
+        // Get all the imageList where imagePath equals to UPDATED_IMAGE_PATH
+        defaultImageShouldNotBeFound("imagePath.equals=" + UPDATED_IMAGE_PATH);
+    }
+
+    @Test
+    @Transactional
+    public void getAllImagesByImagePathIsInShouldWork() throws Exception {
+        // Initialize the database
+        imageRepository.saveAndFlush(image);
+
+        // Get all the imageList where imagePath in DEFAULT_IMAGE_PATH or UPDATED_IMAGE_PATH
+        defaultImageShouldBeFound("imagePath.in=" + DEFAULT_IMAGE_PATH + "," + UPDATED_IMAGE_PATH);
+
+        // Get all the imageList where imagePath equals to UPDATED_IMAGE_PATH
+        defaultImageShouldNotBeFound("imagePath.in=" + UPDATED_IMAGE_PATH);
+    }
+
+    @Test
+    @Transactional
+    public void getAllImagesByImagePathIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        imageRepository.saveAndFlush(image);
+
+        // Get all the imageList where imagePath is not null
+        defaultImageShouldBeFound("imagePath.specified=true");
+
+        // Get all the imageList where imagePath is null
+        defaultImageShouldNotBeFound("imagePath.specified=false");
+    }
     /**
      * Executes the search, and checks that the default entity is returned
      */
@@ -309,8 +359,7 @@ public class ImageResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(image.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].imagePath").value(hasItem(DEFAULT_IMAGE_PATH.toString())));
 
         // Check, that the count call also returns 1
         restImageMockMvc.perform(get("/api/images/count?sort=id,desc&" + filter))
@@ -362,8 +411,7 @@ public class ImageResourceIntTest {
         updatedImage
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
-            .image(UPDATED_IMAGE)
-            .imageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+            .imagePath(UPDATED_IMAGE_PATH);
 
         restImageMockMvc.perform(put("/api/images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -376,8 +424,7 @@ public class ImageResourceIntTest {
         Image testImage = imageList.get(imageList.size() - 1);
         assertThat(testImage.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testImage.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testImage.getImage()).isEqualTo(UPDATED_IMAGE);
-        assertThat(testImage.getImageContentType()).isEqualTo(UPDATED_IMAGE_CONTENT_TYPE);
+        assertThat(testImage.getImagePath()).isEqualTo(UPDATED_IMAGE_PATH);
 
         // Validate the Image in Elasticsearch
         verify(mockImageSearchRepository, times(1)).save(testImage);
@@ -439,8 +486,7 @@ public class ImageResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(image.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].imagePath").value(hasItem(DEFAULT_IMAGE_PATH.toString())));
     }
 
     @Test

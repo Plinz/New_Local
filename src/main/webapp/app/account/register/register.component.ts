@@ -18,12 +18,9 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     errorEmailExists: string;
     errorUserExists: string;
     registerAccount: any;
-    registerHolding: any;
     success: boolean;
     isseller: boolean;
     modalRef: NgbModalRef;
-    holdingName: string;
-    siret: string;
 
     constructor(
         private languageService: JhiLanguageService,
@@ -37,7 +34,6 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         this.success = false;
         this.isseller = false;
         this.registerAccount = {};
-        this.registerHolding = {};
     }
 
     ngAfterViewInit() {

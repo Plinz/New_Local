@@ -35,13 +35,9 @@ public class Image implements Serializable {
     @Column(name = "description", length = 300)
     private String description;
 
-    
-    @Lob
-    @Column(name = "image", nullable = false)
-    private byte[] image;
-
-    @Column(name = "image_content_type", nullable = false)
-    private String imageContentType;
+    @NotNull
+    @Column(name = "image_path", nullable = false)
+    private String imagePath;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -78,30 +74,17 @@ public class Image implements Serializable {
         this.description = description;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public Image image(byte[] image) {
-        this.image = image;
+    public Image imagePath(String imagePath) {
+        this.imagePath = imagePath;
         return this;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public String getImageContentType() {
-        return imageContentType;
-    }
-
-    public Image imageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-        return this;
-    }
-
-    public void setImageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -131,8 +114,7 @@ public class Image implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", image='" + getImage() + "'" +
-            ", imageContentType='" + getImageContentType() + "'" +
+            ", imagePath='" + getImagePath() + "'" +
             "}";
     }
 }
