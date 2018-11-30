@@ -177,7 +177,7 @@
                                 <span jhiTranslate="global.menu.account.settings">Settings</span>
                             </a>
                         </li>
-                        <li>
+                        <li *jhiHasAnyAuthority="'ROLE_SELLER'" >
                             <a class="dropdown-item" routerLink="password" routerLinkActive="active" (click)="collapseNavbar()">
                                 <span jhiTranslate="global.menu.account.password">Password</span>
                             </a>
