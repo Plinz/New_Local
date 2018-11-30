@@ -57,7 +57,8 @@
                 <constraints nullable="false" />
             </column>
             <column name="image_id" type="bigint">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_stock_image_id" />
+                <!--<constraints unique="true" nullable="false" uniqueConstraintName="ux_stock_image_id" />-->
+                <constraints nullable="false" />
             </column>
             <column name="product_type_id" type="bigint">
                 <constraints nullable="false" />

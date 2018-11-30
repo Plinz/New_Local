@@ -514,10 +514,12 @@
                         <exclude>CategoryResourceIntTest.java</exclude>
                         <exclude>GradeResourceIntTest.java</exclude>
                         <exclude>HoldingResourceIntTest.java</exclude>
+                        <exclude>ImageResourceIntTest.java</exclude>
                         <exclude>LocationResourceIntTest.java</exclude>
                         <exclude>ProductTypeResourceIntTest.java</exclude>
                         <exclude>PurchaseResourceIntTest.java</exclude>
                         <exclude>StockResourceIntTest.java</exclude>
+                        <exclude>WarehouseResourceIntTest.java</exclude>
                     </excludes>
                     <!-- Force alphabetical order to have a reproducible build -->
                     <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
