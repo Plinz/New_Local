@@ -23,6 +23,8 @@ import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ActiveMenuDirective, ErrorComponent } from './layouts';
 import { NewLocalShoppingModule } from './shopping/shopping.module';
+import { ReviewComponent } from './review/review.component';
+import { NewLocalReviewModule } from './review/review.module';
 
 @NgModule({
     imports: [
@@ -37,7 +39,8 @@ import { NewLocalShoppingModule } from './shopping/shopping.module';
         NewLocalAccountModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
         NewLocalEntityModule,
-        NewLocalShoppingModule
+        NewLocalShoppingModule,
+        NewLocalReviewModule
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
     providers: [
