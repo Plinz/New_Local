@@ -2,8 +2,9 @@ export interface IImage {
     id?: number;
     name?: string;
     description?: string;
-    imageContentType?: string;
+    imagePath?: string;
     image?: any;
+    imageContentType?: string;
 }
 
 export class Image implements IImage {
@@ -11,7 +12,8 @@ export class Image implements IImage {
         public id?: number,
         public name?: string,
         public description?: string,
-        public imageContentType?: string,
-        public image?: any
+        public imagePath?: string,
+        public image?: any,
+        public imageContentType?: string
     ) {}
 }

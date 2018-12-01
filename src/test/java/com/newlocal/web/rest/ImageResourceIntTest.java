@@ -1,14 +1,25 @@
 package com.newlocal.web.rest;
 
-import com.newlocal.NewLocalApp;
+import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.newlocal.domain.Image;
-import com.newlocal.repository.ImageRepository;
-import com.newlocal.repository.search.ImageSearchRepository;
-import com.newlocal.service.ImageService;
-import com.newlocal.web.rest.errors.ExceptionTranslator;
-import com.newlocal.service.dto.ImageCriteria;
-import com.newlocal.service.ImageQueryService;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,18 +37,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.Collections;
-import java.util.List;
-
-
-import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.newlocal.NewLocalApp;
+import com.newlocal.domain.Image;
+import com.newlocal.repository.ImageRepository;
+import com.newlocal.repository.search.ImageSearchRepository;
+import com.newlocal.service.ImageQueryService;
+import com.newlocal.service.ImageService;
+import com.newlocal.service.dto.ImageDTO;
+import com.newlocal.web.rest.errors.ExceptionTranslator;
 
 /**
  * Test class for the ImageResource REST controller.
@@ -89,6 +96,8 @@ public class ImageResourceIntTest {
     private MockMvc restImageMockMvc;
 
     private Image image;
+    
+    private ImageDTO imageDTO;
 
     @Before
     public void setup() {
@@ -118,6 +127,7 @@ public class ImageResourceIntTest {
     @Before
     public void initTest() {
         image = createEntity(em);
+        imageDTO = new ImageDTO(image);
     }
 
     @Test
@@ -398,7 +408,7 @@ public class ImageResourceIntTest {
     @Transactional
     public void updateImage() throws Exception {
         // Initialize the database
-        imageService.save(image);
+        imageService.save(imageDTO);
         // As the test used the service layer, reset the Elasticsearch mock repository
         reset(mockImageSearchRepository);
 
@@ -455,7 +465,7 @@ public class ImageResourceIntTest {
     @Transactional
     public void deleteImage() throws Exception {
         // Initialize the database
-        imageService.save(image);
+        imageService.save(imageDTO);
 
         int databaseSizeBeforeDelete = imageRepository.findAll().size();
 
@@ -476,7 +486,7 @@ public class ImageResourceIntTest {
     @Transactional
     public void searchImage() throws Exception {
         // Initialize the database
-        imageService.save(image);
+        imageService.save(imageDTO);
         when(mockImageSearchRepository.search(queryStringQuery("id:" + image.getId()), PageRequest.of(0, 20)))
             .thenReturn(new PageImpl<>(Collections.singletonList(image), PageRequest.of(0, 1), 1));
         // Search the image

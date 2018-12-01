@@ -1,6 +1,7 @@
 package com.newlocal.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.JoinType;
 
@@ -12,13 +13,20 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.jhipster.service.QueryService;
-
+// for static metamodels
 import com.newlocal.domain.Image;
-import com.newlocal.domain.*; // for static metamodels
+import com.newlocal.domain.*;
 import com.newlocal.repository.ImageRepository;
 import com.newlocal.repository.search.ImageSearchRepository;
 import com.newlocal.service.dto.ImageCriteria;
+import com.newlocal.service.dto.ImageDTO;
+
+import io.github.jhipster.service.QueryService;
+
+
+
+
+
 
 /**
  * Service for executing complex queries for Image entities in the database.
@@ -47,10 +55,10 @@ public class ImageQueryService extends QueryService<Image> {
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Image> findByCriteria(ImageCriteria criteria) {
+    public List<ImageDTO> findByCriteria(ImageCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Image> specification = createSpecification(criteria);
-        return imageRepository.findAll(specification);
+        return imageRepository.findAll(specification).stream().map(ImageDTO::new).collect(Collectors.toList());
     }
 
     /**
@@ -60,10 +68,10 @@ public class ImageQueryService extends QueryService<Image> {
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<Image> findByCriteria(ImageCriteria criteria, Pageable page) {
+    public Page<ImageDTO> findByCriteria(ImageCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Image> specification = createSpecification(criteria);
-        return imageRepository.findAll(specification, page);
+        return imageRepository.findAll(specification, page).map(ImageDTO::new);
     }
 
     /**
