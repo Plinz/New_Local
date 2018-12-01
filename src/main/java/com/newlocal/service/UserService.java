@@ -121,6 +121,9 @@ public class UserService {
         newUser.setActivationKey(RandomUtil.generateActivationKey());
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
+        if (userDTO.getAuthorities().contains("ROLE_SELLER")){
+            authorityRepository.findById(AuthoritiesConstants.SELLER).ifPresent(authorities::add);
+        }
         log.debug("AUTORITIES USERDTO:"+userDTO.getAuthorities());
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
