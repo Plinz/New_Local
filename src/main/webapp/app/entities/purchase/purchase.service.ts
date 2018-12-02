@@ -16,6 +16,7 @@ type EntityArrayResponseType = HttpResponse<IPurchase[]>;
 export class PurchaseService {
     public resourceUrl = SERVER_API_URL + 'api/purchases';
     public resourceSearchUrl = SERVER_API_URL + 'api/_search/purchases';
+    public resUrl = SERVER_API_URL + 'api/purchases/stock';
 
     constructor(private http: HttpClient) {}
 
@@ -74,5 +75,11 @@ export class PurchaseService {
             purchase.saleDate = purchase.saleDate != null ? moment(purchase.saleDate) : null;
         });
         return res;
+    }
+
+    getIdStock(id: number): Observable<EntityArrayResponseType> {
+        return this.http
+            .get<IPurchase[]>(`${this.resUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 }
