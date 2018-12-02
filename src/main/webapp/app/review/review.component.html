@@ -1,123 +1,116 @@
-<script src="node_modules/chart.js/Chart.min.js"></script>
-<script src="node_modules/angular-chart.js/dist/angular-chart.min.js"></script>
-
 <div class="mt-5">
-  <!--ONGLET/LIEN-->
-  <div>
-    <ul class="nav nav-tabs  lighten-3  font-weight-bold " id="myClassicTabShadow" role="tablist">
-      <li class="nav-item">
-        <a (click)="onClickMe(1)" class="nav-link  waves-light show" [class.active]="count==1" id="onglet1" data-toggle="tab"
-          role="tab" aria-controls="profile-classic-shadow" aria-selected="true">
-          Synthèse
-        </a>
-      </li>
-      <li class="nav-item">
-        <a (click)="onClickMe(2)" class="nav-link waves-light " [class.active]="count==2" id="onglet2" data-toggle="tab"
-          role="tab" aria-controls="follow-classic-shadow" aria-selected="false">
-          Bilan
-        </a>
-      </li>
-    </ul>
-  </div>
-
-  <div class="card mt-3">
-    <div class="card-body">
-
-      <!--SYNTHESE-->
-      <div *ngIf="count===1">
-
-        <div class="mt-5">
-          <div class="row mb-4">
-            <div class="col-md-6 col-xl-3 mb-3">
-              <div class="card primary-color classic-admin-card">
-                <div class="card-body">
-                  <div class="pull-right"><i class="fa fa-money"></i></div>
-                  <p class="white-text">SALES</p>
-                  <h4><strong>$2000</strong></h4>
-                </div>
-                <div class="progress">
-                  <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="progress-bar bg grey darken-3"
-                    role="progressbar" style="width: 25%;"></div>
-                </div>
-                <div class="card-body">
-                  <p>Better than last week (25%)</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-xl-3 mb-3">
-              <div class="card warning-color classic-admin-card">
-                <div class="card-body">
-                  <div class="pull-right"><i class="fa fa-line-chart"></i></div>
-                  <p class="white-text">SUBSCRIPTIONS</p>
-                  <h4><strong>200</strong></h4>
-                </div>
-                <div class="progress">
-                  <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" class="progress-bar bg grey darken-3"
-                    role="progressbar" style="width: 25%;"></div>
-                </div>
-                <div class="card-body">
-                  <p>Worse than last week (25%)</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--BILAN-->
-      <div *ngIf="count===2">
-        <table class="table table-hover">
-          <colgroup>
-            <col span="4">
-            <col span="2" style="background-color:#28a745">
-            <col span="2" style="background-color:#dc3545">
-          </colgroup>
-
-          <thead>
-            <tr>
-              <!--General-->
-              <th>Nom</th>
-              <th>N°lot</th>
-              <th>Prix(unité ou Kg) </th>
-              <th>Quantité total</th>
-              <!---->
-              <th>Quantité vendu</th>
-              <th>Gain</th>
-              <!---->
-              <th>Quantité restante</th>
-              <th>Perte</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!--ONGLET/LIEN-->
+    <div>
+        <ul class="nav nav-tabs  lighten-3  font-weight-bold " id="myClassicTabShadow" role="tablist">
+            <li class="nav-item">
+                <a (click)="onClickMe(1)" class="nav-link  waves-light show" [class.active]="count==1" id="onglet1" data-toggle="tab" role="tab" aria-controls="profile-classic-shadow" aria-selected="true">
+                    Synthèse
+                </a>
+            </li>
+            <li class="nav-item">
+                <a (click)="onClickMe(2)" class="nav-link waves-light " [class.active]="count==2" id="onglet2" data-toggle="tab" role="tab" aria-controls="follow-classic-shadow" aria-selected="false">
+                    Bilan
+                </a>
+            </li>
+        </ul>
     </div>
-  </div>
+    <!--SYNTHESE-->
+    <div class="card mt-4" *ngIf="count===1">
+        <div class="card-header text-white bg-primary">
+            <h4><strong>Ventes</strong></h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div>
+                        <div>
+                            <span>STOCK PRODUCTEUR :</span>
+                            <br>
+                            <div class="progress mt-3">
+                                <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="percentage" aria-valuemin="0" aria-valuemax="100">{{percentage}}%</div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div>
+                            <span>TOTAL DES VENTES :</span>
+                            <strong class="h4">${{ total }}</strong>
+                        </div>
+                        <hr>
+                        <div>
+                            <span>MOYENNE DES VENTES :</span>
+                            <strong class="h4">${{ mean }}</strong>
+                        </div>
+                        <hr>
+                        <div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="mt-4 text-center">
+                                        <h3><span class="badge badge-primary h4">Produit :</span></h3>
+                                    </div>
+                                </div>
+                                <div class="col-sm-7" *ngIf="stocks.length > 0">
+                                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Graphique</label>
+                                    <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+                                        <option selected>Choisir...</option>
+                                        <option *ngFor="let stock of stocks ;" (click)=clickOpt(stock.id,stock.name)>Nom: {{stock.name}} n°: {{stock.id}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 mt-3" *ngIf="stocks.length > 0 && bOpt">
+                    <div class="card border-primary">
+                        <div class="card-body">
+                            <div style="display: block;">
+                                <canvas baseChart width="250" height="150" [datasets]="lineChartData" [labels]="lineChartLabels" [options]="lineChartOptions" [colors]="lineChartColors" [legend]="lineChartLegend" [chartType]="lineChartType" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--BILAN-->
+    <div class="card mt-4" *ngIf="count===2">
+        <div class="card-body">
+            <table class="table table-hover">
+                <colgroup>
+                    <col span="4">
+                    <col span="2" style="background-color:#28a745">
+                    <col span="2" style="background-color:#dc3545">
+                </colgroup>
 
+                <thead>
+                    <tr>
+                        <!--General-->
+                        <th>Nom</th>
+                        <th>N°lot</th>
+                        <th>Prix(unité ou Kg) </th>
+                        <th>Quantité total</th>
+                        <!---->
+                        <th>Quantité vendu</th>
+                        <th>Gain</th>
+                        <!---->
+                        <th>Quantité restante</th>
+                        <th>Perte</th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let stock of stocks ;">
+                    <tr>
+                        <td scope="row">{{stock.name}}</td>
+                        <td>{{stock.id}}</td>
+                        <td>{{stock.priceUnit}}</td>
+                        <td>{{stock.quantityInit}}</td>
+                        <!---->
+                        <td>{{stock.quantityInit - stock.quantityRemaining}}</td>
+                        <td>{{((stock.quantityInit-stock.quantityRemaining)*stock.priceUnit)}}</td>
+                        <!---->
+                        <td>{{stock.quantityRemaining}}</td>
+                        <td>{{stock.quantityRemaining*stock.priceUnit}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
-
-  <div>
-  <div style="display: block">
-    <canvas baseChart
-            [datasets]="barChartData"
-            [labels]="barChartLabels"
-            [options]="barChartOptions"
-            [legend]="barChartLegend"
-            [chartType]="barChartType"
-            (chartHover)="chartHovered($event)"
-            (chartClick)="chartClicked($event)"></canvas>
-  </div>
-  <button (click)="randomize()">Update</button>
-</div>
-

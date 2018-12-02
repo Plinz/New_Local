@@ -1,4 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { IPurchase } from '../shared/model/purchase.model';
+import { PurchaseService } from '../entities/purchase/purchase.service';
+import { IStock } from '../shared/model/stock.model';
+import { StockService } from '../entities/stock/stock.service';
+import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
+import { Moment } from 'moment';
 
 @Component({
     selector: 'jhi-review',
@@ -6,31 +13,122 @@ import { Component, OnInit } from '@angular/core';
     styles: []
 })
 export class ReviewComponent implements OnInit {
+    purchases: IPurchase[];
+    stocks: IStock[];
+    currentSearch: string;
+    // Graphique
     count: number;
-    barChartOptions: any = {
-        scaleShowVerticalLines: false,
-        responsive: true
-    };
-    barChartLabels: string[];
-    barChartType: string;
-    barChartLegend: boolean;
+    lineChartData: Array<any>;
+    lineChartLabels: Array<any>;
+    lineChartOptions: any;
+    lineChartColors: Array<any>;
+    lineChartLegend: boolean;
+    lineChartType: string;
+    mean: number;
+    total: number;
+    percentage: number;
+    bOpt = false;
 
-    barChartData: any[] = [
-        { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
-        { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
-    ];
-
-    constructor() {
+    constructor(private purchaseService: PurchaseService, private stockService: StockService, private jhiAlertService: JhiAlertService) {
+        this.purchases = [];
+        this.stocks = [];
+        this.currentSearch = '';
+        // Graphique
         this.count = 1;
-        this.barChartLabels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-        this.barChartType = 'bar';
-        this.barChartLegend = true;
+        this.lineChartLegend = true;
+        this.lineChartType = 'line';
+        this.lineChartData = [];
+        this.lineChartLabels = [];
+        this.lineChartOptions = { responsive: true };
+
+        this.lineChartColors = [
+            {
+                // dark grey
+                backgroundColor: 'rgba(77,83,96,0.2)',
+                borderColor: '#007bff',
+                pointBackgroundColor: 'rgba(77,83,96,1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(77,83,96,1)'
+            }
+        ];
+        // Calcul
+        this.mean = 0;
+        this.total = 0;
+        this.percentage = 0;
+        // other
+        this.bOpt = false;
+        this.lineChartLabels = ['Erreur', 'chargement', 'en', 'cours'];
+        this.lineChartData = [{ data: [0, 0, 0, 0], label: 'Erreur' }];
+        this.lineChartOptions = { responsive: true };
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.loadAll();
+    }
+
+    loadAll() {
+        // Stock => bilan
+        this.stockService.query().subscribe(
+            (res: HttpResponse<IStock[]>) => {
+                this.stocks = res.body;
+                this.currentSearch = '';
+                // Purchase => Synthèse
+                this.runAsynStock();
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    loadPurchase(nom: string, id: number) {
+        this.purchaseService.getIdStock(id).subscribe(
+            (res: HttpResponse<IStock[]>) => {
+                this.purchases = res.body;
+                this.currentSearch = '';
+                this.updateGraph(nom, id);
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    runAsynStock() {
+        // if (this.stocks.length > 0) {
+        //     this.loadPurchase(this.stocks[0].name, this.stocks[0].id);
+        // }
+        // Total
+        let quantity = 0;
+        let remaining = 0;
+        for (const i of this.stocks) {
+            this.total = this.total + (i.quantityInit - i.quantityRemaining) * i.priceUnit;
+            quantity = quantity + i.quantityInit;
+            remaining = remaining + i.quantityRemaining;
+        }
+        this.percentage = Math.floor(remaining / quantity * 100);
+        // Average
+        this.mean = this.total / this.stocks.length;
+    }
+
+    updateGraph(nom: string, id: number) {
+        const dataP: number[] = [];
+        let qtTotal = 0;
+
+        this.lineChartLabels.length = 0;
+        for (const i of this.purchases) {
+            qtTotal = qtTotal + i.quantity;
+            dataP.push(qtTotal);
+            this.lineChartLabels.push(i.saleDate.format('DD/MM/YYYY'));
+        }
+        // Update
+        this.lineChartData = [{ data: dataP, label: nom + ':' + id }];
+    }
+
+    private onError(errorMessage: string) {
+        this.jhiAlertService.error(errorMessage, null, null);
+    }
 
     onClickMe(i: number) {
         this.count = i;
+        this.bOpt = false;
     }
 
     // events
@@ -42,17 +140,9 @@ export class ReviewComponent implements OnInit {
         console.log(e);
     }
 
-    randomize(): void {
-        // Only Change 3 values
-        const data = [Math.round(Math.random() * 100), 59, 80, Math.random() * 100, 56, Math.random() * 100, 40];
-        const clone = JSON.parse(JSON.stringify(this.barChartData));
-        clone[0].data = data;
-        this.barChartData = clone;
-        /**
-         * (My guess), for Angular to recognize the change in the dataset
-         * it has to change the dataset variable directly,
-         * so one way around it, is to clone the data, change it and then
-         * assign it;
-         */
+    clickOpt(id: number, name: string) {
+        this.bOpt = false;
+        this.loadPurchase(name, id);
+        this.bOpt = true;
     }
 }

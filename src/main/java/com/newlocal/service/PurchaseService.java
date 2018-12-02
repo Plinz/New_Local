@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
+import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
@@ -92,5 +92,10 @@ public class PurchaseService {
     @Transactional(readOnly = true)
     public Page<Purchase> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Purchases for query {}", query);
-        return purchaseSearchRepository.search(queryStringQuery(query), pageable);    }
+        return purchaseSearchRepository.search(queryStringQuery(query), pageable);
+	}
+@Transactional(readOnly = true)
+    public List<Purchase> getPStock(Long id) {
+        return purchaseRepository.getPStock(id);
+    }
 }

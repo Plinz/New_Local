@@ -171,4 +171,12 @@ public class PurchaseResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/purchases/stock/{id}")
+    @Timed
+    public ResponseEntity<List<Purchase>> getPStock(@PathVariable Long id) {
+        List<Purchase> purchase = purchaseService.getPStock(id);
+        return new ResponseEntity<List<Purchase>>(purchase, HttpStatus.OK);
+        //return ResponseEntity.ok().body(purchase);
+    }
+
 }
