@@ -199,4 +199,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
     }
+
+    trackCategoryById(index: number, item: ICategory) {
+        return item.id;
+    }
 }
