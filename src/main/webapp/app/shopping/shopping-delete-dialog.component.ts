@@ -4,27 +4,27 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { IPurchase } from '../shared/model/purchase.model';
-import { PurchaseService } from '../entities/purchase/purchase.service';
+import { ICart } from '../shared/model/cart.model';
+import { CartService } from '../entities/cart/cart.service';
 
 @Component({
     selector: 'jhi-purchase-delete-dialog',
     templateUrl: './shopping-delete-dialog.component.html'
 })
 export class ShoppingDeleteDialogComponent {
-    purchase: IPurchase;
+    cart: ICart;
 
-    constructor(private purchaseService: PurchaseService, public activeModal: NgbActiveModal, private eventManager: JhiEventManager) {}
+    constructor(private cartService: CartService, public activeModal: NgbActiveModal, private eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.purchaseService.delete(id).subscribe(response => {
+        this.cartService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
-                name: 'purchaseListModification',
-                content: 'Deleted an purchase'
+                name: 'cartListModification',
+                content: 'Deleted an cart'
             });
             this.activeModal.dismiss(true);
         });
@@ -41,13 +41,10 @@ export class ShoppingDeletePopupComponent implements OnInit, OnDestroy {
     constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
 
     ngOnInit() {
-        this.activatedRoute.data.subscribe(({ purchase }) => {
+        this.activatedRoute.data.subscribe(({ cart }) => {
             setTimeout(() => {
-                this.ngbModalRef = this.modalService.open(ShoppingDeleteDialogComponent as Component, {
-                    size: 'lg',
-                    backdrop: 'static'
-                });
-                this.ngbModalRef.componentInstance.purchase = purchase;
+                this.ngbModalRef = this.modalService.open(ShoppingDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.cart = cart;
                 this.ngbModalRef.result.then(
                     result => {
                         this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });

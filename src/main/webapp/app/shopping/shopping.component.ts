@@ -2,18 +2,17 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
-
-import { IPurchase } from '../shared/model/purchase.model';
 import { Principal } from '../core';
-import { PurchaseService } from '../entities/purchase/purchase.service';
-
+import { CartService } from '../entities/cart/cart.service';
 import { Location } from '@angular/common';
+import { ICart } from '../shared/model/cart.model';
+
 @Component({
     selector: 'jhi-purchase',
     templateUrl: './shopping.component.html'
 })
 export class ShoppingComponent implements OnInit, OnDestroy {
-    purchases: IPurchase[];
+    carts: ICart[];
     currentAccount: any;
     eventSubscriber: Subscription;
     currentSearch: string;
@@ -23,7 +22,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     isOkpanier: boolean;
 
     constructor(
-        private purchaseService: PurchaseService,
+        private cartService: CartService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
         private principal: Principal,
@@ -31,16 +30,16 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     ) {
         this.isOkpanier = true;
         this.total = 0;
-        this.purchases = [];
+        this.carts = [];
         this.btimeout = false;
         this.fintimeout = true;
     }
 
     loadAll() {
         // this.purchaseService.query().toPromise().then()subscribe()
-        this.purchaseService.query().subscribe(
-            (res: HttpResponse<IPurchase[]>) => {
-                this.purchases = res.body;
+        this.cartService.query().subscribe(
+            (res: HttpResponse<ICart[]>) => {
+                this.carts = res.body;
                 this.currentSearch = '';
                 this.calculTotal();
             },
@@ -77,10 +76,10 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     endTimeout() {
         this.fintimeout = false;
         // suppr
-        for (const k of this.purchases) {
+        for (const k of this.carts) {
             this.confirmDelete(k.id);
         }
-        this.purchases = [];
+        this.carts = [];
     }
 
     abandonner() {
@@ -95,7 +94,8 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     }
 
     calculTotal() {
-        for (const k of this.purchases) {
+        this.total = 0;
+        for (const k of this.carts) {
             this.total = k.quantity * k.stock.priceUnit + this.total;
         }
     }
@@ -104,12 +104,12 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId(index: number, item: IPurchase) {
+    trackId(index: number, item: ICart) {
         return item.id;
     }
 
     registerChangeInPurchases() {
-        this.eventSubscriber = this.eventManager.subscribe('purchaseListModification', response => this.loadAll());
+        this.eventSubscriber = this.eventManager.subscribe('cartListModification', response => this.loadAll());
     }
 
     private onError(errorMessage: string) {
@@ -117,10 +117,10 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     }
 
     confirmDelete(id: number) {
-        this.purchaseService.delete(id).subscribe(response => {
+        this.cartService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
-                name: 'purchaseListModification',
-                content: 'Deleted an purchase'
+                name: 'cartListModification',
+                content: 'Deleted an cart'
             });
         });
     }

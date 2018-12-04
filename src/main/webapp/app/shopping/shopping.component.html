@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div class="row" *ngIf="purchases && !btimeout">
+    <div class="row" *ngIf="carts && !btimeout">
         <!-- Article-->
         <div class="col-md-9" *ngIf="isOkpanier; else okPanier">
             <div class="card">
@@ -33,33 +33,33 @@
                         </thead>
 
                         <tbody>
-                            <tr *ngFor="let purchase of purchases ;trackBy: trackId">
+                            <tr *ngFor="let cart of carts ;trackBy: trackId">
                                 <td data-th="Product">
                                     <div class="row">
                                         <div class="col-sm-2 hidden-xs">
-                                            <a *ngIf="purchase.stock?.image">
-                                                <img [src]="'data:' + purchase.stock?.imageContentType + ';base64,' + purchase.stock?.image"
-                                                    style="max-height:50px" alt="stock image" />
+                                            <a *ngIf="cart.stock.image.image" (click)="openFile(cart.stock.image.imageContentType, cart.stock.image.image)">
+                                                <img [src]="'data:' + cart.stock.image.imageContentType + ';base64,' + cart.stock.image.image"
+                                                    style="max-height: 30px;" alt="image image" />
                                             </a>
                                         </div>
                                         <div class="col-sm-10">
-                                            <h4 class="nomargin">{{ purchase.stock?.name }}</h4>
-                                            <p>{{purchase.stock?.description }}</p>
+                                            <h4 class="nomargin">{{ cart.stock?.name }}</h4>
+                                            <p>{{cart.stock?.description }}</p>
                                         </div>
                                     </div>
                                 </td>
-                                <td data-th="Price">{{purchase.stock?.priceUnit * purchase.quantity}}$</td>
+                                <td data-th="Price">{{cart.stock?.priceUnit * cart.quantity}}$</td>
                                 <td data-th="Quantity">
-                                    <input type="number" class="form-control text-center" min="1" value="{{purchase.quantity}}">
+                                    <input type="number" class="form-control text-center" min="1" value="{{cart.quantity}}">
                                 </td>
                                 <td class="actions" data-th="">
-                                    <button type="submit" [routerLink]="['/', { outlets: { popup: 'shopping/'+ purchase.id + '/delete'} }]"
+                                    <button type="submit" [routerLink]="['/', { outlets: { popup: 'shopping/'+ cart.id + '/delete'} }]"
                                         replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
                                         <fa-icon [icon]="'times'"></fa-icon>
                                         <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                                     </button>
                                     <div>
-                                        <small class="text-muted">Numéro de réference:{{ purchase.stock?.id }}</small>
+                                        <small class="text-muted">Numéro de réference:{{ cart.stock?.id }}</small>
                                     </div>
                                 </td>
                             </tr>
@@ -137,7 +137,7 @@
                             <small class="text-muted">Nombre d'élement</small>
                         </div>
                         <div class="col-sm-4">
-                            <span class="badge badge-secondary badge-pill">{{ purchases.length }}</span>
+                            <span class="badge badge-secondary badge-pill">{{ carts.length }}</span>
                         </div>
                         <div class="col-md-12 mt-3"></div>
                         <div class="col-sm-8">
@@ -147,7 +147,7 @@
                             <strong>{{ total }}$</strong>
                         </div>
                     </div>
-                    <div class="text-center" *ngIf="isOkpanier && (purchases.length > 0)">
+                    <div class="text-center" *ngIf="isOkpanier && (carts.length > 0)">
                         <button class="btn btn-success" (click)="startTimeout()">
                             <span class="d-none d-md-inline">Valider</span>
                         </button>
