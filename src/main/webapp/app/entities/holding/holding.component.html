@@ -25,23 +25,23 @@
         </div>
     </div>
     <br/>
-    <div class="table-responsive" *ngIf="holdings">
+    <div class="table-responsive" *ngIf="holdingsCurrentUser">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <!--<th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>-->
             <th jhiSortBy="siret"><span jhiTranslate="newLocalApp.holding.siret">Siret</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="name"><span jhiTranslate="newLocalApp.holding.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="description"><span jhiTranslate="newLocalApp.holding.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="image.id"><span jhiTranslate="newLocalApp.holding.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="location.id"><span jhiTranslate="newLocalApp.holding.location">Location</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="owner.id"><span jhiTranslate="newLocalApp.holding.owner">Owner</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <!--<th jhiSortBy="owner.id"><span jhiTranslate="newLocalApp.holding.owner">Owner</span> <fa-icon [icon]="'sort'"></fa-icon></th>-->
             <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let holding of holdings ;trackBy: trackId">
-                <td><a [routerLink]="['/holding', holding.id, 'view' ]">{{holding.id}}</a></td>
+            <tr *ngFor="let holding of holdingsCurrentUser ;trackBy: trackId">
+            <!-- <td><a [routerLink]="['/holding', holding.id, 'view' ]">{{holding.id}}</a></td>-->
                 <td>{{holding.siret}}</td>
                 <td>{{holding.name}}</td>
                 <td>{{holding.description}}</td>
@@ -55,9 +55,9 @@
                         <a [routerLink]="['../location', holding.location?.id, 'view' ]" >{{holding.location?.id}}</a>
                     </div>
                 </td>
-                <td>
+              <!----<td>
                     {{holding.owner?.id}}
-                </td>
+                </td>-->  
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
@@ -87,7 +87,7 @@
         </table>
     </div>
     <!-- Pager is not implemented yet, so this is normal pagination instead -->
-    <div *ngIf="holdings && holdings.length">
+    <div *ngIf="holdingsCurrentUser && holdingsCurrentUser.length">
         <div class="row justify-content-center">
             <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>

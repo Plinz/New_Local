@@ -32,6 +32,7 @@ import com.newlocal.service.dto.HoldingCriteria;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
+import com.newlocal.repository.UserRepository;
 
 import io.github.jhipster.web.util.ResponseUtil;
 
@@ -50,9 +51,15 @@ public class HoldingResource {
 
     private HoldingQueryService holdingQueryService;
 
-    public HoldingResource(HoldingService holdingService, HoldingQueryService holdingQueryService) {
+    private UserRepository userRepository;
+
+    private UserDAO userDAO;
+
+    public HoldingResource(HoldingService holdingService, HoldingQueryService holdingQueryService, UserDAO userDAO, UserRepository userRepository) {
         this.holdingService = holdingService;
         this.holdingQueryService = holdingQueryService;
+        this.userRepository = userRepository;
+        this.userDAO = userDAO;
     }
 
     /**
@@ -68,6 +75,12 @@ public class HoldingResource {
         log.debug("REST request to save Holding : {}", holding);
         if (holding.getId() != null) {
             throw new BadRequestAlertException("A new holding cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        long idCurrentUser = userDAO.getUserIdByCurrentLogin();
+        if (idCurrentUser > 0) {
+            holding.setOwner(userRepository.findById(idCurrentUser).get());
+        } else {
+            holding.setOwner(null);
         }
         Holding result = holdingService.save(holding);
         return ResponseEntity.created(new URI("/api/holdings/" + result.getId()))

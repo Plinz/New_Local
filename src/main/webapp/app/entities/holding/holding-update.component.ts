@@ -21,6 +21,7 @@ export class HoldingUpdateComponent implements OnInit {
     isSaving: boolean;
 
     images: IImage[];
+    holdingsCurrentUser: IHolding[];
 
     locations: ILocation[];
 
@@ -40,6 +41,12 @@ export class HoldingUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ holding }) => {
             this.holding = holding;
         });
+        this.holdingService.findByCurrentUser().subscribe(
+            (res: HttpResponse<IHolding[]>) => {
+                this.holdingsCurrentUser = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
         this.imageService.query({ 'holdingId.specified': 'false' }).subscribe(
             (res: HttpResponse<IImage[]>) => {
                 if (!this.holding.image || !this.holding.image.id) {
