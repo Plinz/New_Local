@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div class="row" *ngIf="carts && !btimeout">
+    <div class="row" *ngIf="carts && !btimeout && !isRecap">
         <!-- Article-->
         <div class="col-md-9" *ngIf="isOkpanier; else okPanier">
             <div class="card">
@@ -26,14 +26,15 @@
                         <thead>
                             <tr>
                                 <th>Produit</th>
-                                <th>Prix</th>
+                                <th>Prix(Unitaire)</th>
+                                <th>Prix(Total)</th>
                                 <th>Quantité</th>
                                 <th></th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            <tr *ngFor="let cart of carts ;trackBy: trackId">
+                            <tr *ngFor="let cart of carts ;trackBy: trackId;let i = index">
                                 <td data-th="Product">
                                     <div class="row">
                                         <div class="col-sm-2 hidden-xs">
@@ -48,9 +49,15 @@
                                         </div>
                                     </div>
                                 </td>
+                                <td data-th="Price">{{cart.stock?.priceUnit}}$</td>
                                 <td data-th="Price">{{cart.stock?.priceUnit * cart.quantity}}$</td>
                                 <td data-th="Quantity">
-                                    <input type="number" class="form-control text-center" min="1" value="{{cart.quantity}}">
+                                    <input type="number" [(ngModel)]="listBtM[i].b" (keypress)="nada($event)" class="form-control text-center"
+                                        min="1">
+                                    <!--value="{{cart.quantity}}"-->
+                                    <button class="btn btn-warning btn-sm" (click)="modifier(i)" *ngIf="!btncheck(cart.quantity,listBtM[i].b)">
+                                        <span> Modifier</span>
+                                    </button>
                                 </td>
                                 <td class="actions" data-th="">
                                     <button type="submit" [routerLink]="['/', { outlets: { popup: 'shopping/'+ cart.id + '/delete'} }]"
@@ -68,7 +75,7 @@
                 </div>
             </div>
         </div>
-
+        <!--Rentrer Carte-->
         <ng-template #okPanier>
             <div class="col-md-9">
                 <div class="card">
@@ -113,19 +120,18 @@
                         </div>
 
                         <div class="text-center">
-                            <button class="btn btn-success" (click)="endTimeout()">
-                                <span class="d-none d-md-inline">Valider</span>
-                            </button>
                             <button class="btn btn-warning" (click)="abandonner()">
                                 <span class="d-none d-md-inline">Abandonner</span>
+                            </button>
+                            <button class="btn btn-success" (click)="endTimeout()">
+                                <span class="d-none d-md-inline">Valider</span>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         </ng-template>
-
-        <!-- Bilan-->
+        <!--Bilan-->
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
@@ -155,7 +161,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <div class="card" *ngIf="btimeout">
@@ -171,6 +176,57 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!--Validation de l'achat-->
+    <div class="card" *ngIf="isRecap">
+        <div class="card-body">
+            <h4>Recapitulatif du panier</h4>
+            <table class="mt-5 table table-hover table-condensed text-left">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Prix(Unitaire)</th>
+                        <th>Prix(Total)</th>
+                        <th>Quantité</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let pur of purchases;">
+                        <td data-th="Product">
+                            <div class="row">
+                                <div class="col-sm-2 hidden-xs">
+                                    <a *ngIf="pur.stock.image.image" (click)="openFile(pur.stock.image.imageContentType, pur.stock.image.image)">
+                                        <img [src]="'data:' + pur.stock.image.imageContentType + ';base64,' + pur.stock.image.image"
+                                            style="max-height: 30px;" alt="image image" />
+                                    </a>
+                                </div>
+                                <div class="col-sm-10">
+                                    <h4 class="nomargin">{{ pur.stock?.name }}</h4>
+                                    <p>{{pur.stock?.description }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-th="Price">{{pur.stock?.priceUnit}}$</td>
+                        <td data-th="Price">{{pur.stock?.priceUnit * pur.quantity}}$</td>
+                        <td data-th="Quantity">
+                            <span>{{pur.quantity}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <span>TOTAL</span>
+                        </td>
+                        <td>
+                            <strong>{{ totalRecap }}$</strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

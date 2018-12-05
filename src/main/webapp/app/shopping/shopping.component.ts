@@ -6,22 +6,29 @@ import { Principal } from '../core';
 import { CartService } from '../entities/cart/cart.service';
 import { Location } from '@angular/common';
 import { ICart } from '../shared/model/cart.model';
+import { IPurchase } from '../shared/model/purchase.model';
+import { PurchaseService } from '../entities/purchase/purchase.service';
 
 @Component({
     selector: 'jhi-purchase',
     templateUrl: './shopping.component.html'
 })
 export class ShoppingComponent implements OnInit, OnDestroy {
+    purchases: IPurchase[];
     carts: ICart[];
     currentAccount: any;
     eventSubscriber: Subscription;
     currentSearch: string;
     total: number;
+    totalRecap: number;
     btimeout: boolean;
     fintimeout: boolean;
     isOkpanier: boolean;
+    isRecap: boolean;
+    listBtM: any[];
 
     constructor(
+        private purchaseService: PurchaseService,
         private cartService: CartService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
@@ -33,15 +40,18 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         this.carts = [];
         this.btimeout = false;
         this.fintimeout = true;
+        this.isRecap = false;
+        this.totalRecap = 0;
+        this.listBtM = [];
     }
 
     loadAll() {
-        // this.purchaseService.query().toPromise().then()subscribe()
         this.cartService.query().subscribe(
             (res: HttpResponse<ICart[]>) => {
                 this.carts = res.body;
                 this.currentSearch = '';
                 this.calculTotal();
+                this.copieListBtnModifier();
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -79,7 +89,10 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         for (const k of this.carts) {
             this.confirmDelete(k.id);
         }
+        this.purchases = this.carts;
+        this.totalRecap = this.total;
         this.carts = [];
+        this.isRecap = true;
     }
 
     abandonner() {
@@ -127,5 +140,39 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     backcliked() {
         this.location.back();
+    }
+
+    nada(e) {
+        e.preventDefault();
+    }
+
+    copieListBtnModifier() {
+        const a: any[] = [];
+        for (const j of this.carts) {
+            a.push({ id: j.id, b: j.quantity });
+        }
+        this.listBtM = a;
+    }
+
+    btncheck(qcart: number, qlist: number) {
+        return qcart === qlist;
+    }
+
+    modifier(i: number) {
+        const tmp: number = this.carts[i].quantity;
+
+        this.carts[i].quantity = this.listBtM[i].b;
+        this.cartService
+            .update(this.carts[i])
+            .subscribe((res: HttpResponse<ICart>) => this.onSaveSuccess(i), (res: HttpErrorResponse) => this.onSaveError(tmp));
+    }
+
+    onSaveSuccess(i: number) {
+        this.calculTotal();
+    }
+
+    onSaveError(i: number) {
+        alert('Désolé ...');
+        this.carts[i].quantity = i;
     }
 }
