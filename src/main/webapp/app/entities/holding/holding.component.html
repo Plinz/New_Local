@@ -25,39 +25,38 @@
         </div>
     </div>
     <br/>
-    <div class="table-responsive" *ngIf="holdingsCurrentUser">
+    <div class="table-responsive" *ngIf="holdings">
         <table class="table table-striped">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <!--<th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>-->
-            <th jhiSortBy="siret"><span jhiTranslate="newLocalApp.holding.siret">Siret</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="name"><span jhiTranslate="newLocalApp.holding.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="description"><span jhiTranslate="newLocalApp.holding.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="image.id"><span jhiTranslate="newLocalApp.holding.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="location.id"><span jhiTranslate="newLocalApp.holding.location">Location</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <!--<th jhiSortBy="owner.id"><span jhiTranslate="newLocalApp.holding.owner">Owner</span> <fa-icon [icon]="'sort'"></fa-icon></th>-->
+            <tr>
+            <th><span jhiTranslate="global.field.id">ID</span></th>
+            <th><span jhiTranslate="newLocalApp.holding.name">Name</span></th>
+            <th><span jhiTranslate="newLocalApp.holding.description">Description</span></th>
+            <th><span jhiTranslate="newLocalApp.holding.image">Image</span></th>
+            <th><span jhiTranslate="newLocalApp.holding.location">Location</span></th>
+            <th><span jhiTranslate="newLocalApp.holding.owner">Owner</span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let holding of holdingsCurrentUser ;trackBy: trackId">
-            <!-- <td><a [routerLink]="['/holding', holding.id, 'view' ]">{{holding.id}}</a></td>-->
-                <td>{{holding.siret}}</td>
+            <tr *ngFor="let holding of holdings ;trackBy: trackId">
+                <td><a [routerLink]="['/holding', holding.id, 'view' ]">{{holding.id}}</a></td>
                 <td>{{holding.name}}</td>
                 <td>{{holding.description}}</td>
                 <td>
-                    <div *ngIf="holding.image">
-                        <a [routerLink]="['../image', holding.image?.id, 'view' ]" >{{holding.image?.id}}</a>
-                    </div>
+                    <a *ngIf="holding.image" (click)="openFile(holding.imageContentType, holding.image)">
+                        <img [src]="'data:' + holding.imageContentType + ';base64,' + holding.image" style="max-height: 30px;" alt="holding image"/>
+                    </a>
+                    <span *ngIf="holding.image">{{holding.imageContentType}}, {{byteSize(holding.image)}}</span>
                 </td>
                 <td>
                     <div *ngIf="holding.location">
                         <a [routerLink]="['../location', holding.location?.id, 'view' ]" >{{holding.location?.id}}</a>
                     </div>
                 </td>
-              <!----<td>
+                <td>
                     {{holding.owner?.id}}
-                </td>-->  
+                </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
@@ -85,14 +84,5 @@
             </tr>
             </tbody>
         </table>
-    </div>
-    <!-- Pager is not implemented yet, so this is normal pagination instead -->
-    <div *ngIf="holdingsCurrentUser && holdingsCurrentUser.length">
-        <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-        </div>
-        <div class="row justify-content-center">
-            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
-        </div>
     </div>
 </div>
