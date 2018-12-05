@@ -1,0 +1,51 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="holding">
+            <h2><span jhiTranslate="newLocalApp.holding.detail.title">Holding</span> {{holding.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="newLocalApp.holding.siret">Siret</span></dt>
+                <dd>
+                    <span>{{holding.siret}}</span>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.holding.name">Name</span></dt>
+                <dd>
+                    <span>{{holding.name}}</span>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.holding.description">Description</span></dt>
+                <dd>
+                    <span>{{holding.description}}</span>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.holding.image">Image</span></dt>
+                <dd>
+                    <div *ngIf="holding.image">
+                        <a [routerLink]="['/image', holding.image?.id, 'view']">{{holding.image?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.holding.location">Location</span></dt>
+                <dd>
+                    <div *ngIf="holding.location">
+                        <a [routerLink]="['/location', holding.location?.id, 'view']">{{holding.location?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="newLocalApp.holding.owner">Owner</span></dt>
+                <dd>
+                    {{holding.owner?.id}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/holding', holding.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
