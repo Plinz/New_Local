@@ -149,7 +149,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     copieListBtnModifier() {
         const a: any[] = [];
         for (const j of this.carts) {
-            a.push({ id: j.id, b: j.quantity });
+            a.push({ id: j.id, b: j.quantity, err: false });
         }
         this.listBtM = a;
     }
@@ -174,5 +174,6 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     onSaveError(i: number) {
         alert('Désolé ...');
         this.carts[i].quantity = i;
+        this.listBtM[i].err = true;
     }
 }

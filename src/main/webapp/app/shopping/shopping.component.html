@@ -58,6 +58,9 @@
                                     <button class="btn btn-warning btn-sm" (click)="modifier(i)" *ngIf="!btncheck(cart.quantity,listBtM[i].b)">
                                         <span> Modifier</span>
                                     </button>
+                                    <div *ngIf="(listBtM[i].err === false)">
+                                        <small class="text-muted" color="red">Rupture de stock</small>
+                                    </div>
                                 </td>
                                 <td class="actions" data-th="">
                                     <button type="submit" [routerLink]="['/', { outlets: { popup: 'shopping/'+ cart.id + '/delete'} }]"
