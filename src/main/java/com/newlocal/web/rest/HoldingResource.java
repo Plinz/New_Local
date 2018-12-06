@@ -55,7 +55,7 @@ public class HoldingResource {
 
     private UserDAO userDAO;
 
-    public HoldingResource(HoldingService holdingService, HoldingQueryService holdingQueryService, UserDAO userDAO, UserRepository userRepository) {
+    public HoldingResource(HoldingService holdingService, HoldingQueryService holdingQueryService, UserRepository userRepository, UserDAO userDAO) {
         this.holdingService = holdingService;
         this.holdingQueryService = holdingQueryService;
         this.userRepository = userRepository;

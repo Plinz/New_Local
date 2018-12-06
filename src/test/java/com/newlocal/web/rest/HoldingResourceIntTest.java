@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.newlocal.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -95,6 +97,9 @@ public class HoldingResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private MockMvc restHoldingMockMvc;
 
     private Holding holding;
@@ -102,7 +107,7 @@ public class HoldingResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final HoldingResource holdingResource = new HoldingResource(holdingService, holdingQueryService);
+        final HoldingResource holdingResource = new HoldingResource(holdingService, holdingQueryService, userRepository, new UserDAO(new JdbcTemplate()));
         this.restHoldingMockMvc = MockMvcBuilders.standaloneSetup(holdingResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
