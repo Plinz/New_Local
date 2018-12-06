@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
-
+import { IImage } from 'app/shared/model/image.model';
 import { Principal, AccountService, JhiLanguageHelper } from 'app/core';
 import { PasswordService } from 'app/account/password/password.service';
 
@@ -9,6 +9,7 @@ import { PasswordService } from 'app/account/password/password.service';
     templateUrl: './settings.component.html'
 })
 export class SettingsComponent implements OnInit {
+    image: IImage;
     error: string;
     doNotMatch: string;
     success: string;
