@@ -134,8 +134,8 @@
                                                     <div class="form-group">
                                                         <label class="form-control-label" for="currentPassword" jhiTranslate="global.form.currentpassword">Current password</label>
                                                         <input type="password" class="form-control" id="currentPassword" name="currentPassword" #currentPasswordInput="ngModel"
-                                                                placeholder="{{'global.form.currentpassword.placeholder' | translate}}"
-                                                                [(ngModel)]="currentPassword" required>
+                                                                placeholder="{{'global.form.currentpassword.placeholder.settings' | translate}}"
+                                                                [(ngModel)]="currentPassword" required disabled>
                                                         <div *ngIf="currentPasswordInput.dirty && currentPasswordInput.invalid">
                                                             <small class="form-text text-danger"
                                                                     *ngIf="currentPasswordInput.errors.required" jhiTranslate="global.messages.validate.newpassword.required">

@@ -44,7 +44,7 @@
             <select>
                 <option value="" disabled selected>Catégorie</option>
                 <option value="1" (click)="option(-1)">Tout</option>
-                <option *ngFor="let categoryOption of categories; trackBy: trackCategoryById ;" (click)="option(catego.id)">{{categoryOption.name}}</option>
+                <option *ngFor="let categoryOption of categories; trackBy: trackCategoryById ;" (click)="option(categoryOption.id)">{{categoryOption.name}}</option>
           </select></a>
           <br>
             <div class="card-deck" >

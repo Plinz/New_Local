@@ -1,17 +1,16 @@
 package com.newlocal.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.newlocal.domain.Image;
-import com.newlocal.service.ImageService;
-import com.newlocal.web.rest.errors.BadRequestAlertException;
-import com.newlocal.web.rest.util.HeaderUtil;
-import com.newlocal.web.rest.util.PaginationUtil;
-import com.newlocal.service.dto.ImageCriteria;
-import com.newlocal.service.ImageQueryService;
-import io.github.jhipster.web.util.ResponseUtil;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
+import javax.validation.Valid;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,21 +18,26 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import com.codahale.metrics.annotation.Timed;
+import com.newlocal.service.ImageQueryService;
+import com.newlocal.service.ImageService;
+import com.newlocal.service.dto.ImageCriteria;
+import com.newlocal.service.dto.ImageDTO;
+import com.newlocal.web.rest.errors.BadRequestAlertException;
+import com.newlocal.web.rest.util.HeaderUtil;
+import com.newlocal.web.rest.util.PaginationUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing Image.
@@ -64,7 +68,7 @@ public class ImageResource {
      */
     @PostMapping("/images")
     @Timed
-    public ResponseEntity<Image> createImage(@Valid @RequestBody Image image) throws URISyntaxException {
+    public ResponseEntity<ImageDTO> createImage(@Valid @RequestBody ImageDTO image) throws URISyntaxException {
         log.debug("REST request to save Image : {}", image);
         if (image.getId() != null) {
             throw new BadRequestAlertException("A new image cannot already have an ID", ENTITY_NAME, "idexists");
@@ -72,9 +76,9 @@ public class ImageResource {
         if (image.getImage() != null){
 	        try {
 	        	Random r = new Random();
-	        	File imageFile = new File(getClass().getResource("images/"+image.getName()).getFile());
+	        	File imageFile = new File("src/main/resources/images/"+image.getName());
 		        while(imageFile.exists() || imageFile.isDirectory()){
-		        	imageFile = new File(getClass().getResource("images/"+image.getName()+"_"+r.nextInt(999999999)).getFile());
+		        	imageFile = new File("src/main/resources/images/"+image.getName()+"_"+r.nextInt(999999999));
 		        }
 				FileUtils.writeByteArrayToFile(imageFile, image.getImage());
 				image.setImagePath(imageFile.getPath());
@@ -82,7 +86,8 @@ public class ImageResource {
 	        	e.printStackTrace();
 	        }
         }
-        Image result = imageService.save(image);
+        log.debug("Fin REST request to save Image : {}", image);
+        ImageDTO result = new ImageDTO(imageService.save(image));
         return ResponseEntity.created(new URI("/api/images/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -99,7 +104,7 @@ public class ImageResource {
      */
     @PutMapping("/images")
     @Timed
-    public ResponseEntity<Image> updateImage(@Valid @RequestBody Image image) throws URISyntaxException {
+    public ResponseEntity<ImageDTO> updateImage(@Valid @RequestBody ImageDTO image) throws URISyntaxException {
         log.debug("REST request to update Image : {}", image);
         if (image.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -107,9 +112,9 @@ public class ImageResource {
         if (image.getImage() != null){
 	        try {
 	        	Random r = new Random();
-	        	File imageFile = new File(getClass().getResource("images/"+image.getName()).getFile());
+	        	File imageFile = new File("src/main/resources/images/"+image.getName());
 		        while(imageFile.exists() || imageFile.isDirectory()){
-		        	imageFile = new File(getClass().getResource("images/"+image.getName()+"_"+r.nextInt(999999999)).getFile());
+		        	imageFile = new File("src/main/resources/images/"+image.getName()+"_"+r.nextInt(999999999));
 		        }
 				FileUtils.writeByteArrayToFile(imageFile, image.getImage());
 				image.setImagePath(imageFile.getPath());
@@ -117,7 +122,7 @@ public class ImageResource {
 	        	e.printStackTrace();
 	        }
         }
-        Image result = imageService.save(image);
+        ImageDTO result = new ImageDTO(imageService.save(image));
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, image.getId().toString()))
             .body(result);
@@ -132,19 +137,9 @@ public class ImageResource {
      */
     @GetMapping("/images")
     @Timed
-    public ResponseEntity<List<Image>> getAllImages(ImageCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<ImageDTO>> getAllImages(ImageCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Images by criteria: {}", criteria);
-        Page<Image> page = imageQueryService.findByCriteria(criteria, pageable);
-        page.forEach(image -> {
-        	File imageFile = new File(image.getImagePath());
-        	if (imageFile.exists() && imageFile.isFile()) {
-        		try {
-					image.setImage(Files.readAllBytes(imageFile.toPath()));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-        	}
-        });
+        Page<ImageDTO> page = imageQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/images");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -170,19 +165,9 @@ public class ImageResource {
      */
     @GetMapping("/images/{id}")
     @Timed
-    public ResponseEntity<Image> getImage(@PathVariable Long id) {
+    public ResponseEntity<ImageDTO> getImage(@PathVariable Long id) {
         log.debug("REST request to get Image : {}", id);
-        Optional<Image> image = imageService.findOne(id);
-        if (image.isPresent()) {
-        	File imageFile = new File(image.get().getImagePath());
-        	if (imageFile.exists() && imageFile.isFile()) {
-        		try {
-					image.get().setImage(Files.readAllBytes(imageFile.toPath()));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-        	}
-        }
+        Optional<ImageDTO> image = imageService.findOne(id);
         return ResponseUtil.wrapOrNotFound(image);
     }
 
@@ -196,7 +181,7 @@ public class ImageResource {
     @Timed
     public ResponseEntity<Void> deleteImage(@PathVariable Long id) {
         log.debug("REST request to delete Image : {}", id);
-        Optional<Image> image = imageService.findOne(id);
+        Optional<ImageDTO> image = imageService.findOne(id);
         if (image.isPresent()) {
         	File imageFile = new File(image.get().getImagePath());
         	if (imageFile.exists() && imageFile.isFile()) {
@@ -217,19 +202,9 @@ public class ImageResource {
      */
     @GetMapping("/_search/images")
     @Timed
-    public ResponseEntity<List<Image>> searchImages(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<ImageDTO>> searchImages(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Images for query {}", query);
-        Page<Image> page = imageService.search(query, pageable);
-        page.forEach(image -> {
-        	File imageFile = new File(image.getImagePath());
-        	if (imageFile.exists() && imageFile.isFile()) {
-        		try {
-					image.setImage(Files.readAllBytes(imageFile.toPath()));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-        	}
-        });
+        Page<ImageDTO> page = imageService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/images");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

@@ -1,19 +1,20 @@
 package com.newlocal.service;
 
-import com.newlocal.domain.Image;
-import com.newlocal.repository.ImageRepository;
-import com.newlocal.repository.search.ImageSearchRepository;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.newlocal.domain.Image;
+import com.newlocal.repository.ImageRepository;
+import com.newlocal.repository.search.ImageSearchRepository;
+import com.newlocal.service.dto.ImageDTO;
 
 /**
  * Service Implementation for managing Image.
@@ -39,10 +40,14 @@ public class ImageService {
      * @param image the entity to save
      * @return the persisted entity
      */
-    public Image save(Image image) {
+    public Image save(ImageDTO image) {
         log.debug("Request to save Image : {}", image);
-        Image result = imageRepository.save(image);
-        imageSearchRepository.save(result);
+        Image result = new Image();
+        result.setName(image.getName());
+        result.setDescription(image.getDescription());
+        result.setImagePath(image.getImagePath());
+        result = imageRepository.save(result);
+        result = imageSearchRepository.save(result);
         return result;
     }
 
@@ -53,9 +58,9 @@ public class ImageService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Image> findAll(Pageable pageable) {
+    public Page<ImageDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Images");
-        return imageRepository.findAll(pageable);
+        return imageRepository.findAll(pageable).map(ImageDTO::new);
     }
 
 
@@ -66,9 +71,9 @@ public class ImageService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Optional<Image> findOne(Long id) {
+    public Optional<ImageDTO> findOne(Long id) {
         log.debug("Request to get Image : {}", id);
-        return imageRepository.findById(id);
+        return imageRepository.findById(id).map(ImageDTO::new);
     }
 
     /**
@@ -90,7 +95,7 @@ public class ImageService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Image> search(String query, Pageable pageable) {
+    public Page<ImageDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Images for query {}", query);
-        return imageSearchRepository.search(queryStringQuery(query), pageable);    }
+        return imageSearchRepository.search(queryStringQuery(query), pageable).map(ImageDTO::new);    }
 }

@@ -2,23 +2,23 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { JhiEventManager, JhiParseLinks, JhiAlertService, JhiDataUtils } from 'ng-jhipster';
+import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
-import { IStock } from 'app/shared/model/stock.model';
-import { Principal } from 'app/core';
+import { IHolding } from '../shared/model/holding.model';
+import { Principal } from '../core';
 
-import { ITEMS_PER_PAGE } from 'app/shared';
-import { StockService } from '../entities/stock/stock.service';
+import { ITEMS_PER_PAGE } from '../shared';
+import { HoldingService } from '../entities/holding/holding.service';
 
-import { ICategory } from 'app/shared/model/category.model';
-import { CategoryService } from 'app/entities/category';
 @Component({
-    selector: 'jhi-stock',
-    templateUrl: './mainSearch.component.html'
+    selector: 'jhi-holding',
+    templateUrl: './holdingProfil.component.html'
 })
-export class MainSearchComponent implements OnInit, OnDestroy {
+export class HoldingProfilComponent implements OnInit, OnDestroy {
     currentAccount: any;
-    stocks: IStock[];
+    holdings: IHolding[];
+
+    holdingsCurrentUser: IHolding[];
     error: any;
     success: any;
     eventSubscriber: Subscription;
@@ -33,47 +33,37 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
 
-    categories: ICategory[];
-    optionCategory: number;
-
     constructor(
-        private stockService: StockService,
+        private holdingService: HoldingService,
         private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
         private activatedRoute: ActivatedRoute,
-        private dataUtils: JhiDataUtils,
         private router: Router,
-        private eventManager: JhiEventManager,
-        private categoryService: CategoryService
+        private eventManager: JhiEventManager
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
-        this.optionCategory = -1;
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
             this.reverse = data.pagingParams.ascending;
             this.predicate = data.pagingParams.predicate;
         });
-        this.activatedRoute.queryParams.subscribe(params => {
-            this.currentSearch = params['search'];
-        });
+        this.holdingService.findByCurrentUser().subscribe(
+            (res: HttpResponse<IHolding[]>) => {
+                this.holdingsCurrentUser = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.currentSearch =
+            this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
+                ? this.activatedRoute.snapshot.params['search']
+                : '';
     }
 
-    option(x: number) {
-        this.optionCategory = x;
-    }
-
-    checkoption(o: number) {
-        if (o === this.optionCategory || this.optionCategory === -1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     loadAll() {
         if (this.currentSearch) {
-            this.stockService
+            this.holdingService
                 .search({
                     page: this.page - 1,
                     query: this.currentSearch,
@@ -81,19 +71,19 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                     sort: this.sort()
                 })
                 .subscribe(
-                    (res: HttpResponse<IStock[]>) => this.paginateStocks(res.body, res.headers),
+                    (res: HttpResponse<IHolding[]>) => this.paginateHoldings(res.body, res.headers),
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
             return;
         }
-        this.stockService
+        this.holdingService
             .query({
                 page: this.page - 1,
                 size: this.itemsPerPage,
                 sort: this.sort()
             })
             .subscribe(
-                (res: HttpResponse<IStock[]>) => this.paginateStocks(res.body, res.headers),
+                (res: HttpResponse<IHolding[]>) => this.paginateHoldings(res.body, res.headers),
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
     }
@@ -106,7 +96,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.router.navigate(['/stock'], {
+        this.router.navigate(['/holding'], {
             queryParams: {
                 page: this.page,
                 size: this.itemsPerPage,
@@ -121,7 +111,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.page = 0;
         this.currentSearch = '';
         this.router.navigate([
-            '/stock',
+            '/holding',
             {
                 page: this.page,
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
@@ -137,7 +127,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.page = 0;
         this.currentSearch = query;
         this.router.navigate([
-            '/stock',
+            '/holding',
             {
                 search: this.currentSearch,
                 page: this.page,
@@ -152,33 +142,19 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.principal.identity().then(account => {
             this.currentAccount = account;
         });
-        this.registerChangeInStocks();
-        this.categoryService.query().subscribe(
-            (res: HttpResponse<ICategory[]>) => {
-                this.categories = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        this.registerChangeInHoldings();
     }
 
     ngOnDestroy() {
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId(index: number, item: IStock) {
+    trackId(index: number, item: IHolding) {
         return item.id;
     }
 
-    byteSize(field) {
-        return this.dataUtils.byteSize(field);
-    }
-
-    openFile(contentType, field) {
-        return this.dataUtils.openFile(contentType, field);
-    }
-
-    registerChangeInStocks() {
-        this.eventSubscriber = this.eventManager.subscribe('stockListModification', response => this.loadAll());
+    registerChangeInHoldings() {
+        this.eventSubscriber = this.eventManager.subscribe('holdingListModification', response => this.loadAll());
     }
 
     sort() {
@@ -189,18 +165,14 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         return result;
     }
 
-    private paginateStocks(data: IStock[], headers: HttpHeaders) {
+    private paginateHoldings(data: IHolding[], headers: HttpHeaders) {
         this.links = this.parseLinks.parse(headers.get('link'));
         this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         this.queryCount = this.totalItems;
-        this.stocks = data;
+        this.holdings = data;
     }
 
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackCategoryById(index: number, item: ICategory) {
-        return item.id;
     }
 }

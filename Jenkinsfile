@@ -1,6 +1,9 @@
 #!/usr/bin/env groovy
 
 node {
+	environment {
+		GMAIL_SECRET_PASS = credentials('jenkins-gmail-secret-pass')
+	}
     stage('checkout') {
         checkout scm
     }

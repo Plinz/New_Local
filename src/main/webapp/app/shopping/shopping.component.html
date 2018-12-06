@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div class="row" *ngIf="purchases && !btimeout">
+    <div class="row" *ngIf="carts && !btimeout && !isRecap">
         <!-- Article-->
         <div class="col-md-9" *ngIf="isOkpanier; else okPanier">
             <div class="card">
@@ -26,40 +26,50 @@
                         <thead>
                             <tr>
                                 <th>Produit</th>
-                                <th>Prix</th>
+                                <th>Prix(Unitaire)</th>
+                                <th>Prix(Total)</th>
                                 <th>Quantité</th>
                                 <th></th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            <tr *ngFor="let purchase of purchases ;trackBy: trackId">
+                            <tr *ngFor="let cart of carts ;trackBy: trackId;let i = index">
                                 <td data-th="Product">
                                     <div class="row">
                                         <div class="col-sm-2 hidden-xs">
-                                            <a *ngIf="purchase.stock?.image">
-                                                <img [src]="'data:' + purchase.stock?.imageContentType + ';base64,' + purchase.stock?.image"
-                                                    style="max-height:50px" alt="stock image" />
+                                            <a *ngIf="cart.stock.image.image" (click)="openFile(cart.stock.image.imageContentType, cart.stock.image.image)">
+                                                <img [src]="'data:' + cart.stock.image.imageContentType + ';base64,' + cart.stock.image.image"
+                                                    style="max-height: 30px;" alt="image image" />
                                             </a>
                                         </div>
                                         <div class="col-sm-10">
-                                            <h4 class="nomargin">{{ purchase.stock?.name }}</h4>
-                                            <p>{{purchase.stock?.description }}</p>
+                                            <h4 class="nomargin">{{ cart.stock?.name }}</h4>
+                                            <p>{{cart.stock?.description }}</p>
                                         </div>
                                     </div>
                                 </td>
-                                <td data-th="Price">{{purchase.stock?.priceUnit * purchase.quantity}}$</td>
+                                <td data-th="Price">{{cart.stock?.priceUnit}}$</td>
+                                <td data-th="Price">{{cart.stock?.priceUnit * cart.quantity}}$</td>
                                 <td data-th="Quantity">
-                                    <input type="number" class="form-control text-center" min="1" value="{{purchase.quantity}}">
+                                    <input type="number" [(ngModel)]="listBtM[i].b" (keypress)="nada($event)" class="form-control text-center"
+                                        min="1">
+                                    <!--value="{{cart.quantity}}"-->
+                                    <button class="btn btn-warning btn-sm" (click)="modifier(i)" *ngIf="!btncheck(cart.quantity,listBtM[i].b)">
+                                        <span> Modifier</span>
+                                    </button>
+                                    <div *ngIf="(listBtM[i].err === false)">
+                                        <small class="text-muted" color="red">Rupture de stock</small>
+                                    </div>
                                 </td>
                                 <td class="actions" data-th="">
-                                    <button type="submit" [routerLink]="['/', { outlets: { popup: 'shopping/'+ purchase.id + '/delete'} }]"
+                                    <button type="submit" [routerLink]="['/', { outlets: { popup: 'shopping/'+ cart.id + '/delete'} }]"
                                         replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
                                         <fa-icon [icon]="'times'"></fa-icon>
                                         <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                                     </button>
                                     <div>
-                                        <small class="text-muted">Numéro de réference:{{ purchase.stock?.id }}</small>
+                                        <small class="text-muted">Numéro de réference:{{ cart.stock?.id }}</small>
                                     </div>
                                 </td>
                             </tr>
@@ -68,7 +78,7 @@
                 </div>
             </div>
         </div>
-
+        <!--Rentrer Carte-->
         <ng-template #okPanier>
             <div class="col-md-9">
                 <div class="card">
@@ -113,19 +123,18 @@
                         </div>
 
                         <div class="text-center">
-                            <button class="btn btn-success" (click)="endTimeout()">
-                                <span class="d-none d-md-inline">Valider</span>
-                            </button>
                             <button class="btn btn-warning" (click)="abandonner()">
                                 <span class="d-none d-md-inline">Abandonner</span>
+                            </button>
+                            <button class="btn btn-success" (click)="endTimeout()">
+                                <span class="d-none d-md-inline">Valider</span>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         </ng-template>
-
-        <!-- Bilan-->
+        <!--Bilan-->
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
@@ -137,7 +146,7 @@
                             <small class="text-muted">Nombre d'élement</small>
                         </div>
                         <div class="col-sm-4">
-                            <span class="badge badge-secondary badge-pill">{{ purchases.length }}</span>
+                            <span class="badge badge-secondary badge-pill">{{ carts.length }}</span>
                         </div>
                         <div class="col-md-12 mt-3"></div>
                         <div class="col-sm-8">
@@ -147,7 +156,7 @@
                             <strong>{{ total }}$</strong>
                         </div>
                     </div>
-                    <div class="text-center" *ngIf="isOkpanier && (purchases.length > 0)">
+                    <div class="text-center" *ngIf="isOkpanier && (carts.length > 0)">
                         <button class="btn btn-success" (click)="startTimeout()">
                             <span class="d-none d-md-inline">Valider</span>
                         </button>
@@ -155,7 +164,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <div class="card" *ngIf="btimeout">
@@ -171,6 +179,57 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!--Validation de l'achat-->
+    <div class="card" *ngIf="isRecap">
+        <div class="card-body">
+            <h4>Recapitulatif du panier</h4>
+            <table class="mt-5 table table-hover table-condensed text-left">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Prix(Unitaire)</th>
+                        <th>Prix(Total)</th>
+                        <th>Quantité</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let pur of purchases;">
+                        <td data-th="Product">
+                            <div class="row">
+                                <div class="col-sm-2 hidden-xs">
+                                    <a *ngIf="pur.stock.image.image" (click)="openFile(pur.stock.image.imageContentType, pur.stock.image.image)">
+                                        <img [src]="'data:' + pur.stock.image.imageContentType + ';base64,' + pur.stock.image.image"
+                                            style="max-height: 30px;" alt="image image" />
+                                    </a>
+                                </div>
+                                <div class="col-sm-10">
+                                    <h4 class="nomargin">{{ pur.stock?.name }}</h4>
+                                    <p>{{pur.stock?.description }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-th="Price">{{pur.stock?.priceUnit}}$</td>
+                        <td data-th="Price">{{pur.stock?.priceUnit * pur.quantity}}$</td>
+                        <td data-th="Quantity">
+                            <span>{{pur.quantity}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <span>TOTAL</span>
+                        </td>
+                        <td>
+                            <strong>{{ totalRecap }}$</strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

@@ -35,12 +35,8 @@ public class Image implements Serializable {
     @Column(name = "description", length = 300)
     private String description;
 
-    @NotNull
     @Column(name = "image_path", nullable = false)
     private String imagePath;
-    
-    @Transient
-    private byte[] image;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -89,19 +85,7 @@ public class Image implements Serializable {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
-    
-    public byte[] getImage() {
-        return image;
-    }
 
-    public Image image(byte[] image) {
-        this.image = image;
-        return this;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override

@@ -1,30 +1,28 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
-
-import { ICart } from '../shared/model/cart.model';
-import { CartService } from '../entities/cart/cart.service';
+import { HoldingService } from '../entities/holding/holding.service';
+import { IHolding } from '../shared/model/holding.model';
 
 @Component({
-    selector: 'jhi-purchase-delete-dialog',
-    templateUrl: './shopping-delete-dialog.component.html'
+    selector: 'jhi-holding-delete-dialog',
+    templateUrl: './holdingProfil-delete-dialog.component.html'
 })
-export class ShoppingDeleteDialogComponent {
-    cart: ICart;
+export class HoldingProfilDeleteDialogComponent {
+    holding: IHolding;
 
-    constructor(private cartService: CartService, public activeModal: NgbActiveModal, private eventManager: JhiEventManager) {}
+    constructor(private holdingService: HoldingService, public activeModal: NgbActiveModal, private eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.cartService.delete(id).subscribe(response => {
+        this.holdingService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
-                name: 'cartListModification',
-                content: 'Deleted an cart'
+                name: 'holdingListModification',
+                content: 'Deleted an holding'
             });
             this.activeModal.dismiss(true);
         });
@@ -32,19 +30,22 @@ export class ShoppingDeleteDialogComponent {
 }
 
 @Component({
-    selector: 'jhi-purchase-delete-popup',
+    selector: 'jhi-holding-delete-popup',
     template: ''
 })
-export class ShoppingDeletePopupComponent implements OnInit, OnDestroy {
+export class HoldingProfilDeletePopupComponent implements OnInit, OnDestroy {
     private ngbModalRef: NgbModalRef;
 
     constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
 
     ngOnInit() {
-        this.activatedRoute.data.subscribe(({ cart }) => {
+        this.activatedRoute.data.subscribe(({ holding }) => {
             setTimeout(() => {
-                this.ngbModalRef = this.modalService.open(ShoppingDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
-                this.ngbModalRef.componentInstance.cart = cart;
+                this.ngbModalRef = this.modalService.open(HoldingProfilDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.holding = holding;
                 this.ngbModalRef.result.then(
                     result => {
                         this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });

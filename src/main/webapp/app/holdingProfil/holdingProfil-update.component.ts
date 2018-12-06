@@ -1,34 +1,38 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 
-import { IHolding } from 'app/shared/model/holding.model';
-import { HoldingService } from './holding.service';
-import { ILocation } from 'app/shared/model/location.model';
-import { LocationService } from 'app/entities/location';
-import { IUser, UserService } from 'app/core';
+import { IHolding } from '../shared/model/holding.model';
+import { HoldingService } from '../entities/holding/holding.service';
+import { IImage } from '../shared/model/image.model';
+import { ImageService } from '../entities/image';
+import { ILocation } from '../shared/model/location.model';
+import { LocationService } from '../entities/location';
+import { IUser, UserService } from '../core';
 
 @Component({
     selector: 'jhi-holding-update',
-    templateUrl: './holding-update.component.html'
+    templateUrl: './holdingProfil-update.component.html'
 })
-export class HoldingUpdateComponent implements OnInit {
+export class HoldingProfilUpdateComponent implements OnInit {
     holding: IHolding;
     isSaving: boolean;
+
+    images: IImage[];
+    holdingsCurrentUser: IHolding[];
 
     locations: ILocation[];
 
     users: IUser[];
 
     constructor(
-        private dataUtils: JhiDataUtils,
         private jhiAlertService: JhiAlertService,
         private holdingService: HoldingService,
+        private imageService: ImageService,
         private locationService: LocationService,
         private userService: UserService,
-        private elementRef: ElementRef,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -37,6 +41,27 @@ export class HoldingUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ holding }) => {
             this.holding = holding;
         });
+        this.holdingService.findByCurrentUser().subscribe(
+            (res: HttpResponse<IHolding[]>) => {
+                this.holdingsCurrentUser = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.imageService.query({ 'holdingId.specified': 'false' }).subscribe(
+            (res: HttpResponse<IImage[]>) => {
+                if (!this.holding.image || !this.holding.image.id) {
+                    this.images = res.body;
+                } else {
+                    this.imageService.find(this.holding.image.id).subscribe(
+                        (subRes: HttpResponse<IImage>) => {
+                            this.images = [subRes.body].concat(res.body);
+                        },
+                        (subRes: HttpErrorResponse) => this.onError(subRes.message)
+                    );
+                }
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
         this.locationService.query().subscribe(
             (res: HttpResponse<ILocation[]>) => {
                 this.locations = res.body;
@@ -49,22 +74,6 @@ export class HoldingUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-    }
-
-    byteSize(field) {
-        return this.dataUtils.byteSize(field);
-    }
-
-    openFile(contentType, field) {
-        return this.dataUtils.openFile(contentType, field);
-    }
-
-    setFileData(event, entity, field, isImage) {
-        this.dataUtils.setFileData(event, entity, field, isImage);
-    }
-
-    clearInputImage(field: string, fieldContentType: string, idInput: string) {
-        this.dataUtils.clearInputImage(this.holding, this.elementRef, field, fieldContentType, idInput);
     }
 
     previousState() {
@@ -95,6 +104,10 @@ export class HoldingUpdateComponent implements OnInit {
 
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
+    }
+
+    trackImageById(index: number, item: IImage) {
+        return item.id;
     }
 
     trackLocationById(index: number, item: ILocation) {

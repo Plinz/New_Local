@@ -4,22 +4,22 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@a
 import { UserRouteAccessService } from '../core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Purchase } from '../shared/model/purchase.model';
-import { PurchaseService } from '../entities/purchase/purchase.service';
 import { ShoppingComponent } from './shopping.component';
 import { ShoppingDeletePopupComponent } from './shopping-delete-dialog.component';
-import { IPurchase } from '../shared/model/purchase.model';
+import { ICart } from 'app/shared/model/cart.model';
+import { CartService } from '../entities/cart/cart.service';
+import { Cart } from 'app/shared/model/cart.model';
 
 @Injectable({ providedIn: 'root' })
-export class ShoppingResolve implements Resolve<IPurchase> {
-    constructor(private service: PurchaseService) {}
+export class ShoppingResolve implements Resolve<ICart> {
+    constructor(private service: CartService) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((purchase: HttpResponse<Purchase>) => purchase.body));
+            return this.service.find(id).pipe(map((cart: HttpResponse<Cart>) => cart.body));
         }
-        return of(new Purchase());
+        return of(new Cart());
     }
 }
 
@@ -40,11 +40,11 @@ export const ShoppingPopupRoute: Routes = [
         path: 'shopping/:id/delete',
         component: ShoppingDeletePopupComponent,
         resolve: {
-            purchase: ShoppingResolve
+            cart: ShoppingResolve
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'newLocalApp.purchase.home.title'
+            pageTitle: 'newLocalApp.cart.home.title'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

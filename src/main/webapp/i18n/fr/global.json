@@ -23,7 +23,7 @@
             "account": {
                 "main": "Compte",
                 "settings": "Profil",
-                "password": "Holding",
+                "password": "Exploitation",
                 "sessions": "Sessions",
                 "login": "Connexion",
                 "logout": "Déconnexion",
@@ -53,7 +53,8 @@
             "username": "Nom d'utilisateur",
             "username.placeholder": "Votre nom d'utilisateur",
             "currentpassword": "Current password",
-            "currentpassword.placeholder": "Current password",
+            "currentpassword.placeholder.settings": "**********",
+            "currentpassword.placeholder": "  ",
             "newpassword": "Nouveau mot de passe",
             "newpassword.placeholder": "Nouveau mot de passe",
             "confirmpassword": "Confirmation du nouveau mot de passe",
