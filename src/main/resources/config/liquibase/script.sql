@@ -1,5 +1,5 @@
 --IMAGE TABLE--
-INSERT INTO IMAGE (id,name,description,image_path) VALUES (1, 'default_image.png', 'image par défaut', 'src/main/resources/images/');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (1, 'default_image.png', 'image par défaut', 'src/main/resources/images/default_image.png');
 
 --CATEGORY TABLE--
 INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (1, 'Fruit','un aliment végétal, à la saveur sucrée, généralement consommé cru', 1, null);
