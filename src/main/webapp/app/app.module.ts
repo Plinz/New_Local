@@ -25,6 +25,7 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
 import { NewLocalShoppingModule } from './shopping/shopping.module';
 import { NewLocalReviewModule } from './review/review.module';
 import { ChartsModule } from 'ng2-charts';
+import { NewLocalProfilHoldingModule } from './holdingProfil/holdingProfil.module';
 
 @NgModule({
     imports: [
@@ -41,6 +42,7 @@ import { ChartsModule } from 'ng2-charts';
         NewLocalEntityModule,
         NewLocalShoppingModule,
         NewLocalReviewModule,
+        NewLocalProfilHoldingModule,
         ChartsModule
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],

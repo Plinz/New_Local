@@ -1,30 +1,36 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { NewLocalSharedModule } from 'app/shared';
-import { NewLocalAdminModule } from 'app/admin/admin.module';
+import { NewLocalSharedModule } from '../shared';
+import { NewLocalAdminModule } from '../admin/admin.module';
+
 import {
-    HoldingComponent,
-    HoldingDetailComponent,
-    HoldingUpdateComponent,
-    HoldingDeletePopupComponent,
-    HoldingDeleteDialogComponent,
-    holdingRoute,
-    holdingPopupRoute
+    HoldingProfilComponent,
+    HoldingProfilDetailComponent,
+    HoldingProfilUpdateComponent,
+    HoldingProfilDeletePopupComponent,
+    HoldingProfilDeleteDialogComponent,
+    holdingProfilRoute,
+    holdingProfilPopupRoute
 } from './';
 
-const ENTITY_STATES = [...holdingRoute, ...holdingPopupRoute];
+const ENTITY_STATES = [...holdingProfilRoute, ...holdingProfilPopupRoute];
 
 @NgModule({
     imports: [NewLocalSharedModule, NewLocalAdminModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
-        HoldingComponent,
-        HoldingDetailComponent,
-        HoldingUpdateComponent,
-        HoldingDeleteDialogComponent,
-        HoldingDeletePopupComponent
+        HoldingProfilComponent,
+        HoldingProfilDetailComponent,
+        HoldingProfilUpdateComponent,
+        HoldingProfilDeleteDialogComponent,
+        HoldingProfilDeletePopupComponent
     ],
-    entryComponents: [HoldingComponent, HoldingUpdateComponent, HoldingDeleteDialogComponent, HoldingDeletePopupComponent],
+    entryComponents: [
+        HoldingProfilComponent,
+        HoldingProfilUpdateComponent,
+        HoldingProfilDeleteDialogComponent,
+        HoldingProfilDeletePopupComponent
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class NewLocalHoldingModule {}
+export class NewLocalProfilHoldingModule {}

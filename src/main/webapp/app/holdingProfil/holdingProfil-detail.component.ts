@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { IHolding } from 'app/shared/model/holding.model';
+import { IHolding } from '../shared/model/holding.model';
 
 @Component({
     selector: 'jhi-holding-detail',
-    templateUrl: './holding-detail.component.html'
+    templateUrl: './holdingProfil-detail.component.html'
 })
-export class HoldingDetailComponent implements OnInit {
+export class HoldingProfilDetailComponent implements OnInit {
     holding: IHolding;
 
     constructor(private activatedRoute: ActivatedRoute) {}

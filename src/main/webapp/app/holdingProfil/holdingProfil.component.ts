@@ -4,17 +4,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
-import { IHolding } from 'app/shared/model/holding.model';
-import { Principal } from 'app/core';
+import { IHolding } from '../shared/model/holding.model';
+import { Principal } from '../core';
 
-import { ITEMS_PER_PAGE } from 'app/shared';
-import { HoldingService } from './holding.service';
+import { ITEMS_PER_PAGE } from '../shared';
+import { HoldingService } from '../entities/holding/holding.service';
 
 @Component({
     selector: 'jhi-holding',
-    templateUrl: './holding.component.html'
+    templateUrl: './holdingProfil.component.html'
 })
-export class HoldingComponent implements OnInit, OnDestroy {
+export class HoldingProfilComponent implements OnInit, OnDestroy {
     currentAccount: any;
     holdings: IHolding[];
 

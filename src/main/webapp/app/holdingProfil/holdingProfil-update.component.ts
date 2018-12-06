@@ -4,19 +4,19 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JhiAlertService } from 'ng-jhipster';
 
-import { IHolding } from 'app/shared/model/holding.model';
-import { HoldingService } from './holding.service';
-import { IImage } from 'app/shared/model/image.model';
-import { ImageService } from 'app/entities/image';
-import { ILocation } from 'app/shared/model/location.model';
-import { LocationService } from 'app/entities/location';
-import { IUser, UserService } from 'app/core';
+import { IHolding } from '../shared/model/holding.model';
+import { HoldingService } from '../entities/holding/holding.service';
+import { IImage } from '../shared/model/image.model';
+import { ImageService } from '../entities/image';
+import { ILocation } from '../shared/model/location.model';
+import { LocationService } from '../entities/location';
+import { IUser, UserService } from '../core';
 
 @Component({
     selector: 'jhi-holding-update',
-    templateUrl: './holding-update.component.html'
+    templateUrl: './holdingProfil-update.component.html'
 })
-export class HoldingUpdateComponent implements OnInit {
+export class HoldingProfilUpdateComponent implements OnInit {
     holding: IHolding;
     isSaving: boolean;
 

@@ -2,19 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
-import { UserRouteAccessService } from 'app/core';
+import { UserRouteAccessService } from '../core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Holding } from 'app/shared/model/holding.model';
-import { HoldingService } from './holding.service';
-import { HoldingComponent } from './holding.component';
-import { HoldingDetailComponent } from './holding-detail.component';
-import { HoldingUpdateComponent } from './holding-update.component';
-import { HoldingDeletePopupComponent } from './holding-delete-dialog.component';
-import { IHolding } from 'app/shared/model/holding.model';
+import { Holding } from '../shared/model/holding.model';
+import { IHolding } from '../shared/model/holding.model';
+import { HoldingService } from '../entities/holding/holding.service';
+import { HoldingProfilComponent } from './holdingProfil.component';
+import { HoldingProfilDetailComponent } from './holdingProfil-detail.component';
+import { HoldingProfilUpdateComponent } from './holdingProfil-update.component';
+import { HoldingProfilDeletePopupComponent } from './holdingProfil-delete-dialog.component';
 
 @Injectable({ providedIn: 'root' })
-export class HoldingResolve implements Resolve<IHolding> {
+export class HoldingProfilResolve implements Resolve<IHolding> {
     constructor(private service: HoldingService) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -26,10 +26,10 @@ export class HoldingResolve implements Resolve<IHolding> {
     }
 }
 
-export const holdingRoute: Routes = [
+export const holdingProfilRoute: Routes = [
     {
         path: 'holding',
-        component: HoldingComponent,
+        component: HoldingProfilComponent,
         resolve: {
             pagingParams: JhiResolvePagingParams
         },
@@ -42,9 +42,9 @@ export const holdingRoute: Routes = [
     },
     {
         path: 'holding/:id/view',
-        component: HoldingDetailComponent,
+        component: HoldingProfilDetailComponent,
         resolve: {
-            holding: HoldingResolve
+            holding: HoldingProfilResolve
         },
         data: {
             authorities: ['ROLE_USER'],
@@ -54,9 +54,9 @@ export const holdingRoute: Routes = [
     },
     {
         path: 'holding/new',
-        component: HoldingUpdateComponent,
+        component: HoldingProfilUpdateComponent,
         resolve: {
-            holding: HoldingResolve
+            holding: HoldingProfilResolve
         },
         data: {
             authorities: ['ROLE_USER'],
@@ -66,9 +66,9 @@ export const holdingRoute: Routes = [
     },
     {
         path: 'holding/:id/edit',
-        component: HoldingUpdateComponent,
+        component: HoldingProfilUpdateComponent,
         resolve: {
-            holding: HoldingResolve
+            holding: HoldingProfilResolve
         },
         data: {
             authorities: ['ROLE_USER'],
@@ -78,12 +78,12 @@ export const holdingRoute: Routes = [
     }
 ];
 
-export const holdingPopupRoute: Routes = [
+export const holdingProfilPopupRoute: Routes = [
     {
         path: 'holding/:id/delete',
-        component: HoldingDeletePopupComponent,
+        component: HoldingProfilDeletePopupComponent,
         resolve: {
-            holding: HoldingResolve
+            holding: HoldingProfilResolve
         },
         data: {
             authorities: ['ROLE_USER'],

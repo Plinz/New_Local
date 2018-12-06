@@ -1,17 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
-
-import { IHolding } from 'app/shared/model/holding.model';
-import { HoldingService } from './holding.service';
+import { HoldingService } from '../entities/holding/holding.service';
+import { IHolding } from '../shared/model/holding.model';
 
 @Component({
     selector: 'jhi-holding-delete-dialog',
-    templateUrl: './holding-delete-dialog.component.html'
+    templateUrl: './holdingProfil-delete-dialog.component.html'
 })
-export class HoldingDeleteDialogComponent {
+export class HoldingProfilDeleteDialogComponent {
     holding: IHolding;
 
     constructor(private holdingService: HoldingService, public activeModal: NgbActiveModal, private eventManager: JhiEventManager) {}
@@ -35,7 +33,7 @@ export class HoldingDeleteDialogComponent {
     selector: 'jhi-holding-delete-popup',
     template: ''
 })
-export class HoldingDeletePopupComponent implements OnInit, OnDestroy {
+export class HoldingProfilDeletePopupComponent implements OnInit, OnDestroy {
     private ngbModalRef: NgbModalRef;
 
     constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
@@ -43,7 +41,10 @@ export class HoldingDeletePopupComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.activatedRoute.data.subscribe(({ holding }) => {
             setTimeout(() => {
-                this.ngbModalRef = this.modalService.open(HoldingDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef = this.modalService.open(HoldingProfilDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
                 this.ngbModalRef.componentInstance.holding = holding;
                 this.ngbModalRef.result.then(
                     result => {
