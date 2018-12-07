@@ -1,4 +1,6 @@
 import { IImage } from 'app/shared/model/image.model';
+import { ILocation } from 'app/shared/model/location.model';
+import { IUser } from 'app/core';
 
 export interface IHolding {
     id?: number;
@@ -9,6 +11,8 @@ export interface IHolding {
     locationId?: number;
     ownerId?: number;
     image?: IImage;
+    location?: ILocation;
+    owner?: IUser;
 }
 
 export class Holding implements IHolding {
@@ -20,6 +24,8 @@ export class Holding implements IHolding {
         public imageId?: number,
         public locationId?: number,
         public ownerId?: number,
-        public image?: IImage
+        public image?: IImage,
+        public owner?: IUser,
+        public location?: ILocation
     ) {}
 }

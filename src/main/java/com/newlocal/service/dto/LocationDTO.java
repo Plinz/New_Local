@@ -1,6 +1,9 @@
 package com.newlocal.service.dto;
 
 import javax.validation.constraints.*;
+
+import com.newlocal.domain.Location;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -35,8 +38,28 @@ public class LocationDTO implements Serializable {
     private Double lat;
 
     private Long userId;
+    
+    private UserDTO user;
+    
+    public LocationDTO(){
+    	
+    }
 
-    public Long getId() {
+    public LocationDTO(Location location) {
+		this.id = location.getId();
+		this.city = location.getCity();
+		this.country = location.getCountry();
+		this.zip = location.getZip();
+		this.address = location.getAddress();
+		this.lon = location.getLon();
+		this.lat = location.getLat();
+		if(location.getUser() != null){
+			this.userId = location.getUser().getId();
+			this.user = new UserDTO(location.getUser());
+		}
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -100,7 +123,15 @@ public class LocationDTO implements Serializable {
         this.userId = userId;
     }
 
-    @Override
+    public UserDTO getUser() {
+		return user;
+	}
+
+	public void setUser(UserDTO user) {
+		this.user = user;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

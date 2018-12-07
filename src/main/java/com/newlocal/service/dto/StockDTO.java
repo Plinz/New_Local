@@ -60,6 +60,14 @@ public class StockDTO implements Serializable {
     
     private ImageDTO image;
     
+    private ProductTypeDTO productType;
+    
+    private HoldingDTO holding;
+    
+    private UserDTO seller;
+    
+    private WarehouseDTO warehouse;
+    
     public StockDTO(){
     	
     }
@@ -81,15 +89,19 @@ public class StockDTO implements Serializable {
     	}
     	if(stock.getProductType() != null){
     		this.productTypeId = stock.getProductType().getId();
+    		this.productType = new ProductTypeDTO(stock.getProductType());
     	}
     	if(stock.getHolding() != null){
     		this.holdingId = stock.getHolding().getId();
+    		this.holding = new HoldingDTO(stock.getHolding());
     	}
     	if(stock.getSeller() != null){
     		this.sellerId = stock.getSeller().getId();
+    		this.seller = new UserDTO(stock.getSeller());
     	}
     	if(stock.getWarehouse() != null){
     		this.warehouseId = stock.getWarehouse().getId();
+    		this.warehouse = new WarehouseDTO(stock.getWarehouse());
     	}
     }
 
@@ -219,6 +231,38 @@ public class StockDTO implements Serializable {
 
 	public void setImage(ImageDTO image) {
 		this.image = image;
+	}
+
+	public ProductTypeDTO getProductType() {
+		return productType;
+	}
+
+	public void setProductType(ProductTypeDTO productType) {
+		this.productType = productType;
+	}
+
+	public HoldingDTO getHolding() {
+		return holding;
+	}
+
+	public void setHolding(HoldingDTO holding) {
+		this.holding = holding;
+	}
+
+	public UserDTO getSeller() {
+		return seller;
+	}
+
+	public void setSeller(UserDTO seller) {
+		this.seller = seller;
+	}
+
+	public WarehouseDTO getWarehouse() {
+		return warehouse;
+	}
+
+	public void setWarehouse(WarehouseDTO warehouse) {
+		this.warehouse = warehouse;
 	}
 
 	@Override

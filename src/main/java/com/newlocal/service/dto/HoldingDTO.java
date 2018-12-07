@@ -36,6 +36,10 @@ public class HoldingDTO implements Serializable {
     
     private ImageDTO image;
     
+    private LocationDTO location;
+    
+    private UserDTO owner;
+    
     public HoldingDTO(){
     	
     }
@@ -51,9 +55,11 @@ public class HoldingDTO implements Serializable {
     	}
     	if(holding.getLocation() != null){
     		this.locationId = holding.getLocation().getId();
+    		this.location = new LocationDTO(holding.getLocation());
     	}
     	if(holding.getOwner() != null){
     		this.ownerId = holding.getOwner().getId();
+    		this.owner = new UserDTO(holding.getOwner());
     	}
     }
 
@@ -119,6 +125,22 @@ public class HoldingDTO implements Serializable {
 
 	public ImageDTO getImage() {
 		return image;
+	}
+
+	public LocationDTO getLocation() {
+		return location;
+	}
+
+	public void setLocation(LocationDTO location) {
+		this.location = location;
+	}
+
+	public UserDTO getOwner() {
+		return owner;
+	}
+
+	public void setOwner(UserDTO owner) {
+		this.owner = owner;
 	}
 
 	@Override
