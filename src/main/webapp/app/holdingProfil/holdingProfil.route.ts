@@ -41,7 +41,7 @@ export const holdingProfilRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'holding/:id/view',
+        path: 'holdingprofil/:id/view',
         component: HoldingProfilDetailComponent,
         resolve: {
             holding: HoldingProfilResolve
@@ -53,7 +53,7 @@ export const holdingProfilRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'holding/new',
+        path: 'holdingprofil/new',
         component: HoldingProfilUpdateComponent,
         resolve: {
             holding: HoldingProfilResolve
@@ -65,7 +65,7 @@ export const holdingProfilRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'holding/:id/edit',
+        path: 'holdingprofil/:id/edit',
         component: HoldingProfilUpdateComponent,
         resolve: {
             holding: HoldingProfilResolve
@@ -80,7 +80,7 @@ export const holdingProfilRoute: Routes = [
 
 export const holdingProfilPopupRoute: Routes = [
     {
-        path: 'holding/:id/delete',
+        path: 'holdingprofil/:id/delete',
         component: HoldingProfilDeletePopupComponent,
         resolve: {
             holding: HoldingProfilResolve

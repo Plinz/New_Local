@@ -17,14 +17,12 @@ import { IUser, UserService } from '../core';
     templateUrl: './holdingProfil-update.component.html'
 })
 export class HoldingProfilUpdateComponent implements OnInit {
+    image: IImage;
     holding: IHolding;
     isSaving: boolean;
-
+    location: ILocation;
     images: IImage[];
-    holdingsCurrentUser: IHolding[];
-
     locations: ILocation[];
-
     users: IUser[];
 
     constructor(
@@ -34,19 +32,18 @@ export class HoldingProfilUpdateComponent implements OnInit {
         private locationService: LocationService,
         private userService: UserService,
         private activatedRoute: ActivatedRoute
-    ) {}
+    ) {
+        this.location = { city: 'coucou' };
+    }
 
     ngOnInit() {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ holding }) => {
             this.holding = holding;
         });
-        this.holdingService.findByCurrentUser().subscribe(
-            (res: HttpResponse<IHolding[]>) => {
-                this.holdingsCurrentUser = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        this.activatedRoute.data.subscribe(({ location }) => {
+            this.location = location;
+        });
         this.imageService.query({ 'holdingId.specified': 'false' }).subscribe(
             (res: HttpResponse<IImage[]>) => {
                 if (!this.holding.image || !this.holding.image.id) {
@@ -86,6 +83,12 @@ export class HoldingProfilUpdateComponent implements OnInit {
             this.subscribeToSaveResponse(this.holdingService.update(this.holding));
         } else {
             this.subscribeToSaveResponse(this.holdingService.create(this.holding));
+        }
+
+        if (this.location.id !== undefined) {
+            this.subscribeToSaveResponse(this.locationService.update(this.location));
+        } else {
+            this.subscribeToSaveResponse(this.locationService.create(this.location));
         }
     }
 

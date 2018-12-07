@@ -5,6 +5,10 @@
             <hr>
             <jhi-alert-error></jhi-alert-error>
             <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="newLocalApp.holding.siret">Siret</span></dt>
+                <dd>
+                    <span>{{holding.siret}}</span>
+                </dd>
                 <dt><span jhiTranslate="newLocalApp.holding.name">Name</span></dt>
                 <dd>
                     <span>{{holding.name}}</span>
@@ -16,10 +20,7 @@
                 <dt><span jhiTranslate="newLocalApp.holding.image">Image</span></dt>
                 <dd>
                     <div *ngIf="holding.image">
-                        <a (click)="openFile(holding.image.imageContentType, holding.image.image)">
-                            <img [src]="'data:' + holding.image.imageContentType + ';base64,' + holding.image.image" style="max-width: 100%;" alt="holding image"/>
-                        </a>
-                        {{holding.image.imageContentType}}
+                        <a [routerLink]="['/image', holding.image?.id, 'view']">{{holding.image?.id}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.holding.location">Location</span></dt>

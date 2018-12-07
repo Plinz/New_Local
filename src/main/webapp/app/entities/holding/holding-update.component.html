@@ -10,46 +10,87 @@
                         [(ngModel)]="holding.id" readonly />
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.siret" for="field_siret">Siret</label>
+                    <input type="text" class="form-control" name="siret" id="field_siret"
+                        [(ngModel)]="holding.siret" required minlength="14" maxlength="14"/>
+                    <div [hidden]="!(editForm.controls.siret?.dirty && editForm.controls.siret?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.siret?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.siret?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 14 }">
+                        This field is required to be at least 14 characters.
+                        </small>
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.siret?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 14 }">
+                        This field cannot be longer than 14 characters.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.holding.name" for="field_name">Name</label>
                     <input type="text" class="form-control" name="name" id="field_name"
-                        [(ngModel)]="holding.name" />
+                        [(ngModel)]="holding.name" required minlength="1" maxlength="100"/>
+                    <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.name?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.name?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
+                        This field is required to be at least 1 characters.
+                        </small>
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.name?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
+                        This field cannot be longer than 100 characters.
+                        </small>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.holding.description" for="field_description">Description</label>
                     <input type="text" class="form-control" name="description" id="field_description"
-                        [(ngModel)]="holding.description" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.image" for="field_image">Image</label>
-                    <div>
-                        <img [src]="'data:' + holding.image.imageContentType + ';base64,' + holding.image.image" style="max-height: 100px;" *ngIf="holding.image" alt="holding image"/>
-                        <div *ngIf="holding.image" class="form-text text-danger clearfix">
-                            <span class="pull-left">{{holding.image.imageContentType}}</span>
-                            <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')" class="btn btn-secondary btn-xs pull-right">
-                                <fa-icon [icon]="'times'"></fa-icon>
-                            </button>
-                        </div>
-                        <input type="file" id="file_image" (change)="setFileData($event, holding, 'image', true)" accept="image/*" jhiTranslate="entity.action.addimage"/>
+                        [(ngModel)]="holding.description" maxlength="300"/>
+                    <div [hidden]="!(editForm.controls.description?.dirty && editForm.controls.description?.invalid)">
+                        <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.description?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 300 }">
+                        This field cannot be longer than 300 characters.
+                        </small>
                     </div>
-                    <input type="hidden" class="form-control" name="image" id="field_image"
-                        [(ngModel)]="holding.image" />
-                    <input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
-                        [(ngModel)]="holding.image.imageContentType" />
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.location" for="field_location">Location</label>
-                    <select class="form-control" id="field_location" name="location" [(ngModel)]="holding.location" >
+                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.image" for="field_image">Image</label>
+                    <select class="form-control" id="field_image" name="image" [(ngModel)]="holding.image">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="locationOption.id === holding.location?.id ? holding.location : locationOption" *ngFor="let locationOption of locations; trackBy: trackLocationById">{{locationOption.id}}</option>
+                        <option [ngValue]="imageOption.id === holding.image?.id ? holding.image : imageOption" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.location" for="field_location">Location</label>
+                    <select class="form-control" id="field_location" name="location" [(ngModel)]="holding.location"  required>
+                        <option *ngIf="!editForm.value.location" [ngValue]="null" selected></option>
+                        <option [ngValue]="locationOption.id === holding.location?.id ? holding.location : locationOption" *ngFor="let locationOption of locations; trackBy: trackLocationById">{{locationOption.id}}</option>
+                    </select>
+                </div>
+                <div [hidden]="!(editForm.controls.location?.dirty && editForm.controls.location?.invalid)">
+                    <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.location?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                    </small>
+                </div>
+                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.holding.owner" for="field_owner">Owner</label>
-                    <select class="form-control" id="field_owner" name="owner" [(ngModel)]="holding.owner" >
-                        <option [ngValue]="null"></option>
+                    <select class="form-control" id="field_owner" name="owner" [(ngModel)]="holding.owner"  required>
+                        <option *ngIf="!editForm.value.owner" [ngValue]="null" selected></option>
                         <option [ngValue]="userOption.id === holding.owner?.id ? holding.owner : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
                     </select>
+                </div>
+                <div [hidden]="!(editForm.controls.owner?.dirty && editForm.controls.owner?.invalid)">
+                    <small class="form-text text-danger"
+                        [hidden]="!editForm.controls.owner?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                    </small>
                 </div>
             </div>
             <div>
