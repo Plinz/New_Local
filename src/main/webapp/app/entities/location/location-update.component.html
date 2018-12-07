@@ -114,9 +114,9 @@
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.location.user" for="field_user">User</label>
-                    <select class="form-control" id="field_user" name="user" [(ngModel)]="location.user" >
+                    <select class="form-control" id="field_user" name="user" [(ngModel)]="location.userId" >
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="userOption.id === location.user?.id ? location.user : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
+                        <option [ngValue]="userOption.id" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
                     </select>
                 </div>
             </div>

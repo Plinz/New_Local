@@ -32,8 +32,8 @@
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="name"><span jhiTranslate="newLocalApp.productType.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="description"><span jhiTranslate="newLocalApp.productType.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="image.id"><span jhiTranslate="newLocalApp.productType.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="category.id"><span jhiTranslate="newLocalApp.productType.category">Category</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="imageId"><span jhiTranslate="newLocalApp.productType.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="categoryId"><span jhiTranslate="newLocalApp.productType.category">Category</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -43,13 +43,13 @@
                 <td>{{productType.name}}</td>
                 <td>{{productType.description}}</td>
                 <td>
-                    <div *ngIf="productType.image">
-                        <a [routerLink]="['../image', productType.image?.id, 'view' ]" >{{productType.image?.id}}</a>
+                    <div *ngIf="productType.imageId">
+                        <a [routerLink]="['../image', productType.imageId , 'view' ]" >{{productType.imageId}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="productType.category">
-                        <a [routerLink]="['../category', productType.category?.id, 'view' ]" >{{productType.category?.id}}</a>
+                    <div *ngIf="productType.categoryId">
+                        <a [routerLink]="['../category', productType.categoryId , 'view' ]" >{{productType.categoryId}}</a>
                     </div>
                 </td>
                 <td class="text-right">

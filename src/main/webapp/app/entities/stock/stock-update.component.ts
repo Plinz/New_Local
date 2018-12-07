@@ -58,10 +58,10 @@ export class StockUpdateComponent implements OnInit {
         });
         this.imageService.query({ 'stockId.specified': 'false' }).subscribe(
             (res: HttpResponse<IImage[]>) => {
-                if (!this.stock.image || !this.stock.image.id) {
+                if (!this.stock.imageId) {
                     this.images = res.body;
                 } else {
-                    this.imageService.find(this.stock.image.id).subscribe(
+                    this.imageService.find(this.stock.imageId).subscribe(
                         (subRes: HttpResponse<IImage>) => {
                             this.images = [subRes.body].concat(res.body);
                         },

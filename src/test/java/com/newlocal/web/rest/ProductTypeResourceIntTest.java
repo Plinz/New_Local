@@ -1,25 +1,17 @@
 package com.newlocal.web.rest;
 
-import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.newlocal.NewLocalApp;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.EntityManager;
+import com.newlocal.domain.ProductType;
+import com.newlocal.domain.Image;
+import com.newlocal.domain.Category;
+import com.newlocal.repository.ProductTypeRepository;
+import com.newlocal.repository.search.ProductTypeSearchRepository;
+import com.newlocal.service.ProductTypeService;
+import com.newlocal.service.dto.ProductTypeDTO;
+import com.newlocal.service.mapper.ProductTypeMapper;
+import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.ProductTypeQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,15 +29,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.newlocal.NewLocalApp;
-import com.newlocal.domain.Category;
-import com.newlocal.domain.Image;
-import com.newlocal.domain.ProductType;
-import com.newlocal.repository.ProductTypeRepository;
-import com.newlocal.repository.search.ProductTypeSearchRepository;
-import com.newlocal.service.ProductTypeQueryService;
-import com.newlocal.service.ProductTypeService;
-import com.newlocal.web.rest.errors.ExceptionTranslator;
+import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.List;
+
+
+import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the ProductTypeResource REST controller.
@@ -64,6 +59,9 @@ public class ProductTypeResourceIntTest {
 
     @Autowired
     private ProductTypeRepository productTypeRepository;
+
+    @Autowired
+    private ProductTypeMapper productTypeMapper;
     
     @Autowired
     private ProductTypeService productTypeService;
@@ -135,9 +133,10 @@ public class ProductTypeResourceIntTest {
         int databaseSizeBeforeCreate = productTypeRepository.findAll().size();
 
         // Create the ProductType
+        ProductTypeDTO productTypeDTO = productTypeMapper.toDto(productType);
         restProductTypeMockMvc.perform(post("/api/product-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productType)))
+            .content(TestUtil.convertObjectToJsonBytes(productTypeDTO)))
             .andExpect(status().isCreated());
 
         // Validate the ProductType in the database
@@ -158,11 +157,12 @@ public class ProductTypeResourceIntTest {
 
         // Create the ProductType with an existing ID
         productType.setId(1L);
+        ProductTypeDTO productTypeDTO = productTypeMapper.toDto(productType);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restProductTypeMockMvc.perform(post("/api/product-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productType)))
+            .content(TestUtil.convertObjectToJsonBytes(productTypeDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ProductType in the database
@@ -181,10 +181,11 @@ public class ProductTypeResourceIntTest {
         productType.setName(null);
 
         // Create the ProductType, which fails.
+        ProductTypeDTO productTypeDTO = productTypeMapper.toDto(productType);
 
         restProductTypeMockMvc.perform(post("/api/product-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productType)))
+            .content(TestUtil.convertObjectToJsonBytes(productTypeDTO)))
             .andExpect(status().isBadRequest());
 
         List<ProductType> productTypeList = productTypeRepository.findAll();
@@ -384,9 +385,7 @@ public class ProductTypeResourceIntTest {
     @Transactional
     public void updateProductType() throws Exception {
         // Initialize the database
-        productTypeService.save(productType);
-        // As the test used the service layer, reset the Elasticsearch mock repository
-        reset(mockProductTypeSearchRepository);
+        productTypeRepository.saveAndFlush(productType);
 
         int databaseSizeBeforeUpdate = productTypeRepository.findAll().size();
 
@@ -397,10 +396,11 @@ public class ProductTypeResourceIntTest {
         updatedProductType
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION);
+        ProductTypeDTO productTypeDTO = productTypeMapper.toDto(updatedProductType);
 
         restProductTypeMockMvc.perform(put("/api/product-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedProductType)))
+            .content(TestUtil.convertObjectToJsonBytes(productTypeDTO)))
             .andExpect(status().isOk());
 
         // Validate the ProductType in the database
@@ -420,11 +420,12 @@ public class ProductTypeResourceIntTest {
         int databaseSizeBeforeUpdate = productTypeRepository.findAll().size();
 
         // Create the ProductType
+        ProductTypeDTO productTypeDTO = productTypeMapper.toDto(productType);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProductTypeMockMvc.perform(put("/api/product-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productType)))
+            .content(TestUtil.convertObjectToJsonBytes(productTypeDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ProductType in the database
@@ -439,7 +440,7 @@ public class ProductTypeResourceIntTest {
     @Transactional
     public void deleteProductType() throws Exception {
         // Initialize the database
-        productTypeService.save(productType);
+        productTypeRepository.saveAndFlush(productType);
 
         int databaseSizeBeforeDelete = productTypeRepository.findAll().size();
 
@@ -460,7 +461,7 @@ public class ProductTypeResourceIntTest {
     @Transactional
     public void searchProductType() throws Exception {
         // Initialize the database
-        productTypeService.save(productType);
+        productTypeRepository.saveAndFlush(productType);
         when(mockProductTypeSearchRepository.search(queryStringQuery("id:" + productType.getId()), PageRequest.of(0, 20)))
             .thenReturn(new PageImpl<>(Collections.singletonList(productType), PageRequest.of(0, 1), 1));
         // Search the productType
@@ -485,5 +486,28 @@ public class ProductTypeResourceIntTest {
         assertThat(productType1).isNotEqualTo(productType2);
         productType1.setId(null);
         assertThat(productType1).isNotEqualTo(productType2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ProductTypeDTO.class);
+        ProductTypeDTO productTypeDTO1 = new ProductTypeDTO();
+        productTypeDTO1.setId(1L);
+        ProductTypeDTO productTypeDTO2 = new ProductTypeDTO();
+        assertThat(productTypeDTO1).isNotEqualTo(productTypeDTO2);
+        productTypeDTO2.setId(productTypeDTO1.getId());
+        assertThat(productTypeDTO1).isEqualTo(productTypeDTO2);
+        productTypeDTO2.setId(2L);
+        assertThat(productTypeDTO1).isNotEqualTo(productTypeDTO2);
+        productTypeDTO1.setId(null);
+        assertThat(productTypeDTO1).isNotEqualTo(productTypeDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(productTypeMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(productTypeMapper.fromId(null)).isNull();
     }
 }

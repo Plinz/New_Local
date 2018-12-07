@@ -117,7 +117,7 @@
     ],
     "changelogDate": "20181130130544",
     "entityTableName": "stock",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pager",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,

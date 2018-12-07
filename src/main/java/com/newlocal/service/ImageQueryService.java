@@ -13,26 +13,21 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// for static metamodels
+import io.github.jhipster.service.QueryService;
+
 import com.newlocal.domain.Image;
-import com.newlocal.domain.*;
+import com.newlocal.domain.*; // for static metamodels
 import com.newlocal.repository.ImageRepository;
 import com.newlocal.repository.search.ImageSearchRepository;
 import com.newlocal.service.dto.ImageCriteria;
 import com.newlocal.service.dto.ImageDTO;
-
-import io.github.jhipster.service.QueryService;
-
-
-
-
-
+import com.newlocal.service.mapper.ImageMapper;
 
 /**
  * Service for executing complex queries for Image entities in the database.
  * The main input is a {@link ImageCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Image} or a {@link Page} of {@link Image} which fulfills the criteria.
+ * It returns a {@link List} of {@link ImageDTO} or a {@link Page} of {@link ImageDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -42,15 +37,18 @@ public class ImageQueryService extends QueryService<Image> {
 
     private ImageRepository imageRepository;
 
+    private ImageMapper imageMapper;
+
     private ImageSearchRepository imageSearchRepository;
 
-    public ImageQueryService(ImageRepository imageRepository, ImageSearchRepository imageSearchRepository) {
+    public ImageQueryService(ImageRepository imageRepository, ImageMapper imageMapper, ImageSearchRepository imageSearchRepository) {
         this.imageRepository = imageRepository;
+        this.imageMapper = imageMapper;
         this.imageSearchRepository = imageSearchRepository;
     }
 
     /**
-     * Return a {@link List} of {@link Image} which matches the criteria from the database
+     * Return a {@link List} of {@link ImageDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
@@ -58,11 +56,12 @@ public class ImageQueryService extends QueryService<Image> {
     public List<ImageDTO> findByCriteria(ImageCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Image> specification = createSpecification(criteria);
-        return imageRepository.findAll(specification).stream().map(ImageDTO::new).collect(Collectors.toList());
+        return imageRepository.findAll(specification).stream()
+        		.map(ImageDTO::new).collect(Collectors.toList());
     }
 
     /**
-     * Return a {@link Page} of {@link Image} which matches the criteria from the database
+     * Return a {@link Page} of {@link ImageDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
@@ -71,7 +70,8 @@ public class ImageQueryService extends QueryService<Image> {
     public Page<ImageDTO> findByCriteria(ImageCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Image> specification = createSpecification(criteria);
-        return imageRepository.findAll(specification, page).map(ImageDTO::new);
+        return imageRepository.findAll(specification, page)
+            .map(ImageDTO::new);
     }
 
     /**

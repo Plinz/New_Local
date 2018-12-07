@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
-import com.newlocal.domain.ProductType;
 import com.newlocal.service.ProductTypeQueryService;
 import com.newlocal.service.ProductTypeService;
 import com.newlocal.service.dto.ProductTypeCriteria;
+import com.newlocal.service.dto.ProductTypeDTO;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
@@ -58,18 +58,18 @@ public class ProductTypeResource {
     /**
      * POST  /product-types : Create a new productType.
      *
-     * @param productType the productType to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new productType, or with status 400 (Bad Request) if the productType has already an ID
+     * @param productTypeDTO the productTypeDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new productTypeDTO, or with status 400 (Bad Request) if the productType has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/product-types")
     @Timed
-    public ResponseEntity<ProductType> createProductType(@Valid @RequestBody ProductType productType) throws URISyntaxException {
-        log.debug("REST request to save ProductType : {}", productType);
-        if (productType.getId() != null) {
+    public ResponseEntity<ProductTypeDTO> createProductType(@Valid @RequestBody ProductTypeDTO productTypeDTO) throws URISyntaxException {
+        log.debug("REST request to save ProductType : {}", productTypeDTO);
+        if (productTypeDTO.getId() != null) {
             throw new BadRequestAlertException("A new productType cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ProductType result = productTypeService.save(productType);
+        ProductTypeDTO result = productTypeService.save(productTypeDTO);
         return ResponseEntity.created(new URI("/api/product-types/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -78,22 +78,22 @@ public class ProductTypeResource {
     /**
      * PUT  /product-types : Updates an existing productType.
      *
-     * @param productType the productType to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated productType,
-     * or with status 400 (Bad Request) if the productType is not valid,
-     * or with status 500 (Internal Server Error) if the productType couldn't be updated
+     * @param productTypeDTO the productTypeDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated productTypeDTO,
+     * or with status 400 (Bad Request) if the productTypeDTO is not valid,
+     * or with status 500 (Internal Server Error) if the productTypeDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/product-types")
     @Timed
-    public ResponseEntity<ProductType> updateProductType(@Valid @RequestBody ProductType productType) throws URISyntaxException {
-        log.debug("REST request to update ProductType : {}", productType);
-        if (productType.getId() == null) {
+    public ResponseEntity<ProductTypeDTO> updateProductType(@Valid @RequestBody ProductTypeDTO productTypeDTO) throws URISyntaxException {
+        log.debug("REST request to update ProductType : {}", productTypeDTO);
+        if (productTypeDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        ProductType result = productTypeService.save(productType);
+        ProductTypeDTO result = productTypeService.save(productTypeDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, productType.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, productTypeDTO.getId().toString()))
             .body(result);
     }
 
@@ -106,9 +106,9 @@ public class ProductTypeResource {
      */
     @GetMapping("/product-types")
     @Timed
-    public ResponseEntity<List<ProductType>> getAllProductTypes(ProductTypeCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<ProductTypeDTO>> getAllProductTypes(ProductTypeCriteria criteria, Pageable pageable) {
         log.debug("REST request to get ProductTypes by criteria: {}", criteria);
-        Page<ProductType> page = productTypeQueryService.findByCriteria(criteria, pageable);
+        Page<ProductTypeDTO> page = productTypeQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/product-types");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -129,21 +129,21 @@ public class ProductTypeResource {
     /**
      * GET  /product-types/:id : get the "id" productType.
      *
-     * @param id the id of the productType to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the productType, or with status 404 (Not Found)
+     * @param id the id of the productTypeDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the productTypeDTO, or with status 404 (Not Found)
      */
     @GetMapping("/product-types/{id}")
     @Timed
-    public ResponseEntity<ProductType> getProductType(@PathVariable Long id) {
+    public ResponseEntity<ProductTypeDTO> getProductType(@PathVariable Long id) {
         log.debug("REST request to get ProductType : {}", id);
-        Optional<ProductType> productType = productTypeService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(productType);
+        Optional<ProductTypeDTO> productTypeDTO = productTypeService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(productTypeDTO);
     }
 
     /**
      * DELETE  /product-types/:id : delete the "id" productType.
      *
-     * @param id the id of the productType to delete
+     * @param id the id of the productTypeDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/product-types/{id}")
@@ -164,9 +164,9 @@ public class ProductTypeResource {
      */
     @GetMapping("/_search/product-types")
     @Timed
-    public ResponseEntity<List<ProductType>> searchProductTypes(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<ProductTypeDTO>> searchProductTypes(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of ProductTypes for query {}", query);
-        Page<ProductType> page = productTypeService.search(query, pageable);
+        Page<ProductTypeDTO> page = productTypeService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/product-types");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

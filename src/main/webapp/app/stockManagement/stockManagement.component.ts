@@ -10,6 +10,9 @@ import { Principal } from '../core';
 import { ITEMS_PER_PAGE } from '../shared';
 import { StockService } from '../entities/stock/stock.service';
 
+import { ProductTypeService } from '../entities/product-type/product-type.service';
+import { IProductType } from '../shared/model/product-type.model';
+
 import { CategoryService } from '../entities/category/category.service';
 import { ICategory } from '../shared/model/category.model';
 
@@ -53,7 +56,8 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         private dataUtils: JhiDataUtils,
         private router: Router,
         private eventManager: JhiEventManager,
-        private categoryService: CategoryService
+        private categoryService: CategoryService,
+        private productTypeService: ProductTypeService
     ) {
         this.stocks = null;
         this.count = 1;
@@ -218,7 +222,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
             s.available &&
             this.count === 1 &&
             this.checkDate(s.expiryDate) &&
-            this.checkoption(s.productType.category.id) &&
+            this.checkoption(s.productTypeId) &&
             s.quantityRemaining === 0
         ) {
             return true;
@@ -228,7 +232,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     }
 
     onglet2(s: IStock) {
-        if (!s.available && this.count === 2 && this.checkoption(s.productType.category.id)) {
+        if (!s.available && this.count === 2 && this.checkoption(s.productTypeId)) {
             return true;
         } else {
             return false;
@@ -236,7 +240,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     }
 
     onglet3(s: IStock) {
-        if (s.available && this.count === 3 && !this.checkDate(s.expiryDate) && this.checkoption(s.productType.category.id)) {
+        if (s.available && this.count === 3 && !this.checkDate(s.expiryDate) && this.checkoption(s.productTypeId)) {
             return true;
         } else {
             return false;
@@ -248,11 +252,12 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     }
 
     checkoption(o: number) {
-        if (o === this.optionCategory || this.optionCategory === -1) {
-            return true;
-        } else {
-            return false;
-        }
+        this.productTypeService.find(o).subscribe(
+            (res: HttpResponse<IProductType>) => {
+                return res.body.categoryId === this.optionCategory || this.optionCategory === -1;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     loadCategory() {

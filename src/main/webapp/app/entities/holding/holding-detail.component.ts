@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JhiDataUtils } from 'ng-jhipster';
 
 import { IHolding } from 'app/shared/model/holding.model';
 
@@ -11,7 +10,7 @@ import { IHolding } from 'app/shared/model/holding.model';
 export class HoldingDetailComponent implements OnInit {
     holding: IHolding;
 
-    constructor(private dataUtils: JhiDataUtils, private activatedRoute: ActivatedRoute) {}
+    constructor(private activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
         this.activatedRoute.data.subscribe(({ holding }) => {
@@ -19,13 +18,6 @@ export class HoldingDetailComponent implements OnInit {
         });
     }
 
-    byteSize(field) {
-        return this.dataUtils.byteSize(field);
-    }
-
-    openFile(contentType, field) {
-        return this.dataUtils.openFile(contentType, field);
-    }
     previousState() {
         window.history.back();
     }

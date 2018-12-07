@@ -73,7 +73,7 @@
     ],
     "changelogDate": "20181130130551",
     "entityTableName": "location",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pager",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,

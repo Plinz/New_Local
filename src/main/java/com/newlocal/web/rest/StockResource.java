@@ -24,17 +24,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.access.prepost.PostAuthorize;
-import com.newlocal.security.AuthoritiesConstants;
-import org.springframework.security.access.annotation.Secured;
 
 import com.codahale.metrics.annotation.Timed;
-import com.newlocal.domain.Stock;
-import com.newlocal.repository.UserRepository;
 import com.newlocal.service.StockQueryService;
 import com.newlocal.service.StockService;
 import com.newlocal.service.dto.StockCriteria;
+import com.newlocal.service.dto.StockDTO;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
@@ -56,38 +51,36 @@ public class StockResource {
 
     private StockQueryService stockQueryService;
 
-    private UserRepository userRepository;
 
     private UserDAO userDAO;
 
-    public StockResource(StockService stockService, StockQueryService stockQueryService, UserRepository userRepository, UserDAO userDAO) {
+    public StockResource(StockService stockService, StockQueryService stockQueryService, UserDAO userDAO) {
         this.stockService = stockService;
         this.stockQueryService = stockQueryService;
-        this.userRepository = userRepository;
         this.userDAO = userDAO;
     }
 
     /**
      * POST  /stocks : Create a new stock.
      *
-     * @param stock the stock to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new stock, or with status 400 (Bad Request) if the stock has already an ID
+     * @param stockDTO the stockDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new stockDTO, or with status 400 (Bad Request) if the stock has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/stocks")
     @Timed
-    public ResponseEntity<Stock> createStock(@Valid @RequestBody Stock stock) throws URISyntaxException {
-        log.debug("REST request to save Stock : {}", stock);
-        if (stock.getId() != null) {
+    public ResponseEntity<StockDTO> createStock(@Valid @RequestBody StockDTO stockDTO) throws URISyntaxException {
+        log.debug("REST request to save Stock : {}", stockDTO);
+        if (stockDTO.getId() != null) {
             throw new BadRequestAlertException("A new stock cannot already have an ID", ENTITY_NAME, "idexists");
         }
         long idCurrentUser = userDAO.getUserIdByCurrentLogin();
         if (idCurrentUser > 0) {
-            stock.setSeller(userRepository.findById(idCurrentUser).get());
+            stockDTO.setSellerId(idCurrentUser);
         } else {
-            stock.setSeller(null);
+            stockDTO.setSellerId(null);
         }
-        Stock result = stockService.save(stock);
+        StockDTO result = stockService.save(stockDTO);
         return ResponseEntity.created(new URI("/api/stocks/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -96,22 +89,22 @@ public class StockResource {
     /**
      * PUT  /stocks : Updates an existing stock.
      *
-     * @param stock the stock to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated stock,
-     * or with status 400 (Bad Request) if the stock is not valid,
-     * or with status 500 (Internal Server Error) if the stock couldn't be updated
+     * @param stockDTO the stockDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated stockDTO,
+     * or with status 400 (Bad Request) if the stockDTO is not valid,
+     * or with status 500 (Internal Server Error) if the stockDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/stocks")
     @Timed
-    public ResponseEntity<Stock> updateStock(@Valid @RequestBody Stock stock) throws URISyntaxException {
-        log.debug("REST request to update Stock : {}", stock);
-        if (stock.getId() == null) {
+    public ResponseEntity<StockDTO> updateStock(@Valid @RequestBody StockDTO stockDTO) throws URISyntaxException {
+        log.debug("REST request to update Stock : {}", stockDTO);
+        if (stockDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Stock result = stockService.save(stock);
+        StockDTO result = stockService.save(stockDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stock.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, stockDTO.getId().toString()))
             .body(result);
     }
 
@@ -124,9 +117,9 @@ public class StockResource {
      */
     @GetMapping("/stocks")
     @Timed
-    public ResponseEntity<List<Stock>> getAllStocks(StockCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<StockDTO>> getAllStocks(StockCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Stocks by criteria: {}", criteria);
-        Page<Stock> page = stockQueryService.findByCriteria(criteria, pageable);
+        Page<StockDTO> page = stockQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/stocks");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -147,21 +140,21 @@ public class StockResource {
     /**
      * GET  /stocks/:id : get the "id" stock.
      *
-     * @param id the id of the stock to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the stock, or with status 404 (Not Found)
+     * @param id the id of the stockDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the stockDTO, or with status 404 (Not Found)
      */
     @GetMapping("/stocks/{id}")
     @Timed
-    public ResponseEntity<Stock> getStock(@PathVariable Long id) {
+    public ResponseEntity<StockDTO> getStock(@PathVariable Long id) {
         log.debug("REST request to get Stock : {}", id);
-        Optional<Stock> stock = stockService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(stock);
+        Optional<StockDTO> stockDTO = stockService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(stockDTO);
     }
 
     /**
      * DELETE  /stocks/:id : delete the "id" stock.
      *
-     * @param id the id of the stock to delete
+     * @param id the id of the stockDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/stocks/{id}")
@@ -182,9 +175,9 @@ public class StockResource {
      */
     @GetMapping("/_search/stocks")
     @Timed
-    public ResponseEntity<List<Stock>> searchStocks(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<StockDTO>> searchStocks(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Stocks for query {}", query);
-        Page<Stock> page = stockService.search(query, pageable);
+        Page<StockDTO> page = stockService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/stocks");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -195,10 +188,10 @@ public class StockResource {
      */
     @GetMapping("/stocks/bio")
     @Timed
-    public ResponseEntity<Stock>  getProductBio() {
+    public ResponseEntity<StockDTO>  getProductBio() {
         log.debug("REST request to search a product Bio");
-        List<Stock>  stockBio= stockService.getProductBio();
-        Stock stockb=stockBio.get((new Random()).nextInt(stockBio.size()));
+        List<StockDTO>  stockBio = stockService.getProductBio();
+        StockDTO stockb = stockBio.get((new Random()).nextInt(stockBio.size()));
         return ResponseEntity.ok().body(stockb);
     }
 
@@ -208,9 +201,9 @@ public class StockResource {
      */
     @GetMapping("/stocks/newStock")
     @Timed
-    public ResponseEntity<Stock>  getNewStock() {
+    public ResponseEntity<StockDTO>  getNewStock() {
         log.debug("REST request to search a new stock");
-        Stock stockNew=stockService.getNewStock().get(0);
+        StockDTO stockNew = stockService.getNewStock().get(0);
         return ResponseEntity.ok().body(stockNew);
 
     }
@@ -221,10 +214,10 @@ public class StockResource {
      */
     @GetMapping("/stocks/bestPurchase")
     @Timed
-    public ResponseEntity<Stock> getBestPurchase() {
+    public ResponseEntity<StockDTO> getBestPurchase() {
         log.debug("REST request to search the best purchase");
-        List<Stock>  stockBestPurchase=stockService.getBestPurchase();
-        Stock stockBest=stockBestPurchase.get((new Random()).nextInt(stockBestPurchase.size()));
+        List<StockDTO> stockBestPurchase = stockService.getBestPurchase();
+        StockDTO stockBest = stockBestPurchase.get((new Random()).nextInt(stockBestPurchase.size()));
         return ResponseEntity.ok().body(stockBest);
     }
 
@@ -235,10 +228,10 @@ public class StockResource {
 
     @GetMapping("/stocks/grade")
     @Timed
-    public ResponseEntity<Stock> getBestGrade() {
+    public ResponseEntity<StockDTO> getBestGrade() {
         log.debug("REST request to search the best grade");
-        List<Stock>  gradeList=stockService.getBestGrade();
-        Stock stockGrade=gradeList.get((new Random()).nextInt(gradeList.size()));
+        List<StockDTO> gradeList = stockService.getBestGrade();
+        StockDTO stockGrade = gradeList.get((new Random()).nextInt(gradeList.size()));
         return ResponseEntity.ok().body(stockGrade);
     }
 }

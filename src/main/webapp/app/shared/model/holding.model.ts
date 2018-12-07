@@ -1,15 +1,14 @@
-import { IImage } from 'app/shared/model//image.model';
-import { ILocation } from 'app/shared/model//location.model';
-import { IUser } from 'app/core/user/user.model';
+import { IImage } from 'app/shared/model/image.model';
 
 export interface IHolding {
     id?: number;
     siret?: string;
     name?: string;
     description?: string;
+    imageId?: number;
+    locationId?: number;
+    ownerId?: number;
     image?: IImage;
-    location?: ILocation;
-    owner?: IUser;
 }
 
 export class Holding implements IHolding {
@@ -18,8 +17,9 @@ export class Holding implements IHolding {
         public siret?: string,
         public name?: string,
         public description?: string,
-        public image?: IImage,
-        public location?: ILocation,
-        public owner?: IUser
+        public imageId?: number,
+        public locationId?: number,
+        public ownerId?: number,
+        public image?: IImage
     ) {}
 }

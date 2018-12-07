@@ -1,25 +1,16 @@
 package com.newlocal.web.rest;
 
-import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.newlocal.NewLocalApp;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.EntityManager;
+import com.newlocal.domain.Location;
+import com.newlocal.domain.User;
+import com.newlocal.repository.LocationRepository;
+import com.newlocal.repository.search.LocationSearchRepository;
+import com.newlocal.service.LocationService;
+import com.newlocal.service.dto.LocationDTO;
+import com.newlocal.service.mapper.LocationMapper;
+import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.LocationQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +28,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.newlocal.NewLocalApp;
-import com.newlocal.domain.Location;
-import com.newlocal.domain.User;
-import com.newlocal.repository.LocationRepository;
-import com.newlocal.repository.search.LocationSearchRepository;
-import com.newlocal.service.LocationQueryService;
-import com.newlocal.service.LocationService;
-import com.newlocal.web.rest.errors.ExceptionTranslator;
+import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.List;
+
+
+import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the LocationResource REST controller.
@@ -75,6 +70,9 @@ public class LocationResourceIntTest {
 
     @Autowired
     private LocationRepository locationRepository;
+
+    @Autowired
+    private LocationMapper locationMapper;
     
     @Autowired
     private LocationService locationService;
@@ -145,9 +143,10 @@ public class LocationResourceIntTest {
         int databaseSizeBeforeCreate = locationRepository.findAll().size();
 
         // Create the Location
+        LocationDTO locationDTO = locationMapper.toDto(location);
         restLocationMockMvc.perform(post("/api/locations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(location)))
+            .content(TestUtil.convertObjectToJsonBytes(locationDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Location in the database
@@ -172,11 +171,12 @@ public class LocationResourceIntTest {
 
         // Create the Location with an existing ID
         location.setId(1L);
+        LocationDTO locationDTO = locationMapper.toDto(location);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restLocationMockMvc.perform(post("/api/locations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(location)))
+            .content(TestUtil.convertObjectToJsonBytes(locationDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Location in the database
@@ -195,10 +195,11 @@ public class LocationResourceIntTest {
         location.setZip(null);
 
         // Create the Location, which fails.
+        LocationDTO locationDTO = locationMapper.toDto(location);
 
         restLocationMockMvc.perform(post("/api/locations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(location)))
+            .content(TestUtil.convertObjectToJsonBytes(locationDTO)))
             .andExpect(status().isBadRequest());
 
         List<Location> locationList = locationRepository.findAll();
@@ -547,9 +548,7 @@ public class LocationResourceIntTest {
     @Transactional
     public void updateLocation() throws Exception {
         // Initialize the database
-        locationService.save(location);
-        // As the test used the service layer, reset the Elasticsearch mock repository
-        reset(mockLocationSearchRepository);
+        locationRepository.saveAndFlush(location);
 
         int databaseSizeBeforeUpdate = locationRepository.findAll().size();
 
@@ -564,10 +563,11 @@ public class LocationResourceIntTest {
             .address(UPDATED_ADDRESS)
             .lon(UPDATED_LON)
             .lat(UPDATED_LAT);
+        LocationDTO locationDTO = locationMapper.toDto(updatedLocation);
 
         restLocationMockMvc.perform(put("/api/locations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedLocation)))
+            .content(TestUtil.convertObjectToJsonBytes(locationDTO)))
             .andExpect(status().isOk());
 
         // Validate the Location in the database
@@ -591,11 +591,12 @@ public class LocationResourceIntTest {
         int databaseSizeBeforeUpdate = locationRepository.findAll().size();
 
         // Create the Location
+        LocationDTO locationDTO = locationMapper.toDto(location);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restLocationMockMvc.perform(put("/api/locations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(location)))
+            .content(TestUtil.convertObjectToJsonBytes(locationDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Location in the database
@@ -610,7 +611,7 @@ public class LocationResourceIntTest {
     @Transactional
     public void deleteLocation() throws Exception {
         // Initialize the database
-        locationService.save(location);
+        locationRepository.saveAndFlush(location);
 
         int databaseSizeBeforeDelete = locationRepository.findAll().size();
 
@@ -631,7 +632,7 @@ public class LocationResourceIntTest {
     @Transactional
     public void searchLocation() throws Exception {
         // Initialize the database
-        locationService.save(location);
+        locationRepository.saveAndFlush(location);
         when(mockLocationSearchRepository.search(queryStringQuery("id:" + location.getId()), PageRequest.of(0, 20)))
             .thenReturn(new PageImpl<>(Collections.singletonList(location), PageRequest.of(0, 1), 1));
         // Search the location
@@ -660,5 +661,28 @@ public class LocationResourceIntTest {
         assertThat(location1).isNotEqualTo(location2);
         location1.setId(null);
         assertThat(location1).isNotEqualTo(location2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(LocationDTO.class);
+        LocationDTO locationDTO1 = new LocationDTO();
+        locationDTO1.setId(1L);
+        LocationDTO locationDTO2 = new LocationDTO();
+        assertThat(locationDTO1).isNotEqualTo(locationDTO2);
+        locationDTO2.setId(locationDTO1.getId());
+        assertThat(locationDTO1).isEqualTo(locationDTO2);
+        locationDTO2.setId(2L);
+        assertThat(locationDTO1).isNotEqualTo(locationDTO2);
+        locationDTO1.setId(null);
+        assertThat(locationDTO1).isNotEqualTo(locationDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(locationMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(locationMapper.fromId(null)).isNull();
     }
 }

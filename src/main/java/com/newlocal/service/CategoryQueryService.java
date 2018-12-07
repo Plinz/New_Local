@@ -1,6 +1,7 @@
 package com.newlocal.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.JoinType;
 
@@ -19,12 +20,13 @@ import com.newlocal.domain.*; // for static metamodels
 import com.newlocal.repository.CategoryRepository;
 import com.newlocal.repository.search.CategorySearchRepository;
 import com.newlocal.service.dto.CategoryCriteria;
+import com.newlocal.service.dto.CategoryDTO;
 
 /**
  * Service for executing complex queries for Category entities in the database.
  * The main input is a {@link CategoryCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Category} or a {@link Page} of {@link Category} which fulfills the criteria.
+ * It returns a {@link List} of {@link CategoryDTO} or a {@link Page} of {@link CategoryDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -34,36 +36,37 @@ public class CategoryQueryService extends QueryService<Category> {
 
     private CategoryRepository categoryRepository;
 
-//    private CategorySearchRepository categorySearchRepository;
+    private CategorySearchRepository categorySearchRepository;
 
     public CategoryQueryService(CategoryRepository categoryRepository, CategorySearchRepository categorySearchRepository) {
         this.categoryRepository = categoryRepository;
-//        this.categorySearchRepository = categorySearchRepository;
+        this.categorySearchRepository = categorySearchRepository;
     }
 
     /**
-     * Return a {@link List} of {@link Category} which matches the criteria from the database
+     * Return a {@link List} of {@link CategoryDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Category> findByCriteria(CategoryCriteria criteria) {
+    public List<CategoryDTO> findByCriteria(CategoryCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Category> specification = createSpecification(criteria);
-        return categoryRepository.findAll(specification);
+        return categoryRepository.findAll(specification).stream().map(CategoryDTO::new).collect(Collectors.toList());
     }
 
     /**
-     * Return a {@link Page} of {@link Category} which matches the criteria from the database
+     * Return a {@link Page} of {@link CategoryDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<Category> findByCriteria(CategoryCriteria criteria, Pageable page) {
+    public Page<CategoryDTO> findByCriteria(CategoryCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Category> specification = createSpecification(criteria);
-        return categoryRepository.findAll(specification, page);
+        return categoryRepository.findAll(specification, page)
+            .map(CategoryDTO::new);
     }
 
     /**

@@ -59,7 +59,7 @@
     ],
     "changelogDate": "20181130130552",
     "entityTableName": "holding",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pager",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,

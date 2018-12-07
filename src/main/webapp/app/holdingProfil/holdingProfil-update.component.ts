@@ -49,10 +49,10 @@ export class HoldingProfilUpdateComponent implements OnInit {
         );
         this.imageService.query({ 'holdingId.specified': 'false' }).subscribe(
             (res: HttpResponse<IImage[]>) => {
-                if (!this.holding.image || !this.holding.image.id) {
+                if (!this.holding.imageId) {
                     this.images = res.body;
                 } else {
-                    this.imageService.find(this.holding.image.id).subscribe(
+                    this.imageService.find(this.holding.imageId).subscribe(
                         (subRes: HttpResponse<IImage>) => {
                             this.images = [subRes.body].concat(res.body);
                         },

@@ -39,11 +39,11 @@
             <th jhiSortBy="expiryDate"><span jhiTranslate="newLocalApp.stock.expiryDate">Expiry Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="bio"><span jhiTranslate="newLocalApp.stock.bio">Bio</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="available"><span jhiTranslate="newLocalApp.stock.available">Available</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="image.id"><span jhiTranslate="newLocalApp.stock.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="productType.id"><span jhiTranslate="newLocalApp.stock.productType">Product Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="holding.id"><span jhiTranslate="newLocalApp.stock.holding">Holding</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="seller.id"><span jhiTranslate="newLocalApp.stock.seller">Seller</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="warehouse.id"><span jhiTranslate="newLocalApp.stock.warehouse">Warehouse</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="imageId"><span jhiTranslate="newLocalApp.stock.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="productTypeId"><span jhiTranslate="newLocalApp.stock.productType">Product Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="holdingId"><span jhiTranslate="newLocalApp.stock.holding">Holding</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="sellerId"><span jhiTranslate="newLocalApp.stock.seller">Seller</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="warehouseId"><span jhiTranslate="newLocalApp.stock.warehouse">Warehouse</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -60,26 +60,26 @@
                 <td>{{stock.bio}}</td>
                 <td>{{stock.available}}</td>
                 <td>
-                    <div *ngIf="stock.image">
-                        <a [routerLink]="['../image', stock.image?.id, 'view' ]" >{{stock.image?.id}}</a>
+                    <div *ngIf="stock.imageId">
+                        <a [routerLink]="['../image', stock.imageId , 'view' ]" >{{stock.imageId}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="stock.productType">
-                        <a [routerLink]="['../product-type', stock.productType?.id, 'view' ]" >{{stock.productType?.id}}</a>
+                    <div *ngIf="stock.productTypeId">
+                        <a [routerLink]="['../product-type', stock.productTypeId , 'view' ]" >{{stock.productTypeId}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="stock.holding">
-                        <a [routerLink]="['../holding', stock.holding?.id, 'view' ]" >{{stock.holding?.id}}</a>
+                    <div *ngIf="stock.holdingId">
+                        <a [routerLink]="['../holding', stock.holdingId , 'view' ]" >{{stock.holdingId}}</a>
                     </div>
                 </td>
                 <td>
-                    {{stock.seller?.id}}
+                    {{stock.sellerId}}
                 </td>
                 <td>
-                    <div *ngIf="stock.warehouse">
-                        <a [routerLink]="['../warehouse', stock.warehouse?.id, 'view' ]" >{{stock.warehouse?.id}}</a>
+                    <div *ngIf="stock.warehouseId">
+                        <a [routerLink]="['../warehouse', stock.warehouseId , 'view' ]" >{{stock.warehouseId}}</a>
                     </div>
                 </td>
                 <td class="text-right">

@@ -1,6 +1,7 @@
 package com.newlocal.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.JoinType;
 
@@ -19,12 +20,14 @@ import com.newlocal.domain.*; // for static metamodels
 import com.newlocal.repository.HoldingRepository;
 import com.newlocal.repository.search.HoldingSearchRepository;
 import com.newlocal.service.dto.HoldingCriteria;
+import com.newlocal.service.dto.HoldingDTO;
+import com.newlocal.service.mapper.HoldingMapper;
 
 /**
  * Service for executing complex queries for Holding entities in the database.
  * The main input is a {@link HoldingCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Holding} or a {@link Page} of {@link Holding} which fulfills the criteria.
+ * It returns a {@link List} of {@link HoldingDTO} or a {@link Page} of {@link HoldingDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -34,36 +37,41 @@ public class HoldingQueryService extends QueryService<Holding> {
 
     private HoldingRepository holdingRepository;
 
-//    private HoldingSearchRepository holdingSearchRepository;
+    private HoldingMapper holdingMapper;
 
-    public HoldingQueryService(HoldingRepository holdingRepository, HoldingSearchRepository holdingSearchRepository) {
+    private HoldingSearchRepository holdingSearchRepository;
+
+    public HoldingQueryService(HoldingRepository holdingRepository, HoldingMapper holdingMapper, HoldingSearchRepository holdingSearchRepository) {
         this.holdingRepository = holdingRepository;
-//        this.holdingSearchRepository = holdingSearchRepository;
+        this.holdingMapper = holdingMapper;
+        this.holdingSearchRepository = holdingSearchRepository;
     }
 
     /**
-     * Return a {@link List} of {@link Holding} which matches the criteria from the database
+     * Return a {@link List} of {@link HoldingDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Holding> findByCriteria(HoldingCriteria criteria) {
+    public List<HoldingDTO> findByCriteria(HoldingCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Holding> specification = createSpecification(criteria);
-        return holdingRepository.findAll(specification);
+        return holdingRepository.findAll(specification).stream()
+        		.map(HoldingDTO::new).collect(Collectors.toList());
     }
 
     /**
-     * Return a {@link Page} of {@link Holding} which matches the criteria from the database
+     * Return a {@link Page} of {@link HoldingDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<Holding> findByCriteria(HoldingCriteria criteria, Pageable page) {
+    public Page<HoldingDTO> findByCriteria(HoldingCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Holding> specification = createSpecification(criteria);
-        return holdingRepository.findAll(specification, page);
+        return holdingRepository.findAll(specification, page)
+            .map(HoldingDTO::new);
     }
 
     /**

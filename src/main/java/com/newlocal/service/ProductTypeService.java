@@ -3,6 +3,8 @@ package com.newlocal.service;
 import com.newlocal.domain.ProductType;
 import com.newlocal.repository.ProductTypeRepository;
 import com.newlocal.repository.search.ProductTypeSearchRepository;
+import com.newlocal.service.dto.ProductTypeDTO;
+import com.newlocal.service.mapper.ProductTypeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,23 +28,29 @@ public class ProductTypeService {
 
     private ProductTypeRepository productTypeRepository;
 
+    private ProductTypeMapper productTypeMapper;
+
     private ProductTypeSearchRepository productTypeSearchRepository;
 
-    public ProductTypeService(ProductTypeRepository productTypeRepository, ProductTypeSearchRepository productTypeSearchRepository) {
+    public ProductTypeService(ProductTypeRepository productTypeRepository, ProductTypeMapper productTypeMapper, ProductTypeSearchRepository productTypeSearchRepository) {
         this.productTypeRepository = productTypeRepository;
+        this.productTypeMapper = productTypeMapper;
         this.productTypeSearchRepository = productTypeSearchRepository;
     }
 
     /**
      * Save a productType.
      *
-     * @param productType the entity to save
+     * @param productTypeDTO the entity to save
      * @return the persisted entity
      */
-    public ProductType save(ProductType productType) {
-        log.debug("Request to save ProductType : {}", productType);
-        ProductType result = productTypeRepository.save(productType);
-        productTypeSearchRepository.save(result);
+    public ProductTypeDTO save(ProductTypeDTO productTypeDTO) {
+        log.debug("Request to save ProductType : {}", productTypeDTO);
+
+        ProductType productType = productTypeMapper.toEntity(productTypeDTO);
+        productType = productTypeRepository.save(productType);
+        ProductTypeDTO result = productTypeMapper.toDto(productType);
+        productTypeSearchRepository.save(productType);
         return result;
     }
 
@@ -53,9 +61,10 @@ public class ProductTypeService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<ProductType> findAll(Pageable pageable) {
+    public Page<ProductTypeDTO> findAll(Pageable pageable) {
         log.debug("Request to get all ProductTypes");
-        return productTypeRepository.findAll(pageable);
+        return productTypeRepository.findAll(pageable)
+            .map(ProductTypeDTO::new);
     }
 
 
@@ -66,9 +75,10 @@ public class ProductTypeService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Optional<ProductType> findOne(Long id) {
+    public Optional<ProductTypeDTO> findOne(Long id) {
         log.debug("Request to get ProductType : {}", id);
-        return productTypeRepository.findById(id);
+        return productTypeRepository.findById(id)
+            .map(ProductTypeDTO::new);
     }
 
     /**
@@ -90,7 +100,9 @@ public class ProductTypeService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<ProductType> search(String query, Pageable pageable) {
+    public Page<ProductTypeDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProductTypes for query {}", query);
-        return productTypeSearchRepository.search(queryStringQuery(query), pageable);    }
+        return productTypeSearchRepository.search(queryStringQuery(query), pageable)
+            .map(ProductTypeDTO::new);
+    }
 }

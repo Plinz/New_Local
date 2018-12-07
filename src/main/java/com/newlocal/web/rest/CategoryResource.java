@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
-import com.newlocal.domain.Category;
 import com.newlocal.service.CategoryQueryService;
 import com.newlocal.service.CategoryService;
 import com.newlocal.service.dto.CategoryCriteria;
+import com.newlocal.service.dto.CategoryDTO;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
@@ -58,18 +58,18 @@ public class CategoryResource {
     /**
      * POST  /categories : Create a new category.
      *
-     * @param category the category to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new category, or with status 400 (Bad Request) if the category has already an ID
+     * @param categoryDTO the categoryDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new categoryDTO, or with status 400 (Bad Request) if the category has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/categories")
     @Timed
-    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) throws URISyntaxException {
-        log.debug("REST request to save Category : {}", category);
-        if (category.getId() != null) {
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) throws URISyntaxException {
+        log.debug("REST request to save Category : {}", categoryDTO);
+        if (categoryDTO.getId() != null) {
             throw new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Category result = categoryService.save(category);
+        CategoryDTO result = categoryService.save(categoryDTO);
         return ResponseEntity.created(new URI("/api/categories/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -78,22 +78,22 @@ public class CategoryResource {
     /**
      * PUT  /categories : Updates an existing category.
      *
-     * @param category the category to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated category,
-     * or with status 400 (Bad Request) if the category is not valid,
-     * or with status 500 (Internal Server Error) if the category couldn't be updated
+     * @param categoryDTO the categoryDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated categoryDTO,
+     * or with status 400 (Bad Request) if the categoryDTO is not valid,
+     * or with status 500 (Internal Server Error) if the categoryDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/categories")
     @Timed
-    public ResponseEntity<Category> updateCategory(@Valid @RequestBody Category category) throws URISyntaxException {
-        log.debug("REST request to update Category : {}", category);
-        if (category.getId() == null) {
+    public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO) throws URISyntaxException {
+        log.debug("REST request to update Category : {}", categoryDTO);
+        if (categoryDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Category result = categoryService.save(category);
+        CategoryDTO result = categoryService.save(categoryDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, category.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, categoryDTO.getId().toString()))
             .body(result);
     }
 
@@ -106,9 +106,9 @@ public class CategoryResource {
      */
     @GetMapping("/categories")
     @Timed
-    public ResponseEntity<List<Category>> getAllCategories(CategoryCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<CategoryDTO>> getAllCategories(CategoryCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Categories by criteria: {}", criteria);
-        Page<Category> page = categoryQueryService.findByCriteria(criteria, pageable);
+        Page<CategoryDTO> page = categoryQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/categories");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -129,21 +129,21 @@ public class CategoryResource {
     /**
      * GET  /categories/:id : get the "id" category.
      *
-     * @param id the id of the category to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the category, or with status 404 (Not Found)
+     * @param id the id of the categoryDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the categoryDTO, or with status 404 (Not Found)
      */
     @GetMapping("/categories/{id}")
     @Timed
-    public ResponseEntity<Category> getCategory(@PathVariable Long id) {
+    public ResponseEntity<CategoryDTO> getCategory(@PathVariable Long id) {
         log.debug("REST request to get Category : {}", id);
-        Optional<Category> category = categoryService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(category);
+        Optional<CategoryDTO> categoryDTO = categoryService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(categoryDTO);
     }
 
     /**
      * DELETE  /categories/:id : delete the "id" category.
      *
-     * @param id the id of the category to delete
+     * @param id the id of the categoryDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/categories/{id}")
@@ -164,9 +164,9 @@ public class CategoryResource {
      */
     @GetMapping("/_search/categories")
     @Timed
-    public ResponseEntity<List<Category>> searchCategories(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<CategoryDTO>> searchCategories(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Categories for query {}", query);
-        Page<Category> page = categoryService.search(query, pageable);
+        Page<CategoryDTO> page = categoryService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/categories");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

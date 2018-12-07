@@ -1,6 +1,7 @@
 package com.newlocal.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.JoinType;
 
@@ -19,12 +20,14 @@ import com.newlocal.domain.*; // for static metamodels
 import com.newlocal.repository.ProductTypeRepository;
 import com.newlocal.repository.search.ProductTypeSearchRepository;
 import com.newlocal.service.dto.ProductTypeCriteria;
+import com.newlocal.service.dto.ProductTypeDTO;
+import com.newlocal.service.mapper.ProductTypeMapper;
 
 /**
  * Service for executing complex queries for ProductType entities in the database.
  * The main input is a {@link ProductTypeCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link ProductType} or a {@link Page} of {@link ProductType} which fulfills the criteria.
+ * It returns a {@link List} of {@link ProductTypeDTO} or a {@link Page} of {@link ProductTypeDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -34,36 +37,41 @@ public class ProductTypeQueryService extends QueryService<ProductType> {
 
     private ProductTypeRepository productTypeRepository;
 
-//    private ProductTypeSearchRepository productTypeSearchRepository;
+    private ProductTypeMapper productTypeMapper;
 
-    public ProductTypeQueryService(ProductTypeRepository productTypeRepository, ProductTypeSearchRepository productTypeSearchRepository) {
+    private ProductTypeSearchRepository productTypeSearchRepository;
+
+    public ProductTypeQueryService(ProductTypeRepository productTypeRepository, ProductTypeMapper productTypeMapper, ProductTypeSearchRepository productTypeSearchRepository) {
         this.productTypeRepository = productTypeRepository;
-//        this.productTypeSearchRepository = productTypeSearchRepository;
+        this.productTypeMapper = productTypeMapper;
+        this.productTypeSearchRepository = productTypeSearchRepository;
     }
 
     /**
-     * Return a {@link List} of {@link ProductType} which matches the criteria from the database
+     * Return a {@link List} of {@link ProductTypeDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<ProductType> findByCriteria(ProductTypeCriteria criteria) {
+    public List<ProductTypeDTO> findByCriteria(ProductTypeCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<ProductType> specification = createSpecification(criteria);
-        return productTypeRepository.findAll(specification);
+        return productTypeRepository.findAll(specification).stream()
+        		.map(ProductTypeDTO::new).collect(Collectors.toList());
     }
 
     /**
-     * Return a {@link Page} of {@link ProductType} which matches the criteria from the database
+     * Return a {@link Page} of {@link ProductTypeDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<ProductType> findByCriteria(ProductTypeCriteria criteria, Pageable page) {
+    public Page<ProductTypeDTO> findByCriteria(ProductTypeCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<ProductType> specification = createSpecification(criteria);
-        return productTypeRepository.findAll(specification, page);
+        return productTypeRepository.findAll(specification, page)
+            .map(ProductTypeDTO::new);
     }
 
     /**

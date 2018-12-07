@@ -38,10 +38,10 @@ export class WarehouseUpdateComponent implements OnInit {
         });
         this.imageService.query({ 'warehouseId.specified': 'false' }).subscribe(
             (res: HttpResponse<IImage[]>) => {
-                if (!this.warehouse.image || !this.warehouse.image.id) {
+                if (!this.warehouse.imageId) {
                     this.images = res.body;
                 } else {
-                    this.imageService.find(this.warehouse.image.id).subscribe(
+                    this.imageService.find(this.warehouse.imageId).subscribe(
                         (subRes: HttpResponse<IImage>) => {
                             this.images = [subRes.body].concat(res.body);
                         },

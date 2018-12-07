@@ -43,30 +43,30 @@
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.stock.image">Image</span></dt>
                 <dd>
-                    <div *ngIf="stock.image">
-                        <a [routerLink]="['/image', stock.image?.id, 'view']">{{stock.image?.id}}</a>
+                    <div *ngIf="stock.imageId">
+                        <a [routerLink]="['/image', stock.imageId, 'view']">{{stock.imageId}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.stock.productType">Product Type</span></dt>
                 <dd>
-                    <div *ngIf="stock.productType">
-                        <a [routerLink]="['/product-type', stock.productType?.id, 'view']">{{stock.productType?.id}}</a>
+                    <div *ngIf="stock.productTypeId">
+                        <a [routerLink]="['/product-type', stock.productTypeId, 'view']">{{stock.productTypeId}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.stock.holding">Holding</span></dt>
                 <dd>
-                    <div *ngIf="stock.holding">
-                        <a [routerLink]="['/holding', stock.holding?.id, 'view']">{{stock.holding?.id}}</a>
+                    <div *ngIf="stock.holdingId">
+                        <a [routerLink]="['/holding', stock.holdingId, 'view']">{{stock.holdingId}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.stock.seller">Seller</span></dt>
                 <dd>
-                    {{stock.seller?.id}}
+                    {{stock.sellerId}}
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.stock.warehouse">Warehouse</span></dt>
                 <dd>
-                    <div *ngIf="stock.warehouse">
-                        <a [routerLink]="['/warehouse', stock.warehouse?.id, 'view']">{{stock.warehouse?.id}}</a>
+                    <div *ngIf="stock.warehouseId">
+                        <a [routerLink]="['/warehouse', stock.warehouseId, 'view']">{{stock.warehouseId}}</a>
                     </div>
                 </dd>
             </dl>

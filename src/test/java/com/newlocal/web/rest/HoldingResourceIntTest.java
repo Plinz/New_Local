@@ -4,7 +4,6 @@ import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import com.newlocal.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +46,8 @@ import com.newlocal.repository.HoldingRepository;
 import com.newlocal.repository.search.HoldingSearchRepository;
 import com.newlocal.service.HoldingQueryService;
 import com.newlocal.service.HoldingService;
+import com.newlocal.service.dto.HoldingDTO;
+import com.newlocal.service.mapper.HoldingMapper;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
 
 /**
@@ -70,6 +70,9 @@ public class HoldingResourceIntTest {
 
     @Autowired
     private HoldingRepository holdingRepository;
+
+    @Autowired
+    private HoldingMapper holdingMapper;
     
     @Autowired
     private HoldingService holdingService;
@@ -97,9 +100,6 @@ public class HoldingResourceIntTest {
     @Autowired
     private EntityManager em;
 
-    @Autowired
-    private UserRepository userRepository;
-
     private MockMvc restHoldingMockMvc;
 
     private Holding holding;
@@ -107,7 +107,8 @@ public class HoldingResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final HoldingResource holdingResource = new HoldingResource(holdingService, holdingQueryService, userRepository, new UserDAO(new JdbcTemplate()));
+        final HoldingResource holdingResource = new HoldingResource(holdingService, holdingQueryService, new UserDAO(new JdbcTemplate()));
+
         this.restHoldingMockMvc = MockMvcBuilders.standaloneSetup(holdingResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -150,9 +151,10 @@ public class HoldingResourceIntTest {
         int databaseSizeBeforeCreate = holdingRepository.findAll().size();
 
         // Create the Holding
+        HoldingDTO holdingDTO = holdingMapper.toDto(holding);
         restHoldingMockMvc.perform(post("/api/holdings")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(holding)))
+            .content(TestUtil.convertObjectToJsonBytes(holdingDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Holding in the database
@@ -174,11 +176,12 @@ public class HoldingResourceIntTest {
 
         // Create the Holding with an existing ID
         holding.setId(1L);
+        HoldingDTO holdingDTO = holdingMapper.toDto(holding);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restHoldingMockMvc.perform(post("/api/holdings")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(holding)))
+            .content(TestUtil.convertObjectToJsonBytes(holdingDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Holding in the database
@@ -197,10 +200,11 @@ public class HoldingResourceIntTest {
         holding.setSiret(null);
 
         // Create the Holding, which fails.
+        HoldingDTO holdingDTO = holdingMapper.toDto(holding);
 
         restHoldingMockMvc.perform(post("/api/holdings")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(holding)))
+            .content(TestUtil.convertObjectToJsonBytes(holdingDTO)))
             .andExpect(status().isBadRequest());
 
         List<Holding> holdingList = holdingRepository.findAll();
@@ -215,10 +219,11 @@ public class HoldingResourceIntTest {
         holding.setName(null);
 
         // Create the Holding, which fails.
+        HoldingDTO holdingDTO = holdingMapper.toDto(holding);
 
         restHoldingMockMvc.perform(post("/api/holdings")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(holding)))
+            .content(TestUtil.convertObjectToJsonBytes(holdingDTO)))
             .andExpect(status().isBadRequest());
 
         List<Holding> holdingList = holdingRepository.findAll();
@@ -479,9 +484,7 @@ public class HoldingResourceIntTest {
     @Transactional
     public void updateHolding() throws Exception {
         // Initialize the database
-        holdingService.save(holding);
-        // As the test used the service layer, reset the Elasticsearch mock repository
-        reset(mockHoldingSearchRepository);
+        holdingRepository.saveAndFlush(holding);
 
         int databaseSizeBeforeUpdate = holdingRepository.findAll().size();
 
@@ -493,10 +496,11 @@ public class HoldingResourceIntTest {
             .siret(UPDATED_SIRET)
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION);
+        HoldingDTO holdingDTO = holdingMapper.toDto(updatedHolding);
 
         restHoldingMockMvc.perform(put("/api/holdings")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedHolding)))
+            .content(TestUtil.convertObjectToJsonBytes(holdingDTO)))
             .andExpect(status().isOk());
 
         // Validate the Holding in the database
@@ -517,11 +521,12 @@ public class HoldingResourceIntTest {
         int databaseSizeBeforeUpdate = holdingRepository.findAll().size();
 
         // Create the Holding
+        HoldingDTO holdingDTO = holdingMapper.toDto(holding);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restHoldingMockMvc.perform(put("/api/holdings")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(holding)))
+            .content(TestUtil.convertObjectToJsonBytes(holdingDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Holding in the database
@@ -536,7 +541,7 @@ public class HoldingResourceIntTest {
     @Transactional
     public void deleteHolding() throws Exception {
         // Initialize the database
-        holdingService.save(holding);
+        holdingRepository.saveAndFlush(holding);
 
         int databaseSizeBeforeDelete = holdingRepository.findAll().size();
 
@@ -557,7 +562,7 @@ public class HoldingResourceIntTest {
     @Transactional
     public void searchHolding() throws Exception {
         // Initialize the database
-        holdingService.save(holding);
+        holdingRepository.saveAndFlush(holding);
         when(mockHoldingSearchRepository.search(queryStringQuery("id:" + holding.getId()), PageRequest.of(0, 20)))
             .thenReturn(new PageImpl<>(Collections.singletonList(holding), PageRequest.of(0, 1), 1));
         // Search the holding
@@ -583,5 +588,28 @@ public class HoldingResourceIntTest {
         assertThat(holding1).isNotEqualTo(holding2);
         holding1.setId(null);
         assertThat(holding1).isNotEqualTo(holding2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(HoldingDTO.class);
+        HoldingDTO holdingDTO1 = new HoldingDTO();
+        holdingDTO1.setId(1L);
+        HoldingDTO holdingDTO2 = new HoldingDTO();
+        assertThat(holdingDTO1).isNotEqualTo(holdingDTO2);
+        holdingDTO2.setId(holdingDTO1.getId());
+        assertThat(holdingDTO1).isEqualTo(holdingDTO2);
+        holdingDTO2.setId(2L);
+        assertThat(holdingDTO1).isNotEqualTo(holdingDTO2);
+        holdingDTO1.setId(null);
+        assertThat(holdingDTO1).isNotEqualTo(holdingDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(holdingMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(holdingMapper.fromId(null)).isNull();
     }
 }

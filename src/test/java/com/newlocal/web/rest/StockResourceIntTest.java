@@ -4,7 +4,6 @@ import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,10 +47,11 @@ import com.newlocal.domain.Stock;
 import com.newlocal.domain.User;
 import com.newlocal.domain.Warehouse;
 import com.newlocal.repository.StockRepository;
-import com.newlocal.repository.UserRepository;
 import com.newlocal.repository.search.StockSearchRepository;
 import com.newlocal.service.StockQueryService;
 import com.newlocal.service.StockService;
+import com.newlocal.service.dto.StockDTO;
+import com.newlocal.service.mapper.StockMapper;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
 
 /**
@@ -94,6 +94,9 @@ public class StockResourceIntTest {
     private StockRepository stockRepository;
 
     @Autowired
+    private StockMapper stockMapper;
+    
+    @Autowired
     private StockService stockService;
 
     /**
@@ -119,9 +122,6 @@ public class StockResourceIntTest {
     @Autowired
     private EntityManager em;
 
-    @Autowired
-    private UserRepository userRepository;
-
     private MockMvc restStockMockMvc;
 
     private Stock stock;
@@ -129,7 +129,7 @@ public class StockResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final StockResource stockResource = new StockResource(stockService, stockQueryService, userRepository, new UserDAO(new JdbcTemplate()));
+        final StockResource stockResource = new StockResource(stockService, stockQueryService, new UserDAO(new JdbcTemplate()));
         this.restStockMockMvc = MockMvcBuilders.standaloneSetup(stockResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -193,9 +193,10 @@ public class StockResourceIntTest {
         int databaseSizeBeforeCreate = stockRepository.findAll().size();
 
         // Create the Stock
+        StockDTO stockDTO = stockMapper.toDto(stock);
         restStockMockMvc.perform(post("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Stock in the database
@@ -223,11 +224,12 @@ public class StockResourceIntTest {
 
         // Create the Stock with an existing ID
         stock.setId(1L);
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restStockMockMvc.perform(post("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Stock in the database
@@ -246,10 +248,11 @@ public class StockResourceIntTest {
         stock.setName(null);
 
         // Create the Stock, which fails.
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         restStockMockMvc.perform(post("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         List<Stock> stockList = stockRepository.findAll();
@@ -264,10 +267,11 @@ public class StockResourceIntTest {
         stock.setQuantityInit(null);
 
         // Create the Stock, which fails.
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         restStockMockMvc.perform(post("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         List<Stock> stockList = stockRepository.findAll();
@@ -282,10 +286,11 @@ public class StockResourceIntTest {
         stock.setQuantityRemaining(null);
 
         // Create the Stock, which fails.
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         restStockMockMvc.perform(post("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         List<Stock> stockList = stockRepository.findAll();
@@ -300,10 +305,11 @@ public class StockResourceIntTest {
         stock.setPriceUnit(null);
 
         // Create the Stock, which fails.
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         restStockMockMvc.perform(post("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         List<Stock> stockList = stockRepository.findAll();
@@ -318,10 +324,11 @@ public class StockResourceIntTest {
         stock.setOnSaleDate(null);
 
         // Create the Stock, which fails.
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         restStockMockMvc.perform(post("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         List<Stock> stockList = stockRepository.findAll();
@@ -336,10 +343,11 @@ public class StockResourceIntTest {
         stock.setExpiryDate(null);
 
         // Create the Stock, which fails.
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         restStockMockMvc.perform(post("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         List<Stock> stockList = stockRepository.findAll();
@@ -354,10 +362,11 @@ public class StockResourceIntTest {
         stock.setBio(null);
 
         // Create the Stock, which fails.
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         restStockMockMvc.perform(post("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         List<Stock> stockList = stockRepository.findAll();
@@ -372,10 +381,11 @@ public class StockResourceIntTest {
         stock.setAvailable(null);
 
         // Create the Stock, which fails.
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         restStockMockMvc.perform(post("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         List<Stock> stockList = stockRepository.findAll();
@@ -403,7 +413,7 @@ public class StockResourceIntTest {
             .andExpect(jsonPath("$.[*].bio").value(hasItem(DEFAULT_BIO.booleanValue())))
             .andExpect(jsonPath("$.[*].available").value(hasItem(DEFAULT_AVAILABLE.booleanValue())));
     }
-
+    
     @Test
     @Transactional
     public void getStock() throws Exception {
@@ -980,9 +990,7 @@ public class StockResourceIntTest {
     @Transactional
     public void updateStock() throws Exception {
         // Initialize the database
-        stockService.save(stock);
-        // As the test used the service layer, reset the Elasticsearch mock repository
-        reset(mockStockSearchRepository);
+        stockRepository.saveAndFlush(stock);
 
         int databaseSizeBeforeUpdate = stockRepository.findAll().size();
 
@@ -1000,10 +1008,11 @@ public class StockResourceIntTest {
             .expiryDate(UPDATED_EXPIRY_DATE)
             .bio(UPDATED_BIO)
             .available(UPDATED_AVAILABLE);
+        StockDTO stockDTO = stockMapper.toDto(updatedStock);
 
         restStockMockMvc.perform(put("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedStock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isOk());
 
         // Validate the Stock in the database
@@ -1030,11 +1039,12 @@ public class StockResourceIntTest {
         int databaseSizeBeforeUpdate = stockRepository.findAll().size();
 
         // Create the Stock
+        StockDTO stockDTO = stockMapper.toDto(stock);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restStockMockMvc.perform(put("/api/stocks")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(stock)))
+            .content(TestUtil.convertObjectToJsonBytes(stockDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Stock in the database
@@ -1049,7 +1059,7 @@ public class StockResourceIntTest {
     @Transactional
     public void deleteStock() throws Exception {
         // Initialize the database
-        stockService.save(stock);
+        stockRepository.saveAndFlush(stock);
 
         int databaseSizeBeforeDelete = stockRepository.findAll().size();
 
@@ -1070,7 +1080,7 @@ public class StockResourceIntTest {
     @Transactional
     public void searchStock() throws Exception {
         // Initialize the database
-        stockService.save(stock);
+        stockRepository.saveAndFlush(stock);
         when(mockStockSearchRepository.search(queryStringQuery("id:" + stock.getId()), PageRequest.of(0, 20)))
             .thenReturn(new PageImpl<>(Collections.singletonList(stock), PageRequest.of(0, 1), 1));
         // Search the stock
@@ -1102,5 +1112,28 @@ public class StockResourceIntTest {
         assertThat(stock1).isNotEqualTo(stock2);
         stock1.setId(null);
         assertThat(stock1).isNotEqualTo(stock2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(StockDTO.class);
+        StockDTO stockDTO1 = new StockDTO();
+        stockDTO1.setId(1L);
+        StockDTO stockDTO2 = new StockDTO();
+        assertThat(stockDTO1).isNotEqualTo(stockDTO2);
+        stockDTO2.setId(stockDTO1.getId());
+        assertThat(stockDTO1).isEqualTo(stockDTO2);
+        stockDTO2.setId(2L);
+        assertThat(stockDTO1).isNotEqualTo(stockDTO2);
+        stockDTO1.setId(null);
+        assertThat(stockDTO1).isNotEqualTo(stockDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(stockMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(stockMapper.fromId(null)).isNull();
     }
 }

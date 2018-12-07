@@ -33,9 +33,9 @@
             <th jhiSortBy="siret"><span jhiTranslate="newLocalApp.holding.siret">Siret</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="name"><span jhiTranslate="newLocalApp.holding.name">Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="description"><span jhiTranslate="newLocalApp.holding.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="image.id"><span jhiTranslate="newLocalApp.holding.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="location.id"><span jhiTranslate="newLocalApp.holding.location">Location</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="owner.id"><span jhiTranslate="newLocalApp.holding.owner">Owner</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="imageId"><span jhiTranslate="newLocalApp.holding.image">Image</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="locationId"><span jhiTranslate="newLocalApp.holding.location">Location</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="ownerId"><span jhiTranslate="newLocalApp.holding.owner">Owner</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -46,17 +46,17 @@
                 <td>{{holding.name}}</td>
                 <td>{{holding.description}}</td>
                 <td>
-                    <div *ngIf="holding.image">
-                        <a [routerLink]="['../image', holding.image?.id, 'view' ]" >{{holding.image?.id}}</a>
+                    <div *ngIf="holding.imageId">
+                        <a [routerLink]="['../image', holding.imageId , 'view' ]" >{{holding.imageId}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="holding.location">
-                        <a [routerLink]="['../location', holding.location?.id, 'view' ]" >{{holding.location?.id}}</a>
+                    <div *ngIf="holding.locationId">
+                        <a [routerLink]="['../location', holding.locationId , 'view' ]" >{{holding.locationId}}</a>
                     </div>
                 </td>
                 <td>
-                    {{holding.owner?.id}}
+                    {{holding.ownerId}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

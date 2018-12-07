@@ -31,7 +31,7 @@
     "relationships": [],
     "changelogDate": "20181130133550",
     "entityTableName": "image",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pager",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,

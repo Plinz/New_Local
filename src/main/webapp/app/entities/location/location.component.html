@@ -36,7 +36,7 @@
             <th jhiSortBy="address"><span jhiTranslate="newLocalApp.location.address">Address</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="lon"><span jhiTranslate="newLocalApp.location.lon">Lon</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="lat"><span jhiTranslate="newLocalApp.location.lat">Lat</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="user.id"><span jhiTranslate="newLocalApp.location.user">User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="userId"><span jhiTranslate="newLocalApp.location.user">User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -50,7 +50,7 @@
                 <td>{{location.lon}}</td>
                 <td>{{location.lat}}</td>
                 <td>
-                    {{location.user?.id}}
+                    {{location.userId}}
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
