@@ -19,6 +19,8 @@
                               <h5 class="card-title">Prix: {{stock.priceUnit}}</h5>
                               <h5 class="card-title">Type: {{stock.productType?.name}}</h5>
                               <h5 class="card-title">Description: {{stock.description}}</h5>
+                              <div *ngIf="stock.bio"><h5 class="card-title">C'est BIO</h5></div>
+                              
                               <h5 class="card-title">Exploitation:</h5>
                               <h6 class="card-subtitle mb-2 text-muted">Nom: {{stock.holding?.name}}</h6>
                               <h6 class="card-subtitle mb-2 text-muted">Localisation: {{stock.holding?.location?.city}}</h6>

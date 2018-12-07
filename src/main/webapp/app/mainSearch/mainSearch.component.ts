@@ -32,6 +32,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     predicate: any;
     previousPage: any;
     reverse: any;
+    selected: number;
 
     categories: ICategory[];
     optionCategory: number;
@@ -106,7 +107,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.router.navigate(['/stock'], {
+        this.router.navigate(['/mainSearch'], {
             queryParams: {
                 page: this.page,
                 size: this.itemsPerPage,
@@ -194,6 +195,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         this.queryCount = this.totalItems;
         this.stocks = data;
+        console.log(data);
     }
 
     private onError(errorMessage: string) {

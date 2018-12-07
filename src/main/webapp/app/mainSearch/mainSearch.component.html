@@ -39,16 +39,22 @@
         </div>
     </div>
     <br/>
+    <a>
+        <select class="custom-select" value="sele">
+            <option *ngFor="let c of categories; trackBy: trackCategoryById ;" value="{{c.id}}">{{c.name}}</option>
+        </select>
+      </a>
     <div id="main">
-        <a><label for="catégorie">Catégorie:   </label>
+        <!--<a><label for="catégorie">Catégorie:   </label>
             <select>
                 <option value="" disabled selected>Catégorie</option>
                 <option value="1" (click)="option(-1)">Tout</option>
-                <option *ngFor="let categoryOption of categories; trackBy: trackCategoryById ;" (click)="option(categoryOption.id)">{{categoryOption.name}}</option>
-          </select></a>
+                <option *ngFor="let categoryOption of categories; trackBy: trackCategoryById ;" (click)="option(catego.id)">{{categoryOption.name}}</option>
+          </select></a>-->
+          
           <br>
-            <div class="card-deck" >
-            <div  class="card bg-light mb-3" style="max-width: 15%;" *ngFor="let stock of stocks ;trackBy: trackId" >
+          <div class="card-deck" >
+            <div  class="card bg-light mb-3" style="max-width: 15%; min-width: 15%;" *ngFor="let stock of stocks ;trackBy: trackId" >
                 <!--*ngIf="stock.productType.category.id==optionCategory || selectedCategory==1"-->
                 <img class="card-img-top h-50" [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" alt="Card image cap"/>
                     <div class="card-body">
@@ -67,6 +73,7 @@
                           </div>
                       </div>
                     </div>
+        
         
     </div>
         <!-- Boxes -->
