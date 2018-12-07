@@ -6,6 +6,7 @@
                 "title": "Holdings",
                 "createLabel": "Créer un nouveau Holding",
                 "createOrEditLabel": "Créer ou éditer un Holding",
+                "createOrEditLabelProfil": "Créer un Holding",
                 "search": "Recherche pour Holding"
             },
             "created": "Un nouveau Holding a été créé avec l'identifiant {{ param }}",

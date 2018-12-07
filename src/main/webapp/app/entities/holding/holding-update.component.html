@@ -63,14 +63,14 @@
                     <label class="form-control-label" jhiTranslate="newLocalApp.holding.image" for="field_image">Image</label>
                     <select class="form-control" id="field_image" name="image" [(ngModel)]="holding.imageId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="imageOption.id" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
+                        <option [ngValue]="imageOption.id === holding.imageId ? holding.image : imageOption" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.holding.location" for="field_location">Location</label>
                     <select class="form-control" id="field_location" name="location" [(ngModel)]="holding.locationId"  required>
                         <option *ngIf="!editForm.value.location" [ngValue]="null" selected></option>
-                        <option [ngValue]="locationOption.id" *ngFor="let locationOption of locations; trackBy: trackLocationById">{{locationOption.id}}</option>
+                        <option [ngValue]="locationOption.id === holding.locationId ? holding.location : locationOption" *ngFor="let locationOption of locations; trackBy: trackLocationById">{{locationOption.id}}</option>
                     </select>
                 </div>
                 <div [hidden]="!(editForm.controls.location?.dirty && editForm.controls.location?.invalid)">
@@ -83,7 +83,7 @@
                     <label class="form-control-label" jhiTranslate="newLocalApp.holding.owner" for="field_owner">Owner</label>
                     <select class="form-control" id="field_owner" name="owner" [(ngModel)]="holding.ownerId"  required>
                         <option *ngIf="!editForm.value.owner" [ngValue]="null" selected></option>
-                        <option [ngValue]="userOption.id" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
+                        <option [ngValue]="userOption.id === holding.ownerId ? holding.owner : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
                     </select>
                 </div>
                 <div [hidden]="!(editForm.controls.owner?.dirty && editForm.controls.owner?.invalid)">

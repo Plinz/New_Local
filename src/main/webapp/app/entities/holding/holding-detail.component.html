@@ -21,6 +21,7 @@
                 <dd>
                     <div *ngIf="holding.imageId">
                         <a [routerLink]="['/image', holding.imageId, 'view']">{{holding.imageId}}</a>
+
                     </div>
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.holding.location">Location</span></dt>
