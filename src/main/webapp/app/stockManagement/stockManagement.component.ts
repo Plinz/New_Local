@@ -205,6 +205,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         this.today = Date.now();
         const d1 = new Date(this.today);
         const d2 = new Date(d);
+
         if (d1.getTime() < d2.getTime()) {
             return true;
         } else {
@@ -212,24 +213,30 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    onglet1(b: any, d: any, o: number) {
-        if (b && this.count === 1 && this.checkDate(d) && this.checkoption(o)) {
+    onglet1(s: IStock) {
+        if (
+            s.available &&
+            this.count === 1 &&
+            this.checkDate(s.expiryDate) &&
+            this.checkoption(s.productType.category.id) &&
+            s.quantityRemaining === 0
+        ) {
             return true;
         } else {
             return false;
         }
     }
 
-    onglet2(b: any, o: number) {
-        if (!b && this.count === 2 && this.checkoption(o)) {
+    onglet2(s: IStock) {
+        if (!s.available && this.count === 2 && this.checkoption(s.productType.category.id)) {
             return true;
         } else {
             return false;
         }
     }
 
-    onglet3(b: any, d: any, o: number) {
-        if (b && this.count === 3 && !this.checkDate(d) && this.checkoption(o)) {
+    onglet3(s: IStock) {
+        if (s.available && this.count === 3 && !this.checkDate(s.expiryDate) && this.checkoption(s.productType.category.id)) {
             return true;
         } else {
             return false;

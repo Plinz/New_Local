@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager, JhiParseLinks, JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 import { Principal } from '../core';
 import { CartService } from '../entities/cart/cart.service';
 import { Location } from '@angular/common';
@@ -28,6 +28,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     listBtM: any[];
 
     constructor(
+        private dataUtils: JhiDataUtils,
         private purchaseService: PurchaseService,
         private cartService: CartService,
         private jhiAlertService: JhiAlertService,
@@ -175,5 +176,9 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         alert('Désolé ...');
         this.carts[i].quantity = i;
         this.listBtM[i].err = true;
+    }
+
+    openFile(contentType, field) {
+        return this.dataUtils.openFile(contentType, field);
     }
 }

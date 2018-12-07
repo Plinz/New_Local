@@ -100,7 +100,7 @@
                             </thead>
 
                             <tbody *ngFor="let stock of stocks ;trackBy: trackId">
-                                <tr *ngIf="onglet1(stock.available,stock.expiryDate,stock.productType.category.id) || onglet2(stock.available,stock.productType.category.id) || onglet3(stock.available,stock.expiryDate,stock.productType.category.id) ">
+                                <tr *ngIf="onglet1(stock) || onglet2(stock) || onglet3(stock) ">
                                     <td class="pt-3-half">
                                         <div class="container">
                                             <div class="row">

@@ -10,9 +10,19 @@
     </div>
     <div class="row">
         <div class="col-md-3">
-                <div class="col-md-12 text-center">
+               
                     <img class="img-responsive img-portfolio img-hover" src="../../../content/images/hipster192.png">
-                </div>
+
+                  <!--  <a *ngIf="image.image" (click)="openFile(image.imageContentType, image.image)">
+                        <img [src]="'data:' + image.imageContentType + ';base64,' + image.image" style="max-height: 30px;" alt="image image"/>
+                    </a>
+                    <span *ngIf="image.image">{{image.imageContentType}}, {{byteSize(image.image)}}</span>
+                         
+                    <img [src]="'data:' + stock.image?.imageContentType + ';base64,' + stock.image?.image" alt="Card image cap"/>
+                  
+                    -->
+
+                
         </div>
 
         <div class="col-md-8" style="border-width: 1px 1px 0px 1px; border-style: solid; border-color: lightgrey;">  
@@ -52,7 +62,7 @@
                         <div class="col-md-3 text-center">  
                                 <br>
                                 <br>
-                                <button type="submit" [disabled]="settingsForm.form.invalid" class="btn btn-warning" jhiTranslate="settings.form.buttonSave">Save</button>
+                                <button type="submit" [disabled]="settingsForm.form.invalid" class="btn btn-primary" jhiTranslate="settings.form.buttonSave">Save</button>
                             </div>  
 
                             <div class="col-md-7">  
@@ -86,7 +96,7 @@
                                 <div class="col-md-3 text-center">  
                                         <br>
                                         <br>
-                                        <button type="submit" [disabled]="settingsForm.form.invalid" class="btn btn-warning" jhiTranslate="settings.form.buttonSave">Save</button>
+                                        <button type="submit" [disabled]="settingsForm.form.invalid" class="btn btn-primary" jhiTranslate="settings.form.buttonSave">Save</button>
                                     </div>  
 
                                     <div class="col-md-7">  
@@ -124,7 +134,7 @@
                                         <div class="col-md-3 text-center">  
                                                 <br>
                                                 <br>
-                                                <button type="submit" [disabled]="settingsForm.form.invalid" class="btn btn-warning" jhiTranslate="settings.form.buttonSave">Save</button>
+                                                <button type="submit" [disabled]="settingsForm.form.invalid" class="btn btn-primary" jhiTranslate="settings.form.buttonSave">Save</button>
                                             </div>  
         
                              

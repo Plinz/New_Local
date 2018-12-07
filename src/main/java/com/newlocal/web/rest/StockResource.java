@@ -24,6 +24,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PostAuthorize;
+import com.newlocal.security.AuthoritiesConstants;
+import org.springframework.security.access.annotation.Secured;
 
 import com.codahale.metrics.annotation.Timed;
 import com.newlocal.domain.Stock;
@@ -191,6 +195,7 @@ public class StockResource {
      */
     @GetMapping("/stocks/bio")
     @Timed
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ANONYMOUS + "\")")
     public ResponseEntity<Stock>  getProductBio() {
         log.debug("REST request to search a product Bio");
         List<Stock>  stockBio= stockService.getProductBio();
@@ -204,6 +209,7 @@ public class StockResource {
      */
     @GetMapping("/stocks/newStock")
     @Timed
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ANONYMOUS + "\")")
     public ResponseEntity<Stock>  getNewStock() {
         log.debug("REST request to search a new stock");
         Stock stockNew=stockService.getNewStock().get(0);
@@ -217,6 +223,7 @@ public class StockResource {
      */
     @GetMapping("/stocks/bestPurchase")
     @Timed
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ANONYMOUS + "\")")
     public ResponseEntity<Stock> getBestPurchase() {
         log.debug("REST request to search the best purchase");
         List<Stock>  stockBestPurchase=stockService.getBestPurchase();
@@ -231,6 +238,7 @@ public class StockResource {
 
     @GetMapping("/stocks/grade")
     @Timed
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ANONYMOUS + "\")")
     public ResponseEntity<Stock> getBestGrade() {
         log.debug("REST request to search the best grade");
         List<Stock>  gradeList=stockService.getBestGrade();
