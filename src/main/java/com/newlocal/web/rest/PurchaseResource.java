@@ -32,8 +32,10 @@ import com.newlocal.service.dto.PurchaseCriteria;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
-
 import io.github.jhipster.web.util.ResponseUtil;
+
+import com.newlocal.service.CartService;
+import com.newlocal.domain.Cart;
 
 /**
  * REST controller for managing Purchase.
@@ -49,10 +51,13 @@ public class PurchaseResource {
     private PurchaseService purchaseService;
 
     private PurchaseQueryService purchaseQueryService;
+    
+    private CartService cartService;
 
-    public PurchaseResource(PurchaseService purchaseService, PurchaseQueryService purchaseQueryService) {
+    public PurchaseResource(PurchaseService purchaseService, PurchaseQueryService purchaseQueryService, CartService cartService) {
         this.purchaseService = purchaseService;
         this.purchaseQueryService = purchaseQueryService;
+        this.cartService = cartService;
     }
 
     /**
@@ -179,4 +184,25 @@ public class PurchaseResource {
         //return ResponseEntity.ok().body(purchase);
     }
 
+    @DeleteMapping("/purchases/updatedata/mail/{id}")
+    @Timed
+    public String sendMail(@PathVariable Long id) {
+    	
+        //Recupération des valeurs
+    	List<Cart> carts = cartService.getCardUser(id);
+    	
+    	//Creation de la bdd / suppression
+    	for (Cart c : carts) {
+    		//Purchase p = new Purchase(c);
+    		//p.setId(null);
+            //purchaseService.save(p);
+        	//Suppression des carts
+            cartService.delete(c.getId());
+		}
+
+    	// Mettre l'envoie de mail
+ 		//ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    	return carts.toString();
+    }
+    
 }

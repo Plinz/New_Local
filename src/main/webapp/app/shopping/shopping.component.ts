@@ -86,14 +86,18 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     endTimeout() {
         this.fintimeout = false;
-        // suppr
-        for (const k of this.carts) {
-            this.confirmDelete(k.id);
-        }
+        // create et suppr
         this.purchases = this.carts;
-        this.totalRecap = this.total;
         this.carts = [];
         this.isRecap = true;
+
+        /*for (const k of this.carts) {
+            this.confirmDelete(k.id);
+        }
+        this.totalRecap = this.total;
+        */
+        // send valid back (recup purchase)
+        alert('test');
     }
 
     abandonner() {
@@ -173,7 +177,6 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     }
 
     onSaveError(i: number) {
-        alert('Désolé ...');
         this.carts[i].quantity = i;
         this.listBtM[i].err = true;
     }

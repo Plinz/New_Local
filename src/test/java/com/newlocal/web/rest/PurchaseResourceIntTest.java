@@ -45,6 +45,7 @@ import com.newlocal.domain.Stock;
 import com.newlocal.domain.User;
 import com.newlocal.repository.PurchaseRepository;
 import com.newlocal.repository.search.PurchaseSearchRepository;
+import com.newlocal.service.CartService;
 import com.newlocal.service.PurchaseQueryService;
 import com.newlocal.service.PurchaseService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
@@ -72,6 +73,9 @@ public class PurchaseResourceIntTest {
     
     @Autowired
     private PurchaseService purchaseService;
+    
+    @Autowired 
+    private CartService cartService;
 
     /**
      * This repository is mocked in the com.newlocal.repository.search test package.
@@ -103,7 +107,7 @@ public class PurchaseResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PurchaseResource purchaseResource = new PurchaseResource(purchaseService, purchaseQueryService);
+        final PurchaseResource purchaseResource = new PurchaseResource(purchaseService, purchaseQueryService, cartService);
         this.restPurchaseMockMvc = MockMvcBuilders.standaloneSetup(purchaseResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

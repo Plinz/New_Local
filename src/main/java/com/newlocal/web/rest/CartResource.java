@@ -171,4 +171,11 @@ public class CartResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/carts/stock/{id}")
+    @Timed
+    public ResponseEntity<List<Cart>> getCardUser(@PathVariable Long id) {
+        List<Cart> cart = cartService.getCardUser(id);
+        return new ResponseEntity<List<Cart>>(cart, HttpStatus.OK);
+        //return ResponseEntity.ok().body(purchase);
+    }
 }
