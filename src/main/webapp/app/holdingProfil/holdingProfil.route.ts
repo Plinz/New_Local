@@ -28,7 +28,7 @@ export class HoldingProfilResolve implements Resolve<IHolding> {
 
 export const holdingProfilRoute: Routes = [
     {
-        path: 'holding',
+        path: 'holdingprofil',
         component: HoldingProfilComponent,
         resolve: {
             pagingParams: JhiResolvePagingParams

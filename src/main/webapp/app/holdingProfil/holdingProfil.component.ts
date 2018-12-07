@@ -17,7 +17,6 @@ import { HoldingService } from '../entities/holding/holding.service';
 export class HoldingProfilComponent implements OnInit, OnDestroy {
     currentAccount: any;
     holdings: IHolding[];
-
     holdingsCurrentUser: IHolding[];
     error: any;
     success: any;
@@ -49,12 +48,6 @@ export class HoldingProfilComponent implements OnInit, OnDestroy {
             this.reverse = data.pagingParams.ascending;
             this.predicate = data.pagingParams.predicate;
         });
-        this.holdingService.findByCurrentUser().subscribe(
-            (res: HttpResponse<IHolding[]>) => {
-                this.holdingsCurrentUser = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
         this.currentSearch =
             this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
                 ? this.activatedRoute.snapshot.params['search']
@@ -143,6 +136,12 @@ export class HoldingProfilComponent implements OnInit, OnDestroy {
             this.currentAccount = account;
         });
         this.registerChangeInHoldings();
+        this.holdingService.findByCurrentUser().subscribe(
+            (res: HttpResponse<IHolding[]>) => {
+                this.holdingsCurrentUser = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     ngOnDestroy() {
