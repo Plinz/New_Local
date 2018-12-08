@@ -10,6 +10,7 @@ import { IPurchase } from '../shared/model/purchase.model';
 import { PurchaseService } from '../entities/purchase/purchase.service';
 import { Moment } from 'moment';
 import moment = require('moment');
+import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 
 @Component({
     selector: 'jhi-purchase',
@@ -146,7 +147,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     confirmCreate() {
         const d = Date.now();
-        const d1: Moment = moment().date(d);
+        const d1: Moment = moment(d.toString(), DATE_TIME_FORMAT);
 
         for (const k of this.carts) {
             const tmp: IPurchase = {
