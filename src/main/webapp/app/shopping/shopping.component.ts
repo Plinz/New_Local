@@ -132,7 +132,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         // Suppression et send mail
         if (this.purchases.length > 0) {
             const tmp = this.purchases[0].client.id;
-            this.purchaseService.deleteSendMail(tmp).subscribe(response => alert('ok suppr'), () => alert('erreur suppr'));
+            this.purchaseService.deleteSendMail(tmp).subscribe(response => {}, () => alert('erreur suppr'));
         }
         this.carts = [];
         this.isRecap = true;
@@ -146,11 +146,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     }
 
     confirmCreate() {
-        const d = Date.now();
-        const d1 = new Date(d);
-        const d2: Moment = moment(d1.getTime(), DATE_TIME_FORMAT);
-
-        alert('d1:' + d1 + ' d:' + d.toString());
+        const d2: Moment = moment();
         for (const k of this.carts) {
             const tmp: IPurchase = {
                 id: null,
@@ -160,10 +156,8 @@ export class ShoppingComponent implements OnInit, OnDestroy {
                 saleDate: d2,
                 stock: k.stock
             };
-
             this.purchaseService.create(tmp).subscribe(
                 response => {
-                    alert('ok create \n' + +'id:' + k.id + '\n' + 'q:' + k.quantity);
                     this.confirmDelete();
                 },
                 () => alert('erreur create')
