@@ -147,7 +147,9 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     confirmCreate() {
         const d = Date.now();
-        const d1: Moment = moment(d.toString(), DATE_TIME_FORMAT);
+        const d1 = new Date(d);
+        const d2: Moment = moment(d1.getTime(), DATE_TIME_FORMAT);
+
         alert('d1:' + d1 + ' d:' + d.toString());
         for (const k of this.carts) {
             const tmp: IPurchase = {
@@ -155,7 +157,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
                 quantity: k.quantity,
                 withdraw: false,
                 client: k.client,
-                saleDate: d1,
+                saleDate: d2,
                 stock: k.stock
             };
 
