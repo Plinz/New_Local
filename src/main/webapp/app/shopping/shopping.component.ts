@@ -147,7 +147,8 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     confirmCreate() {
         const d = Date.now();
-        const d1: Moment = moment(d.toString(), DATE_TIME_FORMAT);
+        const d1: Moment = moment(DATE_TIME_FORMAT);
+        alert('d: ' + d1.toString);
 
         for (const k of this.carts) {
             const tmp: IPurchase = {
