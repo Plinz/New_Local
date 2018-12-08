@@ -8,7 +8,6 @@ import { Location } from '@angular/common';
 import { ICart } from '../shared/model/cart.model';
 import { IPurchase } from '../shared/model/purchase.model';
 import { PurchaseService } from '../entities/purchase/purchase.service';
-import { Purchase } from 'app/shared/model/purchase.model';
 
 @Component({
     selector: 'jhi-purchase',
@@ -90,14 +89,6 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         // Créatation
         this.purchases = this.carts;
         this.confirmCreate();
-        // Suppression et send mail
-        if (this.purchases.length > 0) {
-            const tmp = this.purchases[0].client.id;
-            this.purchaseService.deleteSendMail(tmp).subscribe();
-        }
-        this.carts = [];
-        this.isRecap = true;
-        alert('test');
     }
 
     abandonner() {
@@ -134,18 +125,32 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    confirmDelete(id: number) {
-        this.cartService.delete(id).subscribe(response => {
+    confirmDelete() {
+        // Suppression et send mail
+        if (this.purchases.length > 0) {
+            const tmp = this.purchases[0].client.id;
+            this.purchaseService.deleteSendMail(tmp).subscribe(response => alert('ok suppr'), () => alert('erreur suppr'));
+        }
+        this.carts = [];
+        this.isRecap = true;
+
+        /*this.cartService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'cartListModification',
                 content: 'Deleted an cart'
             });
-        });
+        });*/
     }
 
     confirmCreate() {
         for (const k of this.purchases) {
-            this.purchaseService.create(k).subscribe(response => alert('ok create'), () => alert('erreur create'));
+            this.purchaseService.create(k).subscribe(
+                response => {
+                    alert('ok create');
+                    this.confirmDelete();
+                },
+                () => alert('erreur create')
+            );
         }
     }
 
