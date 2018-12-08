@@ -144,6 +144,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     confirmCreate() {
         for (const k of this.purchases) {
+            k.id = null;
             this.purchaseService.create(k).subscribe(
                 response => {
                     alert('ok create');
