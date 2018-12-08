@@ -9,6 +9,7 @@ import { ICart } from '../shared/model/cart.model';
 import { IPurchase } from '../shared/model/purchase.model';
 import { PurchaseService } from '../entities/purchase/purchase.service';
 import { Moment } from 'moment';
+import moment = require('moment');
 
 @Component({
     selector: 'jhi-purchase',
@@ -144,8 +145,8 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     }
 
     confirmCreate() {
-        // const d = Date.now();
-        // const d1: Moment = this.moment.date(d);
+        const d = Date.now();
+        const d1: Moment = moment().date(d);
 
         for (const k of this.carts) {
             const tmp: IPurchase = {
@@ -153,7 +154,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
                 quantity: k.quantity,
                 withdraw: false,
                 client: k.client,
-                saleDate: null,
+                saleDate: d1,
                 stock: k.stock
             };
 
