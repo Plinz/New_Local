@@ -8,6 +8,7 @@ import { Location } from '@angular/common';
 import { ICart } from '../shared/model/cart.model';
 import { IPurchase } from '../shared/model/purchase.model';
 import { PurchaseService } from '../entities/purchase/purchase.service';
+import { Purchase } from 'app/shared/model/purchase.model';
 
 @Component({
     selector: 'jhi-purchase',
@@ -86,17 +87,16 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     endTimeout() {
         this.fintimeout = false;
-        // create et suppr
+        // Créatation
         this.purchases = this.carts;
+        this.confirmCreate();
+        // Suppression et send mail
+        if (this.purchases.length > 0) {
+            const tmp = this.purchases[0].client.id;
+            this.purchaseService.deleteSendMail(tmp).subscribe();
+        }
         this.carts = [];
         this.isRecap = true;
-
-        /*for (const k of this.carts) {
-            this.confirmDelete(k.id);
-        }
-        this.totalRecap = this.total;
-        */
-        // send valid back (recup purchase)
         alert('test');
     }
 
@@ -141,6 +141,12 @@ export class ShoppingComponent implements OnInit, OnDestroy {
                 content: 'Deleted an cart'
             });
         });
+    }
+
+    confirmCreate() {
+        for (const k of this.purchases) {
+            this.purchaseService.create(k).subscribe(response => alert('ok create'), () => alert('erreur create'));
+        }
     }
 
     backcliked() {
