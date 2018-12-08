@@ -8,6 +8,8 @@ import { Location } from '@angular/common';
 import { ICart } from '../shared/model/cart.model';
 import { IPurchase } from '../shared/model/purchase.model';
 import { PurchaseService } from '../entities/purchase/purchase.service';
+import { Moment } from 'moment';
+import moment = require('moment');
 
 @Component({
     selector: 'jhi-purchase',
@@ -143,11 +145,18 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     }
 
     confirmCreate() {
-        for (const k of this.purchases) {
-            k.id = null;
-            this.purchaseService.create(k).subscribe(
+        for (const k of this.carts) {
+            const tmp: IPurchase = null;
+            tmp.id = null;
+            tmp.quantity = k.quantity;
+            tmp.withdraw = false;
+            tmp.client = k.client;
+            tmp.saleDate = null;
+            tmp.stock = k.stock;
+
+            this.purchaseService.create(tmp).subscribe(
                 response => {
-                    alert('ok create');
+                    alert('ok create \n' + +'id:' + k.id + '\n' + 'q:' + k.quantity);
                     this.confirmDelete();
                 },
                 () => alert('erreur create')
