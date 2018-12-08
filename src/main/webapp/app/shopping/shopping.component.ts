@@ -35,8 +35,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
         private principal: Principal,
-        private location: Location,
-        private moment: Moment
+        private location: Location
     ) {
         this.isOkpanier = true;
         this.total = 0;
