@@ -146,13 +146,14 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     confirmCreate() {
         for (const k of this.carts) {
-            const tmp: IPurchase = null;
-            tmp.id = null;
-            tmp.quantity = k.quantity;
-            tmp.withdraw = false;
-            tmp.client = k.client;
-            tmp.saleDate = k.stock.expiryDate;
-            tmp.stock = k.stock;
+            const tmp: IPurchase = {
+                id: null,
+                quantity: k.quantity,
+                withdraw: false,
+                client: k.client,
+                saleDate: null,
+                stock: k.stock
+            };
 
             this.purchaseService.create(tmp).subscribe(
                 response => {
