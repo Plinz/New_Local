@@ -151,4 +151,11 @@ public class StockService {
         return stockRepository.getBestGrade()
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<StockDTO> findBySellerIsCurrentUser() {
+        return stockRepository.findBySellerIsCurrentUser()
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+
 }

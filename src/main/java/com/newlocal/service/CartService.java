@@ -100,4 +100,9 @@ public class CartService {
     public List<Cart> getCardUser(Long id) {
         return cartRepository.getCardUser(id);
     }
+
+    @Transactional(readOnly = true)
+    public List<Cart> findByClientIsCurrentUser() {
+        return cartRepository.findByClientIsCurrentUser();
+    }
 }

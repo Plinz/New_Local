@@ -41,4 +41,8 @@ export class CartService {
         const options = createRequestOption(req);
         return this.http.get<ICart[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
+
+    findByClientIsCurrentUser(): Observable<EntityArrayResponseType> {
+        return this.http.get<ICart[]>(`${this.resourceUrl}/currentuser`, { observe: 'response' });
+    }
 }

@@ -197,5 +197,12 @@ public class PurchaseResource {
     	// Mettre l'envoie de mail
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    @GetMapping("/purchases/currentuser")
+    @Timed
+    public ResponseEntity<List<Purchase>> findByClientIsCurrentUser() {
+        List<Purchase> purchase = purchaseService.findByClientIsCurrentUser();
+        return new ResponseEntity<List<Purchase>>(purchase, HttpStatus.OK);
+    }
     
 }

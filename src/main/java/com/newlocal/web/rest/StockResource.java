@@ -234,4 +234,12 @@ public class StockResource {
         StockDTO stockGrade = gradeList.get((new Random()).nextInt(gradeList.size()));
         return ResponseEntity.ok().body(stockGrade);
     }
+
+    @GetMapping("/stocks/currentuser")
+    @Timed
+    public ResponseEntity<List<StockDTO>> findBySellerIsCurrentUser() {
+        List<StockDTO> stocks = stockService.findBySellerIsCurrentUser();
+        return new ResponseEntity<List<StockDTO>>(stocks, HttpStatus.OK);
+
+    }
 }
