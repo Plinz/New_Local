@@ -151,7 +151,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
             tmp.quantity = k.quantity;
             tmp.withdraw = false;
             tmp.client = k.client;
-            tmp.saleDate = null;
+            tmp.saleDate = k.stock.expiryDate;
             tmp.stock = k.stock;
 
             this.purchaseService.create(tmp).subscribe(
