@@ -154,7 +154,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
                 quantity: k.quantity,
                 withdraw: false,
                 client: k.client,
-                saleDate: d1,
+                saleDate: null,
                 stock: k.stock
             };
 
