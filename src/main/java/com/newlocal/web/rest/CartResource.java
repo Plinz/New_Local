@@ -182,7 +182,7 @@ public class CartResource {
     @GetMapping("/carts/currentuser")
     @Timed
     public ResponseEntity<List<Cart>> findByClientIsCurrentUser() {
-        List<Cart> carts = purchaseService.findByClientIsCurrentUser();
+        List<Cart> carts = cartService.findByClientIsCurrentUser();
         return new ResponseEntity<List<Cart>>(carts, HttpStatus.OK);
     }
 }
