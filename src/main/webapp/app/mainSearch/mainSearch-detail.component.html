@@ -1,19 +1,18 @@
 <div class="row justify-content-center ">
+    <br>
         <div class="w-75 p-3 border border-secondary" *ngIf="stock" >
 
                 <div class="card-group" >
                         <div  class="card border border-secondary" style="max-width: 40%; max-height: 40%;" >
                                 <div class="card-header bg-light h-3" >
-                                  <h2 class="card-title">{{stock.name}}</h2>
+                                  <h4 class="card-title">{{stock.name}}</h4>
                                 </div>
                             <img class="card-img-bottom img-responsive img-thumbnail h-97" [src]="'data:' + stock.image?.imageContentType + ';base64,' + stock.image?.image" alt="Card image cap"/>
                     
                         </div>
                         <div class="card border border-secondary" style="max-width: 60%; max-height: 60%;">
                             <div class="card-header">
-                                Détails produit:
-                                <br>
-                                <br>
+                                <h4 class="card-title"><b>Détails produit:</b></h4>
                               </div>
                             <div class="card-body">
                               <h5 class="card-title">Prix: {{stock.priceUnit}}</h5>
@@ -24,10 +23,6 @@
                               <h5 class="card-title">Exploitation:</h5>
                               <h6 class="card-subtitle mb-2 text-muted">Nom: {{stock.holding?.name}}</h6>
                               <h6 class="card-subtitle mb-2 text-muted">Localisation: {{stock.holding?.location?.city}}</h6>
-                            </div>
-                            <div class="card-footer">
-                                <a href="#" class="card-link">Card link</a>
-                                <a href="#" class="card-link">Another link</a>
                             </div>
                           </div>
                     <!--<div class="row">
@@ -116,5 +111,8 @@
                     class="btn btn-primary">
                 <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
             </button>-->
+
+
+            
         </div>
     </div>

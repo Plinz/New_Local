@@ -18,9 +18,9 @@
             "detail": {
                 "title": "Holding"
             },
-            "siret": "Siret",
+            "siret": "Siret: ",
             "name": "Name",
-            "description": "Description",
+            "description": "Description: ",
             "image": "Image",
             "location": "Location",
             "owner": "Owner"
