@@ -6,6 +6,8 @@ import { StockService } from '../entities/stock/stock.service';
 import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 import { Moment } from 'moment';
+import moment = require('moment');
+import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 
 @Component({
     selector: 'jhi-review',
@@ -69,7 +71,7 @@ export class ReviewComponent implements OnInit {
 
     loadAll() {
         // Stock => bilan
-        this.stockService.query().subscribe(
+        this.stockService.findBySellerIsCurrentUser().subscribe(
             (res: HttpResponse<IStock[]>) => {
                 this.stocks = res.body;
                 this.currentSearch = '';
@@ -113,11 +115,21 @@ export class ReviewComponent implements OnInit {
         let qtTotal = 0;
 
         this.lineChartLabels.length = 0;
+        if (this.purchases.length > 0) {
+            dataP.push(0);
+            const deb: Moment = moment(this.purchases[0].stock.onSaleDate);
+            this.lineChartLabels.push(deb.format('DD/MM/YYYY'));
+        }
+
         for (const i of this.purchases) {
             qtTotal = qtTotal + i.quantity;
             dataP.push(qtTotal);
             this.lineChartLabels.push(i.saleDate.format('DD/MM/YYYY'));
         }
+        // Fin
+        dataP.push(qtTotal);
+        const d: Moment = moment();
+        this.lineChartLabels.push(d.format('DD/MM/YYYY'));
         // Update
         this.lineChartData = [{ data: dataP, label: nom + ':' + id }];
     }
