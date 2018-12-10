@@ -23,7 +23,6 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     eventSubscriber: Subscription;
     currentSearch: string;
     total: number;
-    totalRecap: number;
     btimeout: boolean;
     fintimeout: boolean;
     isOkpanier: boolean;
@@ -45,7 +44,6 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         this.btimeout = false;
         this.fintimeout = true;
         this.isRecap = false;
-        this.totalRecap = 0;
         this.listBtM = [];
     }
 
