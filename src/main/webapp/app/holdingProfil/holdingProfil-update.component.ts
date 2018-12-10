@@ -79,16 +79,16 @@ export class HoldingProfilUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
+        if (this.holding.location.id !== undefined) {
+            this.subscribeToSaveResponseD(this.locationService.update(this.holding.location));
+        } else {
+            this.subscribeToSaveResponseD(this.locationService.create(this.holding.location));
+        }
         if (this.holding.id !== undefined) {
             this.subscribeToSaveResponse(this.holdingService.update(this.holding));
         } else {
+            console.log('holdingTEST', this.holding);
             this.subscribeToSaveResponse(this.holdingService.create(this.holding));
-        }
-
-        if (this.location.id !== undefined) {
-            this.subscribeToSaveResponse(this.locationService.update(this.location));
-        } else {
-            this.subscribeToSaveResponse(this.locationService.create(this.location));
         }
     }
 
@@ -96,6 +96,9 @@ export class HoldingProfilUpdateComponent implements OnInit {
         result.subscribe((res: HttpResponse<IHolding>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
     }
 
+    private subscribeToSaveResponseD(result: Observable<HttpResponse<ILocation>>) {
+        result.subscribe((res: HttpResponse<ILocation>) => {}, (res: HttpErrorResponse) => {});
+    }
     private onSaveSuccess() {
         this.isSaving = false;
         this.previousState();
