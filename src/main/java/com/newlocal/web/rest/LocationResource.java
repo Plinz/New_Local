@@ -171,4 +171,5 @@ public class LocationResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+
 }
