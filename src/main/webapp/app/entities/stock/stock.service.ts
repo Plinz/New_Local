@@ -94,4 +94,10 @@ export class StockService {
     findGrade(): Observable<EntityResponseType> {
         return this.http.get<IStock>(`${this.resourceUrl}/grade`, { observe: 'response' });
     }
+
+    findBySellerIsCurrentUser(): Observable<EntityArrayResponseType> {
+        return this.http
+            .get<IStock[]>(`${this.resourceUrl}/currentuser`, { observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
 }

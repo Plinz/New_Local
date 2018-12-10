@@ -91,16 +91,12 @@ export class StockManagementComponent implements OnInit, OnDestroy {
                 );
             return;
         }
-        this.stockService
-            .query({
-                page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.sort()
-            })
-            .subscribe(
-                (res: HttpResponse<IStock[]>) => this.paginateStocks(res.body, res.headers),
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
+        this.stockService.findBySellerIsCurrentUser().subscribe(
+            (res: HttpResponse<IStock[]>) => {
+                this.stocks = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     loadPage(page: number) {
@@ -222,8 +218,8 @@ export class StockManagementComponent implements OnInit, OnDestroy {
             s.available &&
             this.count === 1 &&
             this.checkDate(s.expiryDate) &&
-            this.checkoption(s.productTypeId) &&
-            s.quantityRemaining === 0
+            s.quantityRemaining === 0 &&
+            (this.optionCategory === s.productType.categoryId || this.optionCategory === -1)
         ) {
             return true;
         } else {
@@ -232,7 +228,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     }
 
     onglet2(s: IStock) {
-        if (!s.available && this.count === 2 && this.checkoption(s.productTypeId)) {
+        if (!s.available && this.count === 2 && (this.optionCategory === s.productType.categoryId || this.optionCategory === -1)) {
             return true;
         } else {
             return false;
@@ -240,7 +236,12 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     }
 
     onglet3(s: IStock) {
-        if (s.available && this.count === 3 && !this.checkDate(s.expiryDate) && this.checkoption(s.productTypeId)) {
+        if (
+            s.available &&
+            this.count === 3 &&
+            !this.checkDate(s.expiryDate) &&
+            (this.optionCategory === s.productType.categoryId || this.optionCategory === -1)
+        ) {
             return true;
         } else {
             return false;

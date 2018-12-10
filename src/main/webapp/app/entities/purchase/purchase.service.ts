@@ -82,4 +82,14 @@ export class PurchaseService {
             .get<IPurchase[]>(`${this.resUrl}/${id}`, { observe: 'response' })
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
+
+    deleteSendMail(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/updatedata/mail/${id}`, { observe: 'response' });
+    }
+
+    findByClientIsCurrentUser(): Observable<EntityArrayResponseType> {
+        return this.http
+            .get<IPurchase[]>(`${this.resourceUrl}/currentuser`, { observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
 }

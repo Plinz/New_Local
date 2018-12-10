@@ -93,9 +93,15 @@ public class PurchaseService {
     public Page<Purchase> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Purchases for query {}", query);
         return purchaseSearchRepository.search(queryStringQuery(query), pageable);
-	}
-@Transactional(readOnly = true)
+    }
+    
+    @Transactional(readOnly = true)
     public List<Purchase> getPStock(Long id) {
         return purchaseRepository.getPStock(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Purchase> findByClientIsCurrentUser() {
+        return purchaseRepository.findByClientIsCurrentUser();
     }
 }

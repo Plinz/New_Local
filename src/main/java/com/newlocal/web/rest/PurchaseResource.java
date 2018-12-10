@@ -186,23 +186,23 @@ public class PurchaseResource {
 
     @DeleteMapping("/purchases/updatedata/mail/{id}")
     @Timed
-    public String sendMail(@PathVariable Long id) {
-    	
+    public ResponseEntity<Void> sendMail(@PathVariable Long id) {
         //Recupération des valeurs
     	List<Cart> carts = cartService.getCardUser(id);
-    	
     	//Creation de la bdd / suppression
     	for (Cart c : carts) {
-    		//Purchase p = new Purchase(c);
-    		//p.setId(null);
-            //purchaseService.save(p);
         	//Suppression des carts
             cartService.delete(c.getId());
 		}
-
     	// Mettre l'envoie de mail
- 		//ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
-    	return carts.toString();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @GetMapping("/purchases/currentuser")
+    @Timed
+    public ResponseEntity<List<Purchase>> findByClientIsCurrentUser() {
+        List<Purchase> purchase = purchaseService.findByClientIsCurrentUser();
+        return new ResponseEntity<List<Purchase>>(purchase, HttpStatus.OK);
     }
     
 }

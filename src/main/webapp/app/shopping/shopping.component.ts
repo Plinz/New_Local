@@ -8,6 +8,9 @@ import { Location } from '@angular/common';
 import { ICart } from '../shared/model/cart.model';
 import { IPurchase } from '../shared/model/purchase.model';
 import { PurchaseService } from '../entities/purchase/purchase.service';
+import { Moment } from 'moment';
+import moment = require('moment');
+import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 
 @Component({
     selector: 'jhi-purchase',
@@ -20,7 +23,6 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     eventSubscriber: Subscription;
     currentSearch: string;
     total: number;
-    totalRecap: number;
     btimeout: boolean;
     fintimeout: boolean;
     isOkpanier: boolean;
@@ -42,12 +44,11 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         this.btimeout = false;
         this.fintimeout = true;
         this.isRecap = false;
-        this.totalRecap = 0;
         this.listBtM = [];
     }
 
     loadAll() {
-        this.cartService.query().subscribe(
+        this.cartService.findByClientIsCurrentUser().subscribe(
             (res: HttpResponse<ICart[]>) => {
                 this.carts = res.body;
                 this.currentSearch = '';
@@ -86,18 +87,9 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     endTimeout() {
         this.fintimeout = false;
-        // create et suppr
+        // Créatation
         this.purchases = this.carts;
-        this.carts = [];
-        this.isRecap = true;
-
-        /*for (const k of this.carts) {
-            this.confirmDelete(k.id);
-        }
-        this.totalRecap = this.total;
-        */
-        // send valid back (recup purchase)
-        alert('test');
+        this.confirmCreate();
     }
 
     abandonner() {
@@ -134,13 +126,41 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    confirmDelete(id: number) {
-        this.cartService.delete(id).subscribe(response => {
+    confirmDelete() {
+        // Suppression et send mail
+        if (this.purchases.length > 0) {
+            const tmp = this.purchases[0].client.id;
+            this.purchaseService.deleteSendMail(tmp).subscribe(response => {}, () => alert('erreur suppr'));
+        }
+        this.carts = [];
+        this.isRecap = true;
+
+        /*this.cartService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'cartListModification',
                 content: 'Deleted an cart'
             });
-        });
+        });*/
+    }
+
+    confirmCreate() {
+        const d2: Moment = moment();
+        for (const k of this.carts) {
+            const tmp: IPurchase = {
+                id: null,
+                quantity: k.quantity,
+                withdraw: false,
+                client: k.client,
+                saleDate: d2,
+                stock: k.stock
+            };
+            this.purchaseService.create(tmp).subscribe(
+                response => {
+                    this.confirmDelete();
+                },
+                () => alert('erreur create')
+            );
+        }
     }
 
     backcliked() {

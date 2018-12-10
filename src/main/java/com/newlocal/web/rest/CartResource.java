@@ -178,4 +178,11 @@ public class CartResource {
         return new ResponseEntity<List<Cart>>(cart, HttpStatus.OK);
         //return ResponseEntity.ok().body(purchase);
     }
+
+    @GetMapping("/carts/currentuser")
+    @Timed
+    public ResponseEntity<List<Cart>> findByClientIsCurrentUser() {
+        List<Cart> carts = cartService.findByClientIsCurrentUser();
+        return new ResponseEntity<List<Cart>>(carts, HttpStatus.OK);
+    }
 }

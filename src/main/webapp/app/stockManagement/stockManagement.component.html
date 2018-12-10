@@ -63,10 +63,10 @@
             </div>
         </div>
 
-        <div class="col-md-12">
+        <div class="col-md-12" *ngIf="stocks">
             <div class="card">
                 <div class="card-body">
-                    <div class="table-responsive text-center" *ngIf="stocks">
+                    <div class="table-responsive text-center">
 
                         <table class="table table-striped">
                             <thead>
@@ -144,8 +144,7 @@
                             </tbody>
                         </table>
 
-                        <div class="container-fluid  text-left" *ngIf="list.length > 0">
-
+                        <div class="container-fluid  text-left" *ngIf=" list && list.length > 0">
                             <div *ngIf="count!=3 && count!=1" class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="defaultChecked2" (click)="checkboxonClickMe()">
                                 <label class="custom-control-label" for="defaultChecked2">Tout séléctionner</label>
