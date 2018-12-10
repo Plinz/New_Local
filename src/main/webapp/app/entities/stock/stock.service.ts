@@ -97,7 +97,7 @@ export class StockService {
 
     findBySellerIsCurrentUser(): Observable<EntityArrayResponseType> {
         return this.http
-            .get<IStock[]>(this.resourceUrl, { observe: 'response' })
+            .get<IStock[]>(`${this.resourceUrl}/currentuser`, { observe: 'response' })
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 }
