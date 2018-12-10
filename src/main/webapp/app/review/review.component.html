@@ -20,7 +20,7 @@
             <h4><strong>Ventes</strong></h4>
         </div>
         <div class="card-body">
-            <div class="row" *ngIf="stocks && stocks.length > 0">
+            <div class="row" *ngIf="stocks && stocks.length > 0; else noElement">
                 <div class="col-sm-6">
                     <div>
                         <div>
@@ -69,6 +69,13 @@
                     </div>
                 </div>
             </div>
+
+            <ng-template #noElement>
+                <div>
+                    <p> Aucun de vos produits ont été acheté</p>
+                </div>
+            </ng-template>
+
         </div>
     </div>
     <!--BILAN-->
