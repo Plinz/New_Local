@@ -50,7 +50,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
-        this.cartService.query().subscribe(
+        this.cartService.findByClientIsCurrentUser().subscribe(
             (res: HttpResponse<ICart[]>) => {
                 this.carts = res.body;
                 this.currentSearch = '';

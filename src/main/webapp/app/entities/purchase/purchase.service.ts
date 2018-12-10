@@ -92,5 +92,4 @@ export class PurchaseService {
             .get<IPurchase[]>(`${this.resourceUrl}/currentuser`, { observe: 'response' })
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
-    
 }
