@@ -3,7 +3,6 @@ package com.newlocal.service.dto;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.Objects;
 
 import javax.validation.constraints.NotBlank;

@@ -60,6 +60,7 @@ public class Purchase implements Serializable {
     	this.quantity = c.getQuantity();
     	this.withdraw = false;
     	this.stock = c.getStock();
+    	this.saleDate = Instant.now();
     }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -1,22 +1,30 @@
 package com.newlocal.service;
 
-import com.newlocal.domain.User;
-
-import io.github.jhipster.config.JHipsterProperties;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
+
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
+
+import com.newlocal.domain.Purchase;
+import com.newlocal.domain.User;
+
+import io.github.jhipster.config.JHipsterProperties;
 
 /**
  * Service for sending emails.
@@ -31,7 +39,9 @@ public class MailService {
     private static final String USER = "user";
 
     private static final String BASE_URL = "baseUrl";
-
+    
+    private static final String PURCHASES = "purchases";
+    
     private final JHipsterProperties jHipsterProperties;
 
     private final JavaMailSender javaMailSender;
@@ -39,18 +49,21 @@ public class MailService {
     private final MessageSource messageSource;
 
     private final SpringTemplateEngine templateEngine;
+    
+    private final PdfGeneratorUtil pdfGeneratorUtil;
+
 
     public MailService(JHipsterProperties jHipsterProperties, JavaMailSender javaMailSender,
-            MessageSource messageSource, SpringTemplateEngine templateEngine) {
-
+            MessageSource messageSource, SpringTemplateEngine templateEngine, PdfGeneratorUtil pdfGeneratorUtil) {
         this.jHipsterProperties = jHipsterProperties;
         this.javaMailSender = javaMailSender;
         this.messageSource = messageSource;
         this.templateEngine = templateEngine;
+        this.pdfGeneratorUtil = pdfGeneratorUtil;
     }
 
     @Async
-    public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
+    public void sendEmail(String to, String subject, String content, byte[] attachment, String attachmentFileName, boolean isMultipart, boolean isHtml) {
         log.debug("Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
             isMultipart, isHtml, to, subject, content);
 
@@ -62,6 +75,9 @@ public class MailService {
             message.setFrom(jHipsterProperties.getMail().getFrom());
             message.setSubject(subject);
             message.setText(content, isHtml);
+            if (attachment != null && attachmentFileName != null){
+            	message.addAttachment(attachmentFileName, new ByteArrayResource(attachment));
+            }
             javaMailSender.send(mimeMessage);
             log.debug("Sent email to User '{}'", to);
         } catch (Exception e) {
@@ -81,9 +97,27 @@ public class MailService {
         context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
-        sendEmail(user.getEmail(), subject, content, false, true);
-
+        sendEmail(user.getEmail(), subject, content, null, null, false, true);
     }
+    
+    @Async
+    public void sendFactureEmail(User user, List<Purchase> purchases) {
+        log.debug("Sending activation email to '{}'", user.getEmail());
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, user);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        context.setVariable(PURCHASES, purchases);
+		byte[] pdf = null;
+		try {
+			pdf = pdfGeneratorUtil.createPdf("mail/factureEmail", context);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+        String content = templateEngine.process("mail/factureEmail", context);
+        String subject = messageSource.getMessage("email.facture.title", null, locale);
+        sendEmail(user.getEmail(), subject, content, pdf, "Facture_NewLocal.pdf", pdf!=null, true);
+    }   
 
     @Async
     public void sendActivationEmail(User user) {

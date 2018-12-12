@@ -84,7 +84,7 @@ export class PurchaseService {
     }
 
     deleteSendMail(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/updatedata/mail/${id}`, { observe: 'response' });
+        return this.http.get(`${this.resourceUrl}/updatedata/mail/${id}`, { observe: 'response', responseType: 'blob' });
     }
 
     findByClientIsCurrentUser(): Observable<EntityArrayResponseType> {
