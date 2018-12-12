@@ -8,6 +8,8 @@ import { VERSION } from 'app/app.constants';
 import { JhiLanguageHelper, Principal, LoginModalService, LoginService } from 'app/core';
 import { ProfileService } from '../profiles/profile.service';
 
+import { NavbarService } from './navbar.service';
+
 @Component({
     selector: 'jhi-navbar',
     templateUrl: './navbar.component.html',
@@ -21,6 +23,7 @@ export class NavbarComponent implements OnInit {
     modalRef: NgbModalRef;
     version: string;
     currentSearch: string;
+    count: number;
 
     constructor(
         private loginService: LoginService,
@@ -30,10 +33,16 @@ export class NavbarComponent implements OnInit {
         private principal: Principal,
         private loginModalService: LoginModalService,
         private profileService: ProfileService,
-        private router: Router
+        private router: Router,
+        private navbarService: NavbarService
     ) {
         this.version = VERSION ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
+
+        this.count = this.navbarService.count;
+        this.navbarService.subject.subscribe((value: number) => {
+            this.count = value;
+        });
     }
 
     search(currentSearch) {
@@ -41,6 +50,7 @@ export class NavbarComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.count = 0;
         this.languageHelper.getAll().then(languages => {
             this.languages = languages;
         });
@@ -80,5 +90,9 @@ export class NavbarComponent implements OnInit {
 
     getImageUrl() {
         return this.isAuthenticated() ? this.principal.getImageUrl() : null;
+    }
+
+    incre() {
+        this.navbarService.sendIncrement();
     }
 }

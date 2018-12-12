@@ -189,13 +189,13 @@
                     </ul>
                 </li>
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-
                     <a class="nav-link"  routerLink="/shopping" (click)="collapseNavbar()">
-                        <span class="fa-stack fa-lg has-badge" data-count="9" >
+                        <span class="fa-stack fa-lg has-badge" data-count="0" >
                             <fa-icon class="red-cart" [icon]="'shopping-cart'" [fixedWidth]="true"></fa-icon>
                         </span>
                     </a>
                 </li>
+
                 <li *ngSwitchCase="false" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                     <a class="nav-link" routerLink="/" (click)="login()" id="login">
                         <span jhiTranslate="global.menu.account.login">Sign in</span>
