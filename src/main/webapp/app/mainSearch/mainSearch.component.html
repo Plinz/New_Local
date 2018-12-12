@@ -3,45 +3,48 @@
 
     <div class="mt-4">
         <select class="custom-select" value="sele">
-            <option *ngFor="let c of categories; trackBy: trackCategoryById ;" value="{{c.id}}">{{c.name}}</option>
+            <option value="" disabled selected>Catégorie</option>
+            <option value="1" (click)="option(-1)">Tout</option>
+            <option *ngFor="let c of categories;" (click)="option(c.id)">{{c.name}}</option>
         </select>
     </div>
 
-
     <div id="main mt-5">
-        <div class="card-deck">
-            <div class="card bg-light mb-3 mt-4" style="max-width: 15%; min-width: 15%;" *ngFor="let stock of stocks ;trackBy: trackId">
-
-                <a [routerLink]="['/mainSearch', stock.id, 'view' ]">
-                    <img class="card-img-top" src="../../content/images/m1.png" alt="">
-                </a>
-
-                <div class="card-body">
-
-                    <div>
-                        <a [routerLink]="['/mainSearch', stock.id, 'view' ]" class="h4 font-weight-bold blue-text">
-                            <strong>{{stock.name}}</strong>
-                        </a>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-9">
-                            <h6 class="mb-4">{{stock.priceUnit}} €/kg</h6>
+        <div class="row">
+            <ng-container *ngFor="let stock of stocks;">
+                <div class="col-sm-2" *ngIf="checkOption(stock)">
+                    <div class="card mt-3">
+                        <div class="view overlay">
+                            <a [routerLink]="['/mainSearch', stock.id, 'view' ]">
+                                <img class="card-img-top" src="../../content/images/m1.png" alt="">
+                            </a>
                         </div>
-                        <div class="col-sm-3" *ngIf="stock.bio">
-                            <span class="badge badge-success">Bio</span>
+
+                        <div class="card-body">
+                            <div>
+                                <a [routerLink]="['/mainSearch', stock.id, 'view' ]" class="h4 font-weight-bold blue-text">
+                                    <strong>{{stock.name}}</strong>
+                                </a>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <h6 class="mb-4">{{stock.priceUnit}} €/kg</h6>
+                                </div>
+                                <div class="col-sm-3" *ngIf="stock.bio">
+                                    <span class="badge badge-success">Bio</span>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="btn btn-info btn-sm" style="position: absolute;bottom:2%; left:37%">
+                                    <span class="d-none d-md-inline">Acheter</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-                    <div>
-                        <button class="btn btn-info btn-sm" style="position: absolute;bottom:2%; left:37%">
-                            <span class="d-none d-md-inline">Acheter</span>
-                        </button>
-                    </div>
-
                 </div>
-            </div>
+            </ng-container>
         </div>
+
 
         <div *ngIf="stocks && stocks.length">
             <div class="row justify-content-center">

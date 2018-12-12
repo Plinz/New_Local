@@ -68,10 +68,6 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         });
     }
 
-    option(x: number) {
-        this.optionCategory = x;
-    }
-
     checkoption(o: number) {
         if (o === this.optionCategory || this.optionCategory === -1) {
             return true;
@@ -211,5 +207,13 @@ export class MainSearchComponent implements OnInit, OnDestroy {
 
     trackCategoryById(index: number, item: ICategory) {
         return item.id;
+    }
+
+    option(x: number) {
+        this.optionCategory = x;
+    }
+
+    checkOption(s: IStock) {
+        return s.productType.categoryId === this.optionCategory || this.optionCategory === -1;
     }
 }
