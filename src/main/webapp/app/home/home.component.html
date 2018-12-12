@@ -1,148 +1,146 @@
+<body class="" style="background-color: white;">
+    <header>
+        <ngb-carousel>
+            <ng-template ngbSlide>
+                <img class="imgCarousel" src="../../content/images/c1.png" height="200%" width="100%" alt="Random first slide">
+                <div class="carousel-caption">
+                    <h3></h3>
+                    <p></p>
+                </div>
+            </ng-template>
+            <ng-template ngbSlide>
+                <img class="imgCarousel" src="../../content/images/c2.png" height="200%" width="100%" style="max-width: width 9px; margin: 0% auto"
+                    alt="Random second slide">
+                <div class="carousel-caption">
+                    <h3></h3>
+                    <p></p>
+                </div>
+            </ng-template>
+            <ng-template ngbSlide>
+                <img class="imgCarousel" src="../../content/images/c3.png" height="200%" width="100%" alt="Random third slide">
+                <div class="carousel-caption">
+                    <h3></h3>
+                    <p></p>
+                </div>
+            </ng-template>
+        </ngb-carousel>
+    </header>
 
-    <body class="" style="background-color: white;">
-        <header>
-            <ngb-carousel>
-                <ng-template ngbSlide>
-                    <img class="imgCarousel" src="../../content/images/c1.png" height="200%" width="100%" alt="Random first slide">
-                    <div class="carousel-caption">
-                        <h3></h3>
-                        <p></p>
-                    </div>
-                </ng-template>
-                <ng-template ngbSlide>
-                    <img class="imgCarousel" src="../../content/images/c2.png" height="200%" width="100%" style="max-width: width 9px; margin: 0% auto"
-                        alt="Random second slide">
-                    <div class="carousel-caption">
-                        <h3></h3>
-                        <p></p>
-                    </div>
-                </ng-template>
-                <ng-template ngbSlide>
-                    <img class="imgCarousel" src="../../content/images/c3.png" height="200%" width="100%" alt="Random third slide">
-                    <div class="carousel-caption">
-                        <h3></h3>
-                        <p></p>
-                    </div>
-                </ng-template>
-            </ngb-carousel>
-        </header>
+    <main class="mt-5">
+        <div class="container">
+            <!--best product-->
+            <section id="best-product" class="text-center mb-4">
+                <div class="row wow fadeIn">
+                    <!--Grid colum-->
+                    <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
 
-        <main class="mt-5">
-            <div class="container">
-                <!--best product-->
-                <section id="best-product" class="text-center mb-4">
-                    <div class="row wow fadeIn">
-                        <!--Grid colum-->
-                        <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
-                            
                         <div class="card">
-                        <div class="view overlay">
-                            <img class="card-img-top" src="../../content/images/m1.png" alt="">
-                        </div>
-                        <div class="card-body text-center"></div>
-                        
+                            <div class="view overlay">
+                                <img class="card-img-top" src="../../content/images/m1.png" alt="">
+                            </div>
+                            <div class="card-body text-center"></div>
 
-                        <h4 class="font-weight-bold blue-text">
+                            <h4 class="font-weight-bold blue-text">
                                 <strong>{{stockBio.name}}</strong></h4>
-                                <h6 >{{stockBio.priceUnit}} €/Kg     <span class="badge badge-success">Produit Bio</span></h6>
-                                <a routerLink="/stock/{{stockBio.id}}/view" routerLinkActive="active">description</a>
-                              
+                            <h6>{{stockBio.priceUnit}} €/Kg <span class="badge badge-success">Produit Bio</span></h6>
+                            <a routerLink="/stock/{{stockBio.id}}/view" routerLinkActive="active">description</a>
+                        </div>
+                    </div>
 
-                             
-                        </div>
-                        </div>
-            
-                        <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
+                    <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
                         <div class="card">
                             <div class="view overlay">
                                 <img class="card-img-top" src="../../content/images/m2.png" alt="">
-             
+
                             </div>
                             <div class="card-body text-center"></div>
                             <h4 class="font-weight-bold blue-text">
-                                    <strong>{{stockNewProduit.name}}</strong></h4>
-                                     <h6>{{stockNewProduit.priceUnit}} €/Kg    <span class="badge badge-pill badge-danger">Nouveau Produit</span></h6>
-                                     <a routerLink="/stock/{{stockNewProduit.id}}/view" routerLinkActive="active">description</a>
-                            </div>
-                            </div>
-
-                        <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
-                        <div class="card">
-                                <div class="view overlay">
-                                    <img class="card-img-top" src="../../content/images/m3.png" alt="">
-                                </div>
-                                <div class="card-body text-center"></div>
-                                <h4 class="font-weight-bold blue-text">
-                                        <strong>{{stockBestPurchase.name}}</strong></h4>
-                                        <h6>{{stockBestPurchase.priceUnit}} €/Kg     <span class="badge badge-info">Meilleur Vente</span></h6>
-                                        <a routerLink="/stock/{{stockBestPurchase.id}}/view" routerLinkActive="active">description</a>
-                                </div>
-                                </div>
-
-                        <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
-                        <div class="card">
-                                    <div class="view overlay">
-                                        <img class="card-img-top" src="../../content/images/m4.png" alt="">
-                                    </div>
-                                    <div class="card-body text-center"></div>
-                                    <h4 class="font-weight-bold blue-text">
-                                            <strong>{{stockGrade.name}}</strong></h4>
-                                            <h6>{{stockGrade.priceUnit}} €/Kg     <span class="badge badge-primary">Mieux noté</span></h6>
-                                            <a routerLink="/stock/{{stockGrade.id}}/view" routerLinkActive="active">description</a>
-                                    </div>
-                                    </div>
-                    </div>
-                </section>
-
-                <hr class="my-5">
-                <section class="my-5" >
-                    <div class="row">
-                        <div class="col-lg-5 mb-lg-0 mb-5" style="background-color: white;">
-                            <img class="img-fluid rounded z-depth-1" src="../../content/images/a1.png" alt="Sample project image">
+                                <strong>{{stockNewProduit.name}}</strong></h4>
+                            <h6>{{stockNewProduit.priceUnit}} €/Kg <span class="badge badge-pill badge-danger">Nouveau
+                                    Produit</span></h6>
+                            <a routerLink="/stock/{{stockNewProduit.id}}/view" routerLinkActive="active">description</a>
                         </div>
-                        <div class="col-lg-7"  style="background-color: white;">
-                            <div class="row mb-lg-0 mb-5"  style="background-color: white;">
-                                <div class="col-md-1 col-2">
-                                    <i class="fa fa-smile-o fa-2x blue-text">
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
+                        <div class="card">
+                            <div class="view overlay">
+                                <img class="card-img-top" src="../../content/images/m3.png" alt="">
+                            </div>
+                            <div class="card-body text-center"></div>
+                            <h4 class="font-weight-bold blue-text">
+                                <strong>{{stockBestPurchase.name}}</strong></h4>
+                            <h6>{{stockBestPurchase.priceUnit}} €/Kg <span class="badge badge-info">Meilleur Vente</span></h6>
+                            <a routerLink="/stock/{{stockBestPurchase.id}}/view" routerLinkActive="active">description</a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
+                        <div class="card">
+                            <div class="view overlay">
+                                <img class="card-img-top" src="../../content/images/m4.png" alt="">
+                            </div>
+                            <div class="card-body text-center"></div>
+                            <h4 class="font-weight-bold blue-text">
+                                <strong>{{stockGrade.name}}</strong></h4>
+                            <h6>{{stockGrade.priceUnit}} €/Kg <span class="badge badge-primary">Mieux noté</span></h6>
+                            <a routerLink="/stock/{{stockGrade.id}}/view" routerLinkActive="active">description</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="my-5">
+            <section class="my-5">
+                <div class="row">
+                    <div class="col-lg-5 mb-lg-0 mb-5" style="background-color: white;">
+                        <img class="img-fluid rounded z-depth-1" src="../../content/images/a1.png" alt="Sample project image">
+                    </div>
+                    <div class="col-lg-7" style="background-color: white;">
+                        <div class="row mb-lg-0 mb-5" style="background-color: white;">
+                            <div class="col-md-1 col-2">
+                                <i class="fa fa-smile-o fa-2x blue-text">
+                                </i>
+                            </div>
+                            <div class="col-md-11 col-10" style="background-color: white;">
+                                <h5 class="font-weight-bold mb-3">A propos de nous</h5>
+                                <p class="grey-text mb-0">
+                                    Notre objectif est de répondre aux besoins des producteurs locaux et des clients
+                                    avec réactivité et proximité. Une démarche qualité au cœur de notre organisation et
+                                    de nos prestations qui permet de bâtir une relation de confiance.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <hr class="my-5">
+                <div class="row">
+                    <div class="col-lg-7" style="background-color: white;">
+                        <div class="row mb-3 text-center d-flex align-items-center">
+                            <div class="col-md-11 col-10">
+                                <h5 class="font-weight-bold mb-3">
+                                    <i class="fa fa-bar-chart fa-2x indigo-text">
                                     </i>
-                                </div>
-                                <div class="col-md-11 col-10" style="background-color: white;">
-                                    <h5 class="font-weight-bold mb-3">A propos de nous</h5>
-                                    <p class="grey-text mb-0">
-                                    Notre objectif est de répondre aux besoins des producteurs locaux et des clients avec réactivité et proximité. Une démarche qualité au cœur de notre organisation et de nos prestations qui permet de bâtir une relation de confiance.
-                                    </p>
-                                </div>
+                                    Horaire
+                                </h5>
+                                <h6>Venez nous rencontrer</h6>
+                                <p class="dark-grey-text">
+                                    Lundi - Vendredi : de 9h à 19h
+                                    <br>
+                                    Samedi : de 9h à 18h
+                                    <br>
+                                    Dimanche : Fermé
+                                </p>
                             </div>
                         </div>
-
                     </div>
-                    <hr class="my-5">
-                    <div class="row">
-                        <div class="col-lg-7" style="background-color: white;">
-                            <div class="row mb-3 text-center d-flex align-items-center">
-                                <div class="col-md-11 col-10">
-                                    <h5 class="font-weight-bold mb-3">
-                                        <i class="fa fa-bar-chart fa-2x indigo-text">
-                                        </i>
-                                        Horaire
-                                    </h5>
-                                    <h6>Venez nous rencontrer</h6>
-                                    <p class="dark-grey-text">
-                                            Lundi - Vendredi : de 9h à 19h
-                                    <br> 
-                                            Samedi : de 9h à 18h
-                                    <br> 
-                                            Dimanche : Fermé 
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-5">
+                    <div class="col-lg-5">
                         <img class="img-fluid rounded z-depth-1" src="../../content/images/a2.png" alt="Sample project image">
-                        </div>
-                    </div>   
-                </section> 
-                <hr class="my-5">
-            </div>
-         </main>
-     </body>
+                    </div>
+                </div>
+            </section>
+            <hr class="my-5">
+        </div>
+    </main>
+</body>
