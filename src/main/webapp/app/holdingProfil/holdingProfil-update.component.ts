@@ -38,17 +38,15 @@ export class HoldingProfilUpdateComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ location }) => {
-            this.location = location;
-        });
         this.userService.query().subscribe(
             (res: HttpResponse<IUser[]>) => {
                 this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.activatedRoute.data.subscribe(({ holding }) => {
-            this.holding = holding;
+        this.activatedRoute.data.subscribe(({ location }) => {
+            this.location = location;
+            console.log('locationTest', location);
         });
         this.imageService.query({ 'holdingId.specified': 'false' }).subscribe(
             (res: HttpResponse<IImage[]>) => {
@@ -65,6 +63,22 @@ export class HoldingProfilUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+        this.activatedRoute.data.subscribe(({ holding }) => {
+            this.holding = holding;
+            console.log('locationHolding', holding);
+        });
+        this.userService.query().subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                this.users = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.locationService.query().subscribe(
+            (res: HttpResponse<ILocation[]>) => {
+                this.locations = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     previousState() {
@@ -73,18 +87,18 @@ export class HoldingProfilUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        if (this.holding.location.id !== undefined) {
-            this.subscribeToSaveResponseD(this.locationService.update(this.holding.location));
-            console.log('locationTEST', this.holding.location.id);
-        } else {
-            this.subscribeToSaveResponseD(this.locationService.create(this.holding.location));
-            console.log('locationTEST2', this.holding.location);
-        }
         if (this.holding.id !== undefined) {
             this.subscribeToSaveResponse(this.holdingService.update(this.holding));
         } else {
             console.log('holdingTEST', this.holding);
             this.subscribeToSaveResponse(this.holdingService.create(this.holding));
+        }
+        if (this.holding.location.id !== undefined) {
+            this.subscribeToSaveResponseD(this.locationService.update(this.holding.location));
+            console.log('locationTEST', this.holding.location.id);
+        } else {
+            this.subscribeToSaveResponseD(this.locationService.create(this.location));
+            console.log('locationTEST2', this.holding.location);
         }
     }
 

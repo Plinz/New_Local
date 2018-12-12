@@ -110,7 +110,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/stocks/bio").permitAll()
             .antMatchers("/api/stocks/newStock").permitAll()
             .antMatchers("/api/stocks/bestPurchase").permitAll()
-            .antMatchers("/api//stocks/grade").permitAll()
+            .antMatchers("/api/stocks/grade").permitAll()
             .antMatchers("/api/categories").permitAll()
             .antMatchers("/api/_search/stocks").permitAll()
             .antMatchers("/api/**").authenticated()

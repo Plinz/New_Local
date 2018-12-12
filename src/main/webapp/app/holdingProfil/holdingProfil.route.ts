@@ -12,6 +12,7 @@ import { HoldingProfilComponent } from './holdingProfil.component';
 import { HoldingProfilDetailComponent } from './holdingProfil-detail.component';
 import { HoldingProfilUpdateComponent } from './holdingProfil-update.component';
 import { HoldingProfilDeletePopupComponent } from './holdingProfil-delete-dialog.component';
+import { LocationResolve } from '../entities/location/location.route';
 
 @Injectable({ providedIn: 'root' })
 export class HoldingProfilResolve implements Resolve<IHolding> {
@@ -56,7 +57,8 @@ export const holdingProfilRoute: Routes = [
         path: 'holdingprofil/new',
         component: HoldingProfilUpdateComponent,
         resolve: {
-            holding: HoldingProfilResolve
+            holding: HoldingProfilResolve,
+            location: LocationResolve
         },
         data: {
             authorities: ['ROLE_USER'],
