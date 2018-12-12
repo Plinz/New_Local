@@ -1,21 +1,23 @@
 package com.newlocal.service;
 
-import com.newlocal.domain.Location;
-import com.newlocal.repository.LocationRepository;
-import com.newlocal.repository.search.LocationSearchRepository;
-import com.newlocal.service.dto.LocationDTO;
-import com.newlocal.service.mapper.LocationMapper;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.newlocal.domain.Location;
+import com.newlocal.repository.LocationRepository;
+import com.newlocal.repository.search.LocationSearchRepository;
+import com.newlocal.service.dto.LocationDTO;
+import com.newlocal.service.mapper.LocationMapper;
 
 /**
  * Service Implementation for managing Location.
@@ -104,5 +106,18 @@ public class LocationService {
         log.debug("Request to search for a page of Locations for query {}", query);
         return locationSearchRepository.search(queryStringQuery(query), pageable)
             .map(locationMapper::toDto);
+    }
+
+    /**
+     * Get the location of current user
+     *
+     * @return the entity
+     */
+    @Transactional(readOnly = true)
+    public LocationDTO findByCurrentUser() {
+        log.debug("Request to get Location of current user");
+        List<LocationDTO> res = locationRepository.findByUserIsCurrentUser()
+        		.stream().map(LocationDTO::new).collect(Collectors.toList());
+        return res.isEmpty()?null:res.get(0);
     }
 }

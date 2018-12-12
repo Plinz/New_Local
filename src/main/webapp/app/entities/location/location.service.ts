@@ -41,4 +41,8 @@ export class LocationService {
         const options = createRequestOption(req);
         return this.http.get<ILocation[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
+
+    findByCurrentUser(): Observable<EntityResponseType> {
+        return this.http.get<ILocation>(`${this.resourceUrl}/currentuser`, { observe: 'response' });
+    }
 }

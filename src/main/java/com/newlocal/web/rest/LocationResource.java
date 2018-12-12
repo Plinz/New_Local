@@ -29,6 +29,7 @@ import com.newlocal.service.LocationQueryService;
 import com.newlocal.service.LocationService;
 import com.newlocal.service.dto.LocationCriteria;
 import com.newlocal.service.dto.LocationDTO;
+import com.newlocal.service.dto.StockDTO;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
@@ -171,5 +172,18 @@ public class LocationResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    /**
+     * GET  /locations/:id : get the "id" location.
+     *
+     * @param id the id of the locationDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the locationDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/locations/currentuser")
+    @Timed
+    public ResponseEntity<LocationDTO> findByCurrentUser() {
+        log.debug("REST request to get Location by currentUser");
+        LocationDTO location = locationService.findByCurrentUser();
+        return new ResponseEntity<LocationDTO>(location, HttpStatus.OK);
+    }
 
 }
