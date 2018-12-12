@@ -12,6 +12,7 @@ import { StockService } from '../entities/stock/stock.service';
 
 import { ICategory } from 'app/shared/model/category.model';
 import { CategoryService } from 'app/entities/category';
+
 @Component({
     selector: 'jhi-stock',
     templateUrl: './mainSearch.component.html'
@@ -33,6 +34,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
     selected: number;
+    cat: string;
 
     categories: ICategory[];
     optionCategory: number;
@@ -56,8 +58,13 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             this.reverse = data.pagingParams.ascending;
             this.predicate = data.pagingParams.predicate;
         });
+
         this.activatedRoute.queryParams.subscribe(params => {
             this.currentSearch = params['search'];
+        });
+
+        this.activatedRoute.queryParams.subscribe(params => {
+            this.cat = params['cat'];
         });
     }
 

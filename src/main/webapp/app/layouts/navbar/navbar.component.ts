@@ -95,4 +95,8 @@ export class NavbarComponent implements OnInit {
     incre() {
         this.navbarService.sendIncrement();
     }
+
+    onSearch(str: string) {
+        this.router.navigate(['/mainSearch'], { queryParams: { cat: str } });
+    }
 }

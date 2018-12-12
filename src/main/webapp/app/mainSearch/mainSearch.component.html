@@ -1,49 +1,46 @@
 <div>
     <jhi-alert></jhi-alert>
-    <div class="row">
 
-        <div class="col-sm-12">
-            <form name="searchForm" class="form-inline">
-                <div class="input-group w-100 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch"
-                        placeholder="{{ 'newLocalApp.stock.home.search' | translate }}">
-                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <fa-icon [icon]="'search'"></fa-icon>
-                    </button>
-                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <fa-icon [icon]="'trash-alt'"></fa-icon>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <br />
-    <a>
+    <div class="mt-4">
         <select class="custom-select" value="sele">
             <option *ngFor="let c of categories; trackBy: trackCategoryById ;" value="{{c.id}}">{{c.name}}</option>
         </select>
-    </a>
-    <div id="main">
-        <br>
+    </div>
+
+
+    <div id="main mt-5">
         <div class="card-deck">
-            <div class="card bg-light mb-3" style="max-width: 15%; min-width: 15%;" *ngFor="let stock of stocks ;trackBy: trackId">
-                <!--*ngIf="stock.productType.category.id==optionCategory || selectedCategory==1"-->
-                <img class="card-img-top h-50" [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" alt="Card image cap" />
+            <div class="card bg-light mb-3 mt-4" style="max-width: 15%; min-width: 15%;" *ngFor="let stock of stocks ;trackBy: trackId">
+
+                <a [routerLink]="['/mainSearch', stock.id, 'view' ]">
+                    <img class="card-img-top" src="../../content/images/m1.png" alt="">
+                </a>
+
                 <div class="card-body">
-                    <h5 class="card-title">{{stock.name}}</h5>
-                    <p class="card-text">Prix: {{stock.priceUnit}} €/kg</p>
-                </div>
-                <div class="card-footer">
-                    <div class="btn-group flex-btn-group-container">
-                        <button type="submit" [routerLink]="['/mainSearch', stock.id, 'view' ]" class="btn btn-info btn-sm">
-                            <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                        </button>
-                        <a class="btn btn-primary">Acheter</a>
+
+                    <div>
+                        <a [routerLink]="['/mainSearch', stock.id, 'view' ]" class="h4 font-weight-bold blue-text">
+                            <strong>{{stock.name}}</strong>
+                        </a>
                     </div>
+
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <h6 class="mb-4">{{stock.priceUnit}} €/kg</h6>
+                        </div>
+                        <div class="col-sm-3" *ngIf="stock.bio">
+                            <span class="badge badge-success">Bio</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button class="btn btn-info btn-sm" style="position: absolute;bottom:2%; left:37%">
+                            <span class="d-none d-md-inline">Acheter</span>
+                        </button>
+                    </div>
+
                 </div>
             </div>
-
         </div>
 
         <div *ngIf="stocks && stocks.length">
@@ -56,3 +53,5 @@
             </div>
         </div>
     </div>
+
+</div>
