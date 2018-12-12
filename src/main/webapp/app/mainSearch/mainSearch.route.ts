@@ -38,7 +38,7 @@ export const mainSearchRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'stock/:id/view',
+        path: 'mainSearch/:id/view',
         component: MainSearchDetailComponent,
         resolve: {
             stock: StockResolve
