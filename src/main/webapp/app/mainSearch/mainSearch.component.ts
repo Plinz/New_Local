@@ -109,10 +109,10 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     setLocationForUser() {
         if (this.principal.isAuthenticated()) {
             this.principal.identity(true).then(account => {
-                console.log('Account:' + account);
                 const location = this.mainService.getLocation();
                 location.userId = account.id;
-                this.locationService.create(location);
+                console.log('ID=' + account.id);
+                this.locationService.create(location).subscribe();
                 this.mainService.setLocation(location, true);
             });
         }
