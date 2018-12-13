@@ -3,15 +3,22 @@ import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/ht
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks, JhiAlertService, JhiDataUtils } from 'ng-jhipster';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { IStock } from 'app/shared/model/stock.model';
-import { Principal } from 'app/core';
+import { Principal, LoginModalService } from 'app/core';
 
 import { ITEMS_PER_PAGE } from 'app/shared';
 import { StockService } from '../entities/stock/stock.service';
 
 import { ICategory } from 'app/shared/model/category.model';
 import { CategoryService } from 'app/entities/category';
+
+import { ILocation, Location } from 'app/shared/model/location.model';
+
+import { MainService } from '../layouts/main/main.service';
+
+import { LocationService } from 'app/entities/location';
 
 @Component({
     selector: 'jhi-stock',
@@ -35,6 +42,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     reverse: any;
     selected: number;
     cat: string;
+    modalRef: NgbModalRef;
     categories: ICategory[];
     optioncat: string;
 
@@ -47,7 +55,10 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         private dataUtils: JhiDataUtils,
         private router: Router,
         private eventManager: JhiEventManager,
-        private categoryService: CategoryService
+        private categoryService: CategoryService,
+        private mainService: MainService,
+        private locationService: LocationService,
+        private loginModalService: LoginModalService
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.cat = null;
@@ -70,6 +81,120 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                 this.optioncat = this.cat;
             }
         });
+    }
+
+    deg2rad(deg: number) {
+        return deg * Math.PI / 180.0;
+    }
+    rad2deg(rad: number) {
+        return rad * 180 / Math.PI;
+    }
+
+    hasLocation() {
+        return this.mainService.getLocation() != null;
+    }
+
+    login() {
+        this.modalRef = this.loginModalService.open();
+    }
+
+    isAuthenticated() {
+        return this.principal.isAuthenticated();
+    }
+
+    isLocationFromBase() {
+        return this.mainService.isLocationFromBase();
+    }
+
+    setLocationForUser() {
+        if (this.principal.isAuthenticated()) {
+            this.principal.identity(true).then(account => {
+                console.log('Account:' + account);
+                const location = this.mainService.getLocation();
+                location.userId = account.id;
+                this.locationService.create(location);
+                this.mainService.setLocation(location, true);
+            });
+        }
+    }
+
+    askLocation() {
+        if (!this.hasLocation()) {
+            if (this.principal.isAuthenticated()) {
+                this.locationService.findByCurrentUser().subscribe(
+                    (res: HttpResponse<ILocation>) => {
+                        if (res.body != null) {
+                            this.mainService.setLocation(res.body, true);
+                        } else {
+                            if (window.navigator.geolocation) {
+                                window.navigator.geolocation.getCurrentPosition(
+                                    position => {
+                                        const location = new Location();
+                                        location.lat = position.coords.latitude;
+                                        location.lon = position.coords.longitude;
+                                        this.mainService.setLocation(location, false);
+                                    },
+                                    error => {}
+                                );
+                            } else {
+                                this.onError('Geolocation not supported in this browser');
+                            }
+                        }
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
+            } else {
+                if (window.navigator.geolocation) {
+                    window.navigator.geolocation.getCurrentPosition(
+                        position => {
+                            const location = new Location();
+                            location.lat = position.coords.latitude;
+                            location.lon = position.coords.longitude;
+                            this.mainService.setLocation(location, false);
+                            console.log('NOT Authenticated and location:' + location);
+                        },
+                        error => {}
+                    );
+                } else {
+                    this.onError('Geolocation not supported in this browser');
+                }
+            }
+        }
+        return this.mainService.getLocation() != null;
+    }
+
+    distance(stock: IStock) {
+        const loc = this.mainService.getLocation();
+        let dist = -1;
+        if (loc != null) {
+            const lon1 = stock.warehouse.location.lon;
+            const lat1 = stock.warehouse.location.lat;
+            const lon2 = loc.lon;
+            const lat2 = loc.lat;
+            const theta = lon1 - lon2;
+            dist =
+                Math.sin(this.deg2rad(lat1)) * Math.sin(this.deg2rad(lat2)) +
+                Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * Math.cos(this.deg2rad(theta));
+            dist = Math.acos(dist);
+            dist = this.rad2deg(dist);
+            dist = dist * 60 * 1.1515 * 1.609344;
+        }
+        return parseInt(dist + '', 0);
+    }
+
+    distanceSuccess(stock: IStock) {
+        const dist: number = this.distance(stock);
+        return dist >= 0 && dist <= 15;
+    }
+
+    distanceWarning(stock: IStock) {
+        const dist: number = this.distance(stock);
+        return dist > 15 && dist <= 30;
+    }
+
+    distanceDanger(stock: IStock) {
+        const dist: number = this.distance(stock);
+        return dist > 30;
     }
 
     loadAll() {
@@ -169,6 +294,29 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+        this.eventManager.subscribe('authenticationSuccess', msg => {
+            this.locationService.findByCurrentUser().subscribe(
+                (res: HttpResponse<ILocation>) => {
+                    if (res.body != null) {
+                        this.mainService.setLocation(res.body, true);
+                    }
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+        });
+        this.eventManager.subscribe('logoutSuccess', msg => {
+            this.mainService.setLocation(null, null);
+        });
+        if (this.mainService.getLocation() == null && this.principal.isAuthenticated()) {
+            this.locationService.findByCurrentUser().subscribe(
+                (res: HttpResponse<ILocation>) => {
+                    if (res.body != null) {
+                        this.mainService.setLocation(res.body, true);
+                    }
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+        }
     }
 
     ngOnDestroy() {

@@ -1,6 +1,36 @@
 <div>
     <jhi-alert></jhi-alert>
 
+    <div class="mt-4 row" *ngIf="!hasLocation() && !isAuthenticated()" >
+		<p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les produits près de chez vous. 
+		Pour cela vous pouvez utilisez la géolocalisation de votre navigateur.</p>
+        <button class="btn btn-info btn-sm mr-5 col-sm-1" (click)="askLocation()">
+        	<span class="d-none d-md-inline">Me géolocaliser</span>
+        </button>
+        <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et ensuite enregistrer votre localisation.</p>
+        <button class="btn btn-info btn-sm ml-0 col-sm-1" (click)="login()">
+        	<span class="d-none d-md-inline">Connexion</span>
+        </button>
+        <button class="btn btn-info btn-sm mx-2 col-sm-1" routerLink="/register" routerLinkActive="active">
+        	<span class="d-none d-md-inline">Inscription</span>
+        </button>
+    </div>
+    
+   	<div class="mt-4 row" *ngIf="!hasLocation() && isAuthenticated()" >
+		<p class="grey-text mb-0 col-sm-8">New Local a besoin de votre localisation pour vous proposez les produits près de chez vous. 
+		Pour cela vous pouvez utilisez la géolocalisation de votre navigateur.</p>
+        <button class="btn btn-info btn-sm col-sm-1" (click)="askLocation()">
+        	<span class="d-none d-md-inline">Me géolocaliser</span>
+        </button>
+    </div>
+    
+    <div class="mt-4 row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase()" >
+		<p class="grey-text mb-0 col-sm-8">Voulez-vous utiliser votre localisation comme localisation principale</p>
+        <button class="btn btn-info btn-sm col-sm-1" (click)="setLocationForUser()">
+        	<span class="d-none d-md-inline">Oui</span>
+        </button>
+    </div>
+
     <div class="mt-4">
         <select class="custom-select">
             <option disabled selected>{{ optioncat }}</option>
@@ -28,11 +58,14 @@
                                 </a>
                             </div>
                             <div class="row">
-                                <div class="col-sm-9">
+                                <div class="col-sm-6">
                                     <h6 class="mb-4">{{stock.priceUnit}} €/kg</h6>
                                 </div>
-                                <div class="col-sm-3" *ngIf="stock.bio">
-                                    <span class="badge badge-success">Bio</span>
+                                <div class="col">
+                                    <span *ngIf="stock.bio" class="badge badge-success">Bio</span>
+                                   	<span *ngIf=distanceSuccess(stock) class="badge badge-success">{{distance(stock)}} Km</span>
+	                                <span *ngIf=distanceWarning(stock) class="badge badge-warning">{{distance(stock)}} Km</span>
+	                                <span *ngIf=distanceDanger(stock) class="badge badge-danger">{{distance(stock)}} Km</span>
                                 </div>
                             </div>
                             <div>

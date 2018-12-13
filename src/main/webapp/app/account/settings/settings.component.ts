@@ -59,6 +59,7 @@ export class SettingsComponent implements OnInit {
 
     copyAccount(account) {
         return {
+            id: account.id,
             activated: account.activated,
             email: account.email,
             firstName: account.firstName,
