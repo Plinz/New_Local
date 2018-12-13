@@ -189,10 +189,9 @@
                     </ul>
                 </li>
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link"  routerLink="/shopping" (click)="collapseNavbar()">
-                        <span class="fa-stack fa-lg has-badge" data-count="0" >
-                            <fa-icon class="red-cart" [icon]="'shopping-cart'" [fixedWidth]="true"></fa-icon>
-                        </span>
+                    <a class="nav-link" id="panier"  routerLink="/shopping" (click)="collapseNavbar()">
+                            <fa-icon class="cart" [icon]="'shopping-cart'" [fixedWidth]="true"></fa-icon>
+                            <span class="circle">{{count}}</span>
                     </a>
                 </li>
 

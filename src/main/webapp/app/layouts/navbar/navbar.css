@@ -103,28 +103,25 @@ Logo styles
     width: 80px;
 }
 
-.fa-stack[data-count]:after {
+.circle {
     position: absolute;
-    right: 20%;
+    right: 0%;
     top: 0%;
-    content: attr(data-count);
-    font-size: 40%;
-    padding: 0.5em;
-    border-radius: 999px;
-    line-height: 0.45em;
-    color: white;
-    color: #df0000;
+
+    font-size: small;
+
+    padding: 0.2em;
+    line-height: 0.8em;
+
     text-align: center;
-    min-width: 1em;
-    font-weight: bold;
     background: white;
-    border-style: solid;
+    border-radius: 999px;
+    border: 0.15em solid;
+    color: red;
 }
-
-.fa-circle {
-    color: #df0000;
-}
-
-.red-cart {
+.cart {
     color: whitesmoke;
+}
+#panier {
+    position: relative;
 }
