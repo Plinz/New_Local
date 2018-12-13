@@ -58,6 +58,7 @@ public class UserDTO {
     }
 
     public UserDTO(User user) {
+        if (user != null) {
         this.id = user.getId();
         this.login = user.getLogin();
         this.firstName = user.getFirstName();
@@ -73,6 +74,7 @@ public class UserDTO {
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
             .collect(Collectors.toSet());
+        }
     }
 
     public Long getId() {

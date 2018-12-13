@@ -51,9 +51,12 @@ public class LocationResource {
 
     private LocationQueryService locationQueryService;
 
-    public LocationResource(LocationService locationService, LocationQueryService locationQueryService) {
+    private UserDAO userDAO;
+
+    public LocationResource(LocationService locationService, LocationQueryService locationQueryService,  UserDAO userDAO) {
         this.locationService = locationService;
         this.locationQueryService = locationQueryService;
+        this.userDAO = userDAO;
     }
 
     /**
@@ -69,6 +72,12 @@ public class LocationResource {
         log.debug("REST request to save Location : {}", locationDTO);
         if (locationDTO.getId() != null) {
             throw new BadRequestAlertException("A new location cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+          long idCurrentUser = userDAO.getUserIdByCurrentLogin();
+        if (idCurrentUser > 0) {
+            locationDTO.setUserId(idCurrentUser);
+        } else {
+            locationDTO.setUserId(null);
         }
         LocationDTO result = locationService.save(locationDTO);
         return ResponseEntity.created(new URI("/api/locations/" + result.getId()))
