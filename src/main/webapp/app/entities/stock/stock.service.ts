@@ -100,4 +100,10 @@ export class StockService {
             .get<IStock[]>(`${this.resourceUrl}/currentuser`, { observe: 'response' })
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
+
+    getStockCat(name: string): Observable<EntityArrayResponseType> {
+        return this.http
+            .get<IStock[]>(`${this.resourceUrl}/category/${name}`, { observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
 }

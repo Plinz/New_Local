@@ -242,4 +242,11 @@ public class StockResource {
         return new ResponseEntity<List<StockDTO>>(stocks, HttpStatus.OK);
 
     }
+
+    @GetMapping("/stocks/category/{name}")
+    @Timed
+    public ResponseEntity<List<StockDTO>> getStockCat(@PathVariable String name) {
+        List<StockDTO> stocks = stockService.getStockCat(name);
+        return new ResponseEntity<List<StockDTO>>(stocks, HttpStatus.OK);
+    }
 }

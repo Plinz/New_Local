@@ -2,17 +2,18 @@
     <jhi-alert></jhi-alert>
 
     <div class="mt-4">
-        <select class="custom-select" value="sele">
-            <option value="" disabled selected>Catégorie</option>
-            <option value="1" (click)="option(-1)">Tout</option>
-            <option *ngFor="let c of categories;" (click)="option(c.id)">{{c.name}}</option>
+        <select class="custom-select">
+            <option disabled selected>{{ optioncat }}</option>
+            <option value="1" (click)="loadAll()">Tout</option>
+            <option *ngFor="let c of categories;" (click)="option(c.name)">{{c.name}}</option>
         </select>
     </div>
+
 
     <div id="main mt-5">
         <div class="row">
             <ng-container *ngFor="let stock of stocks;">
-                <div class="col-sm-2" *ngIf="checkOption(stock)" style="display: flex; flex-direction: column"> 
+                <div class="col-sm-2" style="display: flex; flex-direction: column">
                     <div class="card mt-3" style="flex-grow: 1">
                         <div class="view overlay">
                             <a [routerLink]="['/mainSearch', stock.id, 'view' ]">

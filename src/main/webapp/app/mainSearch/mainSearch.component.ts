@@ -35,9 +35,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     reverse: any;
     selected: number;
     cat: string;
-
     categories: ICategory[];
-    optionCategory: number;
+    optioncat: string;
 
     constructor(
         private stockService: StockService,
@@ -51,7 +50,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         private categoryService: CategoryService
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
-        this.optionCategory = -1;
+        this.cat = null;
+        this.optioncat = 'Catégorie';
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
@@ -65,16 +65,13 @@ export class MainSearchComponent implements OnInit, OnDestroy {
 
         this.activatedRoute.queryParams.subscribe(params => {
             this.cat = params['cat'];
+            if (this.cat != null) {
+                this.loadStockCat(this.cat);
+                this.optioncat = this.cat;
+            }
         });
     }
 
-    checkoption(o: number) {
-        if (o === this.optionCategory || this.optionCategory === -1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     loadAll() {
         if (this.currentSearch) {
             this.stockService
@@ -102,6 +99,15 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             );
     }
 
+    loadStockCat(cat: string) {
+        this.stockService.getStockCat(cat).subscribe(
+            (res: HttpResponse<IStock[]>) => {
+                this.stocks = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
@@ -118,7 +124,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
             }
         });
-        this.loadAll();
+        // this.loadAll();
     }
 
     clear() {
@@ -131,7 +137,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
             }
         ]);
-        this.loadAll();
+        // this.loadAll();
     }
 
     search(query) {
@@ -148,7 +154,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
             }
         ]);
-        this.loadAll();
+        // this.loadAll();
     }
 
     ngOnInit() {
@@ -166,7 +172,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.eventManager.destroy(this.eventSubscriber);
+        // this.eventManager.destroy(this.eventSubscriber);
     }
 
     trackId(index: number, item: IStock) {
@@ -182,7 +188,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     }
 
     registerChangeInStocks() {
-        this.eventSubscriber = this.eventManager.subscribe('stockListModification', response => this.loadAll());
+        // this.eventSubscriber = this.eventManager.subscribe('stockListModification', response => this.loadAll());
     }
 
     sort() {
@@ -209,11 +215,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         return item.id;
     }
 
-    option(x: number) {
-        this.optionCategory = x;
-    }
-
-    checkOption(s: IStock) {
-        return s.productType.categoryId === this.optionCategory || this.optionCategory === -1;
+    option(str: string) {
+        this.loadStockCat(str);
     }
 }

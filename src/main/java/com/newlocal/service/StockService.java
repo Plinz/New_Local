@@ -158,4 +158,10 @@ public class StockService {
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<StockDTO> getStockCat(String name) {
+        return stockRepository.getStockCat(name)
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.query.Param;
 
 import com.newlocal.domain.Stock;
 
@@ -30,5 +31,8 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
 
     @Query(value="SELECT * FROM ((STOCK JOIN GRADE ON STOCK.PRODUCT_TYPE_ID=GRADE.PRODUCT_TYPE_ID) JOIN PRODUCT_TYPE ON STOCK.PRODUCT_TYPE_ID=PRODUCT_TYPE.ID) WHERE GRADE.GRADE='5'",nativeQuery = true)
     List<Stock> getBestGrade();
+
+    @Query("select stock from Stock stock where stock.productType.category.name=:name")
+    List<Stock> getStockCat(@Param("name") String name);
 
 }
