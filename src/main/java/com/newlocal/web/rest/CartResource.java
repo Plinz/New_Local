@@ -34,6 +34,8 @@ import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
 
 import io.github.jhipster.web.util.ResponseUtil;
+import com.newlocal.service.dto.StockDTO;
+import com.newlocal.service.StockService;
 
 /**
  * REST controller for managing Cart.
@@ -49,6 +51,8 @@ public class CartResource {
     private CartService cartService;
 
     private CartQueryService cartQueryService;
+
+    private StockService stockService;
 
     public CartResource(CartService cartService, CartQueryService cartQueryService) {
         this.cartService = cartService;
@@ -70,6 +74,19 @@ public class CartResource {
             throw new BadRequestAlertException("A new cart cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Cart result = cartService.save(cart);
+
+        //Trigger modification des stocks (reserver des produits)
+        StockDTO tmp = new StockDTO(cart.getStock());
+        int newQt = cart.getQuantity() + tmp.getQuantityRemaining();
+
+        if( newQt <= tmp.getQuantityInit() ){
+            tmp.setQuantityRemaining(newQt);
+            StockDTO stock = stockService.save(tmp);
+        }else{
+            cartService.delete(result.getId());
+            result = null;
+        }
+
         return ResponseEntity.created(new URI("/api/carts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
