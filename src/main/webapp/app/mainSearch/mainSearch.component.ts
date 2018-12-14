@@ -47,6 +47,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     optioncat: string;
     qtbuy: number;
     filterOption: string;
+    testif: boolean;
 
     constructor(
         private stockService: StockService,
@@ -65,6 +66,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         private cartService: CartService,
         private userService: UserService
     ) {
+        this.testif = false;
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.cat = null;
         this.qtbuy = 1;
@@ -419,5 +421,9 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                 alert('Desolé plus de produit disponible');
             }
         );
+    }
+
+    test() {
+        this.testif = !this.testif;
     }
 }
