@@ -66,19 +66,19 @@
                         <option [ngValue]="imageOption.id" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
                     </select>
                 </div>
-               <div class="form-group">
+<!--                <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.holding.location" for="field_location">Location</label>
                     <select class="form-control" id="field_location" name="location" [(ngModel)]="holding.locationId"  required>
                         <option *ngIf="!editForm.value.location" [ngValue]="null" selected></option>
                         <option [ngValue]="locationOption.id" *ngFor="let locationOption of locations; trackBy: trackLocationById">{{locationOption.id}}</option>
                     </select>
-                </div>
-                <div [hidden]="!(editForm.controls.location?.dirty && editForm.controls.location?.invalid)">
+                </div> -->
+<!--                 <div [hidden]="!(editForm.controls.location?.dirty && editForm.controls.location?.invalid)">
                     <small class="form-text text-danger"
                         [hidden]="!editForm.controls.location?.errors?.required" jhiTranslate="entity.validation.required">
                         This field is required.
                     </small>
-                </div>
+                </div> -->
                <!-- <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.holding.owner" for="field_owner">Owner</label>
                     <select class="form-control" id="field_owner" name="owner" [(ngModel)]="holding.ownerId"  required>
@@ -95,7 +95,7 @@
 
                  <!--modifier une location-->
 
-                 <div class="form-group" *ngIf="holding.location">
+ <!--                 <div class="form-group" *ngIf="holding.location">
                     <label class="form-control-label" jhiTranslate="newLocalApp.location.city" for="field_city">City</label>
                     <input type="text" class="form-control" name="city" id="field_city"
                         [(ngModel)]="holding.location.country" minlength="1" maxlength="100"/>
@@ -160,8 +160,8 @@
                     </div>
                 </div>
 
-                 <!--modifier une location-->
-                  <!--creer location-->
+                 modifier une location
+                  creer location
               
 
                 <div class="form-group" *ngIf="location">
@@ -227,7 +227,7 @@
                         This field cannot be longer than 200 characters.
                         </small>
                     </div>
-                </div>
+                </div> -->
 
                 <!--finir location-->
 
