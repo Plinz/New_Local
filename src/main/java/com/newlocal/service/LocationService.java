@@ -33,11 +33,14 @@ public class LocationService {
     private LocationMapper locationMapper;
 
     private LocationSearchRepository locationSearchRepository;
+    
+    private LocalizationUtils localizationUtils;
 
-    public LocationService(LocationRepository locationRepository, LocationMapper locationMapper, LocationSearchRepository locationSearchRepository) {
+    public LocationService(LocationRepository locationRepository, LocationMapper locationMapper, LocationSearchRepository locationSearchRepository, LocalizationUtils localizationUtils) {
         this.locationRepository = locationRepository;
         this.locationMapper = locationMapper;
         this.locationSearchRepository = locationSearchRepository;
+        this.localizationUtils = localizationUtils;
     }
 
     /**
@@ -48,12 +51,20 @@ public class LocationService {
      */
     public LocationDTO save(LocationDTO locationDTO) {
         log.debug("Request to save Location : {}", locationDTO);
-
-        Location location = locationMapper.toEntity(locationDTO);
-        location = locationRepository.save(location);
-        LocationDTO result = locationMapper.toDto(location);
-        locationSearchRepository.save(location);
-        return result;
+        
+        if (locationDTO.getLat() != null && locationDTO.getLon() != null){
+        	locationDTO = localizationUtils.fillEntityFromLonLat(locationDTO);
+        } else if ((locationDTO.getZip() != null && !locationDTO.getZip().isEmpty()) || (locationDTO.getCity() != null && !locationDTO.getCity().isEmpty())){
+        	locationDTO = localizationUtils.fillEntityFromZipOrCity(locationDTO);
+        }
+        if (locationDTO.getZip() != null && !locationDTO.getZip().isEmpty()){
+	        Location location = locationMapper.toEntity(locationDTO);
+	        location = locationRepository.save(location);
+	        LocationDTO result = locationMapper.toDto(location);
+	        locationSearchRepository.save(location);
+	        return result;
+        }
+        return null;
     }
 
     /**

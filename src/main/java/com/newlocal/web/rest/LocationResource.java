@@ -29,7 +29,6 @@ import com.newlocal.service.LocationQueryService;
 import com.newlocal.service.LocationService;
 import com.newlocal.service.dto.LocationCriteria;
 import com.newlocal.service.dto.LocationDTO;
-import com.newlocal.service.dto.StockDTO;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
@@ -65,7 +64,7 @@ public class LocationResource {
      */
     @PostMapping("/locations")
     @Timed
-    public ResponseEntity<LocationDTO> createLocation(@Valid @RequestBody LocationDTO locationDTO) throws URISyntaxException {
+    public ResponseEntity<LocationDTO> createLocation(@RequestBody LocationDTO locationDTO) throws URISyntaxException {
         log.debug("REST request to save Location : {}", locationDTO);
         if (locationDTO.getId() != null) {
             throw new BadRequestAlertException("A new location cannot already have an ID", ENTITY_NAME, "idexists");
@@ -87,7 +86,7 @@ public class LocationResource {
      */
     @PutMapping("/locations")
     @Timed
-    public ResponseEntity<LocationDTO> updateLocation(@Valid @RequestBody LocationDTO locationDTO) throws URISyntaxException {
+    public ResponseEntity<LocationDTO> updateLocation(@RequestBody LocationDTO locationDTO) throws URISyntaxException {
         log.debug("REST request to update Location : {}", locationDTO);
         if (locationDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
