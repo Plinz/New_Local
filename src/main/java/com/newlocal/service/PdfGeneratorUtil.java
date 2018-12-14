@@ -1,12 +1,9 @@
 package com.newlocal.service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +12,6 @@ import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.codec.Base64.OutputStream;
 import com.newlocal.domain.Purchase;
 import com.newlocal.domain.User;
 

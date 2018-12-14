@@ -1,4 +1,5 @@
 import { IImage } from 'app/shared/model/image.model';
+import { ILocation } from 'app/shared/model/location.model';
 
 export interface IWarehouse {
     id?: number;
@@ -8,6 +9,7 @@ export interface IWarehouse {
     imageId?: number;
     locationId?: number;
     image?: IImage;
+    location?: ILocation;
 }
 
 export class Warehouse implements IWarehouse {
@@ -18,6 +20,7 @@ export class Warehouse implements IWarehouse {
         public tel?: string,
         public imageId?: number,
         public locationId?: number,
-        public image?: IImage
+        public image?: IImage,
+        public location?: ILocation
     ) {}
 }

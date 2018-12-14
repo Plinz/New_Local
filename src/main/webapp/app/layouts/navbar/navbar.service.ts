@@ -16,6 +16,11 @@ export class NavbarService {
         this.subject.next(this.count);
     }
 
+    sendDecrement() {
+        this.count--;
+        this.subject.next(this.count);
+    }
+
     clearCount() {
         this.count = 0;
     }

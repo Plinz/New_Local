@@ -46,10 +46,16 @@
         </div>
         <div class="" id="navbarResponsive">
             <ul class="navbar-collapse collapse navbar-nav" [ngSwitch]="isAuthenticated()">
-                <li *jhiHasAnyAuthority="'ROLE_SELLER'" class="nav-item" routerLinkActive="active"
+                <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_SELLER']" class="nav-item" routerLinkActive="active"
                     [routerLinkActiveOptions]="{exact: true}">
                     <a class="nav-link" routerLink="stockManagement" (click)="collapseNavbar()">
                         <span jhiTranslate="global.menu.stockManagement">Stock Management</span>
+                    </a>
+                </li>
+                <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_SELLER']" class="nav-item" routerLinkActive="active"
+                    [routerLinkActiveOptions]="{exact: true}">
+                    <a class="nav-link" routerLink="review" (click)="collapseNavbar()">
+                        <span jhiTranslate="global.menu.review">Review</span>
                     </a>
                 </li>
                 <li *jhiHasAnyAuthority="'ROLE_ADMIN'" ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active"
@@ -189,10 +195,9 @@
                     </ul>
                 </li>
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link"  routerLink="/shopping" (click)="collapseNavbar()">
-                        <span class="fa-stack fa-lg has-badge" data-count="0" >
-                            <fa-icon class="red-cart" [icon]="'shopping-cart'" [fixedWidth]="true"></fa-icon>
-                        </span>
+                    <a class="nav-link" id="panier"  routerLink="/shopping" (click)="collapseNavbar()">
+                            <fa-icon class="cart" [icon]="'shopping-cart'" [fixedWidth]="true"></fa-icon>
+                            <span class="circle">{{count}}</span>
                     </a>
                 </li>
 
@@ -217,7 +222,7 @@
                                 <span jhiTranslate="global.menu.account.settings">Settings</span>
                             </a>
                         </li>
-                        <li *jhiHasAnyAuthority="'ROLE_SELLER'">
+                        <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_SELLER']">
                             <a class="dropdown-item" routerLink="holdingprofil" routerLinkActive="active" (click)="collapseNavbar()">
                                 <span jhiTranslate="global.menu.account.password">Password</span>
                             </a>

@@ -50,9 +50,9 @@
                                 </div>
                                 <div class="col-sm-7" *ngIf="stocks.length > 0">
                                     <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Graphique</label>
-                                    <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+                                    <select class="custom-select my-1 mr-sm-2" (change)="onChangeOpt($event.target.value)">
                                         <option selected>Choisir...</option>
-                                        <option *ngFor="let stock of stocks ;" (click)="clickOpt(stock.id,stock.name)">Nom: {{stock.name}} n°: {{stock.id}}</option>
+                                        <option *ngFor="let stock of stocks ;let i = index" value="{{i}}" >Nom: {{stock.name}} n°: {{stock.id}}</option>
                                     </select>
                                 </div>
                             </div>

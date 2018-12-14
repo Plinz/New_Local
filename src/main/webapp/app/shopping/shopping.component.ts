@@ -9,8 +9,8 @@ import { ICart } from '../shared/model/cart.model';
 import { IPurchase } from '../shared/model/purchase.model';
 import { PurchaseService } from '../entities/purchase/purchase.service';
 import { Moment } from 'moment';
-import moment = require('moment');
-import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
+//import moment = require('moment');
+import * as moment from 'moment';
 import { saveAs } from 'file-saver';
 
 @Component({

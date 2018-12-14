@@ -33,6 +33,8 @@ public class WarehouseDTO implements Serializable {
     
     private ImageDTO image;
     
+    private LocationDTO location;
+    
     public WarehouseDTO(){
     	
     }
@@ -48,6 +50,7 @@ public class WarehouseDTO implements Serializable {
     	}
     	if(warehouse.getLocation() != null){
     		this.locationId = warehouse.getLocation().getId();
+    		this.location = new LocationDTO(warehouse.getLocation());
     	}
     }
 
@@ -107,6 +110,15 @@ public class WarehouseDTO implements Serializable {
 		this.image = image;
 	}
 
+    public LocationDTO getLocation() {
+		return location;
+	}
+
+	public void setLocation(LocationDTO location) {
+		this.location = location;
+	}
+
+	
 	@Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -27,10 +27,10 @@
             </div>
         </div>
         <div class="col-md-1">
-            <select class="custom-select-sm form-control form-control-sm">
+            <select class="custom-select-sm form-control form-control-sm" (change)="onChangeCat($event.target.value)">
                 <option value="" disabled selected>Catégorie</option>
-                <option value="1" (click)="option(-1)">Tout</option>
-                <option *ngFor="let catego of categories ;" (click)="option(catego.id)">{{catego.name}}</option>
+                <option value="-1">Tout</option>
+                <option *ngFor="let catego of categories ;" value="{{catego.id}}">{{catego.name}}</option>
             </select>
         </div>
         <div class="col-md-3">

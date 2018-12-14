@@ -47,7 +47,8 @@
             "fruit": "Fruit",
             "fish": "Poisson",
             "meat": "Viande",
-            "grocery": "Epicerie"
+            "grocery": "Epicerie",
+            "review": "Bilan"
         },
         "form": {
             "username": "Nom d'utilisateur",

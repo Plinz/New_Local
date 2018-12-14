@@ -6,8 +6,8 @@ import { StockService } from '../entities/stock/stock.service';
 import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 import { Moment } from 'moment';
-import moment = require('moment');
-import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
+// import moment = require('moment');
+import * as moment from 'moment';
 
 @Component({
     selector: 'jhi-review',
@@ -152,9 +152,9 @@ export class ReviewComponent implements OnInit {
         console.log(e);
     }
 
-    clickOpt(id: number, name: string) {
+    onChangeOpt(id: number) {
         this.bOpt = false;
-        this.loadPurchase(name, id);
+        this.loadPurchase(this.stocks[id].name, this.stocks[id].id);
         this.bOpt = true;
     }
 }
