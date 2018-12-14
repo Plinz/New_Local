@@ -248,10 +248,6 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    option(x: number) {
-        this.optionCategory = x;
-    }
-
     checkoption(o: number) {
         this.productTypeService.find(o).subscribe(
             (res: HttpResponse<IProductType>) => {
@@ -340,5 +336,9 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     clickk() {
         const tmp = this.popupModalService.open();
         tmp.result.then(() => this.checkboxsuppr(), () => '');
+    }
+
+    onChangeCat(value: number) {
+        this.optionCategory = value;
     }
 }

@@ -152,9 +152,9 @@ export class ReviewComponent implements OnInit {
         console.log(e);
     }
 
-    clickOpt(id: number, name: string) {
+    onChangeOpt(id: number) {
         this.bOpt = false;
-        this.loadPurchase(name, id);
+        this.loadPurchase(this.stocks[id].name, this.stocks[id].id);
         this.bOpt = true;
     }
 }

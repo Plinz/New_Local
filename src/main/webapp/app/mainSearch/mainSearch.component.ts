@@ -363,7 +363,15 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         return item.id;
     }
 
-    option(str: string) {
-        this.loadStockCat(str);
+    onChangeBuy(deviceValue: string) {
+        alert(deviceValue);
+    }
+
+    onChangeCat(deviceValue: string) {
+        if (deviceValue === 'Tout') {
+            this.loadAll();
+        } else {
+            this.loadStockCat(deviceValue);
+        }
     }
 }
