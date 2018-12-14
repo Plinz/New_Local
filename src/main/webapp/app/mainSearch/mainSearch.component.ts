@@ -411,11 +411,13 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         c.quantity = this.qtbuy;
         c.stock = s;
 
-        this.cartService.create(c).subscribe(
+        this.cartService.createCartTrigger(c).subscribe(
             (res: HttpResponse<ICart>) => {
                 this.navbarService.sendIncrement();
             },
-            (res: HttpErrorResponse) => this.onError(res.message)
+            (res: HttpErrorResponse) => {
+                alert('Desolé plus de produit disponible');
+            }
         );
     }
 }

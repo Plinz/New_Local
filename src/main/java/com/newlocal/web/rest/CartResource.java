@@ -75,24 +75,38 @@ public class CartResource {
             throw new BadRequestAlertException("A new cart cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Cart result = cartService.save(cart);
-
-        //Trigger modification des stocks (reserver des produits)
-        /*
-        StockDTO tmp = new StockDTO(cart.getStock());
-        int newQt = cart.getQuantity() + tmp.getQuantityRemaining();
-
-        if( newQt <= tmp.getQuantityInit() ){
-            tmp.setQuantityRemaining(newQt);
-            StockDTO stock = stockService.save(tmp);
-        }else{
-            cartService.delete(result.getId());
-            result = null;
-        }*/
-
         return ResponseEntity.created(new URI("/api/carts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+    
+    @PostMapping("/carts/create")
+    @Timed
+    public ResponseEntity<Cart> createCartTrigger(@Valid @RequestBody Cart cart) throws URISyntaxException {
+        log.debug("REST request to save Cart : {}", cart);
+        if (cart.getId() != null) {
+            throw new BadRequestAlertException("A new cart cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        Cart result = cartService.save(cart);
+        
+        //Trigger modification des stocks (reserver des produits)
+        
+        StockDTO tmp = new StockDTO(cart.getStock());
+        int newQt = tmp.getQuantityRemaining() - cart.getQuantity();
+
+        if( newQt >= 0 ){
+            tmp.setQuantityRemaining(newQt);
+            StockDTO stock = stockService.save(tmp);
+        }else{
+            cartService.delete(result.getId());
+            throw new BadRequestAlertException("Plus de produit", ENTITY_NAME, "idexists");
+        }
+        
+        return ResponseEntity.created(new URI("/api/carts/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+    
 
     /**
      * PUT  /carts : Updates an existing cart.
