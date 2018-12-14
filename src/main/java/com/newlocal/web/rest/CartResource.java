@@ -54,9 +54,10 @@ public class CartResource {
 
     private StockService stockService;
 
-    public CartResource(CartService cartService, CartQueryService cartQueryService) {
+    public CartResource(CartService cartService, CartQueryService cartQueryService,StockService stockserv) {
         this.cartService = cartService;
         this.cartQueryService = cartQueryService;
+        this.stockService = stockserv;
     }
 
     /**

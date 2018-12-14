@@ -99,7 +99,7 @@ public class CartResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CartResource cartResource = new CartResource(cartService, cartQueryService);
+        final CartResource cartResource = new CartResource(cartService, cartQueryService,stockService);
         this.restCartMockMvc = MockMvcBuilders.standaloneSetup(cartResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
