@@ -17,12 +17,14 @@ import { IUser, UserService } from '../core';
     templateUrl: './holdingProfil-update.component.html'
 })
 export class HoldingProfilUpdateComponent implements OnInit {
-    image: IImage;
     holding: IHolding;
     isSaving: boolean;
-    location: ILocation;
+
     images: IImage[];
+
     locations: ILocation[];
+    location: ILocation;
+
     users: IUser[];
 
     constructor(
@@ -32,21 +34,15 @@ export class HoldingProfilUpdateComponent implements OnInit {
         private locationService: LocationService,
         private userService: UserService,
         private activatedRoute: ActivatedRoute
-    ) {
-        this.location = { city: 'coucou' };
-    }
+    ) {}
 
     ngOnInit() {
         this.isSaving = false;
-        this.userService.query().subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                this.users = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        this.activatedRoute.data.subscribe(({ holding }) => {
+            this.holding = holding;
+        });
         this.activatedRoute.data.subscribe(({ location }) => {
             this.location = location;
-            console.log('locationTest', location);
         });
         this.imageService.query({ 'holdingId.specified': 'false' }).subscribe(
             (res: HttpResponse<IImage[]>) => {
@@ -63,19 +59,15 @@ export class HoldingProfilUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.activatedRoute.data.subscribe(({ holding }) => {
-            this.holding = holding;
-            console.log('locationHolding', holding);
-        });
-        this.userService.query().subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                this.users = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
         this.locationService.query().subscribe(
             (res: HttpResponse<ILocation[]>) => {
                 this.locations = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.userService.query().subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                this.users = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -90,15 +82,12 @@ export class HoldingProfilUpdateComponent implements OnInit {
         if (this.holding.id !== undefined) {
             this.subscribeToSaveResponse(this.holdingService.update(this.holding));
         } else {
-            console.log('holdingTEST', this.holding);
             this.subscribeToSaveResponse(this.holdingService.create(this.holding));
         }
-        if (this.holding.location.id !== undefined) {
-            this.subscribeToSaveResponseD(this.locationService.update(this.holding.location));
-            console.log('locationTEST', this.holding.location.id);
+        if (this.location.id !== undefined) {
+            this.subscribeToSaveResponseD(this.locationService.update(this.location));
         } else {
-            this.subscribeToSaveResponseD(this.locationService.create(this.location));
-            console.log('locationTEST2', this.holding.location);
+            this.locationService.create(this.location);
         }
     }
 
@@ -107,8 +96,9 @@ export class HoldingProfilUpdateComponent implements OnInit {
     }
 
     private subscribeToSaveResponseD(result: Observable<HttpResponse<ILocation>>) {
-        result.subscribe((res: HttpResponse<ILocation>) => {}, (res: HttpErrorResponse) => {});
+        result.subscribe((res: HttpResponse<ILocation>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
     }
+
     private onSaveSuccess() {
         this.isSaving = false;
         this.previousState();
