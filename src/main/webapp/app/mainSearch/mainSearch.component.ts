@@ -296,7 +296,10 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.loadAll();
+        if (this.cat == null) {
+            this.loadAll();
+        }
+
         this.principal.identity().then(account => {
             this.currentAccount = account;
         });
