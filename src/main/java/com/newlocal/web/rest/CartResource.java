@@ -77,6 +77,7 @@ public class CartResource {
         Cart result = cartService.save(cart);
 
         //Trigger modification des stocks (reserver des produits)
+        /*
         StockDTO tmp = new StockDTO(cart.getStock());
         int newQt = cart.getQuantity() + tmp.getQuantityRemaining();
 
@@ -86,7 +87,7 @@ public class CartResource {
         }else{
             cartService.delete(result.getId());
             result = null;
-        }
+        }*/
 
         return ResponseEntity.created(new URI("/api/carts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
