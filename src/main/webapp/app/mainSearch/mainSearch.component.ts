@@ -4,20 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks, JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-
 import { IStock } from 'app/shared/model/stock.model';
 import { Principal, LoginModalService } from 'app/core';
-
 import { ITEMS_PER_PAGE } from 'app/shared';
 import { StockService } from '../entities/stock/stock.service';
-
 import { ICategory } from 'app/shared/model/category.model';
 import { CategoryService } from 'app/entities/category';
-
 import { ILocation, Location } from 'app/shared/model/location.model';
-
 import { MainService } from '../layouts/main/main.service';
-
 import { LocationService } from 'app/entities/location';
 
 @Component({
@@ -45,6 +39,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     modalRef: NgbModalRef;
     categories: ICategory[];
     optioncat: string;
+    qtbuy: number;
 
     constructor(
         private stockService: StockService,
@@ -62,6 +57,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.cat = null;
+        this.qtbuy = 1;
         this.optioncat = 'Catégorie';
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
@@ -363,10 +359,6 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         return item.id;
     }
 
-    onChangeBuy(deviceValue: string) {
-        alert(deviceValue);
-    }
-
     onChangeCat(deviceValue: string) {
         if (deviceValue === 'Tout') {
             this.loadAll();
@@ -374,4 +366,10 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             this.loadStockCat(deviceValue);
         }
     }
+
+    onChangeBuy(deviceValue: number) {
+        this.qtbuy = deviceValue;
+    }
+
+    buyStock() {}
 }

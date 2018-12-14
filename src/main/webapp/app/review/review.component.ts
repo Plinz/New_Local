@@ -6,8 +6,8 @@ import { StockService } from '../entities/stock/stock.service';
 import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 import { Moment } from 'moment';
-import moment = require('moment');
-import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
+// import moment = require('moment');
+import * as moment from 'moment';
 
 @Component({
     selector: 'jhi-review',
