@@ -8,6 +8,7 @@ import com.newlocal.repository.LocationRepository;
 import com.newlocal.repository.search.LocationSearchRepository;
 import com.newlocal.service.LocationService;
 import com.newlocal.service.dto.LocationDTO;
+import org.springframework.jdbc.core.JdbcTemplate;
 import com.newlocal.service.mapper.LocationMapper;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
 import com.newlocal.service.LocationQueryService;
@@ -107,7 +108,7 @@ public class LocationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LocationResource locationResource = new LocationResource(locationService, locationQueryService);
+        final LocationResource locationResource = new LocationResource(locationService, locationQueryService, new UserDAO(new JdbcTemplate()));
         this.restLocationMockMvc = MockMvcBuilders.standaloneSetup(locationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

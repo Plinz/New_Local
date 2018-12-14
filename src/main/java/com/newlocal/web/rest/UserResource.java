@@ -210,4 +210,11 @@ public class UserResource {
             .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
+
+    @GetMapping("/users/currentuser")
+    @Timed
+    public ResponseEntity<User> findByClientIsCurrentUser() {
+        User u = userService.findByClientIsCurrentUser();
+        return new ResponseEntity<User>(u, HttpStatus.OK);
+    }
 }
