@@ -47,7 +47,9 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     optioncat: string;
     qtbuy: number;
     filterOption: string;
-    testif: boolean;
+    bclik: boolean;
+    prixMini: number;
+    prixMax: number;
 
     constructor(
         private stockService: StockService,
@@ -66,7 +68,9 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         private cartService: CartService,
         private userService: UserService
     ) {
-        this.testif = false;
+        this.prixMini = 1;
+        this.prixMax = 9;
+        this.bclik = false;
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.cat = null;
         this.qtbuy = 1;
@@ -423,7 +427,11 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         );
     }
 
-    test() {
-        this.testif = !this.testif;
+    openNav() {
+        this.bclik = !this.bclik;
+    }
+
+    closeNav() {
+        this.bclik = false;
     }
 }

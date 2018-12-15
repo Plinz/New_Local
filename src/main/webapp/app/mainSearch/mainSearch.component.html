@@ -1,110 +1,148 @@
-<div>
-    <jhi-alert></jhi-alert>
+    <div id="mainsearch">
+        <jhi-alert></jhi-alert>
 
-    <!-- Localisation-->
-    <div>
-        <div class="mt-4 row" *ngIf="!hasLocation() && !isAuthenticated()">
-            <p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les produits
-                près de chez vous.
-                Pour cela vous pouvez utilisez la géolocalisation de votre navigateur.</p>
-            <button class="btn btn-info btn-sm mr-5 col-sm-1" (click)="askLocation()">
-                <span class="d-none d-md-inline">Me géolocaliser</span>
-            </button>
-            <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et ensuite
-                enregistrer votre localisation.</p>
-            <button class="btn btn-info btn-sm ml-0 col-sm-1" (click)="login()">
-                <span class="d-none d-md-inline">Connexion</span>
-            </button>
-            <button class="btn btn-info btn-sm mx-2 col-sm-1" routerLink="/register" routerLinkActive="active">
-                <span class="d-none d-md-inline">Inscription</span>
-            </button>
+        <!--Sidenav-->
+        <div id="mySidenav" class="sidenav" [ngStyle]="{'width':bclik ? '250px' : '0px' }">
+            <a class="closebtn" (click)="closeNav()">&times;</a>
+            
+            <!-- Catégorie-->
+            <div class="mt-2 ml-2 mr-2">
+                <select class="custom-select" (change)="onChangeCat($event.target.value)">
+                    <option disabled selected>{{ optioncat }}</option>
+                    <option>Tout</option>
+                    <option *ngFor="let c of categories;">{{c.name}}</option>
+                </select>
+            </div>
+
+            <!-- Producteur-->
+            <div class="mt-3 ml-2 mr-2">
+                <select class="custom-select">
+                    <option disabled selected>Producteur</option>
+                    <option>Tout</option>
+                </select>
+            </div>
+
+            <!--Prix mini-->
+            <div class="mt-3 ml-2 mr-2">
+                <label for="price-min">Prix min : {{prixMini}}</label>
+                <input type="range" name="price-min" [(ngModel)]="prixMini" id="price-min" value="1" min="0" max="10">
+            </div> 
+
+            <!--Prix maxi-->
+            <div class="mt-3 ml-2 mr-2">
+                <label for="price-max">Prix max : {{prixMax}}</label>
+                <input type="range" name="price-max" [(ngModel)]="prixMax" min="0" max="10">
+            </div>
+
+            <!--Filtrer btn-->
+            <div class="text-center mt-4">
+                <div class="btn btn-info  pl-5 pr-5">Filtrer</div>
+            </div>
+
         </div>
 
-        <div class="mt-4 row" *ngIf="!hasLocation() && isAuthenticated()">
-            <p class="grey-text mb-0 col-sm-8">New Local a besoin de votre localisation pour vous proposez les produits
-                près de chez vous.
-                Pour cela vous pouvez utilisez la géolocalisation de votre navigateur.</p>
-            <button class="btn btn-info btn-sm col-sm-1" (click)="askLocation()">
-                <span class="d-none d-md-inline">Me géolocaliser</span>
-            </button>
+        <div id="mainSidenav" [ngStyle]="{'marginLeft':bclik ? '250px' : '0px' }">
+            <span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
+
+            <!-- Main du site-->
+            <div>
+                <!-- Localisation-->
+        <div>
+            <div class="mt-4 row" *ngIf="!hasLocation() && !isAuthenticated()">
+                <p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les produits
+                    près de chez vous.
+                    Pour cela vous pouvez utilisez la géolocalisation de votre navigateur.</p>
+                <button class="btn btn-info btn-sm mr-5 col-sm-1" (click)="askLocation()">
+                    <span class="d-none d-md-inline">Me géolocaliser</span>
+                </button>
+                <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et ensuite
+                    enregistrer votre localisation.</p>
+                <button class="btn btn-info btn-sm ml-0 col-sm-1" (click)="login()">
+                    <span class="d-none d-md-inline">Connexion</span>
+                </button>
+                <button class="btn btn-info btn-sm mx-2 col-sm-1" routerLink="/register" routerLinkActive="active">
+                    <span class="d-none d-md-inline">Inscription</span>
+                </button>
+            </div>
+
+            <div class="mt-4 row" *ngIf="!hasLocation() && isAuthenticated()">
+                <p class="grey-text mb-0 col-sm-8">New Local a besoin de votre localisation pour vous proposez les produits
+                    près de chez vous.
+                    Pour cela vous pouvez utilisez la géolocalisation de votre navigateur.</p>
+                <button class="btn btn-info btn-sm col-sm-1" (click)="askLocation()">
+                    <span class="d-none d-md-inline">Me géolocaliser</span>
+                </button>
+            </div>
+
+            <div class="mt-4 row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase()">
+                <p class="grey-text mb-0 col-sm-8">Voulez-vous utiliser votre localisation comme localisation principale</p>
+                <button class="btn btn-info btn-sm col-sm-1" (click)="setLocationForUser()">
+                    <span class="d-none d-md-inline">Oui</span>
+                </button>
+            </div>
         </div>
 
-        <div class="mt-4 row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase()">
-            <p class="grey-text mb-0 col-sm-8">Voulez-vous utiliser votre localisation comme localisation principale</p>
-            <button class="btn btn-info btn-sm col-sm-1" (click)="setLocationForUser()">
-                <span class="d-none d-md-inline">Oui</span>
-            </button>
-        </div>
-    </div>
-
-    <!--Main-->
-    <div>
-        <div class="mt-4">
-            <select class="custom-select" (change)="onChangeCat($event.target.value)">
-                <option disabled selected>{{ optioncat }}</option>
-                <option>Tout</option>
-                <option *ngFor="let c of categories;">{{c.name}}</option>
-            </select>
-        </div>
-
-        <div id="main mt-5">
-            <div class="row">
-                <ng-container *ngFor="let stock of stocks;">
-                    <div class="col-sm-2" style="display: flex; flex-direction: column">
-                        <div class="card mt-3" style="flex-grow: 1">
-                            <div class="view overlay">
-                                <a [routerLink]="['/mainSearch', stock.id, 'view' ]">
-                                    <img class="card-img-top" src="../../content/images/m1.png" alt="">
-                                </a>
-                            </div>
-
-                            <div class="card-body">
-                                <div>
-                                    <a [routerLink]="['/mainSearch', stock.id, 'view' ]" class="h4 font-weight-bold blue-text">
-                                        <strong>{{stock.name}}</strong>
+        <!--Main-->
+        <div>
+            <div id="main mt-5">
+                <div class="row">
+                    <ng-container *ngFor="let stock of stocks;">
+                        <div class="col-sm-3" style="display: flex; flex-direction: column">
+                            <div class="card mt-3" style="flex-grow: 1">
+                                <div class="view overlay">
+                                    <a [routerLink]="['/mainSearch', stock.id, 'view' ]">
+                                        <img class="card-img-top" src="../../content/images/m1.png" alt="">
                                     </a>
                                 </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <h6 class="mb-4">{{stock.priceUnit}} €/kg</h6>
+
+                                <div class="card-body">
+                                    <div>
+                                        <a [routerLink]="['/mainSearch', stock.id, 'view' ]" class="h4 font-weight-bold blue-text">
+                                            <strong>{{stock.name}}</strong>
+                                        </a>
                                     </div>
-                                    <div class="col">
-                                        <span *ngIf="stock.bio" class="badge badge-success">Bio</span>
-                                        <span *ngIf=distanceSuccess(stock) class="badge badge-success">{{distance(stock)}}
-                                            Km</span>
-                                        <span *ngIf=distanceWarning(stock) class="badge badge-warning">{{distance(stock)}}
-                                            Km</span>
-                                        <span *ngIf=distanceDanger(stock) class="badge badge-danger">{{distance(stock)}}
-                                            Km</span>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <h6 class="mb-4">{{stock.priceUnit}} €/kg</h6>
+                                        </div>
+                                        <div class="col">
+                                            <span *ngIf="stock.bio" class="badge badge-success">Bio</span>
+                                            <span *ngIf=distanceSuccess(stock) class="badge badge-success">{{distance(stock)}}
+                                                Km</span>
+                                            <span *ngIf=distanceWarning(stock) class="badge badge-warning">{{distance(stock)}}
+                                                Km</span>
+                                            <span *ngIf=distanceDanger(stock) class="badge badge-danger">{{distance(stock)}}
+                                                Km</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="btn-group" (change)="onChangeBuy($event.target.value)" style="position: absolute;bottom:2%; left:25%">
-                                    <select>
-                                        <option value="1">1.0 kg</option>
-                                        <option value="1">1.5 kg</option>
-                                        <option value="2">2.5 kg</option>
-                                    </select>
-                                    <button class="btn btn-info btn-sm" (click)="buyStock(stock)">
-                                        <span class="d-none d-md-inline">Acheter</span>
-                                    </button>
+                                    <div class="btn-group" (change)="onChangeBuy($event.target.value)" style="position: absolute;bottom:2%; left:25%">
+                                        <select>
+                                            <option value="1">1.0 kg</option>
+                                            <option value="1">1.5 kg</option>
+                                            <option value="2">2.5 kg</option>
+                                        </select>
+                                        <button class="btn btn-info btn-sm" (click)="buyStock(stock)">
+                                            <span class="d-none d-md-inline">Acheter</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </ng-container>
-            </div>
-
-
-            <div *ngIf="stocks && stocks.length">
-                <div class="row justify-content-center">
-                    <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+                    </ng-container>
                 </div>
-                <div class="row justify-content-center">
-                    <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5"
-                        [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+
+
+                <div *ngIf="stocks && stocks.length">
+                    <div class="row justify-content-center mt-4">
+                        <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+                    </div>
+                    <div class="row justify-content-center">
+                        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5"
+                            [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+                    </div>
                 </div>
             </div>
         </div>
+            </div>
+        </div>
     </div>
-
-</div>
