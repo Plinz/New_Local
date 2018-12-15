@@ -192,6 +192,12 @@
                                 <span jhiTranslate="global.menu.admin.database">Database</span>
                             </a>
                         </li>
+                        <li>
+						    <a class="dropdown-item" routerLink="elasticsearch-reindex" routerLinkActive="active" (click)="collapseNavbar()">
+						    	<fa-icon [icon]="'book'" [fixedWidth]="true"></fa-icon>
+						        <span translate="global.menu.admin.elasticsearch-reindex">Reindex Elasticsearch</span>
+						    </a>
+						</li>
                     </ul>
                 </li>
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">

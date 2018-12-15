@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster';
 import { JhiLanguageHelper } from 'app/core';
 import { NewLocalSharedModule } from 'app/shared';
+import { NewLocalElasticsearchReindexModule } from './elasticsearch-reindex/elasticsearch-reindex.module';
 /* jhipster-needle-add-admin-module-import - JHipster will add admin modules imports here */
 
 import {
@@ -24,7 +25,8 @@ import {
 @NgModule({
     imports: [
         NewLocalSharedModule,
-        RouterModule.forChild(adminState)
+        RouterModule.forChild(adminState),
+        NewLocalElasticsearchReindexModule
         /* jhipster-needle-add-admin-module - JHipster will add admin modules here */
     ],
     declarations: [
