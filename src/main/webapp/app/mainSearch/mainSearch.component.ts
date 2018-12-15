@@ -50,6 +50,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     bclik: boolean;
     prixMini: number;
     prixMax: number;
+    seller: IUser[];
 
     constructor(
         private stockService: StockService,
