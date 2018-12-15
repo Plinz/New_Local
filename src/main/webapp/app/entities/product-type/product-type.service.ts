@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IProductType } from 'app/shared/model/product-type.model';
+import { IHolding } from 'app/shared/model/holding.model';
 
 type EntityResponseType = HttpResponse<IProductType>;
 type EntityArrayResponseType = HttpResponse<IProductType[]>;
@@ -26,6 +27,10 @@ export class ProductTypeService {
 
     find(id: number): Observable<EntityResponseType> {
         return this.http.get<IProductType>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    }
+
+    findByCurrentUser(): Observable<EntityArrayResponseType> {
+        return this.http.get<IProductType[]>(`${this.resourceUrl}/currentUser`, { observe: 'response' });
     }
 
     query(req?: any): Observable<EntityArrayResponseType> {

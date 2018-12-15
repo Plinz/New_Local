@@ -138,4 +138,21 @@ public class StockService {
         log.debug("Request to search the best grade {}");
         return stockRepository.getBestGrade();
     }
+
+    @Transactional(readOnly = true)
+    public Double[] getStatsStock(Long productTypeId, Boolean bio){
+        Double[] mesStats = null;
+
+        log.debug("Request to get the stats on the productType of the stock {}");
+        List<Object[]> mesObjets = stockRepository.getStatsStock(productTypeId, bio);
+
+        for(Object[] obj : mesObjets) {
+            mesStats = new Double[obj.length];
+            for (int i = 0; i < obj.length; i++) {
+                mesStats[i] = (Double) obj[i];
+            }
+        }
+
+        return mesStats;
+    }
 }

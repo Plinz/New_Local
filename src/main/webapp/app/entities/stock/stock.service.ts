@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
-import { DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { map } from 'rxjs/operators';
 
 import { SERVER_API_URL } from 'app/app.constants';
@@ -93,5 +92,9 @@ export class StockService {
 
     findGrade(): Observable<EntityResponseType> {
         return this.http.get<IStock>(`${this.resourceUrl}/grade`, { observe: 'response' });
+    }
+
+    statsStock(parameters: HttpParams): Observable<HttpResponse<string[]>> {
+        return this.http.get<string[]>(`${this.resourceUrl}/stats`, { params: parameters, observe: 'response' });
     }
 }

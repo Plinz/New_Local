@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpResponse, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared';
@@ -8,7 +8,7 @@ import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 
 import { IStock } from '../shared/model/stock.model';
 import { StockService } from 'app/entities/stock';
-import { IProductType } from '../shared/model/product-type.model';
+import { IProductType, ProductType } from '../shared/model/product-type.model';
 import { ProductTypeService } from '../entities/product-type';
 import { IHolding } from '../shared/model/holding.model';
 import { HoldingService } from '../entities/holding';
@@ -22,14 +22,17 @@ export class StockManagementUpdateComponent implements OnInit {
     stock: IStock;
     isSaving: boolean;
 
-    productTypes: IProductType[];
+    productTypesExisting: IProductType[];
+    productTypesCurrentUser: IProductType[];
+    productTypeNotExisting: IProductType;
 
     holdings: IHolding[];
     users: IUser[];
     // onSaleDate: string;
     expiryDate: string;
     currentDate: string;
-    btnValiderTypeproduit: boolean;
+    btnValiderTypeProduit: boolean;
+    stats: string[];
 
     constructor(
         private dataUtils: JhiDataUtils,
@@ -44,7 +47,8 @@ export class StockManagementUpdateComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.btnValiderTypeproduit = false;
+        this.btnValiderTypeProduit = false;
+        this.productTypeNotExisting = new ProductType();
         this.activatedRoute.data.subscribe(({ stock }) => {
             this.stock = stock;
             // this.onSaleDate = this.stock.onSaleDate != null ? this.stock.onSaleDate.format(DATE_TIME_FORMAT) : null;
@@ -52,7 +56,13 @@ export class StockManagementUpdateComponent implements OnInit {
         });
         this.productTypeService.query().subscribe(
             (res: HttpResponse<IProductType[]>) => {
-                this.productTypes = res.body;
+                this.productTypesExisting = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.productTypeService.findByCurrentUser().subscribe(
+            (res: HttpResponse<IProductType[]>) => {
+                this.productTypesCurrentUser = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -138,7 +148,30 @@ export class StockManagementUpdateComponent implements OnInit {
         return item.id;
     }
 
-    clicBtnValiderTypeproduit() {
-        this.btnValiderTypeproduit = true;
+    clicBtnValiderTypeProduit() {
+        this.btnValiderTypeProduit = true;
+
+        // Initialize Params Object
+        let parameters = new HttpParams();
+
+        // Begin assigning parameters
+        parameters = parameters.append('productTypeId', this.stock.productType.id.toString());
+        parameters = parameters.append('bio', String(this.stock.bio));
+
+        this.stockService.statsStock(parameters).subscribe(
+            (res: HttpResponse<string[]>) => {
+                this.stats = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+
+        this.stats.forEach(function(value) {
+            console.log(value);
+        });
+
+        /*const s: string[] = ['toto', 'tata', 'tutu'];
+        s.forEach(function(value) {
+            console.log(value);
+        });*/
     }
 }

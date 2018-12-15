@@ -8,6 +8,9 @@ import java.util.Random;
 
 import javax.validation.Valid;
 
+import com.sun.net.httpserver.HttpsParameters;
+import org.apache.http.HttpResponse;
+import org.apache.http.params.HttpParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -208,7 +211,6 @@ public class StockResource {
         log.debug("REST request to search a new stock");
         Stock stockNew=stockService.getNewStock().get(0);
         return ResponseEntity.ok().body(stockNew);
-
     }
 
     /**
@@ -236,5 +238,17 @@ public class StockResource {
         List<Stock>  gradeList=stockService.getBestGrade();
         Stock stockGrade=gradeList.get((new Random()).nextInt(gradeList.size()));
         return ResponseEntity.ok().body(stockGrade);
+    }
+
+    @GetMapping("/stocks/stats")
+    @Timed
+    public ResponseEntity<String[]> getStatsStock(@RequestParam("productTypeId") Long productTypeId, @RequestParam("bio") Boolean bio) {
+        Double[] stats = stockService.getStatsStock(productTypeId, bio);
+        String[] res = new String[stats.length];
+        for(int i = 0; i < stats.length; i++){
+            System.out.println(stats[i]);
+            res[i] = stats[i].toString();
+        }
+        return ResponseEntity.ok(res);
     }
 }

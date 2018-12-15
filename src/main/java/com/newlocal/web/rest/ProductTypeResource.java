@@ -141,6 +141,19 @@ public class ProductTypeResource {
     }
 
     /**
+     * GET /product-types/currentUser : get the current user product-types
+     *
+     * @return the ResponseEntity with status 200 (OK) and with body the product-types, or with status 404 (Not Found)
+     */
+    @GetMapping("/product-types/currentUser")
+    @Timed
+    public ResponseEntity<List<ProductType>> getProductTypesByCurrentUser(){
+        log.debug("REST request to get ProductTypes of the current user : {}");
+        List<ProductType> productTypes = productTypeService.findByCurrentUser();
+        return ResponseEntity.ok().body(productTypes);
+    }
+
+    /**
      * DELETE  /product-types/:id : delete the "id" productType.
      *
      * @param id the id of the productType to delete

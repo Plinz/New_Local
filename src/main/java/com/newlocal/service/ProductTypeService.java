@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -69,6 +70,17 @@ public class ProductTypeService {
     public Optional<ProductType> findOne(Long id) {
         log.debug("Request to get ProductType : {}", id);
         return productTypeRepository.findById(id);
+    }
+
+    /**
+     * Get multiple productType of current user.
+     *
+     * @return the entities list
+     */
+    @Transactional(readOnly = true)
+    public List<ProductType> findByCurrentUser() {
+        log.debug("Request to get ProductTypes of the current user");
+        return productTypeRepository.findByClientIsCurrentUser();
     }
 
     /**
