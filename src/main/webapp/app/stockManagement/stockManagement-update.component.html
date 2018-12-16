@@ -28,7 +28,7 @@
                                 <div class="form-group" id="field_productType">
                                     <div class=row>
                                         <div class="col-md-4">
-                                            <div class="form-group">
+                                            <!--<div class="form-group">
                                                 <label class="form-control-label"
                                                        jhiTranslate="newLocalApp.stock.productTypeCurrentUser"
                                                        for="field_productTypeCurrentUser">Mes produits</label>
@@ -42,13 +42,26 @@
                                                         {{productTypeOption.name}}
                                                     </option>
                                                 </select>
-                                            </div>
+                                            </div>-->
+                                            <select class="form-control" name="productTypeSelectionMethod"
+                                                    (change)="onChangeProductTypeSelectionMethod($event.target.value)">
+                                                <option selected hidden>À partir de...</option>
+                                                <option
+                                                    *ngIf="productTypesCurrentUser && productTypesCurrentUser.length > 0"
+                                                    jhiTranslate="newLocalApp.stock.productTypeCurrentUser"
+                                                    value="0"></option>
+                                                <option *ngIf="productTypesExisting && productTypesExisting.length > 0"
+                                                        jhiTranslate="newLocalApp.stock.productTypeExisting"
+                                                        value="1"></option>
+                                                <option jhiTranslate="newLocalApp.stock.productTypeNonExisting"
+                                                        value="2"></option>
+                                            </select>
                                         </div>
                                         <!--<div class="col-md-1">
                                             <label class="form-control-label">ou</label>
                                         </div>-->
                                         <div class="col-md-4">
-                                            <div class="form-group">
+                                            <!--<div class="form-group">
                                                 <label class="form-control-label"
                                                        jhiTranslate="newLocalApp.stock.productTypeExisting"
                                                        for="field_productTypeExisting">Produits existant sur le
@@ -63,12 +76,42 @@
                                                         {{productTypeOption.name}}
                                                     </option>
                                                 </select>
-                                            </div>
+                                            </div>-->
+                                            <select *ngIf="productTypeSelectionMethod == 0" class="form-control"
+                                                    name="productTypesCurrentUser"
+                                                    (change)="onChangeProductTypeSelected($event.target.value)">
+                                                <option selected hidden>Sélectionner un type...</option>
+                                                <option *ngFor="let p of productTypesCurrentUser" value="{{p}}">
+                                                    {{p.name}}
+                                                </option>
+                                                <!--<option
+                                                    [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption"
+                                                    *ngFor="let productTypeOption of productTypesCurrentUser; trackBy: trackProductTypeById">
+                                                    {{productTypeOption.name}}
+                                                </option>-->
+                                            </select>
+                                            <select *ngIf="productTypeSelectionMethod == 1" class="form-control"
+                                                    name="productTypesExisting"
+                                                    (change)="onChangeProductTypeSelected($event.target.value)">
+                                                <option selected hidden>Sélectionner un type...</option>
+                                                <option *ngFor="let p of productTypesExisting" value="{{p}}">
+                                                    {{p.name}}
+                                                </option>
+                                                <!--<option
+                                                    [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption"
+                                                    *ngFor="let productTypeOption of productTypesExisting; trackBy: trackProductTypeById">
+                                                    {{productTypeOption.name}}
+                                                </option>-->
+                                            </select>
+                                            <input *ngIf="productTypeSelectionMethod == 2" type="text"
+                                                   class="form-control" name="productTypeNotExisting"
+                                                   placeholder="Entrer un nom"
+                                                   [(ngModel)]="productTypeNotExisting.name"/>
                                         </div>
                                         <!--<div class="col-md-1">
                                             <label class="form-control-label">ou</label>
                                         </div>-->
-                                        <div class="col-md-4">
+                                        <!--<div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-control-label"
                                                        jhiTranslate="newLocalApp.stock.productTypeNonExisting"
@@ -78,7 +121,7 @@
                                                        id="field_new_product_type"
                                                        [(ngModel)]="productTypeNotExisting.name"/>
                                             </div>
-                                        </div>
+                                        </div>-->
                                     </div>
                                 </div>
                                 <label class="form-control-label" jhiTranslate="newLocalApp.stock.bio"
@@ -97,7 +140,7 @@
                                     <div class="col-md-2">
                                         <div class="text-right">
                                             <a class="btn btn-primary float-center jh-create-entity"
-                                               (click)="clicBtnValiderTypeProduit()">OK
+                                               (click)="clicBtnValidateProductType()">OK
                                             </a>
                                         </div>
                                     </div>
@@ -105,7 +148,7 @@
                             </div>
                         </div>
 
-                        <div *ngIf="btnValiderTypeProduit">
+                        <div *ngIf="btnValidateProductType">
                             <div class="card mt-3">
                                 <div class="card-body">
 
@@ -124,6 +167,7 @@
                                                 <textarea rows="4" cols="50" class="form-control" name="description"
                                                           id="field_description"
                                                           [(ngModel)]="stock.description">
+                                                </textarea>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-control-label"
@@ -192,32 +236,50 @@
                                     </div>
 
                                     <hr class="my-2">
-                                    <div class="form-group">
-                                        <label class="form-control-label" jhiTranslate="newLocalApp.stock.minPriceUnit"
-                                               for="field_minPriceUnit">Prix de vente le plus bas {{stats[1]}}</label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-control-label" jhiTranslate="newLocalApp.stock.avgPriceUnit"
-                                               for="field_avgPriceUnit">Prix de vente moyen {{stats[0]}}</label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-control-label"
-                                               jhiTranslate="newLocalApp.stock.medianPriceUnit"
-                                               for="field_medianPriceUnit">Prix de vente médian</label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-control-label" jhiTranslate="newLocalApp.stock.maxPriceUnit"
-                                               for="field_maxPriceUnit">Prix de vente le plus haut {{stats[2]}}</label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" jhiTranslate="newLocalApp.stock.priceUnit"
-                                           for="field_priceUnit">Price
-                                        Unit</label>
-                                    <input type="number" class="form-control" name="priceUnit" id="field_priceUnit"
-                                           [(ngModel)]="stock.priceUnit"/>
-                                </div>
 
+                                    <div *ngIf="stats && stats.length > 0; else noStats">
+                                        <div class=row>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Cours actuel du produit sur le
+                                                        site</label>
+                                                </div>
+                                                <div class="form-group" *ngFor="let s of stats;">
+                                                    <label class="form-control-label">{{s}}</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label"
+                                                           jhiTranslate="newLocalApp.stock.priceUnit"
+                                                           for="field_priceUnit">Price
+                                                        Unit</label>
+                                                    <input type="number" class="form-control" name="priceUnit"
+                                                           id="field_priceUnit"
+                                                           [(ngModel)]="stock.priceUnit"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <ng-template #noStats>
+                                        <div class=row>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label"
+                                                           jhiTranslate="newLocalApp.stock.priceUnit"
+                                                           for="field_priceUnit_noStats">Price
+                                                        Unit</label>
+                                                    <input type="number" class="form-control" name="priceUnit"
+                                                           id="field_priceUnit_noStats"
+                                                           [(ngModel)]="stock.priceUnit"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+
+                                    <hr class="my-2">
+                                </div>
                                 <div class="text-center">
                                     <button type="button" id="cancel-save" class="btn btn-secondary"
                                             (click)="previousState()">
@@ -234,102 +296,8 @@
                             </div>
                         </div>
                     </div>
-
+                </form>
             </div>
-            </form>
         </div>
-
     </div>
-</div>
-
-<!--
-    <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-        <h2 id="jhi-stock-heading" jhiTranslate="newLocalApp.stock.home.createOrEditLabel">Create or edit a Stock</h2>
-        <div>
-            <jhi-alert-error></jhi-alert-error>
-            <div class="form-group" [hidden]="!stock.id">
-                <label for="id" jhiTranslate="global.field.id">ID</label>
-                <input type="text" class="form-control" id="id" name="id" [(ngModel)]="stock.id" readonly />
-            </div>
-            <div class="form-group">
-                <label class="form-control-label" jhiTranslate="newLocalApp.stock.productType" for="field_productType">Product
-                    Type</label>
-                <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productType">
-                    <option [ngValue]="null"></option>
-                    <option [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption"
-                        *ngFor="let productTypeOption of producttypes; trackBy: trackProductTypeById">{{productTypeOption.name}}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-control-label" jhiTranslate="newLocalApp.stock.name" for="field_name">Name</label>
-                <input type="text" class="form-control" name="name" id="field_name" [(ngModel)]="stock.name" />
-            </div>
-            <div class="form-group">
-                <label class="form-control-label" jhiTranslate="newLocalApp.stock.description" for="field_description">Description</label>
-                <input type="text" class="form-control" name="description" id="field_description" [(ngModel)]="stock.description" />
-            </div>
-            <div class="form-group">
-                <label class="form-control-label" jhiTranslate="newLocalApp.stock.image" for="field_image">Image</label>
-                <div>
-                    <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" style="max-height: 100px;"
-                        *ngIf="stock.image" alt="stock image" />
-                    <div *ngIf="stock.image" class="form-text text-danger clearfix">
-                        <span class="pull-left">{{stock.imageContentType}}, {{byteSize(stock.image)}}</span>
-                        <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')"
-                            class="btn btn-secondary btn-xs pull-right">
-                            <fa-icon [icon]="'times'"></fa-icon>
-                        </button>
-                    </div>
-                    <input type="file" id="file_image" (change)="setFileData($event, stock, 'image', true)" accept="image/*"
-                        jhiTranslate="entity.action.addimage" />
-                </div>
-                <input type="hidden" class="form-control" name="image" id="field_image" [(ngModel)]="stock.image" />
-                <input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
-                    [(ngModel)]="stock.imageContentType" />
-            </div>
-            <div class="form-group">
-                <label class="form-control-label" jhiTranslate="newLocalApp.stock.expiryDate" for="field_expiryDate">Expiry
-                    Date</label>
-                <div class="d-flex">
-                    <input id="field_expiryDate" type="date" min="{{currentDate}}" class="form-control" name="expiryDate"
-                        [(ngModel)]="expiryDate" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-control-label" jhiTranslate="newLocalApp.stock.quantityInit" for="field_quantityInit">Quantity
-                    Init</label>
-                <input type="number" class="form-control" name="quantityInit" id="field_quantityInit" [(ngModel)]="stock.quantityInit" />
-            </div>
-            <div class="form-group">
-                <label class="form-control-label" jhiTranslate="newLocalApp.stock.bio" for="field_bio">Bio</label>
-                <input type="checkbox" class="form-control" name="bio" id="field_bio" [(ngModel)]="stock.bio" />
-            </div>
-
-            <div class="form-group">
-                <label class="form-control-label" jhiTranslate="newLocalApp.stock.priceUnit" for="field_priceUnit">Price
-                    Unit</label>
-                <input type="number" class="form-control" name="priceUnit" id="field_priceUnit" [(ngModel)]="stock.priceUnit" />
-            </div
-            <div class="form-group">
-                <label class="form-control-label" jhiTranslate="newLocalApp.stock.holding" for="field_holding">Holding</label>
-                <select class="form-control" id="field_holding" name="holding" [(ngModel)]="stock.holding">
-                    <option [ngValue]="null"></option>
-                    <option [ngValue]="holdingOption.id === stock.holding?.id ? stock.holding : holdingOption"
-                        *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">{{holdingOption.name}}</option>
-                </select>
-            </div>
-
-        </div>
-        <div>
-            <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
-                <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-            </button>
-            <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
-            </button>
-        </div>
-    </form>
-</div>
--->
 </div>

@@ -2,6 +2,7 @@ package com.newlocal.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -242,13 +243,15 @@ public class StockResource {
 
     @GetMapping("/stocks/stats")
     @Timed
-    public ResponseEntity<String[]> getStatsStock(@RequestParam("productTypeId") Long productTypeId, @RequestParam("bio") Boolean bio) {
-        Double[] stats = stockService.getStatsStock(productTypeId, bio);
-        String[] res = new String[stats.length];
-        for(int i = 0; i < stats.length; i++){
-            System.out.println(stats[i]);
-            res[i] = stats[i].toString();
+    public ResponseEntity<List<String>> getStatsStock(@RequestParam("productTypeId") Long productTypeId, @RequestParam("bio") Boolean bio) {
+        List<String> stats = stockService.getStatsStock(productTypeId, bio);
+
+        if(stats != null) {
+            for (int i = 0; i < stats.size(); i++) {
+                System.out.println(stats.get(i));
+            }
         }
-        return ResponseEntity.ok(res);
+
+        return ResponseEntity.ok(stats);
     }
 }

@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
+
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
@@ -85,7 +87,7 @@ public class StockService {
     /**
      * Search for the stock corresponding to the query.
      *
-     * @param query the query of the search
+     * @param query    the query of the search
      * @param pageable the pagination information
      * @return the list of entities
      */
@@ -97,7 +99,6 @@ public class StockService {
 
     /**
      * Search for the stock bio
-     *
      */
     @Transactional(readOnly = true)
     public List<Stock> getProductBio() {
@@ -107,19 +108,17 @@ public class StockService {
 
     /**
      * Search last new stock
-     *
      */
 
     @Transactional(readOnly = true)
     public List<Stock> getNewStock() {
         log.debug("Request to search a new stock {}");
-        List <Stock> ListOrder=stockRepository.findAllStocks(new Sort(Sort.Direction.DESC, "onSaleDate"));
+        List<Stock> ListOrder = stockRepository.findAllStocks(new Sort(Sort.Direction.DESC, "onSaleDate"));
         return ListOrder;
     }
 
     /**
      * Search the best purchase
-     *
      */
 
     @Transactional(readOnly = true)
@@ -130,7 +129,6 @@ public class StockService {
 
     /**
      * Search the best grade
-     *
      */
 
     @Transactional(readOnly = true)
@@ -140,16 +138,22 @@ public class StockService {
     }
 
     @Transactional(readOnly = true)
-    public Double[] getStatsStock(Long productTypeId, Boolean bio){
-        Double[] mesStats = null;
+    public List<String> getStatsStock(Long productTypeId, Boolean bio) {
+        List<String> mesStats = null;
 
         log.debug("Request to get the stats on the productType of the stock {}");
         List<Object[]> mesObjets = stockRepository.getStatsStock(productTypeId, bio);
 
-        for(Object[] obj : mesObjets) {
-            mesStats = new Double[obj.length];
-            for (int i = 0; i < obj.length; i++) {
-                mesStats[i] = (Double) obj[i];
+        if (mesObjets != null) {
+            for (Object[] obj : mesObjets) {
+                if(obj != null) {
+                    mesStats = new ArrayList<>();
+                    for (int i = 0; i < obj.length; i++) {
+                        if (obj[i] != null){
+                            mesStats.add(obj[i].toString());
+                        }
+                    }
+                }
             }
         }
 
