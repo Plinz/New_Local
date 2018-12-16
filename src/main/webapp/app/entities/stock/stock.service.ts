@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IStock } from 'app/shared/model/stock.model';
+import { IUser } from '../../core/user/user.model';
 
 type EntityResponseType = HttpResponse<IStock>;
 type EntityArrayResponseType = HttpResponse<IStock[]>;
@@ -104,6 +105,16 @@ export class StockService {
     getStockCat(name: string): Observable<EntityArrayResponseType> {
         return this.http
             .get<IStock[]>(`${this.resourceUrl}/category/${name}`, { observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
+
+    allSeller(): Observable<EntityArrayResponseType> {
+        return this.http.get<IUser[]>(`${this.resourceUrl}/allseller`, { observe: 'response' });
+    }
+
+    filterMainsearch(cat: string, seller: string, min: number, max: number): Observable<EntityArrayResponseType> {
+        return this.http
+            .get<IStock[]>(`${this.resourceUrl}/filter/${cat}/${seller}/${min}/${max}`, { observe: 'response' })
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 }

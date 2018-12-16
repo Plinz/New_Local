@@ -35,6 +35,7 @@ import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
 
 import io.github.jhipster.web.util.ResponseUtil;
+import com.newlocal.service.dto.UserDTO;
 
 /**
  * REST controller for managing Stock.
@@ -248,5 +249,29 @@ public class StockResource {
     public ResponseEntity<List<StockDTO>> getStockCat(@PathVariable String name) {
         List<StockDTO> stocks = stockService.getStockCat(name);
         return new ResponseEntity<List<StockDTO>>(stocks, HttpStatus.OK);
+    }
+
+    @GetMapping("/stocks/filter/{cat}/{seller}/{min}/{max}")
+    @Timed
+    public ResponseEntity<List<StockDTO>> filterMainsearch(@PathVariable String cat,@PathVariable String seller,@PathVariable Long min,@PathVariable Long max) {
+        List<StockDTO> stocks = null;
+
+        // if (cat != "null" && seller !="null"){
+         stocks = stockService.filterCatSeller(cat,seller,min,max);
+        // }else if(cat != "null"){
+        //     stocks = stockService.filterCat(cat,min,max);
+        // }else if(seller != "null"){
+        //     stocks = stockService.filterSeller(seller,min,max);
+        // }else{
+        //     stocks = stockService.filterPrice(min,max);
+        // }
+        return new ResponseEntity<List<StockDTO>>(stocks, HttpStatus.OK);
+    }
+
+    @GetMapping("/stocks/allseller")
+    @Timed
+    public ResponseEntity<List<UserDTO>> allSeller() {
+        List<UserDTO> user = stockService.allSeller();
+        return new ResponseEntity<List<UserDTO>>(user, HttpStatus.OK);
     }
 }
