@@ -256,14 +256,14 @@ public class StockResource {
     @GetMapping("/stocks/filter/{cat}/{seller}/{min}/{max}")
     @Timed
     public ResponseEntity<List<StockDTO>> filterMainsearch(@PathVariable String cat, @PathVariable String seller,
-            @PathVariable Long min, @PathVariable Long max) {
+            @PathVariable Double min, @PathVariable Double max) {
         List<StockDTO> stocks = null;
 
-        if (cat != "null" && seller != "null") {
+        if ( !cat.equals("null") && !seller.equals("null")) {
             stocks = stockService.filterCatSeller(cat, seller, min, max);
-        } else if (cat != "null") {
+        } else if (!cat.equals("null")) {
             stocks = stockService.filterCat(cat, min, max);
-        } else if (seller != "null") {
+        } else if (!seller.equals("null")) {
             stocks = stockService.filterSeller(seller, min, max);
         } else {
             stocks = stockService.filterPrice(min, max);

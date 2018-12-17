@@ -40,14 +40,14 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
     List<User> allSeller();
     
     @Query("select stock from Stock stock where (stock.productType.category.name=:cat and stock.seller.lastName=:seller and stock.priceUnit>=:min and stock.priceUnit<=:max )")
-    List<Stock> filterCatSeller(@Param("cat") String cat,@Param("seller") String seller,@Param("min") Long min,@Param("max") Long max);
+    List<Stock> filterCatSeller(@Param("cat") String cat,@Param("seller") String seller,@Param("min") Double min,@Param("max") Double max);
 
     @Query("select stock from Stock stock where (stock.productType.category.name=:cat and stock.priceUnit>=:min and stock.priceUnit<=:max )")
-    List<Stock> filterCat(@Param("cat") String cat,@Param("min") Long min,@Param("max") Long max);
+    List<Stock> filterCat(@Param("cat") String cat,@Param("min") Double min,@Param("max") Double max);
 
     @Query("select stock from Stock stock where ( stock.seller.lastName=:seller and stock.priceUnit>=:min and stock.priceUnit<=:max )")
-    List<Stock> filterSeller(@Param("seller") String seller,@Param("min") Long min,@Param("max") Long max);
+    List<Stock> filterSeller(@Param("seller") String seller,@Param("min") Double min,@Param("max") Double max);
 
     @Query("select stock from Stock stock where ( stock.priceUnit>=:min and stock.priceUnit<=:max )")
-    List<Stock> filterPrice(@Param("min") Long min,@Param("max") Long max);
+    List<Stock> filterPrice(@Param("min") Double min,@Param("max") Double max);
 }

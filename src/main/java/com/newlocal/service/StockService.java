@@ -175,24 +175,24 @@ public class StockService {
     //////////////
 
     @Transactional(readOnly = true)
-    public List<StockDTO> filterCatSeller(String cat, String seller, Long min, Long max) {
+    public List<StockDTO> filterCatSeller(String cat, String seller, Double min, Double max) {
         return stockRepository.filterCatSeller(cat,seller, min, max)
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<StockDTO> filterCat(String cat, Long min, Long max) {
+    public List<StockDTO> filterCat(String cat, Double min, Double max) {
         return stockRepository.filterCat(cat, min, max)
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<StockDTO> filterSeller(String seller, Long min, Long max) {
+    public List<StockDTO> filterSeller(String seller, Double min, Double max) {
         return stockRepository.filterSeller(seller, min, max)
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
     @Transactional(readOnly = true)
-    public List<StockDTO> filterPrice(Long min, Long max) {
+    public List<StockDTO> filterPrice(Double min, Double max) {
         return stockRepository.filterPrice(min, max)
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
