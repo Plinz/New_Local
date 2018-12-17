@@ -36,7 +36,7 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
     @Query("select stock from Stock stock where stock.productType.category.name=:name")
     List<Stock> getStockCat(@Param("name") String name);
 
-    @Query("select distinct user from Stock")
+    @Query("select distinct stock.seller from Stock stock")
     List<User> allSeller();
     
     @Query("select stock from Stock stock where (stock.productType.category.name=:cat and stock.seller.lastName=:seller and stock.priceUnit>=:min and stock.priceUnit<=:max )")

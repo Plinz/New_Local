@@ -432,7 +432,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.bclik = false;
     }
 
-    filtrer() {
+    filter() {
         // Récuperer tout les critéres
         this.prixMini = 0;
         this.prixMax = 999;
