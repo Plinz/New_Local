@@ -234,6 +234,11 @@
                                 <span jhiTranslate="global.menu.account.password">Password</span>
                             </a>
                         </li>
+                        <li *jhiHasAnyAuthority="'ROLE_USER'">
+                            <a class="dropdown-item" routerLink="userLocation" routerLinkActive="active" (click)="collapseNavbar()">
+                                <span>Ma localisation</span>
+                            </a>
+                        </li>
                         <li>
                             <a class="dropdown-item" (click)="logout()" id="logout">
                                 <span jhiTranslate="global.menu.account.logout">Sign out</span>
