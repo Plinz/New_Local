@@ -46,7 +46,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     categories: ICategory[];
     optioncat: string;
     qtbuy: number;
-    filterOption: string;
+    filterOptionCat: string;
+    filterOptionSeller: string;
     bclik: boolean;
     prixMini: number;
     prixMax: number;
@@ -75,7 +76,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.cat = null;
         this.qtbuy = 1;
-        this.filterOption = '';
+        this.filterOptionCat = '';
+        this.filterOptionSeller = '';
         this.optioncat = 'Catégorie';
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
@@ -264,13 +266,6 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
             }
         });
-        if (this.filterOption === 'Tout') {
-            this.loadAll();
-            alert('all');
-        } else if (this.filterOption !== '') {
-            alert('ok');
-            this.loadStockCat(this.filterOption);
-        }
     }
 
     clear() {
@@ -312,12 +307,22 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             this.currentAccount = account;
         });
         this.registerChangeInStocks();
+
+        // Mise à jour des catégories
         this.categoryService.query().subscribe(
             (res: HttpResponse<ICategory[]>) => {
                 this.categories = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+        // Mise à jour des Vendeurs
+        this.stockService.allSeller().subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                this.seller = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+
         this.eventManager.subscribe('authenticationSuccess', msg => {
             this.locationService.findByCurrentUser().subscribe(
                 (res: HttpResponse<ILocation>) => {
@@ -387,15 +392,6 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         return item.id;
     }
 
-    onChangeCat(deviceValue: string) {
-        this.filterOption = deviceValue;
-        if (deviceValue === 'Tout') {
-            this.loadAll();
-        } else {
-            this.loadStockCat(deviceValue);
-        }
-    }
-
     onChangeBuy(deviceValue: number) {
         this.qtbuy = deviceValue;
     }
@@ -435,5 +431,28 @@ export class MainSearchComponent implements OnInit, OnDestroy {
 
     closeNav() {
         this.bclik = false;
+    }
+
+    filter() {
+        // Récuperer tout les critéres
+        this.prixMini = 0;
+        this.prixMax = 999;
+        this.filterOptionCat = 'null';
+        this.filterOptionSeller = 'null';
+
+        this.stockService.filterMainsearch(this.filterOptionCat, this.filterOptionSeller, this.prixMini, this.prixMax).subscribe(
+            (res: HttpResponse<IUser[]>) => {
+                alert('ok');
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    onChangeCat(deviceValue: string) {
+        this.filterOptionCat = deviceValue;
+    }
+
+    onChangeSeller(deviceValue: string) {
+        this.filterOptionSeller = deviceValue;
     }
 }
