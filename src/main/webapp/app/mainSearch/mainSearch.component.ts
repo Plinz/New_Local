@@ -86,6 +86,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
 
         this.activatedRoute.queryParams.subscribe(params => {
             this.currentSearch = params['search'];
+            this.loadAll();
         });
 
         this.activatedRoute.queryParams.subscribe(params => {
