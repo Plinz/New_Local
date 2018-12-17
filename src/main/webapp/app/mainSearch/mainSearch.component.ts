@@ -446,10 +446,18 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     }
 
     onChangeCat(deviceValue: string) {
-        this.filterOptionCat = deviceValue;
+        if (deviceValue === 'Tout') {
+            this.filterOptionCat = 'null';
+        } else {
+            this.filterOptionCat = deviceValue;
+        }
     }
 
     onChangeSeller(deviceValue: string) {
-        this.filterOptionSeller = deviceValue;
+        if (deviceValue === 'Tout') {
+            this.filterOptionSeller = 'null';
+        } else {
+            this.filterOptionSeller = deviceValue;
+        }
     }
 }
