@@ -79,6 +79,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.filterOptionCat = '';
         this.filterOptionSeller = '';
         this.optioncat = 'Catégorie';
+        this.filterOptionCat = 'null';
+        this.filterOptionSeller = 'null';
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
@@ -435,14 +437,9 @@ export class MainSearchComponent implements OnInit, OnDestroy {
 
     filter() {
         // Récuperer tout les critéres
-        this.prixMini = 0;
-        this.prixMax = 999;
-        this.filterOptionCat = 'null';
-        this.filterOptionSeller = 'null';
-
         this.stockService.filterMainsearch(this.filterOptionCat, this.filterOptionSeller, this.prixMini, this.prixMax).subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                alert('ok');
+            (res: HttpResponse<IStock[]>) => {
+                this.stocks = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
