@@ -407,7 +407,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
         } else {
-            alert(" tu n'es pas connecté");
+            alert(" vous n'êtes pas connecté");
         }
     }
 

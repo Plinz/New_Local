@@ -118,13 +118,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/stocks/category/Viande").permitAll()
             .antMatchers("/api/stocks/category/Epicerie").permitAll()
             .antMatchers("/api/_search/stocks").permitAll()
+            .antMatchers("/api/stocks/{id}").permitAll()
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/info").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
         .and()
             .apply(securityConfigurerAdapter());
-
     }
 
     private JWTConfigurer securityConfigurerAdapter() {

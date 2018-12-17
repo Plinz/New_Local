@@ -25,94 +25,26 @@
                               <h6 class="card-subtitle mb-2 text-muted">Localisation: {{stock.holding?.location?.city}}</h6>
                             </div>
                           </div>
-                    <!--<div class="row">
-                        <div class="w-50 p-3">
-                            <img class="img-responsive img-thumbnail" [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" alt="" />
-                        </div>
-                        <div class="w-50 p-3 bg-secondary text-white">
-                            <h2>{{stock.name}}</h2>
-                            <h2>{{stock.priceUnit}}</h2>
-                            <h3>{{stock.description}}</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <h2>{{stock.name}}</h2>
-                            <h2>{{stock.priceUnit}}</h2>
-                            <h3>{{stock.description}}</h3>
-                        </div>
-                        <div class="col-sm-8"></div>
-                    </div>
-                    <div class="row">
-                            <div class="col-sm-6"></div>
-                            <div class="col-sm-6 text-center">
-                                <a href="#" class="btn btn-primary">Retout</a>&nbsp;
-                                <a href="#" class="btn btn-primary">Achat</a>
-                            </div>
-                        </div>-->
-                
-            <!--<h2><span jhiTranslate="newLocalApp.stock.detail.title">Stock</span> {{stock.id}}</h2>
-            <hr>
-            <jhi-alert-error></jhi-alert-error>
-            <dl class="row-md jh-entity-details">
-                <dt><span jhiTranslate="newLocalApp.stock.quantityInit">Quantity Init</span></dt>
-                <dd>
-                    <span>{{stock.quantityInit}}</span>
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.stock.quantityRemaining">Quantity Remaining</span></dt>
-                <dd>
-                    <span>{{stock.quantityRemaining}}</span>
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.stock.priceUnit">Price Unit</span></dt>
-                <dd>
-                    <span>{{stock.priceUnit}}</span>
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.stock.image">Image</span></dt>
-                <dd>
-                    <div *ngIf="stock.image">
-                        <a (click)="openFile(stock.imageContentType, stock.image)">
-                            <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" style="max-width: 100%;" alt="stock image"/>
-                        </a>
-                        {{stock.imageContentType}}, {{byteSize(stock.image)}}
-                    </div>
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.stock.onSaleDate">On Sale Date</span></dt>
-                <dd>
-                    <span>{{stock.onSaleDate}}</span>
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.stock.expiryDate">Expiry Date</span></dt>
-                <dd>
-                    <span>{{stock.expiryDate}}</span>
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.stock.bio">Bio</span></dt>
-                <dd>
-                    <span>{{stock.bio}}</span>
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.stock.available">Available</span></dt>
-                <dd>
-                    <span>{{stock.available}}</span>
-                </dd>
-                <dt><span jhiTranslate="newLocalApp.stock.productType">Product Type</span></dt>
-                <dd>
-                    <div *ngIf="stock.productType">
-                        <a [routerLink]="['/product-type', stock.productType?.id, 'view']">{{stock.productType?.id}}</a>
-                    </div>
-                </dd>
-            </dl>
-
-            <button type="submit"
-                    (click)="previousState()"
-                    class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-            </button>
-
-            <button type="button"
-                    [routerLink]="['/stock', stock.id, 'edit']"
-                    class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-            </button>-->
-
-
             
         </div>
+        <div class="row">
+
+                <div class="col-md-9">
+           
+                            <!--  <img class="img-responsive img-portfolio img-hover" src="../../../content/images/hipster192.png">
+                         -->
+                 </div>
+
+                 <div class="col-md-3">
+                     <br>
+                        <button type="submit"
+                        (click)="previousState()"
+                        class="btn btn-info">
+                    <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                </button>
+        
+                <button class="btn btn-info btn-sm" (click)="buyStock(stock)">
+                        <span class="d-none d-md-inline">Acheter</span>
+                    </button>
+             </div>
     </div>
