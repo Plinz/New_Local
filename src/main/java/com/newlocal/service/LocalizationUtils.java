@@ -43,12 +43,28 @@ public class LocalizationUtils {
 	    return dist;
     }
 	
-	public LocationDTO fillEntityFromZipOrCity(LocationDTO location){
+	public LocationDTO fillEntityFromZip(LocationDTO location){
 		System.out.println("Localizations is null"+localizationsFrance == null);
 		if (localizationsFrance != null){
 			LocalizationFrance loc = localizationsFrance.parallelStream().filter(l -> 
-			l.zip.trim().toLowerCase().equals(location.getZip().trim().toLowerCase()) ||
-			l.city.trim().toLowerCase().equals(location.getCity().trim().toLowerCase())
+				l.zip.trim().toLowerCase().equals(location.getZip().trim().toLowerCase())
+			).findFirst().orElse(null);
+			if (loc != null){
+				location.setCity(loc.city);
+				location.setZip(loc.zip);
+				location.setCountry("France");
+				location.setLat(loc.lat);
+				location.setLon(loc.lon);
+			}
+		}
+		return location;
+	}
+
+	public LocationDTO fillEntityFromCity(LocationDTO location){
+		System.out.println("Localizations is null"+localizationsFrance == null);
+		if (localizationsFrance != null){
+			LocalizationFrance loc = localizationsFrance.parallelStream().filter(l -> 
+				l.city.trim().toLowerCase().equals(location.getCity().trim().toLowerCase())
 			).findFirst().orElse(null);
 			if (loc != null){
 				location.setCity(loc.city);

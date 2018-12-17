@@ -54,8 +54,10 @@ public class LocationService {
         
         if (locationDTO.getLat() != null && locationDTO.getLon() != null){
         	locationDTO = localizationUtils.fillEntityFromLonLat(locationDTO);
-        } else if ((locationDTO.getZip() != null && !locationDTO.getZip().isEmpty()) || (locationDTO.getCity() != null && !locationDTO.getCity().isEmpty())){
-        	locationDTO = localizationUtils.fillEntityFromZipOrCity(locationDTO);
+        } else if (locationDTO.getZip() != null && !locationDTO.getZip().isEmpty()){
+        	locationDTO = localizationUtils.fillEntityFromZip(locationDTO);
+        } else if (locationDTO.getCity() != null && !locationDTO.getCity().isEmpty()){
+            locationDTO = localizationUtils.fillEntityFromCity(locationDTO);
         }
         if (locationDTO.getZip() != null && !locationDTO.getZip().isEmpty()){
 	        Location location = locationMapper.toEntity(locationDTO);
