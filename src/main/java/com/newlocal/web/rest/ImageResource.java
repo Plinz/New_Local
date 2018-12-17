@@ -87,7 +87,7 @@ public class ImageResource {
 	        }
         }
         log.debug("Fin REST request to save Image : {}", image);
-        ImageDTO result = new ImageDTO(imageService.save(image));
+        ImageDTO result = imageService.save(image);
         return ResponseEntity.created(new URI("/api/images/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -122,7 +122,7 @@ public class ImageResource {
 	        	e.printStackTrace();
 	        }
         }
-        ImageDTO result = new ImageDTO(imageService.save(image));
+        ImageDTO result = imageService.save(image);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, image.getId().toString()))
             .body(result);

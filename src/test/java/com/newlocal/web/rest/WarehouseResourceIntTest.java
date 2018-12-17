@@ -4,7 +4,6 @@ import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,6 +44,8 @@ import com.newlocal.repository.WarehouseRepository;
 import com.newlocal.repository.search.WarehouseSearchRepository;
 import com.newlocal.service.WarehouseQueryService;
 import com.newlocal.service.WarehouseService;
+import com.newlocal.service.dto.WarehouseDTO;
+import com.newlocal.service.mapper.WarehouseMapper;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
 
 /**
@@ -67,6 +68,9 @@ public class WarehouseResourceIntTest {
 
     @Autowired
     private WarehouseRepository warehouseRepository;
+
+    @Autowired
+    private WarehouseMapper warehouseMapper;
     
     @Autowired
     private WarehouseService warehouseService;
@@ -139,9 +143,10 @@ public class WarehouseResourceIntTest {
         int databaseSizeBeforeCreate = warehouseRepository.findAll().size();
 
         // Create the Warehouse
+        WarehouseDTO warehouseDTO = warehouseMapper.toDto(warehouse);
         restWarehouseMockMvc.perform(post("/api/warehouses")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(warehouse)))
+            .content(TestUtil.convertObjectToJsonBytes(warehouseDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Warehouse in the database
@@ -163,11 +168,12 @@ public class WarehouseResourceIntTest {
 
         // Create the Warehouse with an existing ID
         warehouse.setId(1L);
+        WarehouseDTO warehouseDTO = warehouseMapper.toDto(warehouse);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restWarehouseMockMvc.perform(post("/api/warehouses")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(warehouse)))
+            .content(TestUtil.convertObjectToJsonBytes(warehouseDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Warehouse in the database
@@ -186,10 +192,11 @@ public class WarehouseResourceIntTest {
         warehouse.setName(null);
 
         // Create the Warehouse, which fails.
+        WarehouseDTO warehouseDTO = warehouseMapper.toDto(warehouse);
 
         restWarehouseMockMvc.perform(post("/api/warehouses")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(warehouse)))
+            .content(TestUtil.convertObjectToJsonBytes(warehouseDTO)))
             .andExpect(status().isBadRequest());
 
         List<Warehouse> warehouseList = warehouseRepository.findAll();
@@ -204,10 +211,11 @@ public class WarehouseResourceIntTest {
         warehouse.setTel(null);
 
         // Create the Warehouse, which fails.
+        WarehouseDTO warehouseDTO = warehouseMapper.toDto(warehouse);
 
         restWarehouseMockMvc.perform(post("/api/warehouses")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(warehouse)))
+            .content(TestUtil.convertObjectToJsonBytes(warehouseDTO)))
             .andExpect(status().isBadRequest());
 
         List<Warehouse> warehouseList = warehouseRepository.findAll();
@@ -449,9 +457,7 @@ public class WarehouseResourceIntTest {
     @Transactional
     public void updateWarehouse() throws Exception {
         // Initialize the database
-        warehouseService.save(warehouse);
-        // As the test used the service layer, reset the Elasticsearch mock repository
-        reset(mockWarehouseSearchRepository);
+        warehouseRepository.saveAndFlush(warehouse);
 
         int databaseSizeBeforeUpdate = warehouseRepository.findAll().size();
 
@@ -463,10 +469,11 @@ public class WarehouseResourceIntTest {
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
             .tel(UPDATED_TEL);
+        WarehouseDTO warehouseDTO = warehouseMapper.toDto(updatedWarehouse);
 
         restWarehouseMockMvc.perform(put("/api/warehouses")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedWarehouse)))
+            .content(TestUtil.convertObjectToJsonBytes(warehouseDTO)))
             .andExpect(status().isOk());
 
         // Validate the Warehouse in the database
@@ -487,11 +494,12 @@ public class WarehouseResourceIntTest {
         int databaseSizeBeforeUpdate = warehouseRepository.findAll().size();
 
         // Create the Warehouse
+        WarehouseDTO warehouseDTO = warehouseMapper.toDto(warehouse);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restWarehouseMockMvc.perform(put("/api/warehouses")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(warehouse)))
+            .content(TestUtil.convertObjectToJsonBytes(warehouseDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Warehouse in the database
@@ -506,7 +514,7 @@ public class WarehouseResourceIntTest {
     @Transactional
     public void deleteWarehouse() throws Exception {
         // Initialize the database
-        warehouseService.save(warehouse);
+        warehouseRepository.saveAndFlush(warehouse);
 
         int databaseSizeBeforeDelete = warehouseRepository.findAll().size();
 
@@ -527,7 +535,7 @@ public class WarehouseResourceIntTest {
     @Transactional
     public void searchWarehouse() throws Exception {
         // Initialize the database
-        warehouseService.save(warehouse);
+        warehouseRepository.saveAndFlush(warehouse);
         when(mockWarehouseSearchRepository.search(queryStringQuery("id:" + warehouse.getId()), PageRequest.of(0, 20)))
             .thenReturn(new PageImpl<>(Collections.singletonList(warehouse), PageRequest.of(0, 1), 1));
         // Search the warehouse
@@ -553,5 +561,28 @@ public class WarehouseResourceIntTest {
         assertThat(warehouse1).isNotEqualTo(warehouse2);
         warehouse1.setId(null);
         assertThat(warehouse1).isNotEqualTo(warehouse2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(WarehouseDTO.class);
+        WarehouseDTO warehouseDTO1 = new WarehouseDTO();
+        warehouseDTO1.setId(1L);
+        WarehouseDTO warehouseDTO2 = new WarehouseDTO();
+        assertThat(warehouseDTO1).isNotEqualTo(warehouseDTO2);
+        warehouseDTO2.setId(warehouseDTO1.getId());
+        assertThat(warehouseDTO1).isEqualTo(warehouseDTO2);
+        warehouseDTO2.setId(2L);
+        assertThat(warehouseDTO1).isNotEqualTo(warehouseDTO2);
+        warehouseDTO1.setId(null);
+        assertThat(warehouseDTO1).isNotEqualTo(warehouseDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(warehouseMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(warehouseMapper.fromId(null)).isNull();
     }
 }

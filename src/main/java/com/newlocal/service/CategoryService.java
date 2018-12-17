@@ -3,6 +3,10 @@ package com.newlocal.service;
 import com.newlocal.domain.Category;
 import com.newlocal.repository.CategoryRepository;
 import com.newlocal.repository.search.CategorySearchRepository;
+import com.newlocal.service.dto.CategoryDTO;
+import com.newlocal.service.mapper.CategoryMapper;
+import com.newlocal.service.mapper.HoldingMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,23 +30,29 @@ public class CategoryService {
 
     private CategoryRepository categoryRepository;
 
+    private CategoryMapper categoryMapper;
+    
     private CategorySearchRepository categorySearchRepository;
 
-    public CategoryService(CategoryRepository categoryRepository, CategorySearchRepository categorySearchRepository) {
+    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper, CategorySearchRepository categorySearchRepository) {
         this.categoryRepository = categoryRepository;
+        this.categoryMapper = categoryMapper;
         this.categorySearchRepository = categorySearchRepository;
     }
 
     /**
      * Save a category.
      *
-     * @param category the entity to save
+     * @param categoryDTO the entity to save
      * @return the persisted entity
      */
-    public Category save(Category category) {
-        log.debug("Request to save Category : {}", category);
-        Category result = categoryRepository.save(category);
-        categorySearchRepository.save(result);
+    public CategoryDTO save(CategoryDTO categoryDTO) {
+        log.debug("Request to save Category : {}", categoryDTO);
+
+        Category category = categoryMapper.toEntity(categoryDTO);
+        category = categoryRepository.save(category);
+        CategoryDTO result = new CategoryDTO(category);
+        categorySearchRepository.save(category);
         return result;
     }
 
@@ -53,9 +63,10 @@ public class CategoryService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Category> findAll(Pageable pageable) {
+    public Page<CategoryDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Categories");
-        return categoryRepository.findAll(pageable);
+        return categoryRepository.findAll(pageable)
+            .map(CategoryDTO::new);
     }
 
 
@@ -66,9 +77,10 @@ public class CategoryService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Optional<Category> findOne(Long id) {
+    public Optional<CategoryDTO> findOne(Long id) {
         log.debug("Request to get Category : {}", id);
-        return categoryRepository.findById(id);
+        return categoryRepository.findById(id)
+            .map(CategoryDTO::new);
     }
 
     /**
@@ -90,7 +102,9 @@ public class CategoryService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Category> search(String query, Pageable pageable) {
+    public Page<CategoryDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Categories for query {}", query);
-        return categorySearchRepository.search(queryStringQuery(query), pageable);    }
+        return categorySearchRepository.search(queryStringQuery(query), pageable)
+            .map(CategoryDTO::new);
+    }
 }

@@ -1,25 +1,16 @@
 package com.newlocal.web.rest;
 
-import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.newlocal.NewLocalApp;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.EntityManager;
+import com.newlocal.domain.Category;
+import com.newlocal.domain.Image;
+import com.newlocal.repository.CategoryRepository;
+import com.newlocal.repository.search.CategorySearchRepository;
+import com.newlocal.service.CategoryService;
+import com.newlocal.service.dto.CategoryDTO;
+import com.newlocal.service.mapper.CategoryMapper;
+import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.CategoryQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +28,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.newlocal.NewLocalApp;
-import com.newlocal.domain.Category;
-import com.newlocal.domain.Image;
-import com.newlocal.repository.CategoryRepository;
-import com.newlocal.repository.search.CategorySearchRepository;
-import com.newlocal.service.CategoryQueryService;
-import com.newlocal.service.CategoryService;
-import com.newlocal.web.rest.errors.ExceptionTranslator;
+import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.List;
+
+
+import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the CategoryResource REST controller.
@@ -63,6 +58,9 @@ public class CategoryResourceIntTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
     
     @Autowired
     private CategoryService categoryService;
@@ -129,9 +127,10 @@ public class CategoryResourceIntTest {
         int databaseSizeBeforeCreate = categoryRepository.findAll().size();
 
         // Create the Category
+        CategoryDTO categoryDTO = categoryMapper.toDto(category);
         restCategoryMockMvc.perform(post("/api/categories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(category)))
+            .content(TestUtil.convertObjectToJsonBytes(categoryDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Category in the database
@@ -152,11 +151,12 @@ public class CategoryResourceIntTest {
 
         // Create the Category with an existing ID
         category.setId(1L);
+        CategoryDTO categoryDTO = categoryMapper.toDto(category);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restCategoryMockMvc.perform(post("/api/categories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(category)))
+            .content(TestUtil.convertObjectToJsonBytes(categoryDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Category in the database
@@ -175,10 +175,11 @@ public class CategoryResourceIntTest {
         category.setName(null);
 
         // Create the Category, which fails.
+        CategoryDTO categoryDTO = categoryMapper.toDto(category);
 
         restCategoryMockMvc.perform(post("/api/categories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(category)))
+            .content(TestUtil.convertObjectToJsonBytes(categoryDTO)))
             .andExpect(status().isBadRequest());
 
         List<Category> categoryList = categoryRepository.findAll();
@@ -378,9 +379,7 @@ public class CategoryResourceIntTest {
     @Transactional
     public void updateCategory() throws Exception {
         // Initialize the database
-        categoryService.save(category);
-        // As the test used the service layer, reset the Elasticsearch mock repository
-        reset(mockCategorySearchRepository);
+        categoryRepository.saveAndFlush(category);
 
         int databaseSizeBeforeUpdate = categoryRepository.findAll().size();
 
@@ -391,10 +390,11 @@ public class CategoryResourceIntTest {
         updatedCategory
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION);
+        CategoryDTO categoryDTO = categoryMapper.toDto(updatedCategory);
 
         restCategoryMockMvc.perform(put("/api/categories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedCategory)))
+            .content(TestUtil.convertObjectToJsonBytes(categoryDTO)))
             .andExpect(status().isOk());
 
         // Validate the Category in the database
@@ -414,11 +414,12 @@ public class CategoryResourceIntTest {
         int databaseSizeBeforeUpdate = categoryRepository.findAll().size();
 
         // Create the Category
+        CategoryDTO categoryDTO = categoryMapper.toDto(category);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCategoryMockMvc.perform(put("/api/categories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(category)))
+            .content(TestUtil.convertObjectToJsonBytes(categoryDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Category in the database
@@ -433,7 +434,7 @@ public class CategoryResourceIntTest {
     @Transactional
     public void deleteCategory() throws Exception {
         // Initialize the database
-        categoryService.save(category);
+        categoryRepository.saveAndFlush(category);
 
         int databaseSizeBeforeDelete = categoryRepository.findAll().size();
 
@@ -454,7 +455,7 @@ public class CategoryResourceIntTest {
     @Transactional
     public void searchCategory() throws Exception {
         // Initialize the database
-        categoryService.save(category);
+        categoryRepository.saveAndFlush(category);
         when(mockCategorySearchRepository.search(queryStringQuery("id:" + category.getId()), PageRequest.of(0, 20)))
             .thenReturn(new PageImpl<>(Collections.singletonList(category), PageRequest.of(0, 1), 1));
         // Search the category
@@ -479,5 +480,28 @@ public class CategoryResourceIntTest {
         assertThat(category1).isNotEqualTo(category2);
         category1.setId(null);
         assertThat(category1).isNotEqualTo(category2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(CategoryDTO.class);
+        CategoryDTO categoryDTO1 = new CategoryDTO();
+        categoryDTO1.setId(1L);
+        CategoryDTO categoryDTO2 = new CategoryDTO();
+        assertThat(categoryDTO1).isNotEqualTo(categoryDTO2);
+        categoryDTO2.setId(categoryDTO1.getId());
+        assertThat(categoryDTO1).isEqualTo(categoryDTO2);
+        categoryDTO2.setId(2L);
+        assertThat(categoryDTO1).isNotEqualTo(categoryDTO2);
+        categoryDTO1.setId(null);
+        assertThat(categoryDTO1).isNotEqualTo(categoryDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(categoryMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(categoryMapper.fromId(null)).isNull();
     }
 }

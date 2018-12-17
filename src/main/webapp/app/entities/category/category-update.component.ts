@@ -35,10 +35,10 @@ export class CategoryUpdateComponent implements OnInit {
         });
         this.imageService.query({ 'categoryId.specified': 'false' }).subscribe(
             (res: HttpResponse<IImage[]>) => {
-                if (!this.category.image || !this.category.image.id) {
+                if (!this.category.imageId) {
                     this.images = res.body;
                 } else {
-                    this.imageService.find(this.category.image.id).subscribe(
+                    this.imageService.find(this.category.imageId).subscribe(
                         (subRes: HttpResponse<IImage>) => {
                             this.images = [subRes.body].concat(res.body);
                         },

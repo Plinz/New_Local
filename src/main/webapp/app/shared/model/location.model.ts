@@ -1,4 +1,4 @@
-import { IUser } from 'app/core/user/user.model';
+import { IUser } from 'app/core';
 
 export interface ILocation {
     id?: number;
@@ -8,6 +8,7 @@ export interface ILocation {
     address?: string;
     lon?: number;
     lat?: number;
+    userId?: number;
     user?: IUser;
 }
 
@@ -20,6 +21,7 @@ export class Location implements ILocation {
         public address?: string,
         public lon?: number,
         public lat?: number,
+        public userId?: number,
         public user?: IUser
     ) {}
 }

@@ -1,13 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager, JhiParseLinks, JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 import { Principal } from '../core';
 import { CartService } from '../entities/cart/cart.service';
 import { Location } from '@angular/common';
 import { ICart } from '../shared/model/cart.model';
 import { IPurchase } from '../shared/model/purchase.model';
 import { PurchaseService } from '../entities/purchase/purchase.service';
+import { Moment } from 'moment';
+import * as moment from 'moment';
+import { saveAs } from 'file-saver';
 
 @Component({
     selector: 'jhi-purchase',
@@ -20,14 +23,16 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     eventSubscriber: Subscription;
     currentSearch: string;
     total: number;
-    totalRecap: number;
     btimeout: boolean;
     fintimeout: boolean;
     isOkpanier: boolean;
     isRecap: boolean;
     listBtM: any[];
+    facture: any;
+    factureName: string;
 
     constructor(
+        private dataUtils: JhiDataUtils,
         private purchaseService: PurchaseService,
         private cartService: CartService,
         private jhiAlertService: JhiAlertService,
@@ -41,12 +46,11 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         this.btimeout = false;
         this.fintimeout = true;
         this.isRecap = false;
-        this.totalRecap = 0;
         this.listBtM = [];
     }
 
     loadAll() {
-        this.cartService.query().subscribe(
+        this.cartService.findByClientIsCurrentUser().subscribe(
             (res: HttpResponse<ICart[]>) => {
                 this.carts = res.body;
                 this.currentSearch = '';
@@ -85,14 +89,8 @@ export class ShoppingComponent implements OnInit, OnDestroy {
 
     endTimeout() {
         this.fintimeout = false;
-        // suppr
-        for (const k of this.carts) {
-            this.confirmDelete(k.id);
-        }
         this.purchases = this.carts;
-        this.totalRecap = this.total;
-        this.carts = [];
-        this.isRecap = true;
+        this.confirmCreate();
     }
 
     abandonner() {
@@ -129,13 +127,27 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    confirmDelete(id: number) {
-        this.cartService.delete(id).subscribe(response => {
-            this.eventManager.broadcast({
-                name: 'cartListModification',
-                content: 'Deleted an cart'
+    confirmDelete() {
+        // Suppression et send mail
+        if (this.purchases.length > 0) {
+            const tmp = this.purchases[0].client.id;
+            this.purchaseService.deleteSendMail(tmp).subscribe((res: any) => {
+                this.facture = res.body;
+                this.factureName = 'Facture_' + tmp + '.pdf';
             });
-        });
+        }
+        this.carts = [];
+        this.isRecap = true;
+    }
+
+    download() {
+        console.log(this.facture);
+        saveAs(this.facture, this.factureName);
+    }
+
+    confirmCreate() {
+        const d2: Moment = moment();
+        this.confirmDelete();
     }
 
     backcliked() {
@@ -172,8 +184,11 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     }
 
     onSaveError(i: number) {
-        alert('Désolé ...');
         this.carts[i].quantity = i;
         this.listBtM[i].err = true;
+    }
+
+    openFile(contentType, field) {
+        return this.dataUtils.openFile(contentType, field);
     }
 }

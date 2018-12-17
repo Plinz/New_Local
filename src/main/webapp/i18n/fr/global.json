@@ -40,6 +40,7 @@
                 "audits": "Audits",
                 "apidocs": "API",
                 "database": "Base de données",
+                "elasticsearch-reindex": "Reindex Elasticsearch",
                 "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
             },
             "language": "Langue",
@@ -47,7 +48,8 @@
             "fruit": "Fruit",
             "fish": "Poisson",
             "meat": "Viande",
-            "grocery": "Epicerie"
+            "grocery": "Epicerie",
+            "review": "Bilan"
         },
         "form": {
             "username": "Nom d'utilisateur",
@@ -122,7 +124,8 @@
             "delete": "Supprimer",
             "open": "Ouvrir",
             "save": "Sauvegarder",
-            "view": "Voir"
+            "view": "Voir",
+            "modifier":"Modifier"
         },
         "detail": {
             "field": "Champs",

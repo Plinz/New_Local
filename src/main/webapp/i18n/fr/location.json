@@ -17,10 +17,10 @@
             "detail": {
                 "title": "Location"
             },
-            "city": "City",
-            "country": "Country",
-            "zip": "Zip",
-            "address": "Address",
+            "city": "Ville: ",
+            "country": "Pays: ",
+            "zip": "Code Postal: ",
+            "address": "Adresse: ",
             "lon": "Lon",
             "lat": "Lat",
             "user": "User"

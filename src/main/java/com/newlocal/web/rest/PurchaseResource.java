@@ -1,18 +1,25 @@
 package com.newlocal.web.rest;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +30,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.thymeleaf.context.Context;
 
 import com.codahale.metrics.annotation.Timed;
+import com.newlocal.domain.Cart;
 import com.newlocal.domain.Purchase;
+import com.newlocal.domain.User;
+import com.newlocal.service.CartService;
+import com.newlocal.service.MailService;
+import com.newlocal.service.PdfGeneratorUtil;
 import com.newlocal.service.PurchaseQueryService;
 import com.newlocal.service.PurchaseService;
 import com.newlocal.service.dto.PurchaseCriteria;
@@ -49,10 +62,20 @@ public class PurchaseResource {
     private PurchaseService purchaseService;
 
     private PurchaseQueryService purchaseQueryService;
+    
+    private final MailService mailService;
 
-    public PurchaseResource(PurchaseService purchaseService, PurchaseQueryService purchaseQueryService) {
+    private final PdfGeneratorUtil pdfGeneratorUtil;
+        
+    private CartService cartService;
+    
+
+    public PurchaseResource(PurchaseService purchaseService, PurchaseQueryService purchaseQueryService, CartService cartService, MailService mailService, PdfGeneratorUtil pdfGeneratorUtil) {
         this.purchaseService = purchaseService;
         this.purchaseQueryService = purchaseQueryService;
+        this.cartService = cartService;
+        this.mailService = mailService;
+        this.pdfGeneratorUtil = pdfGeneratorUtil;
     }
 
     /**
@@ -176,7 +199,39 @@ public class PurchaseResource {
     public ResponseEntity<List<Purchase>> getPStock(@PathVariable Long id) {
         List<Purchase> purchase = purchaseService.getPStock(id);
         return new ResponseEntity<List<Purchase>>(purchase, HttpStatus.OK);
-        //return ResponseEntity.ok().body(purchase);
     }
 
+    @GetMapping("/purchases/updatedata/mail/{id}")
+    @Timed
+    public ResponseEntity<byte[]> sendMail(@PathVariable Long id) {
+        //Recupération des valeurs
+    	List<Cart> carts = cartService.getCardUser(id);
+    	List<Purchase> purchases = new ArrayList<Purchase>();
+    	for (Cart c : carts) {
+        	purchases.add(purchaseService.save(new Purchase(c)));
+            cartService.delete(c.getId());
+		}
+    	// Mettre l'envoie de mail
+    	if (!purchases.isEmpty()){
+    		User currentUser = purchases.get(0).getClient();
+    		mailService.sendFactureEmail(currentUser, purchases);
+    		byte[] pdf = pdfGeneratorUtil.createPdf("mail/factureEmail", currentUser, purchases);
+    		if (pdf != null){
+	    		HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_PDF);
+				headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Facture.pdf");
+				headers.setContentLength(pdf.length);
+				return new ResponseEntity<byte[]>(pdf, headers, HttpStatus.OK);
+    		}
+    	}
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/purchases/currentuser")
+    @Timed
+    public ResponseEntity<List<Purchase>> findByClientIsCurrentUser() {
+        List<Purchase> purchase = purchaseService.findByClientIsCurrentUser();
+        return new ResponseEntity<List<Purchase>>(purchase, HttpStatus.OK);
+    }
+    
 }

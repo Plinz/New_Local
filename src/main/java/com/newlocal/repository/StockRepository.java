@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.newlocal.domain.Stock;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.newlocal.domain.User;
 
 /**
  * Spring Data  repository for the Stock entity.
@@ -50,4 +50,22 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
         "and available = true " +
         "and expiry_date > current_date " +
         "and quantity_remaining > 0"*/
+
+    @Query("select stock from Stock stock where stock.productType.category.name=:name")
+    List<Stock> getStockCat(@Param("name") String name);
+
+    @Query("select distinct stock.seller from Stock stock")
+    List<User> allSeller();
+    
+    @Query("select stock from Stock stock where (stock.productType.category.name=:cat and stock.seller.lastName=:seller and stock.priceUnit>=:min and stock.priceUnit<=:max )")
+    List<Stock> filterCatSeller(@Param("cat") String cat,@Param("seller") String seller,@Param("min") Double min,@Param("max") Double max);
+
+    @Query("select stock from Stock stock where (stock.productType.category.name=:cat and stock.priceUnit>=:min and stock.priceUnit<=:max )")
+    List<Stock> filterCat(@Param("cat") String cat,@Param("min") Double min,@Param("max") Double max);
+
+    @Query("select stock from Stock stock where ( stock.seller.lastName=:seller and stock.priceUnit>=:min and stock.priceUnit<=:max )")
+    List<Stock> filterSeller(@Param("seller") String seller,@Param("min") Double min,@Param("max") Double max);
+
+    @Query("select stock from Stock stock where ( stock.priceUnit>=:min and stock.priceUnit<=:max )")
+    List<Stock> filterPrice(@Param("min") Double min,@Param("max") Double max);
 }

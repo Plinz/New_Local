@@ -12,6 +12,7 @@ import { HoldingProfilComponent } from './holdingProfil.component';
 import { HoldingProfilDetailComponent } from './holdingProfil-detail.component';
 import { HoldingProfilUpdateComponent } from './holdingProfil-update.component';
 import { HoldingProfilDeletePopupComponent } from './holdingProfil-delete-dialog.component';
+import { LocationResolve } from '../entities/location/location.route';
 
 @Injectable({ providedIn: 'root' })
 export class HoldingProfilResolve implements Resolve<IHolding> {
@@ -28,7 +29,7 @@ export class HoldingProfilResolve implements Resolve<IHolding> {
 
 export const holdingProfilRoute: Routes = [
     {
-        path: 'holding',
+        path: 'holdingprofil',
         component: HoldingProfilComponent,
         resolve: {
             pagingParams: JhiResolvePagingParams
@@ -41,7 +42,7 @@ export const holdingProfilRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'holding/:id/view',
+        path: 'holdingprofil/:id/view',
         component: HoldingProfilDetailComponent,
         resolve: {
             holding: HoldingProfilResolve
@@ -53,10 +54,11 @@ export const holdingProfilRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'holding/new',
+        path: 'holdingprofil/new',
         component: HoldingProfilUpdateComponent,
         resolve: {
-            holding: HoldingProfilResolve
+            holding: HoldingProfilResolve,
+            location: LocationResolve
         },
         data: {
             authorities: ['ROLE_USER'],
@@ -65,7 +67,7 @@ export const holdingProfilRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'holding/:id/edit',
+        path: 'holdingprofil/:id/edit',
         component: HoldingProfilUpdateComponent,
         resolve: {
             holding: HoldingProfilResolve
@@ -80,7 +82,7 @@ export const holdingProfilRoute: Routes = [
 
 export const holdingProfilPopupRoute: Routes = [
     {
-        path: 'holding/:id/delete',
+        path: 'holdingprofil/:id/delete',
         component: HoldingProfilDeletePopupComponent,
         resolve: {
             holding: HoldingProfilResolve

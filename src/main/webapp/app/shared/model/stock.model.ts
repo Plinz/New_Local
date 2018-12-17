@@ -1,9 +1,9 @@
 import { Moment } from 'moment';
-import { IImage } from 'app/shared/model//image.model';
-import { IProductType } from 'app/shared/model//product-type.model';
-import { IHolding } from 'app/shared/model//holding.model';
-import { IUser } from 'app/core/user/user.model';
-import { IWarehouse } from 'app/shared/model//warehouse.model';
+import { IImage } from 'app/shared/model/image.model';
+import { IProductType } from 'app/shared/model/product-type.model';
+import { IHolding } from 'app/shared/model/holding.model';
+import { IUser } from 'app/core';
+import { IWarehouse } from 'app/shared/model/warehouse.model';
 
 export interface IStock {
     id?: number;
@@ -16,6 +16,11 @@ export interface IStock {
     expiryDate?: Moment;
     bio?: boolean;
     available?: boolean;
+    imageId?: number;
+    productTypeId?: number;
+    holdingId?: number;
+    sellerId?: number;
+    warehouseId?: number;
     image?: IImage;
     productType?: IProductType;
     holding?: IHolding;
@@ -35,6 +40,11 @@ export class Stock implements IStock {
         public expiryDate?: Moment,
         public bio?: boolean,
         public available?: boolean,
+        public imageId?: number,
+        public productTypeId?: number,
+        public holdingId?: number,
+        public sellerId?: number,
+        public warehouseId?: number,
         public image?: IImage,
         public productType?: IProductType,
         public holding?: IHolding,

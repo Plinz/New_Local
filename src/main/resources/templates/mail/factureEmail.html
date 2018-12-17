@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{email.activation.title}">New Local Facture</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+    </head>
+    <body>
+        <p th:text="#{email.activation.greeting(${user.login})}">
+            Dear
+        </p>
+        <h2>Liste d'achats</h2>
+        <br></br>
+        <table>
+        	<tr>
+        		<th>Nom</th>
+        		<th>Quantité</th>
+        		<th>Prix</th>
+        		<th>Prix total</th>
+        	</tr>
+        	<tr th:each="pur : ${purchases}">
+        		<td th:text="${pur.stock.name}"></td>
+        		<td th:text="${pur.quantity}"></td>
+        		<td th:text="${pur.stock.priceUnit}"></td>
+        		<td th:text="${pur.stock.priceUnit}*${pur.quantity}"></td>
+        	</tr>
+        	
+        </table>
+        <p th:text="#{email.facture.text}">
+            Nous vous remercions pour votre confiance et nous vous informons que votre facture est disponible en pièce jointe.
+        </p>
+        <p>
+            <span th:text="#{email.activation.text2}">Regards, </span>
+            <br/>
+            <em th:text="#{email.signature}">L'équipe New Local</em>
+        </p>
+    </body>
+</html>

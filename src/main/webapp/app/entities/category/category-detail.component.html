@@ -15,14 +15,14 @@
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.category.image">Image</span></dt>
                 <dd>
-                    <div *ngIf="category.image">
-                        <a [routerLink]="['/image', category.image?.id, 'view']">{{category.image?.id}}</a>
+                    <div *ngIf="category.imageId">
+                        <a [routerLink]="['/image', category.imageId, 'view']">{{category.imageId}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="newLocalApp.category.categoryParent">Category Parent</span></dt>
                 <dd>
-                    <div *ngIf="category.categoryParent">
-                        <a [routerLink]="['/category', category.categoryParent?.id, 'view']">{{category.categoryParent?.id}}</a>
+                    <div *ngIf="category.categoryParentId">
+                        <a [routerLink]="['/category', category.categoryParentId, 'view']">{{category.categoryParentId}}</a>
                     </div>
                 </dd>
             </dl>

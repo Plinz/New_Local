@@ -89,6 +89,8 @@ relationship OneToOne {
     Warehouse{image} to Image,
 }
 
+service Stock, Category, ProductType, Holding, Warehouse, Image, Location with serviceClass
+dto Stock, Category, ProductType, Holding, Warehouse, Image, Location with mapstruct 
 paginate all with pager
 search all with elasticsearch
 filter all

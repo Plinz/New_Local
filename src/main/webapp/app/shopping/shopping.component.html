@@ -225,11 +225,16 @@
                             <span>TOTAL</span>
                         </td>
                         <td>
-                            <strong>{{ totalRecap }}$</strong>
+                            <strong>{{ total }}$</strong>
                         </td>
                     </tr>
                 </tbody>
             </table>
+			<div class="text-center">
+				<button class="btn btn-success" (click)="download()">
+					<span class="d-none d-md-inline">Télécharger la facture</span>
+				</button>
+			</div>
         </div>
     </div>
 </div>

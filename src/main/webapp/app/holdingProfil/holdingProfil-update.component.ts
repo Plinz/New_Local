@@ -19,12 +19,9 @@ import { IUser, UserService } from '../core';
 export class HoldingProfilUpdateComponent implements OnInit {
     holding: IHolding;
     isSaving: boolean;
-
     images: IImage[];
-    holdingsCurrentUser: IHolding[];
-
     locations: ILocation[];
-
+    location: ILocation;
     users: IUser[];
 
     constructor(
@@ -38,21 +35,18 @@ export class HoldingProfilUpdateComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
+        this.activatedRoute.data.subscribe(({ location }) => {
+            this.location = location;
+        });
         this.activatedRoute.data.subscribe(({ holding }) => {
             this.holding = holding;
         });
-        this.holdingService.findByCurrentUser().subscribe(
-            (res: HttpResponse<IHolding[]>) => {
-                this.holdingsCurrentUser = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
         this.imageService.query({ 'holdingId.specified': 'false' }).subscribe(
             (res: HttpResponse<IImage[]>) => {
-                if (!this.holding.image || !this.holding.image.id) {
+                if (!this.holding.imageId) {
                     this.images = res.body;
                 } else {
-                    this.imageService.find(this.holding.image.id).subscribe(
+                    this.imageService.find(this.holding.imageId).subscribe(
                         (subRes: HttpResponse<IImage>) => {
                             this.images = [subRes.body].concat(res.body);
                         },
@@ -82,15 +76,35 @@ export class HoldingProfilUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        if (this.holding.id !== undefined) {
-            this.subscribeToSaveResponse(this.holdingService.update(this.holding));
+        if (this.location.id !== undefined) {
+            this.subscribeToSaveResponseD(this.locationService.update(this.location));
         } else {
-            this.subscribeToSaveResponse(this.holdingService.create(this.holding));
+            this.subscribeToSaveResponseD(this.locationService.create(this.location));
+        }
+        if (this.holding.location.id !== undefined) {
+            this.subscribeToSaveResponseD(this.locationService.update(this.holding.location));
+            console.log('locationTEST', this.holding.location.id);
         }
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<IHolding>>) {
         result.subscribe((res: HttpResponse<IHolding>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
+    }
+
+    private subscribeToSaveResponseD(result: Observable<HttpResponse<ILocation>>) {
+        result.subscribe(
+            (res: HttpResponse<ILocation>) => {
+                this.location = res.body;
+                this.holding.location = this.location;
+                this.holding.locationId = this.location.id;
+                if (this.holding.id !== undefined) {
+                    this.subscribeToSaveResponse(this.holdingService.update(this.holding));
+                } else {
+                    this.subscribeToSaveResponse(this.holdingService.create(this.holding));
+                }
+            },
+            (res: HttpErrorResponse) => this.onSaveError()
+        );
     }
 
     private onSaveSuccess() {

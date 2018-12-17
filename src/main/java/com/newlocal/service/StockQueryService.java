@@ -1,6 +1,7 @@
 package com.newlocal.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.JoinType;
 
@@ -19,12 +20,14 @@ import com.newlocal.domain.*; // for static metamodels
 import com.newlocal.repository.StockRepository;
 import com.newlocal.repository.search.StockSearchRepository;
 import com.newlocal.service.dto.StockCriteria;
+import com.newlocal.service.dto.StockDTO;
+import com.newlocal.service.mapper.StockMapper;
 
 /**
  * Service for executing complex queries for Stock entities in the database.
  * The main input is a {@link StockCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Stock} or a {@link Page} of {@link Stock} which fulfills the criteria.
+ * It returns a {@link List} of {@link StockDTO} or a {@link Page} of {@link StockDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -34,36 +37,41 @@ public class StockQueryService extends QueryService<Stock> {
 
     private StockRepository stockRepository;
 
-//    private StockSearchRepository stockSearchRepository;
+    private StockMapper stockMapper;
 
-    public StockQueryService(StockRepository stockRepository, StockSearchRepository stockSearchRepository) {
+    private StockSearchRepository stockSearchRepository;
+
+    public StockQueryService(StockRepository stockRepository, StockMapper stockMapper, StockSearchRepository stockSearchRepository) {
         this.stockRepository = stockRepository;
-//        this.stockSearchRepository = stockSearchRepository;
+        this.stockMapper = stockMapper;
+        this.stockSearchRepository = stockSearchRepository;
     }
 
     /**
-     * Return a {@link List} of {@link Stock} which matches the criteria from the database
+     * Return a {@link List} of {@link StockDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Stock> findByCriteria(StockCriteria criteria) {
+    public List<StockDTO> findByCriteria(StockCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Stock> specification = createSpecification(criteria);
-        return stockRepository.findAll(specification);
+        return stockRepository.findAll(specification).stream()
+        		.map(StockDTO::new).collect(Collectors.toList());
     }
 
     /**
-     * Return a {@link Page} of {@link Stock} which matches the criteria from the database
+     * Return a {@link Page} of {@link StockDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<Stock> findByCriteria(StockCriteria criteria, Pageable page) {
+    public Page<StockDTO> findByCriteria(StockCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Stock> specification = createSpecification(criteria);
-        return stockRepository.findAll(specification, page);
+        return stockRepository.findAll(specification, page)
+            .map(StockDTO::new);
     }
 
     /**
@@ -122,9 +130,17 @@ public class StockQueryService extends QueryService<Stock> {
                 specification = specification.and(buildSpecification(criteria.getProductTypeId(),
                     root -> root.join(Stock_.productType, JoinType.LEFT).get(ProductType_.id)));
             }
+            if (criteria.getCategoryName() != null) {
+                specification = specification.and(buildSpecification(criteria.getCategoryName(),
+                    root -> root.join(Stock_.productType, JoinType.LEFT).join(ProductType_.category, JoinType.LEFT).get(Category_.name)));
+            }
             if (criteria.getHoldingId() != null) {
                 specification = specification.and(buildSpecification(criteria.getHoldingId(),
                     root -> root.join(Stock_.holding, JoinType.LEFT).get(Holding_.id)));
+            }
+            if (criteria.getHoldingName() != null) {
+                specification = specification.and(buildSpecification(criteria.getHoldingName(),
+                    root -> root.join(Stock_.holding, JoinType.LEFT).get(Holding_.name)));
             }
             if (criteria.getSellerId() != null) {
                 specification = specification.and(buildSpecification(criteria.getSellerId(),
@@ -133,6 +149,10 @@ public class StockQueryService extends QueryService<Stock> {
             if (criteria.getWarehouseId() != null) {
                 specification = specification.and(buildSpecification(criteria.getWarehouseId(),
                     root -> root.join(Stock_.warehouse, JoinType.LEFT).get(Warehouse_.id)));
+            }
+            if (criteria.getWarehouseName() != null) {
+                specification = specification.and(buildSpecification(criteria.getWarehouseName(),
+                    root -> root.join(Stock_.warehouse, JoinType.LEFT).get(Warehouse_.name)));
             }
         }
         return specification;

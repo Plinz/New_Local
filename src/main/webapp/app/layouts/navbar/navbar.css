@@ -5,11 +5,13 @@ Navbar
 .navbar-form {
     overflow: auto;
 }
+
 .navbar-form .form-control {
     display: inline-block;
     width: 100%;
     vertical-align: middle;
 }
+
 .navbar-form .form-group {
     display: inline;
 }
@@ -99,4 +101,27 @@ Logo styles
     height: 45px;
     display: inline-block;
     width: 80px;
+}
+
+.circle {
+    position: absolute;
+    right: 0%;
+    top: 0%;
+
+    font-size: small;
+
+    padding: 0.2em;
+    line-height: 0.8em;
+
+    text-align: center;
+    background: white;
+    border-radius: 999px;
+    border: 0.15em solid;
+    color: red;
+}
+.cart {
+    color: whitesmoke;
+}
+#panier {
+    position: relative;
 }

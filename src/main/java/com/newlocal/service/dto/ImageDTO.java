@@ -3,7 +3,6 @@ package com.newlocal.service.dto;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.Objects;
 
 import javax.validation.constraints.NotBlank;
@@ -16,28 +15,6 @@ import com.newlocal.domain.Image;
  */
 
 public class ImageDTO {
-	
-	public ImageDTO() {
-        // Empty constructor needed for Jackson.
-	}
-	
-	public ImageDTO(Image image){
-		this.id = image.getId();
-		this.name = image.getName();
-		this.description = image.getDescription();
-		this.imagePath = image.getImagePath();
-		if (this.imagePath != null && !this.imagePath.isEmpty()){
-	    	File imageFile = new File(image.getImagePath());
-	    	if (imageFile != null && imageFile.exists() && imageFile.isFile()) {
-	    		try {
-					this.image = Files.readAllBytes(imageFile.toPath());
-					this.imageContentType = Files.probeContentType(imageFile.toPath());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-	    	}
-		}
-	}
 
     private Long id;
 
@@ -53,6 +30,28 @@ public class ImageDTO {
     private byte[] image;
 
     private String imageContentType;
+
+    public ImageDTO() {
+    	// Empty constructor needed for Jackson.
+    }
+    
+    public ImageDTO(Image image){
+    	this.id = image.getId();
+    	this.name = image.getName();
+    	this.description = image.getDescription();
+    	this.imagePath = image.getImagePath();
+    	if (this.imagePath != null && !this.imagePath.isEmpty()){
+    		File imageFile = new File(image.getImagePath());
+    		if (imageFile != null && imageFile.exists() && imageFile.isFile()) {
+    			try {
+    				this.image = Files.readAllBytes(imageFile.toPath());
+    				this.imageContentType = Files.probeContentType(imageFile.toPath());
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
+    		}
+    	}
+    }
     
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -127,7 +126,7 @@ public class ImageDTO {
 	@Override
 	public String toString() {
 		return "ImageDTO [id=" + id + ", name=" + name + ", description=" + description + ", imagePath=" + imagePath
-				+ ", image=" + Arrays.toString(image) + ", imageContentType=" + imageContentType + "]";
+				+ ", imageContentType=" + imageContentType + "]";
 	}
 
     

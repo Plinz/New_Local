@@ -1,25 +1,15 @@
 package com.newlocal.web.rest;
 
-import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.newlocal.NewLocalApp;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.EntityManager;
+import com.newlocal.domain.Image;
+import com.newlocal.repository.ImageRepository;
+import com.newlocal.repository.search.ImageSearchRepository;
+import com.newlocal.service.ImageService;
+import com.newlocal.service.dto.ImageDTO;
+import com.newlocal.service.mapper.ImageMapper;
+import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.ImageQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +27,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.newlocal.NewLocalApp;
-import com.newlocal.domain.Image;
-import com.newlocal.repository.ImageRepository;
-import com.newlocal.repository.search.ImageSearchRepository;
-import com.newlocal.service.ImageQueryService;
-import com.newlocal.service.ImageService;
-import com.newlocal.service.dto.ImageDTO;
-import com.newlocal.web.rest.errors.ExceptionTranslator;
+import javax.persistence.EntityManager;
+import java.util.Collections;
+import java.util.List;
+
+
+import static com.newlocal.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the ImageResource REST controller.
@@ -66,6 +60,9 @@ public class ImageResourceIntTest {
 
     @Autowired
     private ImageRepository imageRepository;
+
+    @Autowired
+    private ImageMapper imageMapper;
     
     @Autowired
     private ImageService imageService;
@@ -96,8 +93,6 @@ public class ImageResourceIntTest {
     private MockMvc restImageMockMvc;
 
     private Image image;
-    
-    private ImageDTO imageDTO;
 
     @Before
     public void setup() {
@@ -127,7 +122,6 @@ public class ImageResourceIntTest {
     @Before
     public void initTest() {
         image = createEntity(em);
-        imageDTO = new ImageDTO(image);
     }
 
     @Test
@@ -136,9 +130,10 @@ public class ImageResourceIntTest {
         int databaseSizeBeforeCreate = imageRepository.findAll().size();
 
         // Create the Image
+        ImageDTO imageDTO = imageMapper.toDto(image);
         restImageMockMvc.perform(post("/api/images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(image)))
+            .content(TestUtil.convertObjectToJsonBytes(imageDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Image in the database
@@ -160,11 +155,12 @@ public class ImageResourceIntTest {
 
         // Create the Image with an existing ID
         image.setId(1L);
+        ImageDTO imageDTO = imageMapper.toDto(image);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restImageMockMvc.perform(post("/api/images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(image)))
+            .content(TestUtil.convertObjectToJsonBytes(imageDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Image in the database
@@ -183,10 +179,11 @@ public class ImageResourceIntTest {
         image.setName(null);
 
         // Create the Image, which fails.
+        ImageDTO imageDTO = imageMapper.toDto(image);
 
         restImageMockMvc.perform(post("/api/images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(image)))
+            .content(TestUtil.convertObjectToJsonBytes(imageDTO)))
             .andExpect(status().isBadRequest());
 
         List<Image> imageList = imageRepository.findAll();
@@ -201,10 +198,11 @@ public class ImageResourceIntTest {
         image.setImagePath(null);
 
         // Create the Image, which fails.
+        ImageDTO imageDTO = imageMapper.toDto(image);
 
         restImageMockMvc.perform(post("/api/images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(image)))
+            .content(TestUtil.convertObjectToJsonBytes(imageDTO)))
             .andExpect(status().isBadRequest());
 
         List<Image> imageList = imageRepository.findAll();
@@ -408,9 +406,7 @@ public class ImageResourceIntTest {
     @Transactional
     public void updateImage() throws Exception {
         // Initialize the database
-        imageService.save(imageDTO);
-        // As the test used the service layer, reset the Elasticsearch mock repository
-        reset(mockImageSearchRepository);
+        imageRepository.saveAndFlush(image);
 
         int databaseSizeBeforeUpdate = imageRepository.findAll().size();
 
@@ -422,10 +418,11 @@ public class ImageResourceIntTest {
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
             .imagePath(UPDATED_IMAGE_PATH);
+        ImageDTO imageDTO = imageMapper.toDto(updatedImage);
 
         restImageMockMvc.perform(put("/api/images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedImage)))
+            .content(TestUtil.convertObjectToJsonBytes(imageDTO)))
             .andExpect(status().isOk());
 
         // Validate the Image in the database
@@ -446,11 +443,12 @@ public class ImageResourceIntTest {
         int databaseSizeBeforeUpdate = imageRepository.findAll().size();
 
         // Create the Image
+        ImageDTO imageDTO = imageMapper.toDto(image);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restImageMockMvc.perform(put("/api/images")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(image)))
+            .content(TestUtil.convertObjectToJsonBytes(imageDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Image in the database
@@ -465,7 +463,7 @@ public class ImageResourceIntTest {
     @Transactional
     public void deleteImage() throws Exception {
         // Initialize the database
-        imageService.save(imageDTO);
+        imageRepository.saveAndFlush(image);
 
         int databaseSizeBeforeDelete = imageRepository.findAll().size();
 
@@ -486,7 +484,7 @@ public class ImageResourceIntTest {
     @Transactional
     public void searchImage() throws Exception {
         // Initialize the database
-        imageService.save(imageDTO);
+        imageRepository.saveAndFlush(image);
         when(mockImageSearchRepository.search(queryStringQuery("id:" + image.getId()), PageRequest.of(0, 20)))
             .thenReturn(new PageImpl<>(Collections.singletonList(image), PageRequest.of(0, 1), 1));
         // Search the image
@@ -512,5 +510,28 @@ public class ImageResourceIntTest {
         assertThat(image1).isNotEqualTo(image2);
         image1.setId(null);
         assertThat(image1).isNotEqualTo(image2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ImageDTO.class);
+        ImageDTO imageDTO1 = new ImageDTO();
+        imageDTO1.setId(1L);
+        ImageDTO imageDTO2 = new ImageDTO();
+        assertThat(imageDTO1).isNotEqualTo(imageDTO2);
+        imageDTO2.setId(imageDTO1.getId());
+        assertThat(imageDTO1).isEqualTo(imageDTO2);
+        imageDTO2.setId(2L);
+        assertThat(imageDTO1).isNotEqualTo(imageDTO2);
+        imageDTO1.setId(null);
+        assertThat(imageDTO1).isNotEqualTo(imageDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(imageMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(imageMapper.fromId(null)).isNull();
     }
 }

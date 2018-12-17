@@ -25,14 +25,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
-import com.newlocal.domain.Holding;
 import com.newlocal.service.HoldingQueryService;
 import com.newlocal.service.HoldingService;
 import com.newlocal.service.dto.HoldingCriteria;
+import com.newlocal.service.dto.HoldingDTO;
 import com.newlocal.web.rest.errors.BadRequestAlertException;
 import com.newlocal.web.rest.util.HeaderUtil;
 import com.newlocal.web.rest.util.PaginationUtil;
-import com.newlocal.repository.UserRepository;
 
 import io.github.jhipster.web.util.ResponseUtil;
 
@@ -51,38 +50,35 @@ public class HoldingResource {
 
     private HoldingQueryService holdingQueryService;
 
-    private UserRepository userRepository;
-
     private UserDAO userDAO;
 
-    public HoldingResource(HoldingService holdingService, HoldingQueryService holdingQueryService, UserRepository userRepository, UserDAO userDAO) {
+    public HoldingResource(HoldingService holdingService, HoldingQueryService holdingQueryService, UserDAO userDAO) {
         this.holdingService = holdingService;
         this.holdingQueryService = holdingQueryService;
-        this.userRepository = userRepository;
         this.userDAO = userDAO;
     }
 
     /**
      * POST  /holdings : Create a new holding.
      *
-     * @param holding the holding to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new holding, or with status 400 (Bad Request) if the holding has already an ID
+     * @param holdingDTO the holdingDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new holdingDTO, or with status 400 (Bad Request) if the holding has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/holdings")
     @Timed
-    public ResponseEntity<Holding> createHolding(@Valid @RequestBody Holding holding) throws URISyntaxException {
-        log.debug("REST request to save Holding : {}", holding);
-        if (holding.getId() != null) {
+    public ResponseEntity<HoldingDTO> createHolding(@Valid @RequestBody HoldingDTO holdingDTO) throws URISyntaxException {
+        log.debug("REST request to save Holding : {}", holdingDTO);
+        if (holdingDTO.getId() != null) {
             throw new BadRequestAlertException("A new holding cannot already have an ID", ENTITY_NAME, "idexists");
         }
         long idCurrentUser = userDAO.getUserIdByCurrentLogin();
         if (idCurrentUser > 0) {
-            holding.setOwner(userRepository.findById(idCurrentUser).get());
+            holdingDTO.setOwnerId(idCurrentUser);
         } else {
-            holding.setOwner(null);
+            holdingDTO.setOwnerId(null);
         }
-        Holding result = holdingService.save(holding);
+        HoldingDTO result = holdingService.save(holdingDTO);
         return ResponseEntity.created(new URI("/api/holdings/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -91,22 +87,22 @@ public class HoldingResource {
     /**
      * PUT  /holdings : Updates an existing holding.
      *
-     * @param holding the holding to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated holding,
-     * or with status 400 (Bad Request) if the holding is not valid,
-     * or with status 500 (Internal Server Error) if the holding couldn't be updated
+     * @param holdingDTO the holdingDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated holdingDTO,
+     * or with status 400 (Bad Request) if the holdingDTO is not valid,
+     * or with status 500 (Internal Server Error) if the holdingDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/holdings")
     @Timed
-    public ResponseEntity<Holding> updateHolding(@Valid @RequestBody Holding holding) throws URISyntaxException {
-        log.debug("REST request to update Holding : {}", holding);
-        if (holding.getId() == null) {
+    public ResponseEntity<HoldingDTO> updateHolding(@Valid @RequestBody HoldingDTO holdingDTO) throws URISyntaxException {
+        log.debug("REST request to update Holding : {}", holdingDTO);
+        if (holdingDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Holding result = holdingService.save(holding);
+        HoldingDTO result = holdingService.save(holdingDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, holding.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, holdingDTO.getId().toString()))
             .body(result);
     }
 
@@ -119,9 +115,9 @@ public class HoldingResource {
      */
     @GetMapping("/holdings")
     @Timed
-    public ResponseEntity<List<Holding>> getAllHoldings(HoldingCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<HoldingDTO>> getAllHoldings(HoldingCriteria criteria, Pageable pageable) {
         log.debug("REST request to get Holdings by criteria: {}", criteria);
-        Page<Holding> page = holdingQueryService.findByCriteria(criteria, pageable);
+        Page<HoldingDTO> page = holdingQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/holdings");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -142,15 +138,15 @@ public class HoldingResource {
     /**
      * GET  /holdings/:id : get the "id" holding.
      *
-     * @param id the id of the holding to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the holding, or with status 404 (Not Found)
+     * @param id the id of the holdingDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the holdingDTO, or with status 404 (Not Found)
      */
     @GetMapping("/holdings/{id}")
     @Timed
-    public ResponseEntity<Holding> getHolding(@PathVariable Long id) {
+    public ResponseEntity<HoldingDTO> getHolding(@PathVariable Long id) {
         log.debug("REST request to get Holding : {}", id);
-        Optional<Holding> holding = holdingService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(holding);
+        Optional<HoldingDTO> holdingDTO = holdingService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(holdingDTO);
     }
 
     /**
@@ -160,16 +156,16 @@ public class HoldingResource {
      */
     @GetMapping("/holdings/currentUser")
     @Timed
-    public ResponseEntity<List<Holding>> getHoldingsByCurrentUser(){
+    public ResponseEntity<List<HoldingDTO>> getHoldingsByCurrentUser(){
         log.debug("REST request to get Holdings of the current user : {}");
-        List<Holding> holdings = holdingService.findByCurrentUser();
+        List<HoldingDTO> holdings = holdingService.findByCurrentUser();
         return ResponseEntity.ok().body(holdings);
     }
 
     /**
      * DELETE  /holdings/:id : delete the "id" holding.
      *
-     * @param id the id of the holding to delete
+     * @param id the id of the holdingDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/holdings/{id}")
@@ -190,9 +186,9 @@ public class HoldingResource {
      */
     @GetMapping("/_search/holdings")
     @Timed
-    public ResponseEntity<List<Holding>> searchHoldings(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<HoldingDTO>> searchHoldings(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Holdings for query {}", query);
-        Page<Holding> page = holdingService.search(query, pageable);
+        Page<HoldingDTO> page = holdingService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/holdings");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

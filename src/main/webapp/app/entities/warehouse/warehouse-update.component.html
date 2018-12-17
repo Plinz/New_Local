@@ -61,16 +61,16 @@
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.warehouse.image" for="field_image">Image</label>
-                    <select class="form-control" id="field_image" name="image" [(ngModel)]="warehouse.image">
+                    <select class="form-control" id="field_image" name="image" [(ngModel)]="warehouse.imageId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="imageOption.id === warehouse.image?.id ? warehouse.image : imageOption" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
+                        <option [ngValue]="imageOption.id" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.warehouse.location" for="field_location">Location</label>
-                    <select class="form-control" id="field_location" name="location" [(ngModel)]="warehouse.location"  required>
+                    <select class="form-control" id="field_location" name="location" [(ngModel)]="warehouse.locationId"  required>
                         <option *ngIf="!editForm.value.location" [ngValue]="null" selected></option>
-                        <option [ngValue]="locationOption.id === warehouse.location?.id ? warehouse.location : locationOption" *ngFor="let locationOption of locations; trackBy: trackLocationById">{{locationOption.id}}</option>
+                        <option [ngValue]="locationOption.id" *ngFor="let locationOption of locations; trackBy: trackLocationById">{{locationOption.id}}</option>
                     </select>
                 </div>
                 <div [hidden]="!(editForm.controls.location?.dirty && editForm.controls.location?.invalid)">

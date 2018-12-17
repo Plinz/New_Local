@@ -1,20 +1,23 @@
 package com.newlocal.service;
 
-import com.newlocal.domain.Holding;
-import com.newlocal.repository.HoldingRepository;
-import com.newlocal.repository.search.HoldingSearchRepository;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-import java.util.List;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.newlocal.domain.Holding;
+import com.newlocal.repository.HoldingRepository;
+import com.newlocal.repository.search.HoldingSearchRepository;
+import com.newlocal.service.dto.HoldingDTO;
+import com.newlocal.service.mapper.HoldingMapper;
 
 /**
  * Service Implementation for managing Holding.
@@ -27,23 +30,29 @@ public class HoldingService {
 
     private HoldingRepository holdingRepository;
 
+    private HoldingMapper holdingMapper;
+
     private HoldingSearchRepository holdingSearchRepository;
 
-    public HoldingService(HoldingRepository holdingRepository, HoldingSearchRepository holdingSearchRepository) {
+    public HoldingService(HoldingRepository holdingRepository, HoldingMapper holdingMapper, HoldingSearchRepository holdingSearchRepository) {
         this.holdingRepository = holdingRepository;
+        this.holdingMapper = holdingMapper;
         this.holdingSearchRepository = holdingSearchRepository;
     }
 
     /**
      * Save a holding.
      *
-     * @param holding the entity to save
+     * @param holdingDTO the entity to save
      * @return the persisted entity
      */
-    public Holding save(Holding holding) {
-        log.debug("Request to save Holding : {}", holding);
-        Holding result = holdingRepository.save(holding);
-        holdingSearchRepository.save(result);
+    public HoldingDTO save(HoldingDTO holdingDTO) {
+        log.debug("Request to save Holding : {}", holdingDTO);
+
+        Holding holding = holdingMapper.toEntity(holdingDTO);
+        holding = holdingRepository.save(holding);
+        HoldingDTO result = holdingMapper.toDto(holding);
+        holdingSearchRepository.save(holding);
         return result;
     }
 
@@ -54,10 +63,12 @@ public class HoldingService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Holding> findAll(Pageable pageable) {
+    public Page<HoldingDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Holdings");
-        return holdingRepository.findAll(pageable);
+        return holdingRepository.findAll(pageable)
+            .map(HoldingDTO::new);
     }
+
 
     /**
      * Get one holding by id.
@@ -66,21 +77,24 @@ public class HoldingService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Optional<Holding> findOne(Long id) {
+    public Optional<HoldingDTO> findOne(Long id) {
         log.debug("Request to get Holding : {}", id);
-        return holdingRepository.findById(id);
+        return holdingRepository.findById(id)
+            .map(HoldingDTO::new);
     }
-
+    
     /**
      * Get multiple holdings of current user.
      *
      * @return the entities list
      */
     @Transactional(readOnly = true)
-    public List<Holding> findByCurrentUser() {
+    public List<HoldingDTO> findByCurrentUser() {
         log.debug("Request to get Holdings of the current user");
-        return holdingRepository.findByOwnerIsCurrentUser();
+        return holdingRepository.findByOwnerIsCurrentUser().stream()
+        		.map(HoldingDTO::new).collect(Collectors.toList());
     }
+
 
     /**
      * Delete the holding by id.
@@ -101,7 +115,9 @@ public class HoldingService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Holding> search(String query, Pageable pageable) {
+    public Page<HoldingDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Holdings for query {}", query);
-        return holdingSearchRepository.search(queryStringQuery(query), pageable);    }
+        return holdingSearchRepository.search(queryStringQuery(query), pageable)
+            .map(HoldingDTO::new);
+    }
 }

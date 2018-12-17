@@ -155,9 +155,9 @@
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.image" for="field_image">Image</label>
-                    <select class="form-control" id="field_image" name="image" [(ngModel)]="stock.image" required>
+                    <select class="form-control" id="field_image" name="image" [(ngModel)]="stock.imageId" required>
                         <option *ngIf="!editForm.value.image" [ngValue]="null" selected></option>
-                        <option [ngValue]="imageOption.id === stock.image?.id ? stock.image : imageOption" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
+                        <option [ngValue]="imageOption.id" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
                     </select>
                 </div>
                 <div [hidden]="!(editForm.controls.image?.dirty && editForm.controls.image?.invalid)">
@@ -168,9 +168,9 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.productType" for="field_productType">Product Type</label>
-                    <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productType"  required>
+                    <select class="form-control" id="field_productType" name="productType" [(ngModel)]="stock.productTypeId"  required>
                         <option *ngIf="!editForm.value.productType" [ngValue]="null" selected></option>
-                        <option [ngValue]="productTypeOption.id === stock.productType?.id ? stock.productType : productTypeOption" *ngFor="let productTypeOption of producttypes; trackBy: trackProductTypeById">{{productTypeOption.id}}</option>
+                        <option [ngValue]="productTypeOption.id" *ngFor="let productTypeOption of producttypes; trackBy: trackProductTypeById">{{productTypeOption.id}}</option>
                     </select>
                 </div>
                 <div [hidden]="!(editForm.controls.productType?.dirty && editForm.controls.productType?.invalid)">
@@ -181,9 +181,9 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.holding" for="field_holding">Holding</label>
-                    <select class="form-control" id="field_holding" name="holding" [(ngModel)]="stock.holding"  required>
+                    <select class="form-control" id="field_holding" name="holding" [(ngModel)]="stock.holdingId"  required>
                         <option *ngIf="!editForm.value.holding" [ngValue]="null" selected></option>
-                        <option [ngValue]="holdingOption.id === stock.holding?.id ? stock.holding : holdingOption" *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">{{holdingOption.id}}</option>
+                        <option [ngValue]="holdingOption.id" *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">{{holdingOption.id}}</option>
                     </select>
                 </div>
                 <div [hidden]="!(editForm.controls.holding?.dirty && editForm.controls.holding?.invalid)">
@@ -194,9 +194,9 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.seller" for="field_seller">Seller</label>
-                    <select class="form-control" id="field_seller" name="seller" [(ngModel)]="stock.seller"  required>
+                    <select class="form-control" id="field_seller" name="seller" [(ngModel)]="stock.sellerId"  required>
                         <option *ngIf="!editForm.value.seller" [ngValue]="null" selected></option>
-                        <option [ngValue]="userOption.id === stock.seller?.id ? stock.seller : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
+                        <option [ngValue]="userOption.id" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
                     </select>
                 </div>
                 <div [hidden]="!(editForm.controls.seller?.dirty && editForm.controls.seller?.invalid)">
@@ -207,9 +207,9 @@
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.stock.warehouse" for="field_warehouse">Warehouse</label>
-                    <select class="form-control" id="field_warehouse" name="warehouse" [(ngModel)]="stock.warehouse"  required>
+                    <select class="form-control" id="field_warehouse" name="warehouse" [(ngModel)]="stock.warehouseId"  required>
                         <option *ngIf="!editForm.value.warehouse" [ngValue]="null" selected></option>
-                        <option [ngValue]="warehouseOption.id === stock.warehouse?.id ? stock.warehouse : warehouseOption" *ngFor="let warehouseOption of warehouses; trackBy: trackWarehouseById">{{warehouseOption.id}}</option>
+                        <option [ngValue]="warehouseOption.id" *ngFor="let warehouseOption of warehouses; trackBy: trackWarehouseById">{{warehouseOption.id}}</option>
                     </select>
                 </div>
                 <div [hidden]="!(editForm.controls.warehouse?.dirty && editForm.controls.warehouse?.invalid)">

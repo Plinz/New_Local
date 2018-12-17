@@ -3,6 +3,8 @@ package com.newlocal.service;
 import com.newlocal.domain.Warehouse;
 import com.newlocal.repository.WarehouseRepository;
 import com.newlocal.repository.search.WarehouseSearchRepository;
+import com.newlocal.service.dto.WarehouseDTO;
+import com.newlocal.service.mapper.WarehouseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,23 +28,29 @@ public class WarehouseService {
 
     private WarehouseRepository warehouseRepository;
 
+    private WarehouseMapper warehouseMapper;
+
     private WarehouseSearchRepository warehouseSearchRepository;
 
-    public WarehouseService(WarehouseRepository warehouseRepository, WarehouseSearchRepository warehouseSearchRepository) {
+    public WarehouseService(WarehouseRepository warehouseRepository, WarehouseMapper warehouseMapper, WarehouseSearchRepository warehouseSearchRepository) {
         this.warehouseRepository = warehouseRepository;
+        this.warehouseMapper = warehouseMapper;
         this.warehouseSearchRepository = warehouseSearchRepository;
     }
 
     /**
      * Save a warehouse.
      *
-     * @param warehouse the entity to save
+     * @param warehouseDTO the entity to save
      * @return the persisted entity
      */
-    public Warehouse save(Warehouse warehouse) {
-        log.debug("Request to save Warehouse : {}", warehouse);
-        Warehouse result = warehouseRepository.save(warehouse);
-        warehouseSearchRepository.save(result);
+    public WarehouseDTO save(WarehouseDTO warehouseDTO) {
+        log.debug("Request to save Warehouse : {}", warehouseDTO);
+
+        Warehouse warehouse = warehouseMapper.toEntity(warehouseDTO);
+        warehouse = warehouseRepository.save(warehouse);
+        WarehouseDTO result = warehouseMapper.toDto(warehouse);
+        warehouseSearchRepository.save(warehouse);
         return result;
     }
 
@@ -53,9 +61,10 @@ public class WarehouseService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Warehouse> findAll(Pageable pageable) {
+    public Page<WarehouseDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Warehouses");
-        return warehouseRepository.findAll(pageable);
+        return warehouseRepository.findAll(pageable)
+            .map(WarehouseDTO::new);
     }
 
 
@@ -66,9 +75,10 @@ public class WarehouseService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Optional<Warehouse> findOne(Long id) {
+    public Optional<WarehouseDTO> findOne(Long id) {
         log.debug("Request to get Warehouse : {}", id);
-        return warehouseRepository.findById(id);
+        return warehouseRepository.findById(id)
+            .map(WarehouseDTO::new);
     }
 
     /**
@@ -90,7 +100,9 @@ public class WarehouseService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Warehouse> search(String query, Pageable pageable) {
+    public Page<WarehouseDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Warehouses for query {}", query);
-        return warehouseSearchRepository.search(queryStringQuery(query), pageable);    }
+        return warehouseSearchRepository.search(queryStringQuery(query), pageable)
+            .map(WarehouseDTO::new);
+    }
 }

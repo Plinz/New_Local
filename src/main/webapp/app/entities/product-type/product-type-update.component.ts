@@ -38,10 +38,10 @@ export class ProductTypeUpdateComponent implements OnInit {
         });
         this.imageService.query({ 'productTypeId.specified': 'false' }).subscribe(
             (res: HttpResponse<IImage[]>) => {
-                if (!this.productType.image || !this.productType.image.id) {
+                if (!this.productType.imageId) {
                     this.images = res.body;
                 } else {
-                    this.imageService.find(this.productType.image.id).subscribe(
+                    this.imageService.find(this.productType.imageId).subscribe(
                         (subRes: HttpResponse<IImage>) => {
                             this.images = [subRes.body].concat(res.body);
                         },

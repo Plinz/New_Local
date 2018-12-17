@@ -19,12 +19,14 @@ import com.newlocal.domain.*; // for static metamodels
 import com.newlocal.repository.LocationRepository;
 import com.newlocal.repository.search.LocationSearchRepository;
 import com.newlocal.service.dto.LocationCriteria;
+import com.newlocal.service.dto.LocationDTO;
+import com.newlocal.service.mapper.LocationMapper;
 
 /**
  * Service for executing complex queries for Location entities in the database.
  * The main input is a {@link LocationCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Location} or a {@link Page} of {@link Location} which fulfills the criteria.
+ * It returns a {@link List} of {@link LocationDTO} or a {@link Page} of {@link LocationDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -34,36 +36,40 @@ public class LocationQueryService extends QueryService<Location> {
 
     private LocationRepository locationRepository;
 
-//    private LocationSearchRepository locationSearchRepository;
+    private LocationMapper locationMapper;
 
-    public LocationQueryService(LocationRepository locationRepository, LocationSearchRepository locationSearchRepository) {
+    private LocationSearchRepository locationSearchRepository;
+
+    public LocationQueryService(LocationRepository locationRepository, LocationMapper locationMapper, LocationSearchRepository locationSearchRepository) {
         this.locationRepository = locationRepository;
-//        this.locationSearchRepository = locationSearchRepository;
+        this.locationMapper = locationMapper;
+        this.locationSearchRepository = locationSearchRepository;
     }
 
     /**
-     * Return a {@link List} of {@link Location} which matches the criteria from the database
+     * Return a {@link List} of {@link LocationDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Location> findByCriteria(LocationCriteria criteria) {
+    public List<LocationDTO> findByCriteria(LocationCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Location> specification = createSpecification(criteria);
-        return locationRepository.findAll(specification);
+        return locationMapper.toDto(locationRepository.findAll(specification));
     }
 
     /**
-     * Return a {@link Page} of {@link Location} which matches the criteria from the database
+     * Return a {@link Page} of {@link LocationDTO} which matches the criteria from the database
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<Location> findByCriteria(LocationCriteria criteria, Pageable page) {
+    public Page<LocationDTO> findByCriteria(LocationCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Location> specification = createSpecification(criteria);
-        return locationRepository.findAll(specification, page);
+        return locationRepository.findAll(specification, page)
+            .map(locationMapper::toDto);
     }
 
     /**

@@ -11,6 +11,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
+import com.newlocal.domain.Cart;
 
 /**
  * A Purchase.
@@ -50,6 +51,17 @@ public class Purchase implements Serializable {
     @NotNull
     @JsonIgnoreProperties("")
     private User client;
+    
+    public Purchase(){
+    }
+    
+    public Purchase(Cart c){
+    	this.client = c.getClient();
+    	this.quantity = c.getQuantity();
+    	this.withdraw = false;
+    	this.stock = c.getStock();
+    	this.saleDate = Instant.now();
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -155,4 +167,5 @@ public class Purchase implements Serializable {
             ", withdraw='" + isWithdraw() + "'" +
             "}";
     }
+
 }

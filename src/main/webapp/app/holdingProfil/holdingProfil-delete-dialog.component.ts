@@ -4,6 +4,7 @@ import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstra
 import { JhiEventManager } from 'ng-jhipster';
 import { HoldingService } from '../entities/holding/holding.service';
 import { IHolding } from '../shared/model/holding.model';
+import { JhiDataUtils } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-holding-delete-dialog',
@@ -12,7 +13,12 @@ import { IHolding } from '../shared/model/holding.model';
 export class HoldingProfilDeleteDialogComponent {
     holding: IHolding;
 
-    constructor(private holdingService: HoldingService, public activeModal: NgbActiveModal, private eventManager: JhiEventManager) {}
+    constructor(
+        private holdingService: HoldingService,
+        public activeModal: NgbActiveModal,
+        private eventManager: JhiEventManager,
+        private dataUtils: JhiDataUtils
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
@@ -62,5 +68,9 @@ export class HoldingProfilDeletePopupComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.ngbModalRef = null;
+    }
+
+    openFile(contentType, field) {
+        return this.dataUtils.openFile(contentType, field);
     }
 }

@@ -20,6 +20,10 @@ export class CartService {
         return this.http.post<ICart>(this.resourceUrl, cart, { observe: 'response' });
     }
 
+    createCartTrigger(cart: ICart): Observable<EntityResponseType> {
+        return this.http.post<ICart>(`${this.resourceUrl}/create`, cart, { observe: 'response' });
+    }
+
     update(cart: ICart): Observable<EntityResponseType> {
         return this.http.put<ICart>(this.resourceUrl, cart, { observe: 'response' });
     }
@@ -40,5 +44,9 @@ export class CartService {
     search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
         return this.http.get<ICart[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
+    }
+
+    findByClientIsCurrentUser(): Observable<EntityArrayResponseType> {
+        return this.http.get<ICart[]>(`${this.resourceUrl}/currentuser`, { observe: 'response' });
     }
 }

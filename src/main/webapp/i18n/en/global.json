@@ -39,6 +39,7 @@
                 "audits": "Audits",
                 "apidocs": "API",
                 "database": "Database",
+                "elasticsearch-reindex": "Reindex Elasticsearch",
                 "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
             },
             "language": "Language",
@@ -47,7 +48,8 @@
             "fish": "Fish",
             "meat": "Meat",
             "grocery": "Grocery",
-            "stockManagement": "Stocks"
+            "stockManagement": "Stocks",
+            "review": "Review"
         },
         "form": {
             "username": "Username",

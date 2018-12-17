@@ -1,20 +1,25 @@
 package com.newlocal.service;
 
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.newlocal.domain.Stock;
 import com.newlocal.repository.StockRepository;
 import com.newlocal.repository.search.StockSearchRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Sort;
-
-import java.util.Optional;
-import java.util.List;
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.newlocal.service.dto.StockDTO;
+import com.newlocal.service.mapper.StockMapper;
+import com.newlocal.service.dto.UserDTO;
 
 /**
  * Service Implementation for managing Stock.
@@ -27,25 +32,31 @@ public class StockService {
 
     private StockRepository stockRepository;
 
+    private StockMapper stockMapper;
+
     private StockSearchRepository stockSearchRepository;
 
-    public StockService(StockRepository stockRepository, StockSearchRepository stockSearchRepository) {
+    public StockService(StockRepository stockRepository, StockMapper stockMapper, StockSearchRepository stockSearchRepository) {
         this.stockRepository = stockRepository;
+        this.stockMapper = stockMapper;
         this.stockSearchRepository = stockSearchRepository;
     }
 
     /**
      * Save a stock.
      *
-     * @param stock the entity to save
+     * @param stockDTO the entity to save
      * @return the persisted entity
      */
-    public Stock save(Stock stock) {
-        log.debug("Request to save Stock : {}", stock);
-        Stock result = stockRepository.save(stock);
-        stockSearchRepository.save(result);
+    public StockDTO save(StockDTO stockDTO) {
+        log.debug("Request to save Stock : {}", stockDTO);
+        Stock stock = stockMapper.toEntity(stockDTO);
+        stock = stockRepository.save(stock);
+        StockDTO result = stockMapper.toDto(stock);
+        stockSearchRepository.save(stock);
         return result;
     }
+
 
     /**
      * Get all the stocks.
@@ -54,9 +65,9 @@ public class StockService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Stock> findAll(Pageable pageable) {
+    public Page<StockDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Stocks");
-        return stockRepository.findAll(pageable);
+        return stockRepository.findAll(pageable).map(StockDTO::new);
     }
 
     /**
@@ -66,9 +77,10 @@ public class StockService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Optional<Stock> findOne(Long id) {
+    public Optional<StockDTO> findOne(Long id) {
         log.debug("Request to get Stock : {}", id);
-        return stockRepository.findById(id);
+        return stockRepository.findById(id).map(StockDTO::new);
+
     }
 
     /**
@@ -90,9 +102,9 @@ public class StockService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Stock> search(String query, Pageable pageable) {
+    public Page<StockDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Stocks for query {}", query);
-        return stockSearchRepository.search(queryStringQuery(query), pageable);
+        return stockSearchRepository.search(queryStringQuery(query), pageable).map(StockDTO::new);
     }
 
     /**
@@ -100,9 +112,9 @@ public class StockService {
      *
      */
     @Transactional(readOnly = true)
-    public List<Stock> getProductBio() {
+    public List<StockDTO> getProductBio() {
         log.debug("Request to search for Product Bio {}");
-        return stockRepository.getProductBio();
+        return stockRepository.getProductBio().stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
     /**
@@ -111,10 +123,10 @@ public class StockService {
      */
 
     @Transactional(readOnly = true)
-    public List<Stock> getNewStock() {
+    public List<StockDTO> getNewStock() {
         log.debug("Request to search a new stock {}");
-        List <Stock> ListOrder=stockRepository.findAllStocks(new Sort(Sort.Direction.DESC, "onSaleDate"));
-        return ListOrder;
+        return stockRepository.findAllStocks(new Sort(Sort.Direction.DESC, "onSaleDate"))
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
     /**
@@ -123,9 +135,10 @@ public class StockService {
      */
 
     @Transactional(readOnly = true)
-    public List<Stock> getBestPurchase() {
+    public List<StockDTO> getBestPurchase() {
         log.debug("Request to search the best purchase {}");
-        return stockRepository.getBestPurchase();
+        return stockRepository.getBestPurchase()
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
     /**
@@ -134,9 +147,54 @@ public class StockService {
      */
 
     @Transactional(readOnly = true)
-    public List<Stock> getBestGrade() {
+    public List<StockDTO> getBestGrade() {
         log.debug("Request to search the best grade {}");
-        return stockRepository.getBestGrade();
+        return stockRepository.getBestGrade()
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<StockDTO> findBySellerIsCurrentUser() {
+        return stockRepository.findBySellerIsCurrentUser()
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<StockDTO> getStockCat(String name) {
+        return stockRepository.getStockCat(name)
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserDTO> allSeller() {
+        return stockRepository.allSeller()
+        		.stream().map(UserDTO::new).collect(Collectors.toList());
+    }
+
+    /** Filter **/
+    //////////////
+
+    @Transactional(readOnly = true)
+    public List<StockDTO> filterCatSeller(String cat, String seller, Double min, Double max) {
+        return stockRepository.filterCatSeller(cat,seller, min, max)
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<StockDTO> filterCat(String cat, Double min, Double max) {
+        return stockRepository.filterCat(cat, min, max)
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<StockDTO> filterSeller(String seller, Double min, Double max) {
+        return stockRepository.filterSeller(seller, min, max)
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true)
+    public List<StockDTO> filterPrice(Double min, Double max) {
+        return stockRepository.filterPrice(min, max)
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

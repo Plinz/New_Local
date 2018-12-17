@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -92,5 +93,16 @@ public class CartService {
     @Transactional(readOnly = true)
     public Page<Cart> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Carts for query {}", query);
-        return cartSearchRepository.search(queryStringQuery(query), pageable);    }
+        return cartSearchRepository.search(queryStringQuery(query), pageable);    
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Cart> getCardUser(Long id) {
+        return cartRepository.getCardUser(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Cart> findByClientIsCurrentUser() {
+        return cartRepository.findByClientIsCurrentUser();
+    }
 }

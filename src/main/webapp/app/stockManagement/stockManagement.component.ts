@@ -10,6 +10,9 @@ import { Principal } from '../core';
 import { ITEMS_PER_PAGE } from '../shared';
 import { StockService } from '../entities/stock/stock.service';
 
+import { ProductTypeService } from '../entities/product-type/product-type.service';
+import { IProductType } from '../shared/model/product-type.model';
+
 import { CategoryService } from '../entities/category/category.service';
 import { ICategory } from '../shared/model/category.model';
 
@@ -53,7 +56,8 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         private dataUtils: JhiDataUtils,
         private router: Router,
         private eventManager: JhiEventManager,
-        private categoryService: CategoryService
+        private categoryService: CategoryService,
+        private productTypeService: ProductTypeService
     ) {
         this.stocks = null;
         this.count = 1;
@@ -87,16 +91,12 @@ export class StockManagementComponent implements OnInit, OnDestroy {
                 );
             return;
         }
-        this.stockService
-            .query({
-                page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.sort()
-            })
-            .subscribe(
-                (res: HttpResponse<IStock[]>) => this.paginateStocks(res.body, res.headers),
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
+        this.stockService.findBySellerIsCurrentUser().subscribe(
+            (res: HttpResponse<IStock[]>) => {
+                this.stocks = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     loadPage(page: number) {
@@ -205,6 +205,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         this.today = Date.now();
         const d1 = new Date(this.today);
         const d2 = new Date(d);
+
         if (d1.getTime() < d2.getTime()) {
             return true;
         } else {
@@ -212,40 +213,48 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    onglet1(b: any, d: any, o: number) {
-        if (b && this.count === 1 && this.checkDate(d) && this.checkoption(o)) {
+    onglet1(s: IStock) {
+        if (
+            s.available &&
+            this.count === 1 &&
+            this.checkDate(s.expiryDate) &&
+            s.quantityRemaining === 0 &&
+            (this.optionCategory === s.productType.categoryId || this.optionCategory === -1)
+        ) {
             return true;
         } else {
             return false;
         }
     }
 
-    onglet2(b: any, o: number) {
-        if (!b && this.count === 2 && this.checkoption(o)) {
+    onglet2(s: IStock) {
+        if (!s.available && this.count === 2 && (this.optionCategory === s.productType.categoryId || this.optionCategory === -1)) {
             return true;
         } else {
             return false;
         }
     }
 
-    onglet3(b: any, d: any, o: number) {
-        if (b && this.count === 3 && !this.checkDate(d) && this.checkoption(o)) {
+    onglet3(s: IStock) {
+        if (
+            s.available &&
+            this.count === 3 &&
+            !this.checkDate(s.expiryDate) &&
+            (this.optionCategory === s.productType.categoryId || this.optionCategory === -1)
+        ) {
             return true;
         } else {
             return false;
         }
-    }
-
-    option(x: number) {
-        this.optionCategory = x;
     }
 
     checkoption(o: number) {
-        if (o === this.optionCategory || this.optionCategory === -1) {
-            return true;
-        } else {
-            return false;
-        }
+        this.productTypeService.find(o).subscribe(
+            (res: HttpResponse<IProductType>) => {
+                return res.body.categoryId === this.optionCategory || this.optionCategory === -1;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 
     loadCategory() {
@@ -327,5 +336,9 @@ export class StockManagementComponent implements OnInit, OnDestroy {
     clickk() {
         const tmp = this.popupModalService.open();
         tmp.result.then(() => this.checkboxsuppr(), () => '');
+    }
+
+    onChangeCat(value: number) {
+        this.optionCategory = value;
     }
 }
