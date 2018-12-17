@@ -180,21 +180,20 @@ public class StockService {
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
-    // @Transactional(readOnly = true)
-    // public List<StockDTO> filterCat(String cat, int min,int max) {
-    //     return stockRepository.filterCat(cat,min,max)
-    //     		.stream().map(StockDTO::new).collect(Collectors.toList());
-    // }
+    @Transactional(readOnly = true)
+    public List<StockDTO> filterCat(String cat, Long min, Long max) {
+        return stockRepository.filterCat(cat, min, max)
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
 
-    // @Transactional(readOnly = true)
-    // public List<StockDTO> filterSeller(String seller, int min,int max) {
-    //     return stockRepository.filterSeller(seller,min,max)
-    //     		.stream().map(StockDTO::new).collect(Collectors.toList());
-    // }
-
-    // @Transactional(readOnly = true)
-    // public List<StockDTO> filterPrice(int min,int max) {
-    //     return stockRepository.filterPrice(min,max)
-    //     		.stream().map(StockDTO::new).collect(Collectors.toList());
-    // }
+    @Transactional(readOnly = true)
+    public List<StockDTO> filterSeller(String seller, Long min, Long max) {
+        return stockRepository.filterSeller(seller, min, max)
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true)
+    public List<StockDTO> filterPrice(Long min, Long max) {
+        return stockRepository.filterPrice(min, max)
+        		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
 }

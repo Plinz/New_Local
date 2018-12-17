@@ -38,19 +38,16 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
 
     @Query("select distinct user from Stock")
     List<User> allSeller();
-
-    // @Query("select stock from Stock stock where (stock.productType.category.name=:cat && stock.seller.login=:seller && stock.priceUnit>=:min && stock.priceUnit>=:max)")
     
-    @Query("select stock from Stock stock where (stock.productType.category.name=:cat and stock.seller.lastName=:seller)")
+    @Query("select stock from Stock stock where (stock.productType.category.name=:cat and stock.seller.lastName=:seller and stock.priceUnit>=:min and stock.priceUnit<=:max )")
     List<Stock> filterCatSeller(@Param("cat") String cat,@Param("seller") String seller,@Param("min") Long min,@Param("max") Long max);
 
-    // @Query("select stock from Stock stock where (stock.productType.category.name=:name && stock.priceUnit>=:min && stock.priceUnit>=:max)")
-    // List<Stock> filterCat(@Param("cat") String cat,@Param("min") int min,@Param("max") int max);
+    @Query("select stock from Stock stock where (stock.productType.category.name=:cat and stock.priceUnit>=:min and stock.priceUnit<=:max )")
+    List<Stock> filterCat(@Param("cat") String cat,@Param("min") Long min,@Param("max") Long max);
 
-    // @Query("select stock from Stock stock where (stock.seller.login=:seller && stock.priceUnit>=:min && stock.priceUnit>=:max)")
-    // List<Stock> filterSeller(@Param("seller") String seller,@Param("min") int min,@Param("max") int max);
+    @Query("select stock from Stock stock where ( stock.seller.lastName=:seller and stock.priceUnit>=:min and stock.priceUnit<=:max )")
+    List<Stock> filterSeller(@Param("seller") String seller,@Param("min") Long min,@Param("max") Long max);
 
-    // @Query("select stock from Stock stock where (stock.priceUnit>=:min && stock.priceUnit>=:max)")
-    // List<Stock> filterPrice(@Param("min") int min,@Param("max") int max);
-
+    @Query("select stock from Stock stock where ( stock.priceUnit>=:min and stock.priceUnit<=:max )")
+    List<Stock> filterPrice(@Param("min") Long min,@Param("max") Long max);
 }

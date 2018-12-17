@@ -256,15 +256,15 @@ public class StockResource {
     public ResponseEntity<List<StockDTO>> filterMainsearch(@PathVariable String cat,@PathVariable String seller,@PathVariable Long min,@PathVariable Long max) {
         List<StockDTO> stocks = null;
 
-        // if (cat != "null" && seller !="null"){
+        if (cat != "null" && seller !="null"){
          stocks = stockService.filterCatSeller(cat,seller,min,max);
-        // }else if(cat != "null"){
-        //     stocks = stockService.filterCat(cat,min,max);
-        // }else if(seller != "null"){
-        //     stocks = stockService.filterSeller(seller,min,max);
-        // }else{
-        //     stocks = stockService.filterPrice(min,max);
-        // }
+        }else if(cat != "null"){
+            stocks = stockService.filterCat(cat,min,max);
+        }else if(seller != "null"){
+            stocks = stockService.filterSeller(seller,min,max);
+        }else{
+            stocks = stockService.filterPrice(min,max);
+        }
         return new ResponseEntity<List<StockDTO>>(stocks, HttpStatus.OK);
     }
 
