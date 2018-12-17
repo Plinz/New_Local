@@ -20,6 +20,10 @@ export class CartService {
         return this.http.post<ICart>(this.resourceUrl, cart, { observe: 'response' });
     }
 
+    createCartTrigger(cart: ICart): Observable<EntityResponseType> {
+        return this.http.post<ICart>(`${this.resourceUrl}/create`, cart, { observe: 'response' });
+    }
+
     update(cart: ICart): Observable<EntityResponseType> {
         return this.http.put<ICart>(this.resourceUrl, cart, { observe: 'response' });
     }

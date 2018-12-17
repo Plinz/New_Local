@@ -1,4 +1,4 @@
-<nav class="navbar navbar-static-top navbar-expand-lg nl-navbar" role="navigation">
+<nav class="navbar navbar-static-top navbar-expand-lg nl-navbar" id="navbarSite" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand logo" routerLink="/" (click)="collapseNavbar()">
@@ -8,27 +8,27 @@
         <div class="w-auto">
             <ul class="navbar-collapse collapse navbar-nav">
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link" (click)="onSearch('Legume')">
+                    <a class="nav-link" (click)="onSearch('Legume')" routerLink="#">
                         <span jhiTranslate="global.menu.vegetable">Vegetable</span>
                     </a>
                 </li>
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link" (click)="onSearch('Fruit')">
+                    <a class="nav-link" (click)="onSearch('Fruit')" routerLink="#">
                         <span jhiTranslate="global.menu.fruit">Fruit</span>
                     </a>
                 </li>
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link" (click)="onSearch('Poisson')">
+                    <a class="nav-link" (click)="onSearch('Poisson')" routerLink="#">
                         <span jhiTranslate="global.menu.fish">Fish</span>
                     </a>
                 </li>
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link" (click)="onSearch('Viande')">
+                    <a class="nav-link" (click)="onSearch('Viande')" routerLink="#">
                         <span jhiTranslate="global.menu.meat">Meat</span>
                     </a>
                 </li>
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link" (click)="onSearch('Epicerie')">
+                    <a class="nav-link" (click)="onSearch('Epicerie')" routerLink="#">
                         <span jhiTranslate="global.menu.grocery">Grocery</span>
                     </a>
                 </li>
@@ -48,7 +48,7 @@
             <ul class="navbar-collapse collapse navbar-nav" [ngSwitch]="isAuthenticated()">
                 <li *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_SELLER']" class="nav-item" routerLinkActive="active"
                     [routerLinkActiveOptions]="{exact: true}">
-                    <a class="nav-link" routerLink="stockManagement" (click)="collapseNavbar()">
+                    <a class="nav-link"  (click)="collapseNavbar()" routerLink="stockManagement">
                         <span jhiTranslate="global.menu.stockManagement">Stock Management</span>
                     </a>
                 </li>
@@ -58,6 +58,7 @@
                         <span jhiTranslate="global.menu.review">Review</span>
                     </a>
                 </li>
+
                 <li *jhiHasAnyAuthority="'ROLE_ADMIN'" ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active"
                     [routerLinkActiveOptions]="{exact: true}">
                     <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
@@ -192,6 +193,12 @@
                                 <span jhiTranslate="global.menu.admin.database">Database</span>
                             </a>
                         </li>
+<!--                         <li>
+						    <a class="dropdown-item" routerLink="elasticsearch-reindex" routerLinkActive="active" (click)="collapseNavbar()">
+						    	<fa-icon [icon]="'book'" [fixedWidth]="true"></fa-icon>
+						        <span translate="global.menu.admin.elasticsearch-reindex">Reindex Elasticsearch</span>
+						    </a>
+						</li> -->
                     </ul>
                 </li>
                 <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">

@@ -45,7 +45,9 @@ import com.newlocal.repository.CartRepository;
 import com.newlocal.repository.search.CartSearchRepository;
 import com.newlocal.service.CartQueryService;
 import com.newlocal.service.CartService;
+import com.newlocal.service.StockService;
 import com.newlocal.web.rest.errors.ExceptionTranslator;
+import com.newlocal.service.StockService;
 
 /**
  * Test class for the CartResource REST controller.
@@ -64,7 +66,9 @@ public class CartResourceIntTest {
 
     @Autowired
     private CartService cartService;
-
+    
+    @Autowired
+    private StockService stockService;
     /**
      * This repository is mocked in the com.newlocal.repository.search test package.
      *
@@ -95,7 +99,7 @@ public class CartResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CartResource cartResource = new CartResource(cartService, cartQueryService);
+        final CartResource cartResource = new CartResource(cartService, cartQueryService,stockService);
         this.restCartMockMvc = MockMvcBuilders.standaloneSetup(cartResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
