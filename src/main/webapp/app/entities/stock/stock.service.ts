@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import * as moment from 'moment';
 import { DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { map } from 'rxjs/operators';
-
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IStock } from 'app/shared/model/stock.model';
 import { IUser } from '../../core/user/user.model';
 import { HttpParams } from '@angular/common/http';
+import { IWarehouse } from 'app/shared/model/warehouse.model';
+import { IHolding } from 'app/shared/model/holding.model';
 
 type EntityResponseType = HttpResponse<IStock>;
 type EntityArrayResponseType = HttpResponse<IStock[]>;
@@ -111,6 +112,14 @@ export class StockService {
 
     allSeller(): Observable<EntityArrayResponseType> {
         return this.http.get<IUser[]>(`${this.resourceUrl}/allseller`, { observe: 'response' });
+    }
+
+    allWarehouse(): Observable<EntityArrayResponseType> {
+        return this.http.get<IWarehouse[]>(`${this.resourceUrl}/allwarehouse`, { observe: 'response' });
+    }
+
+    allHolding(): Observable<EntityArrayResponseType> {
+        return this.http.get<IHolding[]>(`${this.resourceUrl}/allholding`, { observe: 'response' });
     }
 
     filter(params: HttpParams): Observable<EntityArrayResponseType> {

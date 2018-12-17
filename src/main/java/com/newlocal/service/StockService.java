@@ -20,6 +20,8 @@ import com.newlocal.repository.search.StockSearchRepository;
 import com.newlocal.service.dto.StockDTO;
 import com.newlocal.service.mapper.StockMapper;
 import com.newlocal.service.dto.UserDTO;
+import com.newlocal.service.dto.HoldingDTO;
+import com.newlocal.service.dto.WarehouseDTO;
 
 /**
  * Service Implementation for managing Stock.
@@ -165,12 +167,6 @@ public class StockService {
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public List<UserDTO> allSeller() {
-        return stockRepository.allSeller()
-        		.stream().map(UserDTO::new).collect(Collectors.toList());
-    }
-
     /** Filter **/
     //////////////
 
@@ -195,5 +191,23 @@ public class StockService {
     public List<StockDTO> filterPrice(Double min, Double max) {
         return stockRepository.filterPrice(min, max)
         		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserDTO> allSeller() {
+        return stockRepository.allSeller()
+        		.stream().map(UserDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<WarehouseDTO> allWarehouse() {
+        return stockRepository.allWarehouse()
+        		.stream().map(WarehouseDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<HoldingDTO> allHolding() {
+        return stockRepository.allHolding()
+        		.stream().map(HoldingDTO::new).collect(Collectors.toList());
     }
 }

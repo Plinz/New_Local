@@ -10,8 +10,8 @@
             <ngb-panel id="static-1">
                 <ng-template ngbPanelTitle><span>&#9733; <b>Catégorie</b>&#9733;</span></ng-template>
                 <ng-template ngbPanelContent>
-                    <div *ngFor="let c of categories;">
-                        <input type="checkbox" value="{{c.id}}">{{c.name}}<br>
+                    <div *ngFor="let c of categories;let i=index">
+                        <input type="checkbox" (click)="checkboxCat(i)">{{c.name}}<br>
                     </div>
                 </ng-template>
             </ngb-panel>
@@ -19,20 +19,30 @@
             <ngb-panel>
                 <ng-template ngbPanelTitle><span>&#9733; <b>Entrepot</b>&#9733;</span></ng-template>
                 <ng-template ngbPanelContent>
+                    <select class="custom-select-sm form-control form-control-sm" (change)="onChangeWare($event.target.value)">
+                        <option value="" disabled selected>Entrepot</option>
+                        <option value="-1">Tout</option>
+                        <option *ngFor="let w of warehouses;" value="{{w.id}}">{{w.name}}</option>
+                    </select>
                 </ng-template>
             </ngb-panel>
             <!-- Explotation-->
             <ngb-panel>
                 <ng-template ngbPanelTitle><span>&#9733; <b>Explotation</b>&#9733;</span></ng-template>
                 <ng-template ngbPanelContent>
+                    <select class="custom-select-sm form-control form-control-sm" (change)="onChangeHold($event.target.value)">
+                        <option value="" disabled selected>Entrepot</option>
+                        <option value="-1">Tout</option>
+                        <option *ngFor="let h of holdings;" value="{{h.id}}">{{h.name}}</option>
+                    </select>
                 </ng-template>
             </ngb-panel>
         </ngb-accordion>
 
         <!--Nom de produit-->
         <div class="mt-4">
-                <span>&#9733; <b>Produit</b>&#9733;</span>
-                <input type="text" placeholder="Nom du produit">
+            <span>&#9733; <b>Produit</b>&#9733;</span>
+            <input type="text" placeholder="Nom du produit">
         </div>
         <!--Prix mini-->
         <div class="mt-3 ml-2 mr-2">
@@ -59,14 +69,12 @@
             <!-- Localisation-->
             <div>
                 <div class="mt-4 row" *ngIf="!hasLocation() && !isAuthenticated()">
-                    <p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les
-                        produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
-                        navigateur.</p>
+                    <p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre navigateur.
+                    </p>
                     <button class="btn btn-info btn-sm mr-5 col-sm-1" (click)="askLocation()">
                         <span class="d-none d-md-inline">Me géolocaliser</span>
                     </button>
-                    <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et
-                        ensuite enregistrer votre localisation.</p>
+                    <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et ensuite enregistrer votre localisation.</p>
                     <button class="btn btn-info btn-sm ml-0 col-sm-1" (click)="login()">
                         <span class="d-none d-md-inline">Connexion</span>
                     </button>
@@ -76,17 +84,15 @@
                 </div>
 
                 <div class="mt-4 row" *ngIf="!hasLocation() && isAuthenticated()">
-                    <p class="grey-text mb-0 col-sm-8">New Local a besoin de votre localisation pour vous proposez les
-                        produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
-                        navigateur.</p>
+                    <p class="grey-text mb-0 col-sm-8">New Local a besoin de votre localisation pour vous proposez les produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre navigateur.
+                    </p>
                     <button class="btn btn-info btn-sm col-sm-1" (click)="askLocation()">
                         <span class="d-none d-md-inline">Me géolocaliser</span>
                     </button>
                 </div>
 
                 <div class="mt-4 row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase()">
-                    <p class="grey-text mb-0 col-sm-8">Voulez-vous utiliser votre localisation comme localisation
-                        principale
+                    <p class="grey-text mb-0 col-sm-8">Voulez-vous utiliser votre localisation comme localisation principale
                     </p>
                     <button class="btn btn-info btn-sm col-sm-1" (click)="setLocationForUser()">
                         <span class="d-none d-md-inline">Oui</span>
@@ -149,8 +155,7 @@
                             <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
                         </div>
                         <div class="row justify-content-center">
-                            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage"
-                                [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+                            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
                         </div>
                     </div>
                 </div>
