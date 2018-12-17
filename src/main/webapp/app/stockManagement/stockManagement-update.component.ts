@@ -13,6 +13,8 @@ import { ProductTypeService } from '../entities/product-type';
 import { IHolding } from '../shared/model/holding.model';
 import { HoldingService } from '../entities/holding';
 import { IUser } from '../core';
+import { ImageService } from 'app/entities/image';
+import { IImage, Image } from 'app/shared/model/image.model';
 
 @Component({
     selector: 'jhi-stock-update',
@@ -20,19 +22,18 @@ import { IUser } from '../core';
 })
 export class StockManagementUpdateComponent implements OnInit {
     stock: IStock;
-    isSaving: boolean;
-
-    productTypesExisting: IProductType[];
+    productTypeSelectionMethod: number;
     productTypesCurrentUser: IProductType[];
+    productTypesExisting: IProductType[];
     productTypeNotExisting: IProductType;
-
     holdings: IHolding[];
-    users: IUser[];
-    // onSaleDate: string;
     expiryDate: string;
     currentDate: string;
-    btnValiderTypeProduit: boolean;
     stats: string[];
+    image: IImage;
+
+    isSaving: boolean;
+    btnValidateProductType: boolean;
 
     constructor(
         private dataUtils: JhiDataUtils,
@@ -40,18 +41,18 @@ export class StockManagementUpdateComponent implements OnInit {
         private stockService: StockService,
         private productTypeService: ProductTypeService,
         private holdingService: HoldingService,
-        // private userService: UserService,
         private elementRef: ElementRef,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private imageService: ImageService
     ) {}
 
     ngOnInit() {
         this.isSaving = false;
-        this.btnValiderTypeProduit = false;
+        this.btnValidateProductType = false;
         this.productTypeNotExisting = new ProductType();
+        this.image = new Image();
         this.activatedRoute.data.subscribe(({ stock }) => {
             this.stock = stock;
-            // this.onSaleDate = this.stock.onSaleDate != null ? this.stock.onSaleDate.format(DATE_TIME_FORMAT) : null;
             this.expiryDate = this.stock.expiryDate != null ? this.stock.expiryDate.format(DATE_TIME_FORMAT) : null;
         });
         this.productTypeService.query().subscribe(
@@ -72,12 +73,6 @@ export class StockManagementUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        /*this.userService.query().subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                this.users = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );*/
         const myDate = new Date();
         if (myDate.getDate() < 10) {
             this.currentDate = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-0${myDate.getDate()}`;
@@ -108,10 +103,46 @@ export class StockManagementUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        // this.stock.onSaleDate = this.onSaleDate != null ? moment(this.onSaleDate, DATE_TIME_FORMAT) : null;
+        if (this.productTypeSelectionMethod == 2) {
+            if (this.productTypeNotExisting.id !== undefined) {
+                this.productTypeService.update(this.productTypeNotExisting).subscribe(
+                    (res: HttpResponse<IProductType>) => {
+                        this.productTypeNotExisting = res.body;
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
+            } else {
+                this.productTypeService.create(this.productTypeNotExisting).subscribe(
+                    (res: HttpResponse<IProductType>) => {
+                        this.productTypeNotExisting = res.body;
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
+            }
+            this.stock.productType = this.productTypeNotExisting;
+        }
+
+        if (this.image.id !== undefined) {
+            this.imageService.update(this.image).subscribe(
+                (res: HttpResponse<IImage>) => {
+                    this.image = res.body;
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+        } else {
+            this.imageService.create(this.image).subscribe(
+                (res: HttpResponse<IImage>) => {
+                    this.image = res.body;
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+        }
+        this.stock.image = this.image;
+
         this.stock.onSaleDate = moment(new Date(), DATE_TIME_FORMAT);
         this.stock.expiryDate = this.expiryDate != null ? moment(this.expiryDate, DATE_TIME_FORMAT) : null;
         this.stock.quantityRemaining = this.stock.quantityInit;
+        this.stock.available = false;
         if (this.stock.id !== undefined) {
             this.subscribeToSaveResponse(this.stockService.update(this.stock));
         } else {
@@ -148,30 +179,58 @@ export class StockManagementUpdateComponent implements OnInit {
         return item.id;
     }
 
-    clicBtnValiderTypeProduit() {
-        this.btnValiderTypeProduit = true;
+    clicBtnValidateProductType() {
+        this.btnValidateProductType = true;
 
-        // Initialize Params Object
-        let parameters = new HttpParams();
+        if (this.productTypeSelectionMethod == 2) {
+            this.stats = null;
+        } else {
+            // Initialize Params Object
+            let parameters = new HttpParams();
 
-        // Begin assigning parameters
-        parameters = parameters.append('productTypeId', this.stock.productType.id.toString());
-        parameters = parameters.append('bio', String(this.stock.bio));
+            // Begin assigning parameters
+            parameters = parameters.append('productTypeId', this.stock.productType.id.toString());
+            parameters = parameters.append('bio', String(this.stock.bio));
 
-        this.stockService.statsStock(parameters).subscribe(
-            (res: HttpResponse<string[]>) => {
-                this.stats = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+            this.stockService.statsStock(parameters).subscribe(
+                (res: HttpResponse<string[]>) => {
+                    this.stats = res.body;
 
-        this.stats.forEach(function(value) {
-            console.log(value);
-        });
+                    if (this.stats != null) {
+                        for (let i = 0; i < this.stats.length; i++) {
+                            switch (i) {
+                                case 0:
+                                    this.stats[i] = `Prix de vente le plus bas : ${this.stats[i]} €`;
+                                    break;
+                                case 1:
+                                    this.stats[i] = `Prix de vente moyen : ${this.stats[i]} €`;
+                                    break;
+                                case 2:
+                                    this.stats[i] = `Prix de vente médian : ${this.stats[i]} €`;
+                                    break;
+                                case 3:
+                                    this.stats[i] = `Prix de vente le plus haut : ${this.stats[i]} €`;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+        }
+    }
 
-        /*const s: string[] = ['toto', 'tata', 'tutu'];
-        s.forEach(function(value) {
-            console.log(value);
-        });*/
+    onChangeProductTypeCurrentUser(i: number) {
+        this.stock.productType = this.productTypesCurrentUser[i];
+    }
+
+    onChangeProductTypeExisting(i: number) {
+        this.stock.productType = this.productTypesExisting[i];
+    }
+
+    onChangeProductTypeSelectionMethod(productTypeSelectionMethod: number) {
+        this.productTypeSelectionMethod = productTypeSelectionMethod;
     }
 }

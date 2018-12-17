@@ -20,6 +20,11 @@ import com.newlocal.repository.search.StockSearchRepository;
 import com.newlocal.service.dto.StockDTO;
 import com.newlocal.service.mapper.StockMapper;
 import com.newlocal.service.dto.UserDTO;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.List;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Stock.
@@ -97,7 +102,7 @@ public class StockService {
     /**
      * Search for the stock corresponding to the query.
      *
-     * @param query the query of the search
+     * @param query    the query of the search
      * @param pageable the pagination information
      * @return the list of entities
      */
@@ -109,7 +114,6 @@ public class StockService {
 
     /**
      * Search for the stock bio
-     *
      */
     @Transactional(readOnly = true)
     public List<StockDTO> getProductBio() {
@@ -119,9 +123,7 @@ public class StockService {
 
     /**
      * Search last new stock
-     *
      */
-
     @Transactional(readOnly = true)
     public List<StockDTO> getNewStock() {
         log.debug("Request to search a new stock {}");
@@ -131,9 +133,7 @@ public class StockService {
 
     /**
      * Search the best purchase
-     *
      */
-
     @Transactional(readOnly = true)
     public List<StockDTO> getBestPurchase() {
         log.debug("Request to search the best purchase {}");
@@ -143,9 +143,7 @@ public class StockService {
 
     /**
      * Search the best grade
-     *
      */
-
     @Transactional(readOnly = true)
     public List<StockDTO> getBestGrade() {
         log.debug("Request to search the best grade {}");
@@ -198,16 +196,22 @@ public class StockService {
     }
 
     @Transactional(readOnly = true)
-    public Double[] getStatsStock(Long productTypeId, Boolean bio){
-        Double[] mesStats = null;
+    public List<String> getStatsStock(Long productTypeId, Boolean bio) {
+        List<String> mesStats = null;
 
         log.debug("Request to get the stats on the productType of the stock {}");
         List<Object[]> mesObjets = stockRepository.getStatsStock(productTypeId, bio);
 
-        for(Object[] obj : mesObjets) {
-            mesStats = new Double[obj.length];
-            for (int i = 0; i < obj.length; i++) {
-                mesStats[i] = (Double) obj[i];
+        if (mesObjets != null) {
+            for (Object[] obj : mesObjets) {
+                if(obj != null) {
+                    mesStats = new ArrayList<>();
+                    for (int i = 0; i < obj.length; i++) {
+                        if (obj[i] != null){
+                            mesStats.add(obj[i].toString());
+                        }
+                    }
+                }
             }
         }
 
