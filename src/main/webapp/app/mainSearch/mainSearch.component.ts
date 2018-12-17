@@ -437,9 +437,16 @@ export class MainSearchComponent implements OnInit, OnDestroy {
 
     filter() {
         // Récuperer tout les critéres
-        this.stockService.filterMainsearch(this.filterOptionCat, this.filterOptionSeller, this.prixMini, this.prixMax).subscribe(
+        // this.stockService.filterMainsearch(this.filterOptionCat, this.filterOptionSeller, this.prixMini, this.prixMax).subscribe(
+        //     (res: HttpResponse<IStock[]>) => {
+        //         this.stocks = res.body;
+        //     },
+        //     (res: HttpErrorResponse) => this.onError(res.message)
+        // );
+        this.stockService.query().subscribe(
             (res: HttpResponse<IStock[]>) => {
                 this.stocks = res.body;
+                alert('ok');
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
