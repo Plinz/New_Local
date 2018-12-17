@@ -5,36 +5,45 @@
     <div id="mySidenav" class="sidenav" [ngStyle]="{'width':bclik ? '250px' : '0px' }">
         <a class="closebtn" (click)="closeNav()">&times;</a>
 
-        <!-- Catégorie-->
-        <div class="mt-2 ml-2 mr-2">
-            <select class="custom-select" (change)="onChangeCat($event.target.value)">
-                <option disabled selected>{{ optioncat }}</option>
-                <option>Tout</option>
-                <option *ngFor="let c of categories;">{{c.name}}</option>
-            </select>
-        </div>
+        <ngb-accordion [closeOthers]="true" activeIds="static-1">
+            <!-- Catégorie-->
+            <ngb-panel id="static-1">
+                <ng-template ngbPanelTitle><span>&#9733; <b>Catégorie</b>&#9733;</span></ng-template>
+                <ng-template ngbPanelContent>
+                    <div *ngFor="let c of categories;">
+                        <input type="checkbox" value="{{c.id}}">{{c.name}}<br>
+                    </div>
+                </ng-template>
+            </ngb-panel>
+            <!-- Entrepot-->
+            <ngb-panel>
+                <ng-template ngbPanelTitle><span>&#9733; <b>Entrepot</b>&#9733;</span></ng-template>
+                <ng-template ngbPanelContent>
+                </ng-template>
+            </ngb-panel>
+            <!-- Explotation-->
+            <ngb-panel>
+                <ng-template ngbPanelTitle><span>&#9733; <b>Explotation</b>&#9733;</span></ng-template>
+                <ng-template ngbPanelContent>
+                </ng-template>
+            </ngb-panel>
+        </ngb-accordion>
 
-        <!-- Producteur-->
-        <div class="mt-3 ml-2 mr-2">
-            <select class="custom-select" (change)="onChangeSeller($event.target.value)">
-                <option disabled selected>Producteur</option>
-                <option>Tout</option>
-                <option *ngFor="let s of seller;">{{s.lastName}}</option>
-            </select>
+        <!--Nom de produit-->
+        <div class="mt-4">
+                <span>&#9733; <b>Produit</b>&#9733;</span>
+                <input type="text" placeholder="Nom du produit">
         </div>
-
         <!--Prix mini-->
         <div class="mt-3 ml-2 mr-2">
             <label for="price-min">Prix min : {{prixMini}}</label>
             <input type="range" name="price-min" [(ngModel)]="prixMini" id="price-min" value="1" min="0" max="10">
         </div>
-
         <!--Prix maxi-->
         <div class="mt-3 ml-2 mr-2">
             <label for="price-max">Prix max : {{prixMax}}</label>
             <input type="range" name="price-max" [(ngModel)]="prixMax" min="0" max="10">
         </div>
-
         <!--Filtrer btn-->
         <div class="text-center mt-4">
             <div class="btn btn-info  pl-5 pr-5" (click)="filter()">Filtrer</div>
@@ -50,11 +59,14 @@
             <!-- Localisation-->
             <div>
                 <div class="mt-4 row" *ngIf="!hasLocation() && !isAuthenticated()">
-                    <p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre navigateur.</p>
+                    <p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les
+                        produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
+                        navigateur.</p>
                     <button class="btn btn-info btn-sm mr-5 col-sm-1" (click)="askLocation()">
                         <span class="d-none d-md-inline">Me géolocaliser</span>
                     </button>
-                    <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et ensuite enregistrer votre localisation.</p>
+                    <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et
+                        ensuite enregistrer votre localisation.</p>
                     <button class="btn btn-info btn-sm ml-0 col-sm-1" (click)="login()">
                         <span class="d-none d-md-inline">Connexion</span>
                     </button>
@@ -64,14 +76,17 @@
                 </div>
 
                 <div class="mt-4 row" *ngIf="!hasLocation() && isAuthenticated()">
-                    <p class="grey-text mb-0 col-sm-8">New Local a besoin de votre localisation pour vous proposez les produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre navigateur.</p>
+                    <p class="grey-text mb-0 col-sm-8">New Local a besoin de votre localisation pour vous proposez les
+                        produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
+                        navigateur.</p>
                     <button class="btn btn-info btn-sm col-sm-1" (click)="askLocation()">
                         <span class="d-none d-md-inline">Me géolocaliser</span>
                     </button>
                 </div>
 
                 <div class="mt-4 row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase()">
-                    <p class="grey-text mb-0 col-sm-8">Voulez-vous utiliser votre localisation comme localisation principale
+                    <p class="grey-text mb-0 col-sm-8">Voulez-vous utiliser votre localisation comme localisation
+                        principale
                     </p>
                     <button class="btn btn-info btn-sm col-sm-1" (click)="setLocationForUser()">
                         <span class="d-none d-md-inline">Oui</span>
@@ -134,7 +149,8 @@
                             <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
                         </div>
                         <div class="row justify-content-center">
-                            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+                            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage"
+                                [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
                         </div>
                     </div>
                 </div>

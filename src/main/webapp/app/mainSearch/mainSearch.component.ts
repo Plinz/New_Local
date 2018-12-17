@@ -19,6 +19,7 @@ import { LocationService } from '../entities/location';
 import { NavbarService } from '../layouts/navbar/navbar.service';
 import { CartService } from '../entities/cart/cart.service';
 import { UserService } from '../core/user/user.service';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
     selector: 'jhi-stock',
@@ -436,14 +437,15 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     }
 
     filter() {
-        // Récuperer tout les critéres
-        // this.stockService.filterMainsearch(this.filterOptionCat, this.filterOptionSeller, this.prixMini, this.prixMax).subscribe(
-        //     (res: HttpResponse<IStock[]>) => {
-        //         this.stocks = res.body;
-        //     },
-        //     (res: HttpErrorResponse) => this.onError(res.message)
-        // );
-        this.stockService.query().subscribe(
+        const params = new HttpParams();
+        params.set('page', '0').set('pageSize', '20');
+        params.set('priceUnit.lessOrEqualThan', '${this.prixMax}').set('priceUnit.greaterOrEqualThan', '${this.prixMini}');
+
+        params.set('categoryName.contains', 'Fruit');
+        params.set('warehouseId.equals', '56');
+        params.set('productTypeId.equals', '1');
+
+        this.stockService.filter(params).subscribe(
             (res: HttpResponse<IStock[]>) => {
                 this.stocks = res.body;
                 alert('ok');

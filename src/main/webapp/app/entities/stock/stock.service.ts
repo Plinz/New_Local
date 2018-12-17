@@ -9,6 +9,7 @@ import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IStock } from 'app/shared/model/stock.model';
 import { IUser } from '../../core/user/user.model';
+import { HttpParams } from '@angular/common/http';
 
 type EntityResponseType = HttpResponse<IStock>;
 type EntityArrayResponseType = HttpResponse<IStock[]>;
@@ -112,9 +113,9 @@ export class StockService {
         return this.http.get<IUser[]>(`${this.resourceUrl}/allseller`, { observe: 'response' });
     }
 
-    filterMainsearch(cat: string, seller: string, min: number, max: number): Observable<EntityArrayResponseType> {
+    filter(params: HttpParams): Observable<EntityArrayResponseType> {
         return this.http
-            .get<IStock[]>(`${this.resourceUrl}/filter/${cat}/${seller}/${min}/${max}`, { observe: 'response' })
+            .get<IStock[]>(this.resourceUrl, { params, observe: 'response' })
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 }
