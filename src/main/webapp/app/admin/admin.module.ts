@@ -24,9 +24,9 @@ import {
 
 @NgModule({
     imports: [
+        //        NewLocalElasticsearchReindexModule,
         NewLocalSharedModule,
-        RouterModule.forChild(adminState),
-        NewLocalElasticsearchReindexModule
+        RouterModule.forChild(adminState)
         /* jhipster-needle-add-admin-module - JHipster will add admin modules here */
     ],
     declarations: [
