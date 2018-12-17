@@ -130,9 +130,17 @@ public class StockQueryService extends QueryService<Stock> {
                 specification = specification.and(buildSpecification(criteria.getProductTypeId(),
                     root -> root.join(Stock_.productType, JoinType.LEFT).get(ProductType_.id)));
             }
+            if (criteria.getCategoryName() != null) {
+                specification = specification.and(buildSpecification(criteria.getCategoryName(),
+                    root -> root.join(Stock_.productType, JoinType.LEFT).join(ProductType_.category, JoinType.LEFT).get(Category_.name)));
+            }
             if (criteria.getHoldingId() != null) {
                 specification = specification.and(buildSpecification(criteria.getHoldingId(),
                     root -> root.join(Stock_.holding, JoinType.LEFT).get(Holding_.id)));
+            }
+            if (criteria.getHoldingName() != null) {
+                specification = specification.and(buildSpecification(criteria.getHoldingName(),
+                    root -> root.join(Stock_.holding, JoinType.LEFT).get(Holding_.name)));
             }
             if (criteria.getSellerId() != null) {
                 specification = specification.and(buildSpecification(criteria.getSellerId(),

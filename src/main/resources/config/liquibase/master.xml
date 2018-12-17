@@ -26,6 +26,6 @@
     <include file="config/liquibase/changelog/20181130130547_added_entity_constraints_Grade.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181130130550_added_entity_constraints_Warehouse.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
-    <!-- <include file="execution_script_SQL.xml" relativeToChangelogFile="true"/> -->
+    <include file="execution_script_SQL.xml" relativeToChangelogFile="true"/>
     <!-- Execution du script pour peupler artificiellement la BDD -->
 </databaseChangeLog>

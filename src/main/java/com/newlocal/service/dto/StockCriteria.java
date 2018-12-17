@@ -52,8 +52,28 @@ public class StockCriteria implements Serializable {
     private LongFilter sellerId;
 
     private LongFilter warehouseId;
+    
+    private StringFilter categoryName;
+    
+    private StringFilter holdingName;
 
-    public StockCriteria() {
+    public StringFilter getHoldingName() {
+		return holdingName;
+	}
+
+	public void setHoldingName(StringFilter holdingName) {
+		this.holdingName = holdingName;
+	}
+
+	public StringFilter getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(StringFilter categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public StockCriteria() {
     }
 
     public LongFilter getId() {
