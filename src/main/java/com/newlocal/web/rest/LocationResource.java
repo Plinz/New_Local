@@ -181,9 +181,8 @@ public class LocationResource {
     }
 
     /**
-     * GET  /locations/:id : get the "id" location.
+     * GET  /currentuser get the location of the current user
      *
-     * @param id the id of the locationDTO to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the locationDTO, or with status 404 (Not Found)
      */
     @GetMapping("/locations/currentuser")

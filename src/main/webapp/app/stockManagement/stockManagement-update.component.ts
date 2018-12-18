@@ -15,6 +15,10 @@ import { HoldingService } from '../entities/holding';
 import { IUser } from '../core';
 import { ImageService } from 'app/entities/image';
 import { IImage, Image } from 'app/shared/model/image.model';
+import { IWarehouse } from 'app/shared/model/warehouse.model';
+import { WarehouseService } from 'app/entities/warehouse';
+import { ICategory } from 'app/shared/model/category.model';
+import { CategoryService } from 'app/entities/category';
 
 @Component({
     selector: 'jhi-stock-update',
@@ -27,10 +31,12 @@ export class StockManagementUpdateComponent implements OnInit {
     productTypesExisting: IProductType[];
     productTypeNotExisting: IProductType;
     holdings: IHolding[];
+    warehouses: IWarehouse[];
     expiryDate: string;
     currentDate: string;
     stats: string[];
     image: IImage;
+    categories: ICategory[];
 
     isSaving: boolean;
     btnValidateProductType: boolean;
@@ -43,7 +49,9 @@ export class StockManagementUpdateComponent implements OnInit {
         private holdingService: HoldingService,
         private elementRef: ElementRef,
         private activatedRoute: ActivatedRoute,
-        private imageService: ImageService
+        private imageService: ImageService,
+        private warehouseService: WarehouseService,
+        private categoryService: CategoryService
     ) {}
 
     ngOnInit() {
@@ -70,6 +78,18 @@ export class StockManagementUpdateComponent implements OnInit {
         this.holdingService.findByCurrentUser().subscribe(
             (res: HttpResponse<IHolding[]>) => {
                 this.holdings = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.warehouseService.query().subscribe(
+            (res: HttpResponse<IWarehouse[]>) => {
+                this.warehouses = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.categoryService.query().subscribe(
+            (res: HttpResponse<ICategory[]>) => {
+                this.categories = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -103,7 +123,7 @@ export class StockManagementUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        if (this.productTypeSelectionMethod == 2) {
+        if (this.productTypeSelectionMethod === 2) {
             if (this.productTypeNotExisting.id !== undefined) {
                 this.productTypeService.update(this.productTypeNotExisting).subscribe(
                     (res: HttpResponse<IProductType>) => {
@@ -119,26 +139,30 @@ export class StockManagementUpdateComponent implements OnInit {
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
             }
+            this.stock.productTypeId = this.productTypeNotExisting.id;
             this.stock.productType = this.productTypeNotExisting;
         }
-
-        if (this.image.id !== undefined) {
-            this.imageService.update(this.image).subscribe(
-                (res: HttpResponse<IImage>) => {
-                    this.image = res.body;
-                },
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
+        if (!this.stock.image) {
+            if (this.image.id !== undefined) {
+                this.imageService.update(this.image).subscribe(
+                    (res: HttpResponse<IImage>) => {
+                        this.image = res.body;
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
+            } else {
+                this.imageService.create(this.image).subscribe(
+                    (res: HttpResponse<IImage>) => {
+                        this.image = res.body;
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
+            }
+            this.stock.imageId = this.image.id;
+            this.stock.image = this.image;
         } else {
-            this.imageService.create(this.image).subscribe(
-                (res: HttpResponse<IImage>) => {
-                    this.image = res.body;
-                },
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
+            this.stock.imageId = 1;
         }
-        this.stock.image = this.image;
-
         this.stock.onSaleDate = moment(new Date(), DATE_TIME_FORMAT);
         this.stock.expiryDate = this.expiryDate != null ? moment(this.expiryDate, DATE_TIME_FORMAT) : null;
         this.stock.quantityRemaining = this.stock.quantityInit;
@@ -182,7 +206,7 @@ export class StockManagementUpdateComponent implements OnInit {
     clicBtnValidateProductType() {
         this.btnValidateProductType = true;
 
-        if (this.productTypeSelectionMethod == 2) {
+        if (this.productTypeSelectionMethod === 2) {
             this.stats = null;
         } else {
             // Initialize Params Object
@@ -196,7 +220,7 @@ export class StockManagementUpdateComponent implements OnInit {
                 (res: HttpResponse<string[]>) => {
                     this.stats = res.body;
 
-                    if (this.stats != null) {
+                    if (!this.stats) {
                         for (let i = 0; i < this.stats.length; i++) {
                             switch (i) {
                                 case 0:
@@ -222,15 +246,71 @@ export class StockManagementUpdateComponent implements OnInit {
         }
     }
 
+    onChangeProductTypeSelectionMethod(productTypeSelectionMethod: number) {
+        this.productTypeSelectionMethod = productTypeSelectionMethod;
+    }
+
     onChangeProductTypeCurrentUser(i: number) {
+        this.stock.productTypeId = this.productTypesCurrentUser[i].id;
         this.stock.productType = this.productTypesCurrentUser[i];
     }
 
     onChangeProductTypeExisting(i: number) {
+        this.stock.productTypeId = this.productTypesExisting[i].id;
         this.stock.productType = this.productTypesExisting[i];
     }
 
-    onChangeProductTypeSelectionMethod(productTypeSelectionMethod: number) {
-        this.productTypeSelectionMethod = productTypeSelectionMethod;
+    onChangeCategory(i: number) {
+        this.productTypeNotExisting.categoryId = this.categories[i].id;
+    }
+
+    onChangeHolding(i: number) {
+        this.stock.holdingId = this.holdings[i].id;
+        this.stock.holding = this.holdings[i];
+
+        // récupère l'entrepôt le plus proche du holding sélectionné
+        let distWarehouse: number;
+        let distWarehouseMin: number;
+        this.warehouses.forEach((value: IWarehouse) => {
+            distWarehouse = this.distance(value);
+            if (!distWarehouseMin) {
+                distWarehouseMin = distWarehouse;
+                this.stock.warehouseId = value.id;
+                this.stock.warehouse = value;
+            } else if (distWarehouse < distWarehouseMin) {
+                distWarehouseMin = distWarehouse;
+                this.stock.warehouseId = value.id;
+                this.stock.warehouse = value;
+            }
+            console.log(distWarehouse);
+            console.log(distWarehouseMin);
+        });
+    }
+
+    distance(warehouse: IWarehouse) {
+        const loc = this.stock.holding.location;
+        let dist = -1;
+        if (loc != null) {
+            const lon1 = warehouse.location.lon;
+            const lat1 = warehouse.location.lat;
+            const lon2 = loc.lon;
+            const lat2 = loc.lat;
+            const theta = lon1 - lon2;
+            dist =
+                Math.sin(this.deg2rad(lat1)) * Math.sin(this.deg2rad(lat2)) +
+                Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * Math.cos(this.deg2rad(theta));
+            dist = Math.acos(dist);
+            dist = this.rad2deg(dist);
+            dist = dist * 60 * 1.1515 * 1.609344;
+        }
+        return parseInt(dist + '', 0);
+    }
+
+    deg2rad(deg: number) {
+        return deg * Math.PI / 180.0;
+    }
+
+    rad2deg(rad: number) {
+        return rad * 180 / Math.PI;
     }
 }

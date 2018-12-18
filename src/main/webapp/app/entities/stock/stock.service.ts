@@ -7,7 +7,6 @@ import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IStock } from 'app/shared/model/stock.model';
 import { IUser } from '../../core/user/user.model';
-import { HttpParams } from '@angular/common/http';
 import { IWarehouse } from 'app/shared/model/warehouse.model';
 import { IHolding } from 'app/shared/model/holding.model';
 
