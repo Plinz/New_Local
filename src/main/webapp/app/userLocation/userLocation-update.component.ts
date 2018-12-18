@@ -13,7 +13,7 @@ import { LocationService } from 'app/entities/location/location.service';
 import { isModuleDeclaration } from 'typescript';
 
 @Component({
-    selector: 'jhi-userNewLocation',
+    selector: 'jhi-usernewlocation',
     templateUrl: './userLocation-update.component.html'
 })
 export class UserNewLocationComponent implements OnInit, OnDestroy {
@@ -21,7 +21,7 @@ export class UserNewLocationComponent implements OnInit, OnDestroy {
     newLocation: ILocation;
     isSaving: boolean;
     testForm: boolean;
-    test: boolean = false;
+    test = false;
 
     constructor(
         private account: AccountService,
