@@ -24,7 +24,7 @@
             <div class="card-deck" *ngIf="holdingsCurrentUser">
                 <div  class="card bg-light mb-3" style="max-width: 15%; min-width: 15%;" *ngFor="let holding of holdingsCurrentUser ;trackBy: trackId" >
                     <!--*ngIf="stock.productType.category.id==optionCategory || selectedCategory==1"-->
-                    <img class="card-img-top h-50" [src]="'data:' + holding.imageContentType + ';base64,' + holding.image" alt="Card image cap"/>
+                    <img class="card-img-top h-50" src="{{holding.image.imagePath}}" alt="Card image cap"/>
                         <div class="card-body">
                             <h5 class="card-title">{{holding.name}}</h5>
                         </div>

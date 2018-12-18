@@ -41,12 +41,7 @@
                 <td><a [routerLink]="['/image', image.id, 'view' ]">{{image.id}}</a></td>
                 <td>{{image.name}}</td>
                 <td>{{image.description}}</td>
-                <td>
-                    <a *ngIf="image.image" (click)="openFile(image.imageContentType, image.image)">
-                        <img [src]="'data:' + image.imageContentType + ';base64,' + image.image" style="max-height: 30px;" alt="image image"/>
-                    </a>
-                    <span *ngIf="image.image">{{image.imageContentType}}, {{byteSize(image.image)}}</span>
-                </td>
+                <td><img src="{{image.imagePath}}" style="max-height: 30px;" alt=""/></td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.newlocal.domain.ProductType;
 import com.newlocal.service.ProductTypeQueryService;
 import com.newlocal.service.ProductTypeService;
 import com.newlocal.service.dto.ProductTypeCriteria;
@@ -147,9 +148,9 @@ public class ProductTypeResource {
      */
     @GetMapping("/product-types/currentUser")
     @Timed
-    public ResponseEntity<List<ProductType>> getProductTypesByCurrentUser(){
+    public ResponseEntity<List<ProductTypeDTO>> getProductTypesByCurrentUser(){
         log.debug("REST request to get ProductTypes of the current user : {}");
-        List<ProductType> productTypes = productTypeService.findByCurrentUser();
+        List<ProductTypeDTO> productTypes = productTypeService.findByCurrentUser();
         return ResponseEntity.ok().body(productTypes);
     }
 

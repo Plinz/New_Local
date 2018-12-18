@@ -17,9 +17,10 @@
             "detail": {
                 "title": "Image"
             },
-            "name": "Name",
+            "name": "Nom de l'image'",
             "description": "Description",
-            "imagePath": "Image Path"
+            "imagePath": "URL de l'image'",
+            "image": "Image"
         }
     }
 }

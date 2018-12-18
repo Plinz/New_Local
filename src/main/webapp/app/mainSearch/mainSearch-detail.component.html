@@ -7,7 +7,7 @@
                                 <div class="card-header bg-light h-3" >
                                   <h4 class="card-title">{{stock.name}}</h4>
                                 </div>
-                            <img class="card-img-bottom img-responsive img-thumbnail h-97" [src]="'data:' + stock.image?.imageContentType + ';base64,' + stock.image?.image" alt="Card image cap"/>
+                            <img class="card-img-bottom img-responsive img-thumbnail h-97" src="{{stock.image?.imagePath}}" alt="Card image cap"/>
                     
                         </div>
                         <div class="card border border-secondary" style="max-width: 60%; max-height: 60%;">
@@ -27,7 +27,7 @@
                           </div>
                     <!--<div class="row">
                         <div class="w-50 p-3">
-                            <img class="img-responsive img-thumbnail" [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" alt="" />
+                            <img class="img-responsive img-thumbnail" src="{{stock.image?.imagePath}}" alt="" />
                         </div>
                         <div class="w-50 p-3 bg-secondary text-white">
                             <h2>{{stock.name}}</h2>
@@ -71,7 +71,7 @@
                 <dd>
                     <div *ngIf="stock.image">
                         <a (click)="openFile(stock.imageContentType, stock.image)">
-                            <img [src]="'data:' + stock.imageContentType + ';base64,' + stock.image" style="max-width: 100%;" alt="stock image"/>
+                            <img src="{{stock.image?.imagePath}}" style="max-width: 100%;" alt="stock image"/>
                         </a>
                         {{stock.imageContentType}}, {{byteSize(stock.image)}}
                     </div>

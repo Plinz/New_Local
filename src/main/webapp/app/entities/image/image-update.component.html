@@ -42,8 +42,11 @@
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="newLocalApp.image.image" for="field_image">Image</label>
                     <div>
-                        <img [src]="'data:' + image.imageContentType + ';base64,' + image.image" style="max-height: 100px;" *ngIf="image.image" alt="image image"/>
+                    	<div *ngIf="image.imagePath && !image.image">
+                    		<img src="{{image.imagePath}}" alt="">
+                    	</div>
                         <div *ngIf="image.image" class="form-text text-danger clearfix">
+	                        <img [src]="'data:' + image.imageContentType + ';base64,' + image.image" style="max-height: 100px;" *ngIf="image.image" alt="image image"/>
                             <span class="pull-left">{{image.imageContentType}}, {{byteSize(image.image)}}</span>
                             <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')" class="btn btn-secondary btn-xs pull-right">
                                 <fa-icon [icon]="'times'"></fa-icon>

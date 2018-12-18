@@ -136,17 +136,10 @@
                                                 <label class="form-control-label" jhiTranslate="newLocalApp.stock.image"
                                                        for="field_image">Image</label>
                                                 <div>
-                                                    <img
-                                                        [src]="'data:' + stock.image?.imageContentType + ';base64,' + stock.image?.image"
-                                                        style="max-height: 100px;" *ngIf="stock.image?.image"
-                                                        alt="stock image"/>
-                                                    <div *ngIf="stock.image?.image"
-                                                         class="form-text text-danger clearfix">
-                                                        <span class="pull-left">{{stock.image?.imageContentType}},
-                                                            {{byteSize(stock.image?.image)}}</span>
-                                                        <button type="button"
-                                                                (click)="clearInputImage('image', 'imageContentType', 'fileImage')"
-                                                                class="btn btn-secondary btn-xs pull-right">
+                                                    <img src="{{stock.image?.imagePath}}" style="max-height: 100px;" *ngIf="stock.image?.imagePath" alt="stock image" />
+                                                    <div *ngIf="stock.image?.imagePath" class="form-text text-danger clearfix">
+                                                        <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')"
+                                                            class="btn btn-secondary btn-xs pull-right">
                                                             <fa-icon [icon]="'times'"></fa-icon>
                                                         </button>
                                                     </div>

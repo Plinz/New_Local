@@ -395,6 +395,11 @@
 		    <artifactId>flying-saucer-pdf</artifactId>
 		    <version>9.1.16</version>
 		</dependency>
+		<dependency>
+		  <groupId>com.cloudinary</groupId>
+		  <artifactId>cloudinary</artifactId>
+		  <version>1.0.14</version>
+		</dependency>
         <!-- jhipster-needle-maven-add-dependency -->
     </dependencies>
 
