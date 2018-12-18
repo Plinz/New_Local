@@ -62,49 +62,53 @@
     </div>
 
     <div id="mainSidenav" [ngStyle]="{'marginLeft':bclik ? '250px' : '0px' }">
-        <span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
-
+    	<div>
+    		<div class="row" *ngIf="hasLocation() && (!isAuthenticated() || isLocationFromBase())">
+    			<span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
+	        </div>
+	        <div class="row" *ngIf="!hasLocation() && !isAuthenticated()">
+	        	<span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
+	            <p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les
+	                produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
+	                navigateur.
+	            </p>
+	            <button class="btn btn-info btn-sm mr-5 col-sm-1" (click)="askLocation()">
+	                <span class="d-none d-md-inline">Me géolocaliser</span>
+	            </button>
+	            <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et
+	                ensuite enregistrer votre localisation.</p>
+	            <button class="btn btn-info btn-sm ml-0 col-sm-1" (click)="login()">
+	                <span class="d-none d-md-inline">Connexion</span>
+	            </button>
+	            <button class="btn btn-info btn-sm mx-2 col-sm-1" routerLink="/register" routerLinkActive="active">
+	                <span class="d-none d-md-inline">Inscription</span>
+	            </button>
+	        </div>
+	
+	        <div class="row" *ngIf="!hasLocation() && isAuthenticated()">
+	        	<span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
+	            <p class="grey-text mb-0 col-sm-8 mt-2 ml-5">New Local a besoin de votre localisation pour vous proposez les
+	                produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
+	                navigateur.
+	            </p>
+	            <button class="btn btn-info btn-sm col-sm-1" (click)="askLocation()">
+	                <span class="d-none d-md-inline">Me géolocaliser</span>
+	            </button>
+	        </div>
+	
+	        <div class="row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase()">
+	        	<span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
+	            <p class="grey-text mb-0 col-sm-8 mt-2 ml-5">Voulez-vous utiliser votre localisation comme localisation
+	                principale
+	            </p>
+	            <button class="btn btn-info btn-sm col-sm-1" (click)="setLocationForUser()">
+	                <span class="d-none d-md-inline">Oui</span>
+	            </button>
+	        </div>
+		</div>
         <!-- Main du site-->
         <div>
             <!-- Localisation-->
-            <div>
-                <div class="mt-4 row" *ngIf="!hasLocation() && !isAuthenticated()">
-                    <p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les
-                        produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
-                        navigateur.
-                    </p>
-                    <button class="btn btn-info btn-sm mr-5 col-sm-1" (click)="askLocation()">
-                        <span class="d-none d-md-inline">Me géolocaliser</span>
-                    </button>
-                    <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et
-                        ensuite enregistrer votre localisation.</p>
-                    <button class="btn btn-info btn-sm ml-0 col-sm-1" (click)="login()">
-                        <span class="d-none d-md-inline">Connexion</span>
-                    </button>
-                    <button class="btn btn-info btn-sm mx-2 col-sm-1" routerLink="/register" routerLinkActive="active">
-                        <span class="d-none d-md-inline">Inscription</span>
-                    </button>
-                </div>
-
-                <div class="mt-4 row" *ngIf="!hasLocation() && isAuthenticated()">
-                    <p class="grey-text mb-0 col-sm-8">New Local a besoin de votre localisation pour vous proposez les
-                        produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
-                        navigateur.
-                    </p>
-                    <button class="btn btn-info btn-sm col-sm-1" (click)="askLocation()">
-                        <span class="d-none d-md-inline">Me géolocaliser</span>
-                    </button>
-                </div>
-
-                <div class="mt-4 row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase()">
-                    <p class="grey-text mb-0 col-sm-8">Voulez-vous utiliser votre localisation comme localisation
-                        principale
-                    </p>
-                    <button class="btn btn-info btn-sm col-sm-1" (click)="setLocationForUser()">
-                        <span class="d-none d-md-inline">Oui</span>
-                    </button>
-                </div>
-            </div>
 
             <!--Main-->
             <div>
