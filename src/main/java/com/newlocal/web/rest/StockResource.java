@@ -40,6 +40,8 @@ import com.newlocal.web.rest.util.PaginationUtil;
 
 import io.github.jhipster.web.util.ResponseUtil;
 import com.newlocal.service.dto.UserDTO;
+import com.newlocal.service.dto.HoldingDTO;
+import com.newlocal.service.dto.WarehouseDTO;
 
 /**
  * REST controller for managing Stock.
@@ -293,5 +295,19 @@ public class StockResource {
     public ResponseEntity<List<UserDTO>> allSeller() {
         List<UserDTO> user = stockService.allSeller();
         return new ResponseEntity<List<UserDTO>>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("/stocks/allwarehouse")
+    @Timed
+    public ResponseEntity<List<WarehouseDTO>> allWarehouse() {
+        List<WarehouseDTO> ware = stockService.allWarehouse();
+        return new ResponseEntity<List<WarehouseDTO>>(ware, HttpStatus.OK);
+    }
+
+    @GetMapping("/stocks/allholding")
+    @Timed
+    public ResponseEntity<List<HoldingDTO>> allHolding() {
+        List<HoldingDTO> hold = stockService.allHolding();
+        return new ResponseEntity<List<HoldingDTO>>(hold, HttpStatus.OK);
     }
 }

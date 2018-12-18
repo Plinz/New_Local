@@ -69,8 +69,4 @@ export class HoldingProfilDeletePopupComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.ngbModalRef = null;
     }
-
-    openFile(contentType, field) {
-        return this.dataUtils.openFile(contentType, field);
-    }
 }

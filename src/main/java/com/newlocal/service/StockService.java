@@ -20,11 +20,11 @@ import com.newlocal.repository.search.StockSearchRepository;
 import com.newlocal.service.dto.StockDTO;
 import com.newlocal.service.mapper.StockMapper;
 import com.newlocal.service.dto.UserDTO;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.List;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import java.util.ArrayList;
+
+import com.newlocal.service.dto.HoldingDTO;
+import com.newlocal.service.dto.WarehouseDTO;
 
 /**
  * Service Implementation for managing Stock.
@@ -163,12 +163,6 @@ public class StockService {
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public List<UserDTO> allSeller() {
-        return stockRepository.allSeller()
-        		.stream().map(UserDTO::new).collect(Collectors.toList());
-    }
-
     /** Filter **/
     //////////////
 
@@ -204,10 +198,10 @@ public class StockService {
 
         if (mesObjets != null) {
             for (Object[] obj : mesObjets) {
-                if(obj != null) {
+                if (obj != null) {
                     mesStats = new ArrayList<>();
                     for (int i = 0; i < obj.length; i++) {
-                        if (obj[i] != null){
+                        if (obj[i] != null) {
                             mesStats.add(obj[i].toString());
                         }
                     }
@@ -216,5 +210,22 @@ public class StockService {
         }
 
         return mesStats;
+    }
+
+    public List<UserDTO> allSeller() {
+        return stockRepository.allSeller()
+        		.stream().map(UserDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<WarehouseDTO> allWarehouse() {
+        return stockRepository.allWarehouse()
+        		.stream().map(WarehouseDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<HoldingDTO> allHolding() {
+        return stockRepository.allHolding()
+        		.stream().map(HoldingDTO::new).collect(Collectors.toList());
     }
 }

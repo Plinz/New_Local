@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 
 import com.newlocal.domain.Stock;
 import com.newlocal.domain.User;
+import com.newlocal.domain.Warehouse;
+import com.newlocal.domain.Holding;
 
 /**
  * Spring Data  repository for the Stock entity.
@@ -56,6 +58,12 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
 
     @Query("select distinct stock.seller from Stock stock")
     List<User> allSeller();
+
+    @Query("select distinct stock.holding from Stock stock")
+    List<Holding> allHolding();
+
+    @Query("select distinct stock.warehouse from Stock stock")
+    List<Warehouse> allWarehouse();
     
     @Query("select stock from Stock stock where (stock.productType.category.name=:cat and stock.seller.lastName=:seller and stock.priceUnit>=:min and stock.priceUnit<=:max )")
     List<Stock> filterCatSeller(@Param("cat") String cat,@Param("seller") String seller,@Param("min") Double min,@Param("max") Double max);
