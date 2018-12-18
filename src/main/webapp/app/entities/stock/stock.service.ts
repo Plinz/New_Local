@@ -122,9 +122,9 @@ export class StockService {
         return this.http.get<IHolding[]>(`${this.resourceUrl}/allholding`, { observe: 'response' });
     }
 
-    filter(params: HttpParams): Observable<EntityArrayResponseType> {
+    filter(p: HttpParams): Observable<EntityArrayResponseType> {
         return this.http
-            .get<IStock[]>(this.resourceUrl, { params, observe: 'response' })
+            .get<IStock[]>(this.resourceUrl, { params: p, observe: 'response' })
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 }
