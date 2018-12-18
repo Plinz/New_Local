@@ -1,15 +1,24 @@
+<br><br><br>
+<div class="row justify-content-center ">
+    <div class="card border border-secondary w-50 h-50" style="max-width: 30%; max-height: 50%;">
+            <div class="card-header">
+            <h4 class="card-title text-center">Ma localisation</h4></div>
+
 <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-    <h2>Ma localisation  ********* {{test}}      </h2>
-    <div>
+    <div *ngIf="newLocation">
     <jhi-alert-error></jhi-alert-error>
-    <div class="form-group" [hidden]="!newLocation.id">
-        <label for="id" jhiTranslate="global.field.id">ID</label>
-        <input type="text" class="form-control" id="id" name="id"
-        [(ngModel)]="newLocation.id" readonly />
+    <br>
+    <div class="form-row">
+            &nbsp;&nbsp;&nbsp;
+        <label class="col-sm-2 col-form-label" for="id" >Adresse</label>
+        <input type="text" class="form-control col-sm-8" id="id" name="id"
+        [(ngModel)]="newLocation.address"/>
     </div>
-    <div class="form-group">
-        <label class="form-control-label"  for="field_city">City</label>
-        <input type="text" [(ngModel)]="newLocation.city" class="form-control" name="city" id="field_city"
+    <br>
+    <div class="form-row">
+            &nbsp;&nbsp;&nbsp;
+        <label class="col-sm-2 col-form-label"  for="field_city">City</label>
+        <input type="text" [(ngModel)]="newLocation.city" class="form-control col-sm-6" name="city" id="field_city"
              minlength="1" maxlength="100"/>
         <div [hidden]="!(editForm.controls.city?.dirty && editForm.controls.city?.invalid)">
             <small class="form-text text-danger"
@@ -22,9 +31,11 @@
             </small>
         </div>
     </div>
-    <div class="form-group">
-        <label class="form-control-label" for="field_country">Country</label>
-        <input type="text" class="form-control" name="country" id="field_country"
+    <br>
+    <div class="form-row">
+        &nbsp;&nbsp;&nbsp;
+        <label class="col-sm-2 col-form-label" for="field_country">Country</label>
+        <input type="text" class="form-control col-sm-4" name="country" id="field_country"
         [(ngModel)]="newLocation.country" minlength="1" maxlength="100"/>
         <div [hidden]="!(editForm.controls.country?.dirty && editForm.controls.country?.invalid)">
             <small class="form-text text-danger"
@@ -37,9 +48,11 @@
             </small>
         </div>
     </div>
-    <div class="form-group">
-        <label class="form-control-label" for="field_zip">Zip</label>
-        <input type="text" class="form-control" name="zip" id="field_zip"
+    <br>
+    <div class="form-row">
+            &nbsp;&nbsp;&nbsp;
+        <label class="col-sm-2 col-form-label" for="field_zip">Zip</label>
+        <input type="text" class="form-control col-sm-2" name="zip" id="field_zip"
         [(ngModel)]="newLocation.zip" required minlength="1" maxlength="30"/>
         <div [hidden]="!(editForm.controls.zip?.dirty && editForm.controls.zip?.invalid)">
             <small class="form-text text-danger"
@@ -56,13 +69,20 @@
             </small>
         </div>
     </div>
-<div>
+    <br>
+<div class="row justify-content-center ">
     <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
         <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
     </button>
+    &nbsp; &nbsp;
     <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
         <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
     </button>
+    <br>
 </div>
+<br>
 </div>
+<br>
 </form>
+</div>
+</div>

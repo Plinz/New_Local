@@ -43,7 +43,6 @@ export class UserLocationComponent implements OnInit, OnDestroy {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.isSaving = true;
     }
 
     save() {
