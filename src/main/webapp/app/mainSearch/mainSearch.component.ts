@@ -19,6 +19,9 @@ import { LocationService } from '../entities/location';
 import { NavbarService } from '../layouts/navbar/navbar.service';
 import { CartService } from '../entities/cart/cart.service';
 import { UserService } from '../core/user/user.service';
+import { HttpParams } from '@angular/common/http';
+import { IWarehouse } from 'app/shared/model/warehouse.model';
+import { IHolding } from 'app/shared/model/holding.model';
 
 @Component({
     selector: 'jhi-stock',
@@ -46,12 +49,15 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     categories: ICategory[];
     optioncat: string;
     qtbuy: number;
-    filterOptionCat: string;
-    filterOptionSeller: string;
     bclik: boolean;
     prixMini: number;
     prixMax: number;
     seller: IUser[];
+    warehouses: IWarehouse[];
+    holdings: IHolding[];
+    listCat: any[];
+    filterOptionWare: string;
+    filterOptionHold: string;
 
     constructor(
         private stockService: StockService,
@@ -76,11 +82,9 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.cat = null;
         this.qtbuy = 1;
-        this.filterOptionCat = '';
-        this.filterOptionSeller = '';
+        this.filterOptionHold = 'null';
+        this.filterOptionWare = 'null';
         this.optioncat = 'Catégorie';
-        this.filterOptionCat = 'null';
-        this.filterOptionSeller = 'null';
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
@@ -252,6 +256,24 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         );
     }
 
+    loadStockWarehouse() {
+        this.stockService.allWarehouse().subscribe(
+            (res: HttpResponse<IWarehouse[]>) => {
+                this.warehouses = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    loadStockHolding() {
+        this.stockService.allHolding().subscribe(
+            (res: HttpResponse<IHolding[]>) => {
+                this.holdings = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
@@ -304,6 +326,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         if (this.cat == null) {
             this.loadAll();
         }
+        this.loadStockWarehouse();
+        this.loadStockHolding();
 
         this.principal.identity().then(account => {
             this.currentAccount = account;
@@ -435,29 +459,49 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.bclik = false;
     }
 
+    copieCat() {
+        const a: any[] = [];
+        for (const j of this.categories) {
+            a.push({ id: j.id, bol: false });
+        }
+        this.listCat = a;
+    }
+
+    checkboxCat(i: number) {
+        this.listCat[i].bol = !this.listCat[i].bol;
+    }
+
     filter() {
-        // Récuperer tout les critéres
-        this.stockService.filterMainsearch(this.filterOptionCat, this.filterOptionSeller, this.prixMini, this.prixMax).subscribe(
+        const params = new HttpParams();
+        params.set('page', '0').set('pageSize', '20');
+        params.set('priceUnit.lessOrEqualThan', '${this.prixMax}').set('priceUnit.greaterOrEqualThan', '${this.prixMini}');
+
+        params.set('categoryName.contains', 'Fruit');
+        params.set('warehouseId.equals', '56');
+        params.set('productTypeId.equals', '1');
+
+        this.stockService.filter(params).subscribe(
             (res: HttpResponse<IStock[]>) => {
                 this.stocks = res.body;
+                alert('ok');
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
     }
 
-    onChangeCat(deviceValue: string) {
+    onChangeWare(deviceValue: string) {
         if (deviceValue === 'Tout') {
-            this.filterOptionCat = 'null';
+            this.filterOptionWare = 'null';
         } else {
-            this.filterOptionCat = deviceValue;
+            this.filterOptionWare = deviceValue;
         }
     }
 
-    onChangeSeller(deviceValue: string) {
+    onChangeHold(deviceValue: string) {
         if (deviceValue === 'Tout') {
-            this.filterOptionSeller = 'null';
+            this.filterOptionHold = 'null';
         } else {
-            this.filterOptionSeller = deviceValue;
+            this.filterOptionHold = deviceValue;
         }
     }
 }

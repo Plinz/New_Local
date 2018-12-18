@@ -150,6 +150,10 @@ public class StockQueryService extends QueryService<Stock> {
                 specification = specification.and(buildSpecification(criteria.getWarehouseId(),
                     root -> root.join(Stock_.warehouse, JoinType.LEFT).get(Warehouse_.id)));
             }
+            if (criteria.getWarehouseName() != null) {
+                specification = specification.and(buildSpecification(criteria.getWarehouseName(),
+                    root -> root.join(Stock_.warehouse, JoinType.LEFT).get(Warehouse_.name)));
+            }
         }
         return specification;
     }

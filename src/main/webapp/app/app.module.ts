@@ -26,7 +26,7 @@ import { NewLocalShoppingModule } from './shopping/shopping.module';
 import { NewLocalReviewModule } from './review/review.module';
 import { ChartsModule } from 'ng2-charts';
 import { NewLocalProfilHoldingModule } from './holdingProfil/holdingProfil.module';
-
+import { NewLocalUserLocationModule } from './userLocation/userLocation.module';
 @NgModule({
     imports: [
         BrowserModule,
@@ -43,7 +43,8 @@ import { NewLocalProfilHoldingModule } from './holdingProfil/holdingProfil.modul
         NewLocalShoppingModule,
         NewLocalReviewModule,
         NewLocalProfilHoldingModule,
-        ChartsModule
+        ChartsModule,
+        NewLocalUserLocationModule
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
     providers: [

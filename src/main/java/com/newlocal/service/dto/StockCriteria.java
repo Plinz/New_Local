@@ -57,6 +57,16 @@ public class StockCriteria implements Serializable {
     
     private StringFilter holdingName;
 
+    private StringFilter warehouseName;
+
+    public StringFilter getWarehouseName() {
+		return warehouseName;
+	}
+
+	public void setWarehouseName(StringFilter warehouseName) {
+		this.warehouseName = warehouseName;
+    }
+    
     public StringFilter getHoldingName() {
 		return holdingName;
 	}
@@ -221,7 +231,10 @@ public class StockCriteria implements Serializable {
             Objects.equals(productTypeId, that.productTypeId) &&
             Objects.equals(holdingId, that.holdingId) &&
             Objects.equals(sellerId, that.sellerId) &&
-            Objects.equals(warehouseId, that.warehouseId);
+            Objects.equals(warehouseId, that.warehouseId) &&
+            Objects.equals(categoryName, that.categoryName) &&
+            Objects.equals(holdingName, that.holdingName) &&
+            Objects.equals(warehouseName, that.warehouseName);
     }
 
     @Override
@@ -241,7 +254,10 @@ public class StockCriteria implements Serializable {
         productTypeId,
         holdingId,
         sellerId,
-        warehouseId
+        warehouseId,
+        categoryName,
+        holdingName,
+        warehouseName
         );
     }
 
@@ -263,6 +279,9 @@ public class StockCriteria implements Serializable {
                 (holdingId != null ? "holdingId=" + holdingId + ", " : "") +
                 (sellerId != null ? "sellerId=" + sellerId + ", " : "") +
                 (warehouseId != null ? "warehouseId=" + warehouseId + ", " : "") +
+                (categoryName != null ? "categoryName=" + categoryName + ", " : "") +
+                (holdingName != null ? "holdingName=" + holdingName + ", " : "") +
+                (warehouseName != null ? "warehouseName=" + warehouseName + ", " : "") +
             "}";
     }
 
