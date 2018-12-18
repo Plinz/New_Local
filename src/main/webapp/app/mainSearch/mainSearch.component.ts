@@ -22,6 +22,8 @@ import { UserService } from '../core/user/user.service';
 import { HttpParams } from '@angular/common/http';
 import { IWarehouse } from '../shared/model/warehouse.model';
 import { IHolding } from '../shared/model/holding.model';
+import { IProductType } from '../shared/model/product-type.model';
+import { ProductTypeService } from '../entities/product-type/product-type.service';
 
 @Component({
     selector: 'jhi-stock',
@@ -47,6 +49,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     cat: string;
     modalRef: NgbModalRef;
     categories: ICategory[];
+    products: IProductType[];
     optioncat: string;
     qtbuy: number;
     bclik: boolean;
@@ -56,6 +59,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     warehouses: IWarehouse[];
     holdings: IHolding[];
     listCat: any[];
+    listProd: any[];
     filterOptionWare: number;
     filterOptionHold: number;
     filterSearch: string;
@@ -76,7 +80,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         private loginModalService: LoginModalService,
         private navbarService: NavbarService,
         private cartService: CartService,
-        private userService: UserService
+        private userService: UserService,
+        private productTypeService: ProductTypeService
     ) {
         this.pageSize = 20;
         this.prixMini = 1;
@@ -345,6 +350,13 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+        // Mise à jour des produits
+        this.productTypeService.query().subscribe(
+            (res: HttpResponse<IProductType[]>) => {
+                this.products = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
         // Mise à jour des Vendeurs
         this.stockService.allSeller().subscribe(
             (res: HttpResponse<IUser[]>) => {
@@ -460,7 +472,6 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.prixMini = 0;
         this.prixMax = 10;
         this.filterSearch = '';
-        this.copieCat();
         this.filterOptionWare = -1;
         this.filterOptionHold = -1;
     }
@@ -470,7 +481,6 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.prixMini = 0;
         this.prixMax = 10;
         this.filterSearch = '';
-        this.copieCat();
         this.filterOptionWare = -1;
         this.filterOptionHold = -1;
     }
@@ -485,6 +495,10 @@ export class MainSearchComponent implements OnInit, OnDestroy {
 
     checkboxCat(i: number) {
         this.listCat[i].bol = !this.listCat[i].bol;
+    }
+
+    checkboxProd(i: number) {
+        this.listProd[i].bol = !this.listProd[i].bol;
     }
 
     filter() {

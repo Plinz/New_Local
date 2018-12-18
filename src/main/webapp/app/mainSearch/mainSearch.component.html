@@ -6,18 +6,27 @@
         <a class="closebtn" (click)="closeNav()">&times;</a>
 
         <ngb-accordion [closeOthers]="true" activeIds="static-1">
-            <!-- Catégorie-->
+            <!-- Catégorie -->
             <ngb-panel id="static-1">
-                <ng-template ngbPanelTitle><span>&#9733; <b>Catégorie</b>&#9733;</span></ng-template>
+                <ng-template ngbPanelTitle><span><b>Catégories</b></span></ng-template>
                 <ng-template ngbPanelContent>
                     <div *ngFor="let c of categories;let i=index">
                         <input type="checkbox" (click)="checkboxCat(i)">{{c.name}}<br>
                     </div>
                 </ng-template>
             </ngb-panel>
-            <!-- Entrepot-->
+            <!-- Type Produit -->
+            <ngb-panel id="static-1">
+                <ng-template ngbPanelTitle><span><b>Produits</b></span></ng-template>
+                <ng-template ngbPanelContent>
+                    <div *ngFor="let p of products;let i=index">
+                        <input type="checkbox" (click)="checkboxProd(i)">{{p.name}}<br>
+                    </div>
+                </ng-template>
+            </ngb-panel>
+            <!-- Entrepot -->
             <ngb-panel>
-                <ng-template ngbPanelTitle><span>&#9733; <b>Entrepot</b>&#9733;</span></ng-template>
+                <ng-template ngbPanelTitle><span><b>Entrepots</b></span></ng-template>
                 <ng-template ngbPanelContent>
                     <select class="custom-select-sm form-control form-control-sm" (change)="onChangeWare($event.target.value)">
                         <option value="" disabled selected>Entrepot</option>
@@ -26,9 +35,9 @@
                     </select>
                 </ng-template>
             </ngb-panel>
-            <!-- Explotation-->
+            <!-- Explotation -->
             <ngb-panel>
-                <ng-template ngbPanelTitle><span>&#9733; <b>Explotation</b>&#9733;</span></ng-template>
+                <ng-template ngbPanelTitle><span><b>Exploitations</b></span></ng-template>
                 <ng-template ngbPanelContent>
                     <select class="custom-select-sm form-control form-control-sm" (change)="onChangeHold($event.target.value)">
                         <option value="" disabled selected>Explotation</option>
