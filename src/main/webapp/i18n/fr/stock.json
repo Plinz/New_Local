@@ -1,7 +1,6 @@
-
 {
     "newLocalApp": {
-        "stock" : {
+        "stock": {
             "home": {
                 "title": "Mes stocks de produits",
                 "createLabel": "Vendre un nouveau stock",
@@ -39,7 +38,14 @@
             "qvendu": "Quantité vendu",
             "qtotal": "Quantité total",
             "vente": "Vente en cours",
-            "return":"Retour stock"
+            "return": "Retour stock",
+            "productTypeCurrentUser": "Mes types de produits",
+            "productTypeExisting": "Types de produits existant sur le site",
+            "productTypeNonExisting": "Mon type de produit n'existe pas encore sur le site",
+            "avgPriceUnit": "Prix de vente moyen",
+            "medianPriceUnit": "Prix de vente médian",
+            "minPriceUnit": "Prix de vente le plus bas",
+            "maxPriceUnit": "Prix de vente le plus haut"
         }
     }
 }

@@ -2,12 +2,16 @@ package com.newlocal.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 import javax.validation.Valid;
 
+import com.sun.net.httpserver.HttpsParameters;
+import org.apache.http.HttpResponse;
+import org.apache.http.params.HttpParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -210,7 +214,6 @@ public class StockResource {
         log.debug("REST request to search a new stock");
         StockDTO stockNew = stockService.getNewStock().get(0);
         return ResponseEntity.ok().body(stockNew);
-
     }
 
     /**
@@ -238,6 +241,20 @@ public class StockResource {
         List<StockDTO> gradeList = stockService.getBestGrade();
         StockDTO stockGrade = gradeList.get((new Random()).nextInt(gradeList.size()));
         return ResponseEntity.ok().body(stockGrade);
+    }
+
+    @GetMapping("/stocks/stats")
+    @Timed
+    public ResponseEntity<List<String>> getStatsStock(@RequestParam("productTypeId") Long productTypeId, @RequestParam("bio") Boolean bio) {
+        List<String> stats = stockService.getStatsStock(productTypeId, bio);
+
+        if(stats != null) {
+            for (int i = 0; i < stats.size(); i++) {
+                System.out.println(stats.get(i));
+            }
+        }
+
+        return ResponseEntity.ok(stats);
     }
 
     @GetMapping("/stocks/currentuser")
