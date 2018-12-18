@@ -47,7 +47,8 @@
                                                     name="productTypesCurrentUser"
                                                     (change)="onChangeProductTypeCurrentUser($event.target.value)">
                                                 <option selected hidden>Sélectionner un type...</option>
-                                                <option *ngFor="let p of productTypesCurrentUser; let i = index" value="{{i}}">
+                                                <option *ngFor="let p of productTypesCurrentUser; let i = index"
+                                                        value="{{i}}">
                                                     {{p.name}}
                                                 </option>
                                             </select>
@@ -55,7 +56,8 @@
                                                     name="productTypesExisting"
                                                     (change)="onChangeProductTypeExisting($event.target.value)">
                                                 <option selected hidden>Sélectionner un type...</option>
-                                                <option *ngFor="let p of productTypesExisting; let i = index" value="{{i}}">
+                                                <option *ngFor="let p of productTypesExisting; let i = index"
+                                                        value="{{i}}">
                                                     {{p.name}}
                                                 </option>
                                             </select>
@@ -64,6 +66,21 @@
                                                    placeholder="Saisir le nouveau type"
                                                    [(ngModel)]="productTypeNotExisting.name"/>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6">
+                                        <!-- Nothing -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select *ngIf="productTypeSelectionMethod == 2" class="form-control"
+                                                name="category"
+                                                (change)="onChangeCategory($event.target.value)">
+                                            <option selected hidden>Sélectionner une catégorie...</option>
+                                            <option *ngFor="let c of categories; let i = index" value="{{i}}">
+                                                {{c.name}}
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
                                 <label class="form-control-label" jhiTranslate="newLocalApp.stock.bio"
@@ -157,12 +174,10 @@
                                                        jhiTranslate="newLocalApp.stock.holding"
                                                        for="field_holding">Holding</label>
                                                 <select class="form-control" id="field_holding" name="holding"
-                                                        [(ngModel)]="stock.holding">
-                                                    <option [ngValue]="null"></option>
-                                                    <option
-                                                        [ngValue]="holdingOption.id === stock.holding?.id ? stock.holding : holdingOption"
-                                                        *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">
-                                                        {{holdingOption.name}}
+                                                        (change)="onChangeHolding($event.target.value)">
+                                                    <option selected hidden>Sélectionner une exploitation...</option>
+                                                    <option *ngFor="let h of holdings; let i = index" value="{{i}}">
+                                                        {{h.name}}
                                                     </option>
                                                 </select>
                                             </div>
