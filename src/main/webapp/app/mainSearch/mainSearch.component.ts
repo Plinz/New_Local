@@ -20,8 +20,8 @@ import { NavbarService } from '../layouts/navbar/navbar.service';
 import { CartService } from '../entities/cart/cart.service';
 import { UserService } from '../core/user/user.service';
 import { HttpParams } from '@angular/common/http';
-import { IWarehouse } from 'app/shared/model/warehouse.model';
-import { IHolding } from 'app/shared/model/holding.model';
+import { IWarehouse } from '../shared/model/warehouse.model';
+import { IHolding } from '../shared/model/holding.model';
 
 @Component({
     selector: 'jhi-stock',
@@ -56,8 +56,10 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     warehouses: IWarehouse[];
     holdings: IHolding[];
     listCat: any[];
-    filterOptionWare: string;
-    filterOptionHold: string;
+    filterOptionWare: number;
+    filterOptionHold: number;
+    filterSearch: string;
+    pageSize: number;
 
     constructor(
         private stockService: StockService,
@@ -76,14 +78,16 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         private cartService: CartService,
         private userService: UserService
     ) {
+        this.pageSize = 20;
         this.prixMini = 1;
         this.prixMax = 9;
+        this.filterSearch = '';
         this.bclik = false;
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.cat = null;
         this.qtbuy = 1;
-        this.filterOptionHold = 'null';
-        this.filterOptionWare = 'null';
+        this.filterOptionHold = -1;
+        this.filterOptionWare = -1;
         this.optioncat = 'Catégorie';
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.page = data.pagingParams.page;
@@ -453,16 +457,28 @@ export class MainSearchComponent implements OnInit, OnDestroy {
 
     openNav() {
         this.bclik = !this.bclik;
+        this.prixMini = 0;
+        this.prixMax = 10;
+        this.filterSearch = '';
+        this.copieCat();
+        this.filterOptionWare = -1;
+        this.filterOptionHold = -1;
     }
 
     closeNav() {
         this.bclik = false;
+        this.prixMini = 0;
+        this.prixMax = 10;
+        this.filterSearch = '';
+        this.copieCat();
+        this.filterOptionWare = -1;
+        this.filterOptionHold = -1;
     }
 
     copieCat() {
         const a: any[] = [];
         for (const j of this.categories) {
-            a.push({ id: j.id, bol: false });
+            a.push({ name: j.name, bol: false });
         }
         this.listCat = a;
     }
@@ -472,36 +488,46 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     }
 
     filter() {
-        const params = new HttpParams();
-        params.set('page', '0').set('pageSize', '20');
-        params.set('priceUnit.lessOrEqualThan', '${this.prixMax}').set('priceUnit.greaterOrEqualThan', '${this.prixMini}');
+        let params = new HttpParams();
+        params = params.set('page', `${this.page - 1}`).set('size', `${this.pageSize}`);
+        params = params.set('priceUnit.lessOrEqualThan', `${this.prixMax}`);
+        params = params.set('priceUnit.greaterOrEqualThan', `${this.prixMini}`);
 
-        params.set('categoryName.contains', 'Fruit');
-        params.set('warehouseId.equals', '56');
-        params.set('productTypeId.equals', '1');
+        if (this.filterOptionWare !== -1) {
+            params = params.set('warehouseId.equals', `${this.filterOptionWare}`);
+        }
+        if (this.filterOptionHold !== -1) {
+            params = params.set('holdingId.equals', `${this.filterOptionHold}`);
+        }
+        if (this.filterSearch !== '') {
+            params = params.set('name.contains', this.filterSearch);
+        }
+
+        const tabCat: string[] = [];
+        for (const i of this.listCat) {
+            if (i.bol === true) {
+                tabCat.push(i.name);
+            }
+        }
+        if (tabCat != null && tabCat.length > 0) {
+            params = params.append('categoryName.in', tabCat.join(', '));
+        }
 
         this.stockService.filter(params).subscribe(
             (res: HttpResponse<IStock[]>) => {
                 this.stocks = res.body;
-                alert('ok');
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
     }
 
     onChangeWare(deviceValue: string) {
-        if (deviceValue === 'Tout') {
-            this.filterOptionWare = 'null';
-        } else {
-            this.filterOptionWare = deviceValue;
-        }
+        const tmp: number = +deviceValue;
+        this.filterOptionWare = tmp;
     }
 
     onChangeHold(deviceValue: string) {
-        if (deviceValue === 'Tout') {
-            this.filterOptionHold = 'null';
-        } else {
-            this.filterOptionHold = deviceValue;
-        }
+        const tmp: number = +deviceValue;
+        this.filterOptionHold = tmp;
     }
 }
