@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.newlocal.domain.ProductType;
 import com.newlocal.service.ProductTypeQueryService;
 import com.newlocal.service.ProductTypeService;
 import com.newlocal.service.dto.ProductTypeCriteria;
@@ -138,6 +139,19 @@ public class ProductTypeResource {
         log.debug("REST request to get ProductType : {}", id);
         Optional<ProductTypeDTO> productTypeDTO = productTypeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(productTypeDTO);
+    }
+
+    /**
+     * GET /product-types/currentUser : get the current user product-types
+     *
+     * @return the ResponseEntity with status 200 (OK) and with body the product-types, or with status 404 (Not Found)
+     */
+    @GetMapping("/product-types/currentUser")
+    @Timed
+    public ResponseEntity<List<ProductTypeDTO>> getProductTypesByCurrentUser(){
+        log.debug("REST request to get ProductTypes of the current user : {}");
+        List<ProductTypeDTO> productTypes = productTypeService.findByCurrentUser();
+        return ResponseEntity.ok().body(productTypes);
     }
 
     /**

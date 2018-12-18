@@ -21,6 +21,11 @@ import com.newlocal.service.dto.StockDTO;
 import com.newlocal.service.mapper.StockMapper;
 import com.newlocal.service.dto.UserDTO;
 
+import java.util.ArrayList;
+
+import com.newlocal.service.dto.HoldingDTO;
+import com.newlocal.service.dto.WarehouseDTO;
+
 /**
  * Service Implementation for managing Stock.
  */
@@ -97,7 +102,7 @@ public class StockService {
     /**
      * Search for the stock corresponding to the query.
      *
-     * @param query the query of the search
+     * @param query    the query of the search
      * @param pageable the pagination information
      * @return the list of entities
      */
@@ -109,7 +114,6 @@ public class StockService {
 
     /**
      * Search for the stock bio
-     *
      */
     @Transactional(readOnly = true)
     public List<StockDTO> getProductBio() {
@@ -119,9 +123,7 @@ public class StockService {
 
     /**
      * Search last new stock
-     *
      */
-
     @Transactional(readOnly = true)
     public List<StockDTO> getNewStock() {
         log.debug("Request to search a new stock {}");
@@ -131,9 +133,7 @@ public class StockService {
 
     /**
      * Search the best purchase
-     *
      */
-
     @Transactional(readOnly = true)
     public List<StockDTO> getBestPurchase() {
         log.debug("Request to search the best purchase {}");
@@ -143,9 +143,7 @@ public class StockService {
 
     /**
      * Search the best grade
-     *
      */
-
     @Transactional(readOnly = true)
     public List<StockDTO> getBestGrade() {
         log.debug("Request to search the best grade {}");
@@ -163,12 +161,6 @@ public class StockService {
     public List<StockDTO> getStockCat(String name) {
         return stockRepository.getStockCat(name)
         		.stream().map(StockDTO::new).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserDTO> allSeller() {
-        return stockRepository.allSeller()
-        		.stream().map(UserDTO::new).collect(Collectors.toList());
     }
 
     /** Filter **/
@@ -195,5 +187,45 @@ public class StockService {
     public List<StockDTO> filterPrice(Double min, Double max) {
         return stockRepository.filterPrice(min, max)
         		.stream().map(StockDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getStatsStock(Long productTypeId, Boolean bio) {
+        List<String> mesStats = null;
+
+        log.debug("Request to get the stats on the productType of the stock {}");
+        List<Object[]> mesObjets = stockRepository.getStatsStock(productTypeId, bio);
+
+        if (mesObjets != null) {
+            for (Object[] obj : mesObjets) {
+                if (obj != null) {
+                    mesStats = new ArrayList<>();
+                    for (int i = 0; i < obj.length; i++) {
+                        if (obj[i] != null) {
+                            mesStats.add(obj[i].toString());
+                        }
+                    }
+                }
+            }
+        }
+
+        return mesStats;
+    }
+
+    public List<UserDTO> allSeller() {
+        return stockRepository.allSeller()
+        		.stream().map(UserDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<WarehouseDTO> allWarehouse() {
+        return stockRepository.allWarehouse()
+        		.stream().map(WarehouseDTO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<HoldingDTO> allHolding() {
+        return stockRepository.allHolding()
+        		.stream().map(HoldingDTO::new).collect(Collectors.toList());
     }
 }

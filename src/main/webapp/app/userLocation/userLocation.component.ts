@@ -13,7 +13,7 @@ import { LocationService } from 'app/entities/location/location.service';
 import { isModuleDeclaration } from 'typescript';
 
 @Component({
-    selector: 'jhi-userLocation',
+    selector: 'jhi-userlocation',
     templateUrl: './userLocation.component.html'
 })
 export class UserLocationComponent implements OnInit, OnDestroy {
@@ -43,7 +43,6 @@ export class UserLocationComponent implements OnInit, OnDestroy {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.isSaving = true;
     }
 
     save() {

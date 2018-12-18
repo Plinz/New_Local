@@ -11,14 +11,10 @@
                                           <strong>{{holding.name}}</strong>
                                          </h4>
                                         </div>
-                                  <!--  <img class="card-img-bottom img-responsive img-thumbnail h-97" [src]="'data:' + holding.image?.imageContentType + ';base64,' + holding.image?.image" alt="Card image cap"/>-->
-                            
+                                    <!-- <img class="card-img-bottom img-responsive img-thumbnail h-97" src="{{holding.image.imagePath}}" alt="Card image cap"/> -->
 
                                     <div *ngIf="holding.image">
-                                            <a (click)="openFile(holding.image?.imageContentType, holding.image?.image)">
-                                                <img [src]="'data:' + holding.image?.imageContentType + ';base64,' + holding.image?.image" style="max-width: 100%;" alt="Card image cap"/>
-                                            </a>
-                                            {{holding.image?.imageContentType}},{{byteSize(holding.image?.image)}}
+                                            <img src="{{holding.image.imagePath}}" style="max-width: 100%;" alt="Card image cap"/>
                                         </div>
 
 

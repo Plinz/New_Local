@@ -30,7 +30,10 @@
             "holding": "Holding",
             "seller": "Seller",
             "warehouse": "Warehouse",
-            "image": "Image"
+            "image": "Image",
+            "productTypeCurrentUser":"My products",
+            "productTypeExisting":"Existing products on the website",
+            "productTypeNonExisting":"Not existing product type on the website"
         }
     }
 }

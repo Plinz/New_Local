@@ -47,6 +47,7 @@ export class NavbarComponent implements OnInit {
 
     search(currentSearch) {
         this.router.navigate(['/mainSearch'], { queryParams: { search: currentSearch } });
+        this.currentSearch = '';
     }
 
     ngOnInit() {

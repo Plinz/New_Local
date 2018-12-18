@@ -2,12 +2,16 @@ package com.newlocal.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 import javax.validation.Valid;
 
+import com.sun.net.httpserver.HttpsParameters;
+import org.apache.http.HttpResponse;
+import org.apache.http.params.HttpParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -36,6 +40,8 @@ import com.newlocal.web.rest.util.PaginationUtil;
 
 import io.github.jhipster.web.util.ResponseUtil;
 import com.newlocal.service.dto.UserDTO;
+import com.newlocal.service.dto.HoldingDTO;
+import com.newlocal.service.dto.WarehouseDTO;
 
 /**
  * REST controller for managing Stock.
@@ -208,7 +214,6 @@ public class StockResource {
         log.debug("REST request to search a new stock");
         StockDTO stockNew = stockService.getNewStock().get(0);
         return ResponseEntity.ok().body(stockNew);
-
     }
 
     /**
@@ -236,6 +241,20 @@ public class StockResource {
         List<StockDTO> gradeList = stockService.getBestGrade();
         StockDTO stockGrade = gradeList.get((new Random()).nextInt(gradeList.size()));
         return ResponseEntity.ok().body(stockGrade);
+    }
+
+    @GetMapping("/stocks/stats")
+    @Timed
+    public ResponseEntity<List<String>> getStatsStock(@RequestParam("productTypeId") Long productTypeId, @RequestParam("bio") Boolean bio) {
+        List<String> stats = stockService.getStatsStock(productTypeId, bio);
+
+        if(stats != null) {
+            for (int i = 0; i < stats.size(); i++) {
+                System.out.println(stats.get(i));
+            }
+        }
+
+        return ResponseEntity.ok(stats);
     }
 
     @GetMapping("/stocks/currentuser")
@@ -276,5 +295,19 @@ public class StockResource {
     public ResponseEntity<List<UserDTO>> allSeller() {
         List<UserDTO> user = stockService.allSeller();
         return new ResponseEntity<List<UserDTO>>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("/stocks/allwarehouse")
+    @Timed
+    public ResponseEntity<List<WarehouseDTO>> allWarehouse() {
+        List<WarehouseDTO> ware = stockService.allWarehouse();
+        return new ResponseEntity<List<WarehouseDTO>>(ware, HttpStatus.OK);
+    }
+
+    @GetMapping("/stocks/allholding")
+    @Timed
+    public ResponseEntity<List<HoldingDTO>> allHolding() {
+        List<HoldingDTO> hold = stockService.allHolding();
+        return new ResponseEntity<List<HoldingDTO>>(hold, HttpStatus.OK);
     }
 }

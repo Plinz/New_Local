@@ -39,8 +39,7 @@
                                     <div class="row">
                                         <div class="col-sm-2 hidden-xs">
                                             <a *ngIf="cart.stock.image.image" (click)="openFile(cart.stock.image.imageContentType, cart.stock.image.image)">
-                                                <img [src]="'data:' + cart.stock.image.imageContentType + ';base64,' + cart.stock.image.image"
-                                                    style="max-height: 30px;" alt="image image" />
+                                                <img src="{{cart.stock.image.imagePath}}" style="max-height: 30px;" alt="image image" />
                                             </a>
                                         </div>
                                         <div class="col-sm-10">
@@ -202,8 +201,7 @@
                             <div class="row">
                                 <div class="col-sm-2 hidden-xs">
                                     <a *ngIf="pur.stock.image.image" (click)="openFile(pur.stock.image.imageContentType, pur.stock.image.image)">
-                                        <img [src]="'data:' + pur.stock.image.imageContentType + ';base64,' + pur.stock.image.image"
-                                            style="max-height: 30px;" alt="image image" />
+                                        <img src="{{pur.stock.image?.imagePath}}" style="max-height: 30px;" alt="image image" />
                                     </a>
                                 </div>
                                 <div class="col-sm-10">

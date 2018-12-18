@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
-import { DATE_FORMAT } from 'app/shared/constants/input.constants';
 import { map } from 'rxjs/operators';
-
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IStock } from 'app/shared/model/stock.model';
 import { IUser } from '../../core/user/user.model';
+import { IWarehouse } from 'app/shared/model/warehouse.model';
+import { IHolding } from 'app/shared/model/holding.model';
 
 type EntityResponseType = HttpResponse<IStock>;
 type EntityArrayResponseType = HttpResponse<IStock[]>;
@@ -96,6 +96,10 @@ export class StockService {
         return this.http.get<IStock>(`${this.resourceUrl}/grade`, { observe: 'response' });
     }
 
+    statsStock(parameters: HttpParams): Observable<HttpResponse<string[]>> {
+        return this.http.get<string[]>(`${this.resourceUrl}/stats`, { params: parameters, observe: 'response' });
+    }
+
     findBySellerIsCurrentUser(): Observable<EntityArrayResponseType> {
         return this.http
             .get<IStock[]>(`${this.resourceUrl}/currentuser`, { observe: 'response' })
@@ -112,9 +116,17 @@ export class StockService {
         return this.http.get<IUser[]>(`${this.resourceUrl}/allseller`, { observe: 'response' });
     }
 
-    filterMainsearch(cat: string, seller: string, min: number, max: number): Observable<EntityArrayResponseType> {
+    allWarehouse(): Observable<EntityArrayResponseType> {
+        return this.http.get<IWarehouse[]>(`${this.resourceUrl}/allwarehouse`, { observe: 'response' });
+    }
+
+    allHolding(): Observable<EntityArrayResponseType> {
+        return this.http.get<IHolding[]>(`${this.resourceUrl}/allholding`, { observe: 'response' });
+    }
+
+    filter(p: HttpParams): Observable<EntityArrayResponseType> {
         return this.http
-            .get<IStock[]>(`${this.resourceUrl}/filter/${cat}/${seller}/${min}/${max}`, { observe: 'response' })
+            .get<IStock[]>(this.resourceUrl, { params: p, observe: 'response' })
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 }

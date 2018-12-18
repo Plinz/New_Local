@@ -19,7 +19,8 @@
             },
             "name": "Name",
             "description": "Description",
-            "imagePath": "Image Path"
+            "imagePath": "Image Path",
+            "image": "Image"
         }
     }
 }

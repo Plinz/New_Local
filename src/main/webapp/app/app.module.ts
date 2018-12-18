@@ -27,6 +27,9 @@ import { NewLocalReviewModule } from './review/review.module';
 import { ChartsModule } from 'ng2-charts';
 import { NewLocalProfilHoldingModule } from './holdingProfil/holdingProfil.module';
 import { NewLocalUserLocationModule } from './userLocation/userLocation.module';
+import { CloudinaryModule } from '@cloudinary/angular-5.x';
+import * as Cloudinary from 'cloudinary-core';
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -44,7 +47,8 @@ import { NewLocalUserLocationModule } from './userLocation/userLocation.module';
         NewLocalReviewModule,
         NewLocalProfilHoldingModule,
         ChartsModule,
-        NewLocalUserLocationModule
+        NewLocalUserLocationModule,
+        CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'newlocal', upload_preset: 'my_preset' })
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],
     providers: [

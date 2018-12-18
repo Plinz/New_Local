@@ -4,13 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 import javax.validation.Valid;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cloudinary.Cloudinary;
 import com.codahale.metrics.annotation.Timed;
 import com.newlocal.service.ImageQueryService;
 import com.newlocal.service.ImageService;
@@ -53,10 +56,17 @@ public class ImageResource {
     private ImageService imageService;
 
     private ImageQueryService imageQueryService;
+    
+    private Cloudinary cloudinary;
 
     public ImageResource(ImageService imageService, ImageQueryService imageQueryService) {
         this.imageService = imageService;
         this.imageQueryService = imageQueryService;
+        Map<String, String> params = new HashMap<>();
+        params.put("cloud_name", "newlocal");
+        params.put("api_key", "544375764338585");
+        params.put("api_secret", "-vEs-awBfHl2HYc2HcFxQI1XKsk");
+        this.cloudinary = new Cloudinary(params);
     }
 
     /**
@@ -73,20 +83,19 @@ public class ImageResource {
         if (image.getId() != null) {
             throw new BadRequestAlertException("A new image cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        log.debug("Fin REST request to save Image : {}", image);
         if (image.getImage() != null){
 	        try {
-	        	Random r = new Random();
-	        	File imageFile = new File("src/main/resources/images/"+image.getName());
-		        while(imageFile.exists() || imageFile.isDirectory()){
-		        	imageFile = new File("src/main/resources/images/"+image.getName()+"_"+r.nextInt(999999999));
-		        }
+	        	File imageFile = new File(image.getName());
 				FileUtils.writeByteArrayToFile(imageFile, image.getImage());
-				image.setImagePath(imageFile.getPath());
+				
+				Map uploadResult = this.cloudinary.uploader().upload(imageFile, new HashMap<>());
+				image.setImagePath((String) uploadResult.get("secure_url"));
+				imageFile.delete();
 	        } catch (IOException e) {
 	        	e.printStackTrace();
 	        }
         }
-        log.debug("Fin REST request to save Image : {}", image);
         ImageDTO result = imageService.save(image);
         return ResponseEntity.created(new URI("/api/images/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -109,15 +118,19 @@ public class ImageResource {
         if (image.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+        try {
+			cloudinary.uploader().destroy(image.getImagePath(), new HashMap<>());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
         if (image.getImage() != null){
 	        try {
-	        	Random r = new Random();
-	        	File imageFile = new File("src/main/resources/images/"+image.getName());
-		        while(imageFile.exists() || imageFile.isDirectory()){
-		        	imageFile = new File("src/main/resources/images/"+image.getName()+"_"+r.nextInt(999999999));
-		        }
+	        	File imageFile = new File(image.getName());
 				FileUtils.writeByteArrayToFile(imageFile, image.getImage());
-				image.setImagePath(imageFile.getPath());
+				
+				Map uploadResult = this.cloudinary.uploader().upload(imageFile, new HashMap<>());
+				image.setImagePath((String) uploadResult.get("secure_url"));
+				imageFile.delete();
 	        } catch (IOException e) {
 	        	e.printStackTrace();
 	        }
@@ -182,11 +195,12 @@ public class ImageResource {
     public ResponseEntity<Void> deleteImage(@PathVariable Long id) {
         log.debug("REST request to delete Image : {}", id);
         Optional<ImageDTO> image = imageService.findOne(id);
-        if (image.isPresent()) {
-        	File imageFile = new File(image.get().getImagePath());
-        	if (imageFile.exists() && imageFile.isFile()) {
-        		imageFile.delete();
-        	}
+        if (image.isPresent()){
+        	try {
+				cloudinary.uploader().destroy(image.get().getImagePath(), new HashMap<>());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
         imageService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
