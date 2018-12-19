@@ -6,7 +6,7 @@
                     Stock</h2>
             </div>
             <div class="col-md-2">
-                <button id="jh-create-entity" class="btn btn-primary float-center jh-create-entity create-stock"
+                <button id="jh-create-entity" class=" btn btn-warning float-center jh-create-entity create-stock"
                         [routerLink]="['/stockManagement/']">
                     <span class="hidden-sm-down" jhiTranslate="newLocalApp.stock.return">
                         Retour stock
@@ -47,7 +47,8 @@
                                                     name="productTypesCurrentUser"
                                                     (change)="onChangeProductTypeCurrentUser($event.target.value)">
                                                 <option selected hidden>Sélectionner un type...</option>
-                                                <option *ngFor="let p of productTypesCurrentUser; let i = index" value="{{i}}">
+                                                <option *ngFor="let p of productTypesCurrentUser; let i = index"
+                                                        value="{{i}}">
                                                     {{p.name}}
                                                 </option>
                                             </select>
@@ -55,7 +56,8 @@
                                                     name="productTypesExisting"
                                                     (change)="onChangeProductTypeExisting($event.target.value)">
                                                 <option selected hidden>Sélectionner un type...</option>
-                                                <option *ngFor="let p of productTypesExisting; let i = index" value="{{i}}">
+                                                <option *ngFor="let p of productTypesExisting; let i = index"
+                                                        value="{{i}}">
                                                     {{p.name}}
                                                 </option>
                                             </select>
@@ -64,6 +66,21 @@
                                                    placeholder="Saisir le nouveau type"
                                                    [(ngModel)]="productTypeNotExisting.name"/>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class=row>
+                                    <div class="col-md-6">
+                                        <!-- Nothing -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select *ngIf="productTypeSelectionMethod == 2" class="form-control"
+                                                name="category"
+                                                (change)="onChangeCategory($event.target.value)">
+                                            <option selected hidden>Sélectionner une catégorie...</option>
+                                            <option *ngFor="let c of categories; let i = index" value="{{i}}">
+                                                {{c.name}}
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
                                 <label class="form-control-label" jhiTranslate="newLocalApp.stock.bio"
@@ -80,16 +97,16 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <div class="text-right">
+                                        <div class="text-right" *ngIf="!checkBtnValiderCondition()">
                                             <a class="btn btn-primary float-center jh-create-entity"
-                                               (click)="clicBtnValidateProductType()">OK
+                                               (click)="clicBtnValidateProductType()"> Valider
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="btnValidateProductType">
+                        <div *ngIf="checkBtnValiderCondition()">
                             <div class="card mt-3">
                                 <div class="card-body">
 
@@ -132,37 +149,38 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
+
                                             <div class="form-group">
-                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.image"
-                                                       for="field_image">Image</label>
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.image" for="field_image2">Image</label>
                                                 <div>
-                                                    <img src="{{stock.image?.imagePath}}" style="max-height: 100px;" *ngIf="stock.image?.imagePath" alt="stock image" />
-                                                    <div *ngIf="stock.image?.imagePath" class="form-text text-danger clearfix">
-                                                        <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')"
-                                                            class="btn btn-secondary btn-xs pull-right">
+                                                    <div *ngIf="image.imagePath && !image.image">
+                                                        <img src="{{image.imagePath}}" alt="">
+                                                    </div>
+                                                    <div *ngIf="image.image" class="form-text text-danger clearfix">
+                                                        <img [src]="'data:' + image.imageContentType + ';base64,' + image.image" style="max-height: 100px;" *ngIf="image.image" alt="image image"/>
+                                                        <span class="pull-left">{{image.imageContentType}}, {{byteSize(image.image)}}</span>
+                                                        <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')" class="btn btn-secondary btn-xs pull-right">
                                                             <fa-icon [icon]="'times'"></fa-icon>
                                                         </button>
                                                     </div>
-                                                    <input type="file" id="file_image"
-                                                           (change)="setFileData($event, stock, 'image', true)"
-                                                           accept="image/*" jhiTranslate="entity.action.addimage"/>
+                                                    <input type="file" id="file_image2" (change)="setFileData($event, image, 'image', true)" accept="image/*" jhiTranslate="entity.action.addimage"/>
                                                 </div>
-                                                <input type="hidden" class="form-control" name="image" id="field_image"
-                                                       [(ngModel)]="stock.image"/>
-                                                <!--<input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
-                                                       [(ngModel)]="stock.imageContentType" />-->
+                                                <input type="hidden" class="form-control" name="image" id="field_image2"
+                                                       [(ngModel)]="image.image" />
+                                                <input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
+                                                       [(ngModel)]="image.imageContentType" />
+                                                
                                             </div>
+
                                             <div class="form-group">
                                                 <label class="form-control-label"
                                                        jhiTranslate="newLocalApp.stock.holding"
                                                        for="field_holding">Holding</label>
                                                 <select class="form-control" id="field_holding" name="holding"
-                                                        [(ngModel)]="stock.holding">
-                                                    <option [ngValue]="null"></option>
-                                                    <option
-                                                        [ngValue]="holdingOption.id === stock.holding?.id ? stock.holding : holdingOption"
-                                                        *ngFor="let holdingOption of holdings; trackBy: trackHoldingById">
-                                                        {{holdingOption.name}}
+                                                        (change)="onChangeHolding($event.target.value)">
+                                                    <option selected hidden>Sélectionner une exploitation...</option>
+                                                    <option *ngFor="let h of holdings; let i = index" value="{{i}}">
+                                                        {{h.name}}
                                                     </option>
                                                 </select>
                                             </div>
@@ -220,8 +238,7 @@
                                         <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span
                                         jhiTranslate="entity.action.cancel">Cancel</span>
                                     </button>
-                                    <button type="submit" id="save-entity"
-                                            [disabled]="editForm.form.invalid || isSaving"
+                                    <button type="submit" id="save-entity" *ngIf="checkSave()"
                                             class="btn btn-primary">
                                         <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span
                                         jhiTranslate="entity.action.save">Save</span>

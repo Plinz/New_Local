@@ -6,7 +6,7 @@ import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared';
 import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 
-import { IStock } from '../shared/model/stock.model';
+import { IStock, Stock } from '../shared/model/stock.model';
 import { StockService } from 'app/entities/stock';
 import { IProductType, ProductType } from '../shared/model/product-type.model';
 import { ProductTypeService } from '../entities/product-type';
@@ -15,6 +15,10 @@ import { HoldingService } from '../entities/holding';
 import { IUser } from '../core';
 import { ImageService } from 'app/entities/image';
 import { IImage, Image } from 'app/shared/model/image.model';
+import { IWarehouse } from 'app/shared/model/warehouse.model';
+import { WarehouseService } from 'app/entities/warehouse';
+import { ICategory } from 'app/shared/model/category.model';
+import { CategoryService } from 'app/entities/category';
 
 @Component({
     selector: 'jhi-stock-update',
@@ -27,13 +31,18 @@ export class StockManagementUpdateComponent implements OnInit {
     productTypesExisting: IProductType[];
     productTypeNotExisting: IProductType;
     holdings: IHolding[];
+    warehouses: IWarehouse[];
     expiryDate: string;
     currentDate: string;
     stats: string[];
     image: IImage;
+    categories: ICategory[];
 
     isSaving: boolean;
     btnValidateProductType: boolean;
+    bclickProductTypeExisting: boolean;
+    bclickCategory: boolean;
+    bclickProductTypeCurrentUser: boolean;
 
     constructor(
         private dataUtils: JhiDataUtils,
@@ -43,18 +52,27 @@ export class StockManagementUpdateComponent implements OnInit {
         private holdingService: HoldingService,
         private elementRef: ElementRef,
         private activatedRoute: ActivatedRoute,
-        private imageService: ImageService
+        private imageService: ImageService,
+        private warehouseService: WarehouseService,
+        private categoryService: CategoryService
     ) {}
 
     ngOnInit() {
+        this.productTypeSelectionMethod = -1;
+        this.bclickProductTypeExisting = false;
+        this.bclickCategory = false;
+        this.bclickProductTypeCurrentUser = false;
+
         this.isSaving = false;
         this.btnValidateProductType = false;
         this.productTypeNotExisting = new ProductType();
+        this.productTypeNotExisting.name = '';
         this.image = new Image();
         this.activatedRoute.data.subscribe(({ stock }) => {
             this.stock = stock;
             this.expiryDate = this.stock.expiryDate != null ? this.stock.expiryDate.format(DATE_TIME_FORMAT) : null;
         });
+
         this.productTypeService.query().subscribe(
             (res: HttpResponse<IProductType[]>) => {
                 this.productTypesExisting = res.body;
@@ -70,6 +88,18 @@ export class StockManagementUpdateComponent implements OnInit {
         this.holdingService.findByCurrentUser().subscribe(
             (res: HttpResponse<IHolding[]>) => {
                 this.holdings = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.warehouseService.query().subscribe(
+            (res: HttpResponse<IWarehouse[]>) => {
+                this.warehouses = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.categoryService.query().subscribe(
+            (res: HttpResponse<ICategory[]>) => {
+                this.categories = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -94,7 +124,7 @@ export class StockManagementUpdateComponent implements OnInit {
     }
 
     clearInputImage(field: string, fieldContentType: string, idInput: string) {
-        this.dataUtils.clearInputImage(this.stock, this.elementRef, field, fieldContentType, idInput);
+        this.dataUtils.clearInputImage(this.image, this.elementRef, field, fieldContentType, idInput);
     }
 
     previousState() {
@@ -104,10 +134,13 @@ export class StockManagementUpdateComponent implements OnInit {
     save() {
         this.isSaving = true;
         if (this.productTypeSelectionMethod === 2) {
-            if (this.productTypeNotExisting.id !== undefined) {
+            if (this.productTypeNotExisting.id !== undefined && this.productTypeNotExisting.id !== null) {
                 this.productTypeService.update(this.productTypeNotExisting).subscribe(
                     (res: HttpResponse<IProductType>) => {
                         this.productTypeNotExisting = res.body;
+                        this.stock.productTypeId = this.productTypeNotExisting.id;
+                        this.stock.productType = this.productTypeNotExisting;
+                        this.save2();
                     },
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
@@ -115,35 +148,54 @@ export class StockManagementUpdateComponent implements OnInit {
                 this.productTypeService.create(this.productTypeNotExisting).subscribe(
                     (res: HttpResponse<IProductType>) => {
                         this.productTypeNotExisting = res.body;
+                        this.stock.productTypeId = this.productTypeNotExisting.id;
+                        this.stock.productType = this.productTypeNotExisting;
+                        this.save2();
                     },
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
             }
-            this.stock.productType = this.productTypeNotExisting;
-        }
-
-        if (this.image.id !== undefined) {
-            this.imageService.update(this.image).subscribe(
-                (res: HttpResponse<IImage>) => {
-                    this.image = res.body;
-                },
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
         } else {
-            this.imageService.create(this.image).subscribe(
-                (res: HttpResponse<IImage>) => {
-                    this.image = res.body;
-                },
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
+            this.save2();
         }
-        this.stock.image = this.image;
+    }
 
+    save2() {
+        if (this.image.image !== undefined && this.image.image !== null) {
+            if (this.image.id !== undefined && this.image.id !== null) {
+                this.imageService.update(this.image).subscribe(
+                    (res: HttpResponse<IImage>) => {
+                        this.image = res.body;
+                        this.stock.imageId = this.image.id;
+                        this.stock.image = this.image;
+                        this.save3();
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
+            } else {
+                this.image.name = 'toto';
+                this.imageService.create(this.image).subscribe(
+                    (res: HttpResponse<IImage>) => {
+                        this.image = res.body;
+                        this.stock.imageId = this.image.id;
+                        this.stock.image = this.image;
+                        this.save3();
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
+            }
+        } else {
+            this.stock.imageId = 1;
+            this.save3();
+        }
+    }
+
+    save3() {
         this.stock.onSaleDate = moment(new Date(), DATE_TIME_FORMAT);
         this.stock.expiryDate = this.expiryDate != null ? moment(this.expiryDate, DATE_TIME_FORMAT) : null;
         this.stock.quantityRemaining = this.stock.quantityInit;
-        this.stock.available = false;
-        if (this.stock.id !== undefined) {
+        this.stock.available = true;
+        if (this.stock.id !== undefined && this.stock.id !== null) {
             this.subscribeToSaveResponse(this.stockService.update(this.stock));
         } else {
             this.subscribeToSaveResponse(this.stockService.create(this.stock));
@@ -181,13 +233,11 @@ export class StockManagementUpdateComponent implements OnInit {
 
     clicBtnValidateProductType() {
         this.btnValidateProductType = true;
-
         if (this.productTypeSelectionMethod === 2) {
             this.stats = null;
         } else {
             // Initialize Params Object
             let parameters = new HttpParams();
-
             // Begin assigning parameters
             parameters = parameters.append('productTypeId', this.stock.productType.id.toString());
             parameters = parameters.append('bio', String(this.stock.bio));
@@ -196,7 +246,7 @@ export class StockManagementUpdateComponent implements OnInit {
                 (res: HttpResponse<string[]>) => {
                     this.stats = res.body;
 
-                    if (this.stats != null) {
+                    if (this.stats !== undefined && this.stats !== null) {
                         for (let i = 0; i < this.stats.length; i++) {
                             switch (i) {
                                 case 0:
@@ -222,15 +272,109 @@ export class StockManagementUpdateComponent implements OnInit {
         }
     }
 
-    onChangeProductTypeCurrentUser(i: number) {
-        this.stock.productType = this.productTypesCurrentUser[i];
+    onChangeProductTypeSelectionMethod(productTypeSelectionMethod: string) {
+        const tmp: number = +productTypeSelectionMethod;
+        this.productTypeSelectionMethod = tmp;
+
+        if (this.btnValidateProductType) {
+            this.btnValidateProductType = false;
+            this.bclickProductTypeExisting = false;
+            this.bclickProductTypeCurrentUser = false;
+            this.bclickCategory = false;
+            this.productTypeNotExisting.name = '';
+
+            this.stock = new Stock();
+            this.expiryDate = null;
+        }
     }
 
-    onChangeProductTypeExisting(i: number) {
-        this.stock.productType = this.productTypesExisting[i];
+    onChangeProductTypeCurrentUser(i: string) {
+        const tmp: number = +i;
+        this.bclickProductTypeCurrentUser = true;
+        this.stock.productTypeId = this.productTypesCurrentUser[tmp].id;
+        this.stock.productType = this.productTypesCurrentUser[tmp];
     }
 
-    onChangeProductTypeSelectionMethod(productTypeSelectionMethod: number) {
-        this.productTypeSelectionMethod = productTypeSelectionMethod;
+    onChangeProductTypeExisting(i: string) {
+        const tmp: number = +i;
+        this.bclickProductTypeExisting = true;
+        this.stock.productTypeId = this.productTypesExisting[tmp].id;
+        this.stock.productType = this.productTypesExisting[tmp];
+    }
+
+    onChangeCategory(i: string) {
+        const tmp: number = +i;
+        this.bclickCategory = true;
+        this.productTypeNotExisting.categoryId = this.categories[tmp].id;
+    }
+
+    checkBtnValiderCondition() {
+        return (
+            this.btnValidateProductType &&
+            (this.productTypeSelectionMethod !== -1 &&
+                (this.bclickProductTypeExisting ||
+                    this.bclickProductTypeCurrentUser ||
+                    (this.bclickCategory && this.productTypeNotExisting.name !== '')))
+        );
+    }
+
+    onChangeHolding(i: string) {
+        const tmp: number = +i;
+
+        this.stock.holdingId = this.holdings[tmp].id;
+        this.stock.holding = this.holdings[tmp];
+
+        // récupère l'entrepôt le plus proche du holding sélectionné
+        let distWarehouse: number;
+        let distWarehouseMin: number;
+        this.warehouses.forEach((value: IWarehouse) => {
+            distWarehouse = this.distance(value);
+            if (distWarehouseMin === undefined || distWarehouseMin === null) {
+                distWarehouseMin = distWarehouse;
+                this.stock.warehouseId = value.id;
+                this.stock.warehouse = value;
+            } else if (distWarehouse < distWarehouseMin) {
+                distWarehouseMin = distWarehouse;
+                this.stock.warehouseId = value.id;
+                this.stock.warehouse = value;
+            }
+        });
+    }
+
+    distance(warehouse: IWarehouse) {
+        const loc = this.stock.holding.location;
+        let dist = -1;
+        if (loc !== null && loc !== undefined) {
+            const lon1 = warehouse.location.lon;
+            const lat1 = warehouse.location.lat;
+            const lon2 = loc.lon;
+            const lat2 = loc.lat;
+            const theta = lon1 - lon2;
+            dist =
+                Math.sin(this.deg2rad(lat1)) * Math.sin(this.deg2rad(lat2)) +
+                Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * Math.cos(this.deg2rad(theta));
+            dist = Math.acos(dist);
+            dist = this.rad2deg(dist);
+            dist = dist * 60 * 1.1515 * 1.609344;
+        }
+        return parseInt(dist + '', 0);
+    }
+
+    deg2rad(deg: number) {
+        return deg * Math.PI / 180.0;
+    }
+
+    rad2deg(rad: number) {
+        return rad * 180 / Math.PI;
+    }
+
+    checkSave() {
+        return (
+            this.stock.name !== undefined &&
+            this.expiryDate !== null &&
+            this.stock.quantityInit !== undefined &&
+            this.stock.priceUnit !== undefined &&
+            this.stock.holding !== undefined
+        );
     }
 }
