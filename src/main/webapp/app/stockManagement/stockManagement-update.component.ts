@@ -103,7 +103,7 @@ export class StockManagementUpdateComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        if (this.productTypeSelectionMethod == 2) {
+        if (this.productTypeSelectionMethod === 2) {
             if (this.productTypeNotExisting.id !== undefined) {
                 this.productTypeService.update(this.productTypeNotExisting).subscribe(
                     (res: HttpResponse<IProductType>) => {
@@ -182,7 +182,7 @@ export class StockManagementUpdateComponent implements OnInit {
     clicBtnValidateProductType() {
         this.btnValidateProductType = true;
 
-        if (this.productTypeSelectionMethod == 2) {
+        if (this.productTypeSelectionMethod === 2) {
             this.stats = null;
         } else {
             // Initialize Params Object
