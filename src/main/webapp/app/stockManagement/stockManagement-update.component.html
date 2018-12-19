@@ -1,3 +1,12 @@
+<!---<input type="file" id="file_image" (change)="setFileData($event, image, 'image', true)" accept="image/*" jhiTranslate="entity.action.addimage"/>-->
+
+
+
+
+
+
+
+
 <div class="row justify-content-center">
     <div class="col-8 mt-5">
         <div class="row">
@@ -149,26 +158,34 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
+
                                             <div class="form-group">
-                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.image"
-                                                       for="field_image">Image</label>
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.stock.image" for="field_image2">Image</label>
                                                 <div>
-                                                    <img src="{{stock.image?.imagePath}}" style="max-height: 100px;" *ngIf="stock.image?.imagePath" alt="stock image" />
-                                                    <div *ngIf="stock.image?.imagePath" class="form-text text-danger clearfix">
-                                                        <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')"
-                                                            class="btn btn-secondary btn-xs pull-right">
+                                                    <div *ngIf="image.imagePath && !image.image">
+                                                        <img src="{{image.imagePath}}" alt="">
+                                                    </div>
+                                                    <div *ngIf="image.image" class="form-text text-danger clearfix">
+                                                        <img [src]="'data:' + image.imageContentType + ';base64,' + image.image" style="max-height: 100px;" *ngIf="image.image" alt="image image"/>
+                                                        <span class="pull-left">{{image.imageContentType}}, {{byteSize(image.image)}}</span>
+                                                        <button type="button" (click)="clearInputImage('image', 'imageContentType', 'fileImage')" class="btn btn-secondary btn-xs pull-right">
                                                             <fa-icon [icon]="'times'"></fa-icon>
                                                         </button>
                                                     </div>
-                                                    <input type="file" id="file_image"
-                                                           (change)="setFileData($event, stock, 'image', true)"
-                                                           accept="image/*" jhiTranslate="entity.action.addimage"/>
+                                                    <input type="file" id="file_image2" (change)="setFileData($event, image, 'image', true)" accept="image/*" jhiTranslate="entity.action.addimage"/>
                                                 </div>
-                                                <input type="hidden" class="form-control" name="image" id="field_image"
-                                                       [(ngModel)]="stock.image"/>
-                                                <!--<input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
-                                                       [(ngModel)]="stock.imageContentType" />-->
+                                                <input type="hidden" class="form-control" name="image" id="field_image2"
+                                                       [(ngModel)]="image.image" required/>
+                                                <input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
+                                                       [(ngModel)]="image.imageContentType" />
+                                                <div [hidden]="!(editForm.controls.image?.dirty && editForm.controls.image?.invalid)">
+                                                    <small class="form-text text-danger"
+                                                           [hidden]="!editForm.controls.image?.errors?.required" jhiTranslate="entity.validation.required">
+                                                        This field is required.
+                                                    </small>
+                                                </div>
                                             </div>
+
                                             <div class="form-group">
                                                 <label class="form-control-label"
                                                        jhiTranslate="newLocalApp.stock.holding"

@@ -114,7 +114,7 @@ export class StockManagementUpdateComponent implements OnInit {
     }
 
     clearInputImage(field: string, fieldContentType: string, idInput: string) {
-        this.dataUtils.clearInputImage(this.stock, this.elementRef, field, fieldContentType, idInput);
+        this.dataUtils.clearInputImage(this.image, this.elementRef, field, fieldContentType, idInput);
     }
 
     previousState() {
@@ -124,10 +124,13 @@ export class StockManagementUpdateComponent implements OnInit {
     save() {
         this.isSaving = true;
         if (this.productTypeSelectionMethod === 2) {
-            if (this.productTypeNotExisting.id !== undefined) {
+            if (this.productTypeNotExisting.id !== undefined && this.productTypeNotExisting.id !== null) {
                 this.productTypeService.update(this.productTypeNotExisting).subscribe(
                     (res: HttpResponse<IProductType>) => {
                         this.productTypeNotExisting = res.body;
+                        this.stock.productTypeId = this.productTypeNotExisting.id;
+                        this.stock.productType = this.productTypeNotExisting;
+                        this.save2();
                     },
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
@@ -135,39 +138,54 @@ export class StockManagementUpdateComponent implements OnInit {
                 this.productTypeService.create(this.productTypeNotExisting).subscribe(
                     (res: HttpResponse<IProductType>) => {
                         this.productTypeNotExisting = res.body;
+                        this.stock.productTypeId = this.productTypeNotExisting.id;
+                        this.stock.productType = this.productTypeNotExisting;
+                        this.save2();
                     },
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
             }
-            this.stock.productTypeId = this.productTypeNotExisting.id;
-            this.stock.productType = this.productTypeNotExisting;
+        } else {
+            this.save2();
         }
-        if (!this.stock.image) {
-            if (this.image.id !== undefined) {
+    }
+
+    save2() {
+        if (this.image.image !== undefined && this.image.image !== null) {
+            if (this.image.id !== undefined && this.image.id !== null) {
                 this.imageService.update(this.image).subscribe(
                     (res: HttpResponse<IImage>) => {
                         this.image = res.body;
+                        this.stock.imageId = this.image.id;
+                        this.stock.image = this.image;
+                        this.save3();
                     },
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
             } else {
+                this.image.name = 'toto';
                 this.imageService.create(this.image).subscribe(
                     (res: HttpResponse<IImage>) => {
                         this.image = res.body;
+                        this.stock.imageId = this.image.id;
+                        this.stock.image = this.image;
+                        this.save3();
                     },
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
             }
-            this.stock.imageId = this.image.id;
-            this.stock.image = this.image;
         } else {
             this.stock.imageId = 1;
+            this.save3();
         }
+    }
+
+    save3() {
         this.stock.onSaleDate = moment(new Date(), DATE_TIME_FORMAT);
         this.stock.expiryDate = this.expiryDate != null ? moment(this.expiryDate, DATE_TIME_FORMAT) : null;
         this.stock.quantityRemaining = this.stock.quantityInit;
         this.stock.available = false;
-        if (this.stock.id !== undefined) {
+        if (this.stock.id !== undefined && this.stock.id !== null) {
             this.subscribeToSaveResponse(this.stockService.update(this.stock));
         } else {
             this.subscribeToSaveResponse(this.stockService.create(this.stock));
@@ -220,7 +238,7 @@ export class StockManagementUpdateComponent implements OnInit {
                 (res: HttpResponse<string[]>) => {
                     this.stats = res.body;
 
-                    if (!this.stats) {
+                    if (this.stats !== undefined && this.stats !== null) {
                         for (let i = 0; i < this.stats.length; i++) {
                             switch (i) {
                                 case 0:
@@ -273,7 +291,7 @@ export class StockManagementUpdateComponent implements OnInit {
         let distWarehouseMin: number;
         this.warehouses.forEach((value: IWarehouse) => {
             distWarehouse = this.distance(value);
-            if (!distWarehouseMin) {
+            if (distWarehouseMin === undefined || distWarehouseMin === null) {
                 distWarehouseMin = distWarehouse;
                 this.stock.warehouseId = value.id;
                 this.stock.warehouse = value;
@@ -282,15 +300,13 @@ export class StockManagementUpdateComponent implements OnInit {
                 this.stock.warehouseId = value.id;
                 this.stock.warehouse = value;
             }
-            console.log(distWarehouse);
-            console.log(distWarehouseMin);
         });
     }
 
     distance(warehouse: IWarehouse) {
         const loc = this.stock.holding.location;
         let dist = -1;
-        if (loc != null) {
+        if (loc !== null && loc !== undefined) {
             const lon1 = warehouse.location.lon;
             const lat1 = warehouse.location.lat;
             const lon2 = loc.lon;
