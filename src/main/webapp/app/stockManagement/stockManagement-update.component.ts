@@ -223,13 +223,14 @@ export class StockManagementUpdateComponent implements OnInit {
 
     clicBtnValidateProductType() {
         this.btnValidateProductType = true;
-
+        alert('ok:' + this.productTypeSelectionMethod);
         if (this.productTypeSelectionMethod === 2) {
             this.stats = null;
+            alert('oui');
         } else {
             // Initialize Params Object
             let parameters = new HttpParams();
-
+            alert('non');
             // Begin assigning parameters
             parameters = parameters.append('productTypeId', this.stock.productType.id.toString());
             parameters = parameters.append('bio', String(this.stock.bio));
@@ -264,27 +265,33 @@ export class StockManagementUpdateComponent implements OnInit {
         }
     }
 
-    onChangeProductTypeSelectionMethod(productTypeSelectionMethod: number) {
-        this.productTypeSelectionMethod = productTypeSelectionMethod;
+    onChangeProductTypeSelectionMethod(productTypeSelectionMethod: string) {
+        const tmp: number = +productTypeSelectionMethod;
+        this.productTypeSelectionMethod = tmp;
     }
 
-    onChangeProductTypeCurrentUser(i: number) {
-        this.stock.productTypeId = this.productTypesCurrentUser[i].id;
-        this.stock.productType = this.productTypesCurrentUser[i];
+    onChangeProductTypeCurrentUser(i: string) {
+        const tmp: number = +i;
+        this.stock.productTypeId = this.productTypesCurrentUser[tmp].id;
+        this.stock.productType = this.productTypesCurrentUser[tmp];
     }
 
-    onChangeProductTypeExisting(i: number) {
-        this.stock.productTypeId = this.productTypesExisting[i].id;
-        this.stock.productType = this.productTypesExisting[i];
+    onChangeProductTypeExisting(i: string) {
+        const tmp: number = +i;
+        this.stock.productTypeId = this.productTypesExisting[tmp].id;
+        this.stock.productType = this.productTypesExisting[tmp];
     }
 
-    onChangeCategory(i: number) {
-        this.productTypeNotExisting.categoryId = this.categories[i].id;
+    onChangeCategory(i: string) {
+        const tmp: number = +i;
+        this.productTypeNotExisting.categoryId = this.categories[tmp].id;
     }
 
-    onChangeHolding(i: number) {
-        this.stock.holdingId = this.holdings[i].id;
-        this.stock.holding = this.holdings[i];
+    onChangeHolding(i: string) {
+        const tmp: number = +i;
+
+        this.stock.holdingId = this.holdings[tmp].id;
+        this.stock.holding = this.holdings[tmp];
 
         // récupère l'entrepôt le plus proche du holding sélectionné
         let distWarehouse: number;
