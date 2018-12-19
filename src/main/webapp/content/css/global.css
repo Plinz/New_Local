@@ -376,3 +376,8 @@ sidenav by rick
 }
 
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.imgCarousel {
+    width: auto;
+    max-height: 550px;
+}

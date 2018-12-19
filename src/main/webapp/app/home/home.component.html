@@ -2,44 +2,49 @@
     <header>
         <ngb-carousel>
             <ng-template ngbSlide>
-                <img class="imgCarousel" src="../../content/images/c1.png" height="200%" width="100%" alt="Random first slide">
-                <div class="carousel-caption">
-                    <h3></h3>
-                    <p></p>
+                <div class="text-center mt-3">
+                    <img class="imgCarousel" src="../../content/images/c1.png" height="200%" width="100%" alt="Random first slide">
+                    <div class="carousel-caption">
+                        <h3></h3>
+                        <p></p>
+                    </div>
                 </div>
             </ng-template>
             <ng-template ngbSlide>
-                <img class="imgCarousel" src="../../content/images/c2.png" height="200%" width="100%" style="max-width: width 9px; margin: 0% auto"
-                    alt="Random second slide">
-                <div class="carousel-caption">
-                    <h3></h3>
-                    <p></p>
+                <div class="text-center mt-3">
+                    <img class="imgCarousel" src="../../content/images/c2.png" height="200%" width="100%" style="max-width: width 9px; margin: 0% auto"
+                        alt="Random second slide">
+                    <div class="carousel-caption">
+                        <h3></h3>
+                        <p></p>
+                    </div>
                 </div>
+
             </ng-template>
             <ng-template ngbSlide>
-                <img class="imgCarousel" src="../../content/images/c3.png" height="200%" width="100%" alt="Random third slide">
-                <div class="carousel-caption">
-                    <h3></h3>
-                    <p></p>
+                <div class="text-center mt-3">
+                    <img class="imgCarousel" src="../../content/images/c3.png" height="200%" width="100%" alt="Random third slide">
+                    <div class="carousel-caption">
+                        <h3></h3>
+                        <p></p>
+                    </div>
                 </div>
             </ng-template>
         </ngb-carousel>
     </header>
 
-    <main class="mt-5">
+    <main class="mt-3">
         <div class="container">
             <!--best product-->
             <section id="best-product" class="text-center mb-4">
-                <div class="row wow fadeIn">
+                <div class="row fadeIn">
                     <!--Grid colum-->
                     <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
 
-                        <div class="card">
+                        <div class="card h-100">
                             <div class="view overlay">
                                 <img class="card-img-top" src="../../content/images/m1.png" alt="">
                             </div>
-                            <div class="card-body text-center"></div>
-
                             <h4 class="font-weight-bold blue-text">
                                 <strong>{{stockBio.name}}</strong></h4>
                             <h6>{{stockBio.priceUnit}} €/Kg <span class="badge badge-success">Produit Bio</span></h6>
@@ -47,13 +52,12 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
-                        <div class="card">
+                    <div class="col-lg-3 col-md-6 mb-4 " style="background-color: white;">
+                        <div class="card h-100">
                             <div class="view overlay">
                                 <img class="card-img-top" src="../../content/images/m2.png" alt="">
 
                             </div>
-                            <div class="card-body text-center"></div>
                             <h4 class="font-weight-bold blue-text">
                                 <strong>{{stockNewProduit.name}}</strong></h4>
                             <h6>{{stockNewProduit.priceUnit}} €/Kg <span class="badge badge-pill badge-danger">Nouveau
@@ -63,11 +67,10 @@
                     </div>
 
                     <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
-                        <div class="card">
+                        <div class="card h-100">
                             <div class="view overlay">
                                 <img class="card-img-top" src="../../content/images/m3.png" alt="">
                             </div>
-                            <div class="card-body text-center"></div>
                             <h4 class="font-weight-bold blue-text">
                                 <strong>{{stockBestPurchase.name}}</strong></h4>
                             <h6>{{stockBestPurchase.priceUnit}} €/Kg <span class="badge badge-info">Meilleur Vente</span></h6>
@@ -75,12 +78,11 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
-                        <div class="card">
+                    <div class="col-lg-3 col-md-6 mb-4 " style="background-color: white;">
+                        <div class="card h-100">
                             <div class="view overlay">
                                 <img class="card-img-top" src="../../content/images/m4.png" alt="">
                             </div>
-                            <div class="card-body text-center"></div>
                             <h4 class="font-weight-bold blue-text">
                                 <strong>{{stockGrade.name}}</strong></h4>
                             <h6>{{stockGrade.priceUnit}} €/Kg <span class="badge badge-primary">Mieux noté</span></h6>
