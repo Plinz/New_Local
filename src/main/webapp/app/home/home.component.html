@@ -44,7 +44,7 @@
                         <div class="card h-100">
                             <div class="view overlay">
                                 <!-- <img class="card-img-top" src="../../content/images/m1.png" alt=""> -->
-                                <a routerLink="/mainSearch/{{stockBio.id}}/view">
+                                <a routerLink="/mainSearch/{{stockBio.id}}/view" *ngIf="stockBio.image">
                                     <img class="card-img-top" src="{{stockBio.image.imagePath}}" alt="">
                                 </a>
                             </div>
@@ -61,7 +61,7 @@
                         <div class="card h-100">
                             <div class="view overlay">
                                 <!-- <img class="card-img-top" src="../../content/images/m2.png" alt=""> -->
-                                <a routerLink="/mainSearch/{{stockNewProduit.id}}/view">
+                                <a routerLink="/mainSearch/{{stockNewProduit.id}}/view" *ngIf="stockNewProduit.image">
                                     <img class="card-img-top" src="{{stockNewProduit.image.imagePath}}" alt="">
                                 </a>
                             </div>
@@ -77,7 +77,7 @@
                         <div class="card h-100">
                             <div class="view overlay">
                                 <!-- <img class="card-img-top" src="../../content/images/m3.png" alt=""> -->
-                                <a routerLink="/mainSearch/{{stockBestPurchase.id}}/view">
+                                <a routerLink="/mainSearch/{{stockBestPurchase.id}}/view" *ngIf="stockBestPurchase.image">
                                     <img class="card-img-top" src="{{stockBestPurchase.image.imagePath}}" alt="">
                                 </a>
                             </div>
@@ -92,7 +92,7 @@
                         <div class="card h-100">
                             <div class="view overlay">
                                 <!-- <img class="card-img-top" src="../../content/images/m4.png" alt=""> -->
-                                <a routerLink="/mainSearch/{{stockGrade.id}}/view">
+                                <a routerLink="/mainSearch/{{stockGrade.id}}/view" *ngIf="stockGrade.image">
                                     <img class="card-img-top" src="{{stockGrade.image.imagePath}}" alt="">
                                 </a>
                             </div>
