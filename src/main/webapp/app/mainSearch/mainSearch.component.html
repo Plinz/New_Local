@@ -54,7 +54,7 @@
             <!--14%-->
             <div class="pl-3 pr-2">
                 <input class="form-control" type="range" name="price-min" [(ngModel)]="prixMini" id="price-min" value="1"
-                    min="0" max="10">
+                    min="0" max="{{prixMaxInit}}">
             </div>
         </div>
         <!--Prix maxi-->
@@ -62,7 +62,7 @@
             <span style="font-weight: bolder;color: #007bff;padding-left: 27px"><b>Prix max : {{prixMax}}</b></span>
             <!--14%-->
             <div class="pl-3 pr-2">
-                <input class="form-control" type="range" name="price-max" [(ngModel)]="prixMax" min="0" max="10">
+                <input class="form-control" type="range" name="price-max" [(ngModel)]="prixMax" min="0" max="{{prixMaxInit}}">
             </div>
         </div>
         <hr class="my-3">

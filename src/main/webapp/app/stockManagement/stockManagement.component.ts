@@ -122,7 +122,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         this.page = 0;
         this.currentSearch = '';
         this.router.navigate([
-            '/stock',
+            '/stockManagement',
             {
                 page: this.page,
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
@@ -218,7 +218,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
             s.available &&
             this.count === 1 &&
             this.checkDate(s.expiryDate) &&
-            s.quantityRemaining === 0 &&
+            s.quantityRemaining > 0 &&
             (this.optionCategory === s.productType.categoryId || this.optionCategory === -1)
         ) {
             return true;
