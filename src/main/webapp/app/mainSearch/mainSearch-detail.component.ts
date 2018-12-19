@@ -84,4 +84,8 @@ export class MainSearchDetailComponent implements OnInit {
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
     }
+
+    onChangeBuy(deviceValue: number) {
+        this.qtbuy = deviceValue;
+    }
 }
