@@ -104,7 +104,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.bclik = false;
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.cat = null;
-        this.qtbuy = 1;
+        this.qtbuy = 500;
         this.filterOptionHold = -1;
         this.filterOptionWare = -1;
         this.optioncat = 'Catégorie';
@@ -449,8 +449,9 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         return item.id;
     }
 
-    onChangeBuy(deviceValue: number) {
-        this.qtbuy = deviceValue;
+    onChangeBuy(deviceValue: string) {
+        const tmp: number = +deviceValue;
+        this.qtbuy = tmp;
     }
 
     buyStock(s: IStock) {

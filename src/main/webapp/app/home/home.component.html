@@ -43,50 +43,63 @@
 
                         <div class="card h-100">
                             <div class="view overlay">
-                                <img class="card-img-top" src="../../content/images/m1.png" alt="">
+                                <!-- <img class="card-img-top" src="../../content/images/m1.png" alt=""> -->
+                                <a routerLink="/mainSearch/{{stockBio.id}}/view">
+                                    <img class="card-img-top" src="{{stockBio.image.imagePath}}" alt="">
+                                </a>
                             </div>
-                            <h4 class="font-weight-bold blue-text">
-                                <strong>{{stockBio.name}}</strong></h4>
+                            <a class="h4 font-weight-bold blue-text" routerLink="/mainSearch/{{stockGrade.id}}/view">
+                                <strong>{{stockBio.name}}</strong>
+                            </a>
+
                             <h6>{{stockBio.priceUnit}} €/Kg <span class="badge badge-success">Produit Bio</span></h6>
-                            <a routerLink="/mainSearch/{{stockBio.id}}/view" routerLinkActive="active">description</a>
+                            <a routerLink="/mainSearch/{{stockBio.id}}/view" routerLinkActive="active">Description</a>
                         </div>
                     </div>
 
                     <div class="col-lg-3 col-md-6 mb-4 " style="background-color: white;">
                         <div class="card h-100">
                             <div class="view overlay">
-                                <img class="card-img-top" src="../../content/images/m2.png" alt="">
-
+                                <!-- <img class="card-img-top" src="../../content/images/m2.png" alt=""> -->
+                                <a routerLink="/mainSearch/{{stockNewProduit.id}}/view">
+                                    <img class="card-img-top" src="{{stockNewProduit.image.imagePath}}" alt="">
+                                </a>
                             </div>
-                            <h4 class="font-weight-bold blue-text">
-                                <strong>{{stockNewProduit.name}}</strong></h4>
+                            <a class=" h4 font-weight-bold blue-text" routerLink="/mainSearch/{{stockNewProduit.id}}/view">
+                                <strong>{{stockNewProduit.name}}</strong></a>
                             <h6>{{stockNewProduit.priceUnit}} €/Kg <span class="badge badge-pill badge-danger">Nouveau
                                     Produit</span></h6>
-                            <a routerLink="/mainSearch/{{stockNewProduit.id}}/view" routerLinkActive="active">description</a>
+                            <a routerLink="/mainSearch/{{stockNewProduit.id}}/view" routerLinkActive="active">Description</a>
                         </div>
                     </div>
 
                     <div class="col-lg-3 col-md-6 mb-4" style="background-color: white;">
                         <div class="card h-100">
                             <div class="view overlay">
-                                <img class="card-img-top" src="../../content/images/m3.png" alt="">
+                                <!-- <img class="card-img-top" src="../../content/images/m3.png" alt=""> -->
+                                <a routerLink="/mainSearch/{{stockBestPurchase.id}}/view">
+                                    <img class="card-img-top" src="{{stockBestPurchase.image.imagePath}}" alt="">
+                                </a>
                             </div>
-                            <h4 class="font-weight-bold blue-text">
-                                <strong>{{stockBestPurchase.name}}</strong></h4>
+                            <a class="h4 font-weight-bold blue-text" routerLink="/mainSearch/{{stockBestPurchase.id}}/view">
+                                <strong>{{stockBestPurchase.name}}</strong></a>
                             <h6>{{stockBestPurchase.priceUnit}} €/Kg <span class="badge badge-info">Meilleur Vente</span></h6>
-                            <a routerLink="/mainSearch/{{stockBestPurchase.id}}/view" routerLinkActive="active">description</a>
+                            <a routerLink="/mainSearch/{{stockBestPurchase.id}}/view" routerLinkActive="active">Description</a>
                         </div>
                     </div>
 
                     <div class="col-lg-3 col-md-6 mb-4 " style="background-color: white;">
                         <div class="card h-100">
                             <div class="view overlay">
-                                <img class="card-img-top" src="../../content/images/m4.png" alt="">
+                                <!-- <img class="card-img-top" src="../../content/images/m4.png" alt=""> -->
+                                <a routerLink="/mainSearch/{{stockGrade.id}}/view">
+                                    <img class="card-img-top" src="{{stockGrade.image.imagePath}}" alt="">
+                                </a>
                             </div>
-                            <h4 class="font-weight-bold blue-text">
-                                <strong>{{stockGrade.name}}</strong></h4>
+                            <a class="h4 font-weight-bold blue-text" routerLink="/mainSearch/{{stockGrade.id}}/view">
+                                <strong>{{stockGrade.name}}</strong></a>
                             <h6>{{stockGrade.priceUnit}} €/Kg <span class="badge badge-primary">Mieux noté</span></h6>
-                            <a routerLink="/mainSearch/{{stockGrade.id}}/view" routerLinkActive="active">description</a>
+                            <a routerLink="/mainSearch/{{stockGrade.id}}/view" routerLinkActive="active">Description</a>
                         </div>
                     </div>
                 </div>

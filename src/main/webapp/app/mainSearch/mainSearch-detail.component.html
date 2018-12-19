@@ -16,14 +16,14 @@
             <div class=card-body>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="card-header bg-light h-3">
-                            <h4 class="card-title">{{stock.name}}</h4>
+                        <div>
+                            <h2 class="font-weight-bold"> <strong>{{stock.name}}</strong></h2>
                         </div>
                         <img class="card-img-bottom img-responsive img-thumbnail h-97" src="{{stock.image?.imagePath}}"
                             alt="Card image cap" />
                     </div>
                     <div class="col-md-6">
-                        <div>
+                        <div class="mt-5">
                             <h5 class="card-title">Type: {{stock.productType?.name}}</h5>
                             <h5 class="card-title">Description: {{stock.description}}</h5>
                             <div *ngIf="stock.bio">
@@ -34,16 +34,17 @@
                             <h6 class="card-subtitle mb-2 text-muted">Nom: {{stock.holding?.name}}</h6>
                             <h6 class="card-subtitle mb-2 text-muted">Localisation: {{stock.holding?.location?.city}}</h6>
                             <br>
-                            <h5 class="card-title">Prix: {{stock.priceUnit}}</h5>
+                            <h5 class="card-title">Prix: {{stock.priceUnit}} €/Kg</h5>
                             <br>
                         </div>
 
                         <div class="text-center mt-3">
                             <div class="btn-group" (change)="onChangeBuy($event.target.value)" style="position: absolute;bottom:2%; left:25%">
                                 <select>
-                                    <option value="1">1.0 kg</option>
-                                    <option value="1">1.5 kg</option>
-                                    <option value="2">2.5 kg</option>
+                                    <option value="500"> 500 g</option>
+                                    <option value="1000">1.0 kg</option>
+                                    <option value="1500">1.5 kg</option>
+                                    <option value="2500">2.5 kg</option>
                                 </select>
                                 <button class="btn btn-info btn-sm" (click)="buyStock(stock)">
                                     <span class="d-none d-md-inline">Acheter</span>

@@ -30,7 +30,7 @@ export class MainSearchDetailComponent implements OnInit {
         private navbarService: NavbarService,
         private jhiAlertService: JhiAlertService
     ) {
-        this.qtbuy = 1;
+        this.qtbuy = 500;
     }
 
     ngOnInit() {
@@ -85,7 +85,8 @@ export class MainSearchDetailComponent implements OnInit {
         this.jhiAlertService.error(errorMessage, null, null);
     }
 
-    onChangeBuy(deviceValue: number) {
-        this.qtbuy = deviceValue;
+    onChangeBuy(deviceValue: string) {
+        const tmp: number = +deviceValue;
+        this.qtbuy = tmp;
     }
 }
