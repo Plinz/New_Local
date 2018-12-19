@@ -6,7 +6,7 @@ import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared';
 import { JhiAlertService, JhiDataUtils } from 'ng-jhipster';
 
-import { IStock } from '../shared/model/stock.model';
+import { IStock, Stock } from '../shared/model/stock.model';
 import { StockService } from 'app/entities/stock';
 import { IProductType, ProductType } from '../shared/model/product-type.model';
 import { ProductTypeService } from '../entities/product-type';
@@ -40,6 +40,9 @@ export class StockManagementUpdateComponent implements OnInit {
 
     isSaving: boolean;
     btnValidateProductType: boolean;
+    bclickProductTypeExisting: boolean;
+    bclickCategory: boolean;
+    bclickProductTypeCurrentUser: boolean;
 
     constructor(
         private dataUtils: JhiDataUtils,
@@ -55,14 +58,21 @@ export class StockManagementUpdateComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        this.productTypeSelectionMethod = -1;
+        this.bclickProductTypeExisting = false;
+        this.bclickCategory = false;
+        this.bclickProductTypeCurrentUser = false;
+
         this.isSaving = false;
         this.btnValidateProductType = false;
         this.productTypeNotExisting = new ProductType();
+        this.productTypeNotExisting.name = '';
         this.image = new Image();
         this.activatedRoute.data.subscribe(({ stock }) => {
             this.stock = stock;
             this.expiryDate = this.stock.expiryDate != null ? this.stock.expiryDate.format(DATE_TIME_FORMAT) : null;
         });
+
         this.productTypeService.query().subscribe(
             (res: HttpResponse<IProductType[]>) => {
                 this.productTypesExisting = res.body;
@@ -223,14 +233,11 @@ export class StockManagementUpdateComponent implements OnInit {
 
     clicBtnValidateProductType() {
         this.btnValidateProductType = true;
-        alert('ok:' + this.productTypeSelectionMethod);
         if (this.productTypeSelectionMethod === 2) {
             this.stats = null;
-            alert('oui');
         } else {
             // Initialize Params Object
             let parameters = new HttpParams();
-            alert('non');
             // Begin assigning parameters
             parameters = parameters.append('productTypeId', this.stock.productType.id.toString());
             parameters = parameters.append('bio', String(this.stock.bio));
@@ -268,23 +275,50 @@ export class StockManagementUpdateComponent implements OnInit {
     onChangeProductTypeSelectionMethod(productTypeSelectionMethod: string) {
         const tmp: number = +productTypeSelectionMethod;
         this.productTypeSelectionMethod = tmp;
+
+        if (this.btnValidateProductType) {
+            this.btnValidateProductType = false;
+            this.bclickProductTypeExisting = false;
+            this.bclickProductTypeCurrentUser = false;
+            this.bclickCategory = false;
+            this.productTypeNotExisting.name = '';
+
+            this.stock.name = '';
+            this.stock.expiryDate = null;
+            this.stock.quantityInit = 0;
+            this.stock.priceUnit = 0;
+            this.stock.holding = null;
+        }
     }
 
     onChangeProductTypeCurrentUser(i: string) {
         const tmp: number = +i;
+        this.bclickProductTypeCurrentUser = true;
         this.stock.productTypeId = this.productTypesCurrentUser[tmp].id;
         this.stock.productType = this.productTypesCurrentUser[tmp];
     }
 
     onChangeProductTypeExisting(i: string) {
         const tmp: number = +i;
+        this.bclickProductTypeExisting = true;
         this.stock.productTypeId = this.productTypesExisting[tmp].id;
         this.stock.productType = this.productTypesExisting[tmp];
     }
 
     onChangeCategory(i: string) {
         const tmp: number = +i;
+        this.bclickCategory = true;
         this.productTypeNotExisting.categoryId = this.categories[tmp].id;
+    }
+
+    checkBtnValiderCondition() {
+        return (
+            this.btnValidateProductType &&
+            (this.productTypeSelectionMethod !== -1 &&
+                (this.bclickProductTypeExisting ||
+                    this.bclickProductTypeCurrentUser ||
+                    (this.bclickCategory && this.productTypeNotExisting.name !== '')))
+        );
     }
 
     onChangeHolding(i: string) {
@@ -335,5 +369,15 @@ export class StockManagementUpdateComponent implements OnInit {
 
     rad2deg(rad: number) {
         return rad * 180 / Math.PI;
+    }
+
+    checkSave() {
+        return (
+            this.stock.name !== '' &&
+            this.expiryDate !== null &&
+            this.stock.quantityInit !== undefined &&
+            this.stock.priceUnit !== undefined &&
+            this.stock.holding !== undefined
+        );
     }
 }

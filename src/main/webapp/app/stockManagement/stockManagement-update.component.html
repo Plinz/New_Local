@@ -1,12 +1,3 @@
-<!---<input type="file" id="file_image" (change)="setFileData($event, image, 'image', true)" accept="image/*" jhiTranslate="entity.action.addimage"/>-->
-
-
-
-
-
-
-
-
 <div class="row justify-content-center">
     <div class="col-8 mt-5">
         <div class="row">
@@ -15,7 +6,7 @@
                     Stock</h2>
             </div>
             <div class="col-md-2">
-                <button id="jh-create-entity" class="btn btn-primary float-center jh-create-entity create-stock"
+                <button id="jh-create-entity" class=" btn btn-warning float-center jh-create-entity create-stock"
                         [routerLink]="['/stockManagement/']">
                     <span class="hidden-sm-down" jhiTranslate="newLocalApp.stock.return">
                         Retour stock
@@ -106,16 +97,16 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <div class="text-right">
+                                        <div class="text-right" *ngIf="!checkBtnValiderCondition()">
                                             <a class="btn btn-primary float-center jh-create-entity"
-                                               (click)="clicBtnValidateProductType()">OK
+                                               (click)="clicBtnValidateProductType()"> Valider
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="btnValidateProductType">
+                        <div *ngIf="checkBtnValiderCondition()">
                             <div class="card mt-3">
                                 <div class="card-body">
 
@@ -175,15 +166,10 @@
                                                     <input type="file" id="file_image2" (change)="setFileData($event, image, 'image', true)" accept="image/*" jhiTranslate="entity.action.addimage"/>
                                                 </div>
                                                 <input type="hidden" class="form-control" name="image" id="field_image2"
-                                                       [(ngModel)]="image.image" required/>
+                                                       [(ngModel)]="image.image" />
                                                 <input type="hidden" class="form-control" name="imageContentType" id="field_imageContentType"
                                                        [(ngModel)]="image.imageContentType" />
-                                                <div [hidden]="!(editForm.controls.image?.dirty && editForm.controls.image?.invalid)">
-                                                    <small class="form-text text-danger"
-                                                           [hidden]="!editForm.controls.image?.errors?.required" jhiTranslate="entity.validation.required">
-                                                        This field is required.
-                                                    </small>
-                                                </div>
+                                                
                                             </div>
 
                                             <div class="form-group">
@@ -252,8 +238,7 @@
                                         <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span
                                         jhiTranslate="entity.action.cancel">Cancel</span>
                                     </button>
-                                    <button type="submit" id="save-entity"
-                                            [disabled]="editForm.form.invalid || isSaving"
+                                    <button type="submit" id="save-entity" *ngIf="checkSave()"
                                             class="btn btn-primary">
                                         <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span
                                         jhiTranslate="entity.action.save">Save</span>
