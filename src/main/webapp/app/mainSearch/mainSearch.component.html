@@ -1,9 +1,8 @@
 <div id="mainsearch">
-    <jhi-alert></jhi-alert>
-
     <!--Sidenav-->
     <div id="mySidenav" class="sidenav" [ngStyle]="{'width':bclik ? '250px' : '0px' }">
         <a class="closebtn" (click)="closeNav()">&times;</a>
+        <span id="Filterhead" style="font-size:30px;">Filtre :</span>
 
         <ngb-accordion [closeOthers]="true" activeIds="static-1">
             <!-- Catégorie -->
@@ -15,8 +14,9 @@
                     </div>
                 </ng-template>
             </ngb-panel>
+
             <!-- Type Produit -->
-            <ngb-panel id="static-1">
+            <ngb-panel>
                 <ng-template ngbPanelTitle><span><b>Produits</b></span></ng-template>
                 <ng-template ngbPanelContent>
                     <div *ngFor="let p of products;let i=index">
@@ -50,19 +50,30 @@
 
         <!--Nom de produit-->
         <div class="mt-4">
-            <span>&#9733; <b>Produit</b>&#9733;</span>
-            <input type="text" placeholder="Nom du produit" [(ngModel)]="filterSearch">
+            <span style="font-weight: bolder;color: #007bff;padding-left: 34px"><b>Produit :</b></span>
+            <!--14%-->
+            <div class="container mt-2">
+                    <input class="form-control" type="text" placeholder="Recherche du produit" [(ngModel)]="filterSearch">
+            </div>
         </div>
+        <hr class="my-3">
         <!--Prix mini-->
         <div class="mt-3 ml-2 mr-2">
-            <label for="price-min">Prix min : {{prixMini}}</label>
-            <input type="range" name="price-min" [(ngModel)]="prixMini" id="price-min" value="1" min="0" max="10">
+            <span style="font-weight: bolder;color: #007bff;padding-left: 27px"><b>Prix min : {{prixMini}}</b></span>
+            <!--14%-->
+            <div class="pl-3 pr-2">
+                <input class="form-control" type="range" name="price-min" [(ngModel)]="prixMini" id="price-min" value="1" min="0" max="10">
+            </div>
         </div>
         <!--Prix maxi-->
         <div class="mt-3 ml-2 mr-2">
-            <label for="price-max">Prix max : {{prixMax}}</label>
-            <input type="range" name="price-max" [(ngModel)]="prixMax" min="0" max="10">
+            <span style="font-weight: bolder;color: #007bff;padding-left: 27px"><b>Prix max : {{prixMax}}</b></span>
+            <!--14%-->
+            <div class="pl-3 pr-2">
+                <input class="form-control" type="range" name="price-max" [(ngModel)]="prixMax" min="0" max="10">
+            </div>
         </div>
+        <hr class="my-3">
         <!--Filtrer btn-->
         <div class="text-center mt-4">
             <div class="btn btn-info  pl-5 pr-5" (click)="filter()">Filtrer</div>
@@ -71,50 +82,51 @@
     </div>
 
     <div id="mainSidenav" [ngStyle]="{'marginLeft':bclik ? '250px' : '0px' }">
-    	<div>
-    		<div class="row" *ngIf="hasLocation() && (!isAuthenticated() || isLocationFromBase())">
-    			<span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
-	        </div>
-	        <div class="row" *ngIf="!hasLocation() && !isAuthenticated()">
-	        	<span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
-	            <p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les
-	                produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
-	                navigateur.
-	            </p>
-	            <button class="btn btn-info btn-sm mr-5 col-sm-1" (click)="askLocation()">
-	                <span class="d-none d-md-inline">Me géolocaliser</span>
-	            </button>
-	            <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et
-	                ensuite enregistrer votre localisation.</p>
-	            <button class="btn btn-info btn-sm ml-0 col-sm-1" (click)="login()">
-	                <span class="d-none d-md-inline">Connexion</span>
-	            </button>
-	            <button class="btn btn-info btn-sm mx-2 col-sm-1" routerLink="/register" routerLinkActive="active">
-	                <span class="d-none d-md-inline">Inscription</span>
-	            </button>
-	        </div>
-	
-	        <div class="row" *ngIf="!hasLocation() && isAuthenticated()">
-	        	<span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
-	            <p class="grey-text mb-0 col-sm-8 mt-2 ml-5">New Local a besoin de votre localisation pour vous proposez les
-	                produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
-	                navigateur.
-	            </p>
-	            <button class="btn btn-info btn-sm col-sm-1" (click)="askLocation()">
-	                <span class="d-none d-md-inline">Me géolocaliser</span>
-	            </button>
-	        </div>
-	
-	        <div class="row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase()">
-	        	<span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
-	            <p class="grey-text mb-0 col-sm-8 mt-2 ml-5">Voulez-vous utiliser votre localisation comme localisation
-	                principale
-	            </p>
-	            <button class="btn btn-info btn-sm col-sm-1" (click)="setLocationForUser()">
-	                <span class="d-none d-md-inline">Oui</span>
-	            </button>
-	        </div>
-		</div>
+        <div>
+            <div class="row" *ngIf="hasLocation() && (!isAuthenticated() || isLocationFromBase())">
+                <span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
+            </div>
+            <div class="row" *ngIf="!hasLocation() && !isAuthenticated()">
+                <span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
+                <p class="grey-text mb-0 col-sm-4">New Local a besoin de votre localisation pour vous proposez les
+                    produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
+                    navigateur.
+                </p>
+                <button class="btn btn-info btn-sm mr-5 col-sm-1" (click)="askLocation()">
+                    <span class="d-none d-md-inline">Me géolocaliser</span>
+                </button>
+                <p class="grey-text mb-0 ml-5 col-sm-3">Vous pouvez aussi vous connecter ou vous inscrire et
+                    ensuite enregistrer votre localisation.</p>
+                <button class="btn btn-info btn-sm ml-0 col-sm-1" (click)="login()">
+                    <span class="d-none d-md-inline">Connexion</span>
+                </button>
+                <button class="btn btn-info btn-sm mx-2 col-sm-1" routerLink="/register" routerLinkActive="active">
+                    <span class="d-none d-md-inline">Inscription</span>
+                </button>
+            </div>
+
+            <div class="row" *ngIf="!hasLocation() && isAuthenticated()">
+                <span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
+                <p class="grey-text mb-0 col-sm-8 mt-2 ml-5">New Local a besoin de votre localisation pour vous
+                    proposez les
+                    produits près de chez vous. Pour cela vous pouvez utilisez la géolocalisation de votre
+                    navigateur.
+                </p>
+                <button class="btn btn-info btn-sm col-sm-1" (click)="askLocation()">
+                    <span class="d-none d-md-inline">Me géolocaliser</span>
+                </button>
+            </div>
+
+            <div class="row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase()">
+                <span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
+                <p class="grey-text mb-0 col-sm-8 mt-2 ml-5">Voulez-vous utiliser votre localisation comme localisation
+                    principale
+                </p>
+                <button class="btn btn-info btn-sm col-sm-1" (click)="setLocationForUser()">
+                    <span class="d-none d-md-inline">Oui</span>
+                </button>
+            </div>
+        </div>
         <!-- Main du site-->
         <div>
             <!-- Localisation-->

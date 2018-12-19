@@ -347,6 +347,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.categoryService.query().subscribe(
             (res: HttpResponse<ICategory[]>) => {
                 this.categories = res.body;
+                this.copieCat();
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );

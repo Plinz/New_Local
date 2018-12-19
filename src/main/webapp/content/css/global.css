@@ -310,7 +310,8 @@ sidenav by rick
     z-index: 1;
     top: 65px;
     left: 0;
-    background-color: #111;
+    /* background-color: #111; */
+    border-right: 1px solid #d8d8d8;
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
@@ -326,7 +327,8 @@ sidenav by rick
 }
 
 .sidenav label {
-    color: #f1f1f1;
+    font-weight: bolder;
+    color: #007bff;
 }
 
 .sidenav .closebtn {
@@ -352,6 +354,12 @@ sidenav by rick
 
 #mainSite {
     margin-top: 65px;
+}
+
+#Filterhead {
+    position: absolute;
+    top: 10px;
+    left: 15px;
 }
 
 @media screen and (max-height: 450px) {
