@@ -507,6 +507,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         params = params.set('page', `${this.page - 1}`).set('size', `${this.pageSize}`);
         params = params.set('priceUnit.lessOrEqualThan', `${this.prixMax}`);
         params = params.set('priceUnit.greaterOrEqualThan', `${this.prixMini}`);
+        params = params.set('quantityRemaining.greaterThan', '0');
+        params = params.set('available.equals', 'true');
 
         if (this.filterOptionWare !== -1) {
             params = params.set('warehouseId.equals', `${this.filterOptionWare}`);
