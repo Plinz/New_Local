@@ -1,5 +1,6 @@
 package com.newlocal.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,11 +15,12 @@ import com.newlocal.service.dto.LocationDTO;
 @Component
 public class LocalizationUtils {
 
-    private static final String CSVFILE = "src/main/resources/FR.txt";
     private List<LocalizationFrance> localizationsFrance;
     
     public LocalizationUtils() {
-    	try(Stream<String> stream = Files.lines(Paths.get(CSVFILE))){
+    	ClassLoader classLoader = getClass().getClassLoader();
+    	File file = new File(classLoader.getResource("FR.txt").getFile());
+    	try(Stream<String> stream = Files.lines(file.toPath())){
     		localizationsFrance = stream.map(LocalizationFrance::new).collect(Collectors.toList());
     	} catch (IOException e) {
 			e.printStackTrace();
