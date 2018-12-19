@@ -26,9 +26,7 @@ INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (14,'
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (15,'crevette','nom commun pour les petits crustacés aquatiques avec un exosquelette et dix pattes', 1,4);
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (16,'Langoustine','est le nom vernaculaire donné à de nombreux crustacés', 1,4);
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (17,'moule','est le nom commun utilisé pour les membres de plusieurs familles de mollusques bivalves', 1,4);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (17,'riz','est une céréale de la famille des poacées, cultivée dans les régions tropicales', 1,4);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (17,'cacahouète','graine de l’arachide, dont on extrait de l’huile ou que l’on consomme torréfié', 1,4);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (17,'chocolat','est un aliment plus ou moins sucré produit à partir de la fève de cacao', 1,4);
+
 
 
 --JHI_USER TABLE--
