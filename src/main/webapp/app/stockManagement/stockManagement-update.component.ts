@@ -194,7 +194,7 @@ export class StockManagementUpdateComponent implements OnInit {
         this.stock.onSaleDate = moment(new Date(), DATE_TIME_FORMAT);
         this.stock.expiryDate = this.expiryDate != null ? moment(this.expiryDate, DATE_TIME_FORMAT) : null;
         this.stock.quantityRemaining = this.stock.quantityInit;
-        this.stock.available = false;
+        this.stock.available = true;
         if (this.stock.id !== undefined && this.stock.id !== null) {
             this.subscribeToSaveResponse(this.stockService.update(this.stock));
         } else {
@@ -283,11 +283,8 @@ export class StockManagementUpdateComponent implements OnInit {
             this.bclickCategory = false;
             this.productTypeNotExisting.name = '';
 
-            this.stock.name = '';
-            this.stock.expiryDate = null;
-            this.stock.quantityInit = 0;
-            this.stock.priceUnit = 0;
-            this.stock.holding = null;
+            this.stock = new Stock();
+            this.expiryDate = null;
         }
     }
 
@@ -373,7 +370,7 @@ export class StockManagementUpdateComponent implements OnInit {
 
     checkSave() {
         return (
-            this.stock.name !== '' &&
+            this.stock.name !== undefined &&
             this.expiryDate !== null &&
             this.stock.quantityInit !== undefined &&
             this.stock.priceUnit !== undefined &&
