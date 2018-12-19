@@ -24,10 +24,14 @@ import { IWarehouse } from '../shared/model/warehouse.model';
 import { IHolding } from '../shared/model/holding.model';
 import { IProductType } from '../shared/model/product-type.model';
 import { ProductTypeService } from '../entities/product-type/product-type.service';
+import { ViewEncapsulation } from '@angular/core';
+
+import { MatSnackBar, MatSnackBarConfig, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material';
 
 @Component({
     selector: 'jhi-stock',
-    templateUrl: './mainSearch.component.html'
+    templateUrl: './mainSearch.component.html',
+    encapsulation: ViewEncapsulation.None
 })
 export class MainSearchComponent implements OnInit, OnDestroy {
     currentAccount: any;
@@ -65,6 +69,15 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     filterSearch: string;
     pageSize: number;
 
+    message: string;
+    actionButtonLabel: string;
+    action: boolean;
+    setAutoHide: boolean;
+    autoHide: number;
+    horizontalPosition: MatSnackBarHorizontalPosition;
+    verticalPosition: MatSnackBarVerticalPosition;
+    addExtraClass: boolean;
+
     constructor(
         private stockService: StockService,
         private parseLinks: JhiParseLinks,
@@ -81,7 +94,8 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         private navbarService: NavbarService,
         private cartService: CartService,
         private userService: UserService,
-        private productTypeService: ProductTypeService
+        private productTypeService: ProductTypeService,
+        public snackBar: MatSnackBar
     ) {
         this.pageSize = 20;
         this.prixMini = 1;
@@ -444,6 +458,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             this.userService.findByClientIsCurrentUser().subscribe(
                 (res: HttpResponse<IUser>) => {
                     this.createCart(res.body, s);
+                    this.openSnackbar(s.name);
                 },
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
@@ -546,5 +561,25 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     onChangeHold(deviceValue: string) {
         const tmp: number = +deviceValue;
         this.filterOptionHold = tmp;
+    }
+
+    openSnackbar(produit: string) {
+        // SnackBar
+        this.message = 'Ajout du produit: ' + produit;
+        this.actionButtonLabel = 'Enlever';
+        this.action = true;
+        this.setAutoHide = true;
+        this.autoHide = 3000;
+        this.horizontalPosition = 'right';
+        this.verticalPosition = 'top';
+        this.addExtraClass = false;
+
+        // this.snackBar.open('Message archived', 'Undo', {duration: 3000});
+        const config: MatSnackBarConfig = new MatSnackBarConfig();
+        config.verticalPosition = this.verticalPosition;
+        config.horizontalPosition = this.horizontalPosition;
+        config.duration = this.setAutoHide ? this.autoHide : 0;
+        // config.extraClasses = this.addExtraClass ? ['test'] : undefined;
+        this.snackBar.open(this.message, this.action ? this.actionButtonLabel : undefined, config);
     }
 }

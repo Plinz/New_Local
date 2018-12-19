@@ -30,6 +30,10 @@ import { NewLocalUserLocationModule } from './userLocation/userLocation.module';
 import { CloudinaryModule } from '@cloudinary/angular-5.x';
 import * as Cloudinary from 'cloudinary-core';
 
+import { MatSnackBarModule, MatFormFieldModule, MatSelectModule, MatCheckboxModule, MatInputModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -48,6 +52,13 @@ import * as Cloudinary from 'cloudinary-core';
         NewLocalProfilHoldingModule,
         ChartsModule,
         NewLocalUserLocationModule,
+        MatSnackBarModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatCheckboxModule,
+        MatInputModule,
+        BrowserAnimationsModule,
+        FormsModule,
         CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'newlocal', upload_preset: 'my_preset' })
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent],

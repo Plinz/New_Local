@@ -370,3 +370,9 @@ sidenav by rick
         font-size: 18px;
     }
 }
+
+.cdk-overlay-pane {
+    margin-top: 64px !important;
+}
+
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
