@@ -77,6 +77,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     horizontalPosition: MatSnackBarHorizontalPosition;
     verticalPosition: MatSnackBarVerticalPosition;
     addExtraClass: boolean;
+    prixMaxInit: number;
 
     constructor(
         private stockService: StockService,
@@ -100,6 +101,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.pageSize = 20;
         this.prixMini = 1;
         this.prixMax = 9;
+        this.prixMaxInit = 9;
         this.filterSearch = '';
         this.bclik = false;
         this.itemsPerPage = ITEMS_PER_PAGE;
@@ -365,6 +367,15 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+        // Mise à jour du prix max
+        this.stockService.getPrixMax().subscribe(
+            (res: HttpResponse<String>) => {
+                const tmp: number = +res.body;
+                this.prixMaxInit = tmp;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+
         // Mise à jour des produits
         this.productTypeService.query().subscribe(
             (res: HttpResponse<IProductType[]>) => {
@@ -487,7 +498,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     openNav() {
         this.bclik = !this.bclik;
         this.prixMini = 0;
-        this.prixMax = 10;
+        this.prixMax = this.prixMaxInit;
         this.filterSearch = '';
         this.filterOptionWare = -1;
         this.filterOptionHold = -1;
@@ -496,7 +507,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     closeNav() {
         this.bclik = false;
         this.prixMini = 0;
-        this.prixMax = 10;
+        this.prixMax = this.prixMaxInit;
         this.filterSearch = '';
         this.filterOptionWare = -1;
         this.filterOptionHold = -1;

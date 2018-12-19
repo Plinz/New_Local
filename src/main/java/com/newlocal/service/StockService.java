@@ -228,4 +228,9 @@ public class StockService {
         return stockRepository.allHolding()
         		.stream().map(HoldingDTO::new).collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<String> prixMax() {
+        return stockRepository.prixMax();
+    }
 }

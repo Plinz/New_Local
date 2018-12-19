@@ -76,4 +76,7 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
 
     @Query("select stock from Stock stock where ( stock.priceUnit>=:min and stock.priceUnit<=:max )")
     List<Stock> filterPrice(@Param("min") Double min,@Param("max") Double max);
+
+    @Query(value="select max(stock.priceUnit) as maxPriceUnit from Stock stock ")
+    List<String> prixMax();
 }

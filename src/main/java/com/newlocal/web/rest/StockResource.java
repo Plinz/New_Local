@@ -310,4 +310,15 @@ public class StockResource {
         List<HoldingDTO> hold = stockService.allHolding();
         return new ResponseEntity<List<HoldingDTO>>(hold, HttpStatus.OK);
     }
+
+    @GetMapping("/stocks/prixmax")
+    @Timed
+    public ResponseEntity<String> prixMax() {
+        List<String> str = stockService.prixMax();
+        if( str.size() > 0) {
+            return new ResponseEntity<String>(str.get(0), HttpStatus.OK);
+        }else{
+            throw new BadRequestAlertException("A new stock cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+    }
 }
