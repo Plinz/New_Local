@@ -31,7 +31,7 @@
                 <ng-template ngbPanelTitle><span><b>Exploitations</b></span></ng-template>
                 <ng-template ngbPanelContent>
                     <select class="custom-select-sm form-control form-control-sm" (change)="onChangeHold($event.target.value)">
-                        <option value="" disabled selected>Explotation</option>
+                        <option value="" disabled selected>Exploitation</option>
                         <option value="-1">Tout</option>
                         <option *ngFor="let h of holdings;" value="{{h.id}}">{{h.name}}</option>
                     </select>

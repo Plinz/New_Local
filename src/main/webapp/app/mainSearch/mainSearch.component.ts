@@ -506,7 +506,6 @@ export class MainSearchComponent implements OnInit, OnDestroy {
             this.userService.findByClientIsCurrentUser().subscribe(
                 (res: HttpResponse<IUser>) => {
                     this.createCart(res.body, s);
-                    this.openSnackbar(s.name);
                 },
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
@@ -524,6 +523,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.cartService.createCartTrigger(c).subscribe(
             (res: HttpResponse<ICart>) => {
                 this.navbarService.sendIncrement();
+                this.openSnackbar(s.name);
             },
             (res: HttpErrorResponse) => {
                 alert('Desolé plus de produit disponible');
