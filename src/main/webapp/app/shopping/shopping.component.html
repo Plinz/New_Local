@@ -189,7 +189,7 @@
                 <thead>
                     <tr>
                         <th>Produit</th>
-                        <th>Prix(Unitaire)</th>
+                        <th>Prix(Kg)</th>
                         <th>Prix(Total)</th>
                         <th>Quantité</th>
                         <th></th>
@@ -211,7 +211,7 @@
                             </div>
                         </td>
                         <td data-th="Price">{{pur.stock?.priceUnit}}$</td>
-                        <td data-th="Price">{{pur.stock?.priceUnit * pur.quantity}}$</td>
+                        <td data-th="Price">{{ pur.stock?.priceUnit * (pur.quantity/1000) }}$</td>
                         <td data-th="Quantity">
                             <span>{{pur.quantity}}</span>
                         </td>
