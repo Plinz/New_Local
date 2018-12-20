@@ -100,7 +100,7 @@ export class ReviewComponent implements OnInit {
         let quantity = 0;
         let remaining = 0;
         for (const i of this.stocks) {
-            this.total = this.total + (i.quantityInit - i.quantityRemaining) * i.priceUnit;
+            this.total = this.total + (i.quantityInit - i.quantityRemaining) / 1000 * i.priceUnit;
             quantity = quantity + i.quantityInit;
             remaining = remaining + i.quantityRemaining;
         }

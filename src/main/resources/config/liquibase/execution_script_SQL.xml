@@ -7,10 +7,10 @@
         insert all the data
     -->
     <changeSet author="flo" id="execution_script_SQL">
-        <sqlFile dbms="postgresql"
+        <sqlFile dbms="h2"
                  encoding="utf8"
                  endDelimiter=";"
-                 path="script.sql"
+                 path="script_MYSQL.sql"
                  relativeToChangelogFile="true"
                  splitStatements="true"
                  stripComments="true"/>
