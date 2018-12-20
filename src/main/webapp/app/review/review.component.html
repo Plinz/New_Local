@@ -27,18 +27,18 @@
                             <span>STOCK PRODUCTEUR :</span>
                             <br>
                             <div class="progress mt-3">
-                                <div class="progress-bar" role="progressbar" style="width: percentage + '%'" aria-valuenow="percentage" aria-valuemin="0" aria-valuemax="100">{{percentage}}%</div>
+                                <div class="progress-bar" role="progressbar" [ngStyle]="{'width': percentage + '%'}"  aria-valuenow="percentage" aria-valuemin="0" aria-valuemax="100">{{percentage}}%</div>
                             </div>
                         </div>
                         <hr>
                         <div>
                             <span>TOTAL DES VENTES :</span>
-                            <strong class="h4">${{ total }}</strong>
+                            <strong class="h4">{{ total }}€</strong>
                         </div>
                         <hr>
                         <div>
                             <span>MOYENNE DES VENTES :</span>
-                            <strong class="h4">${{ mean }}</strong>
+                            <strong class="h4">{{ mean }}€</strong>
                         </div>
                         <hr>
                         <div>
