@@ -77,6 +77,8 @@ export class HoldingProfilUpdateComponent implements OnInit {
     save() {
         this.isSaving = true;
         if (this.location.id !== undefined) {
+            this.location.lat = null;
+            this.location.lon = null;
             this.subscribeToSaveResponseD(this.locationService.update(this.location));
         } else {
             this.subscribeToSaveResponseD(this.locationService.create(this.location));

@@ -36,21 +36,31 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
     @Query(value="SELECT * FROM ((STOCK JOIN GRADE ON STOCK.PRODUCT_TYPE_ID=GRADE.PRODUCT_TYPE_ID) JOIN PRODUCT_TYPE ON STOCK.PRODUCT_TYPE_ID=PRODUCT_TYPE.ID) WHERE GRADE.GRADE='5'",nativeQuery = true)
     List<Stock> getBestGrade();
 
-    @Query(value="select min(price_unit) as minPriceUnit, avg(price_unit) as avgPriceUnit, max(price_unit) as maxPriceUnit " +
+    @Query(value="select min(price_unit) as minPriceUnit, avg(price_unit) as avgPriceUnit, quantile(price_unit, 0.5) as medianPriceUnit, max(price_unit) as maxPriceUnit " +
         "from stock " +
         "where product_type_id = :productTypeId " +
         "and bio = :bio " +
         "and available = true " +
-        "and expiry_date > CURDATE() " +
+        "and expiry_date > current_date " +
         "and quantity_remaining > 0",nativeQuery = true)
     List<Object[]> getStatsStock(@Param("productTypeId") Long productTypeId, @Param("bio") Boolean bio);
 
+    // POSTGRE
     /*"select min(price_unit) as minPriceUnit, avg(price_unit) as avgPriceUnit, quantile(price_unit, 0.5) as medianPriceUnit, max(price_unit) as maxPriceUnit " +
         "from stock " +
         "where product_type_id = :productTypeId " +
         "and bio = :bio " +
         "and available = true " +
         "and expiry_date > current_date " +
+        "and quantity_remaining > 0"*/
+
+    //MYSQL
+    /*"select min(price_unit) as minPriceUnit, avg(price_unit) as avgPriceUnit, max(price_unit) as maxPriceUnit " +
+        "from stock " +
+        "where product_type_id = :productTypeId " +
+        "and bio = :bio " +
+        "and available = true " +
+        "and expiry_date > CURDATE() " +
         "and quantity_remaining > 0"*/
 
     @Query("select stock from Stock stock where stock.productType.category.name=:name")
