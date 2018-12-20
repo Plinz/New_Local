@@ -1,34 +1,59 @@
 --IMAGE TABLE--
-INSERT INTO IMAGE (id,name,description,image_path) VALUES (1, 'default_image.png', 'image par défaut', 'src/main/resources/images/default_image.png');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (1, 'default_image', 'image par défaut', 'https://res.cloudinary.com/newlocal/image/upload/v1545298249/default_image.jpg');
+
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (2, 'fruit', 'categorie fruit', 'https://res.cloudinary.com/newlocal/image/upload/v1545298178/8.-Astuces-pour-reconna%C3%AEtre-les-fruits-m%C3%BBrs-e1438157989509.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (3, 'légume', 'categorie légume', 'https://res.cloudinary.com/newlocal/image/upload/v1545298839/iStock-589415708-1080x675.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (4, 'viande', 'categorie viande', 'https://res.cloudinary.com/newlocal/image/upload/v1545298839/signes-officiels-de-qualite.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (5, 'poisson', 'categorie poisson', 'https://res.cloudinary.com/newlocal/image/upload/v1545298838/Poissonnerie-4-750x502.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (6, 'épicerie', 'categorie épicerie', 'https://res.cloudinary.com/newlocal/image/upload/v1545298839/legumes.jpg');
+
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (7, 'pomme', 'product_type pomme', 'https://res.cloudinary.com/newlocal/image/upload/v1545316790/dinde.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (8, 'poire', 'product_type poire', 'https://res.cloudinary.com/newlocal/image/upload/v1545317603/vinaigre-balsamique-poire.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (9, 'citron', 'product_type citron', 'https://res.cloudinary.com/newlocal/image/upload/v1545316789/citron-jardin.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (10, 'clémentine', 'product_type clémentine', 'https://res.cloudinary.com/newlocal/image/upload/v1545316788/clementine_346_346_filled.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (11, 'brocoli', 'product_type brocoli', 'https://res.cloudinary.com/newlocal/image/upload/v1545316790/10659093.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (12, 'pomme de terre', 'product_type pomme de terre', 'https://res.cloudinary.com/newlocal/image/upload/v1545316788/11085-2-pommes-de-terre-allians-bio-origine-france-cal-35-1-5-kg-20885.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (13, 'carrote', 'product_type carrote', 'https://res.cloudinary.com/newlocal/image/upload/v1545316789/10659145.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (14, 'concombre', 'product_type concombre', 'https://res.cloudinary.com/newlocal/image/upload/v1545316790/10659242.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (15, 'épinard', 'product_type épinard', 'https://res.cloudinary.com/newlocal/image/upload/v1545316790/10659093.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (16, 'agneau', 'product_type agneau', 'https://res.cloudinary.com/newlocal/image/upload/v1545316790/fotolia_6358672_subscription_xl-copy.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (17, 'porc', 'product_type porc', 'https://res.cloudinary.com/newlocal/image/upload/v1545316795/viande-porc-roti-dans-le-filet.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (18, 'poulet', 'product_type poulet', 'https://res.cloudinary.com/newlocal/image/upload/v1545316793/poulet-fermier.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (19, 'thon', 'product_type thon', 'https://res.cloudinary.com/newlocal/image/upload/v1545318017/menual136_0.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (20, 'crevette', 'product_type crevette', 'https://res.cloudinary.com/newlocal/image/upload/v1545316789/crevettes-roses-cuites.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (21, 'langoustine', 'product_type langoustine', 'https://res.cloudinary.com/newlocal/image/upload/v1545316793/langoustine-accord-mets-vins-Copy.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (22, 'moule', 'product_type moule', 'https://res.cloudinary.com/newlocal/image/upload/v1545316795/r63_moules-bouchot_fo.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (23, 'riz', 'product_type riz', 'https://res.cloudinary.com/newlocal/image/upload/v1545318125/riz_article.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (24, 'cacahuète', 'product_type cacahuète', 'https://res.cloudinary.com/newlocal/image/upload/v1545316791/fotolia_51988975_subscription_xxl-copy.jpg');
+INSERT INTO IMAGE (id,name,description,image_path) VALUES (25, 'chocolat', 'product_type chocolat', 'https://res.cloudinary.com/newlocal/image/upload/v1545316795/Tablette-chocolat-noir-200g.jpg');
 
 --CATEGORY TABLE--
-INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (1, 'Fruit','un aliment végétal, à la saveur sucrée, généralement consommé cru', 1, null);
-INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (2, 'Legume','généralement herbacées, utilisées dans alimentation humaine et dont la production relève du maraîchage ou du jardin potager', 1, null);
-INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (3, 'Viande', 'aliment constitué des tissus musculaires de certains animaux, notamment les mammifères, les oiseaux, les reptiles, mais aussi certains poissons', 1, null);
-INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (4, 'Poisson', 'animaux vertébrés aquatiques à branchies, pourvus de nageoires', 1, null);
-INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (5, 'Epicerie', 'un commerce de détail de proximité de denrées alimentaires', 1, null);
+INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (1, 'Fruit','Un aliment végétal, à la saveur sucrée, généralement consommé cru', 2, null);
+INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (2, 'Légume','Généralement herbacés, utilisés dans alimentation humaine et dont la production relève du maraîchage ou du jardin potager', 3, null);
+INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (3, 'Viande', 'Aliment constitué des tissus musculaires de certains animaux, notamment les mammifères, les oiseaux et les reptiles', 4, null);
+INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (4, 'Poisson', 'Animaux vertébrés aquatiques à branchies, pourvus de nageoires', 5, null);
+INSERT INTO CATEGORY (id,name,description,image_id,category_parent_id) VALUES (5, 'Épicerie', 'Un commerce de détail de proximité de denrées alimentaires', 6, null);
 
 --PRODUCT_TYPE TABLE--
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (1,'mangue','La mangue est le fruit du manguier, grand arbre tropical de la famille des Anacardiaceae', 1, 1);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (2,'ananas','est une plante xérophyte, originaire Amérique du Sud', 1,1);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (3,'papaya','est un arbre fruitier à feuillage persistant des régions tropicales humides et sous-humides cultivé pour son fruit', 1,1);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (4,'guanabana','appelé aussi corossol épineux, ou encore cachiment, comme autres fruits des arbres du genre Annona', 1,1);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (1,'pomme','est un fruit comestible à pépins dun goût sucré et acidulé et à la propriété plus ou moins astringente selon les variétés', 1, 1);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (2,'poire','est un fruit à pépins comestible au goût doux et sucré dont il existe plus de deux mille variétés cultivées', 1,1);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (3,'citron','est un agrume, fruit du citronnier (Citrus limon) arbuste de 5 à 10 mètres de haut, à feuilles persistantes, de la famille des Rutacées', 1,1);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (4,'clémentine','est un agrume, fruit du clémentinier, un arbre hybride de la famille des rutacées, issu du croisement entre un mandarinier et un oranger', 1,1);
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (5,'brocoli','est une variété de chou originaire du sud de Italie', 1,2);
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (6,'pomme de terre','est un tubercule comestible produit par l’espèce Solanum tuberosum', 1,2);
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (7,'carrote',' est une plante bisannuelle de la famille des apiacées, largement cultivée pour sa racine pivotante charnue, comestible, de couleur généralement orangée', 1,2);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (8,'concombre','Le concombre est une plante potagère herbacée, rampante, de la même famille que la calebasse africaine, le melon ou la courge', 1,2);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (9,'epinard','est une plante potagère, annuelle ou bisannuelle, de la famille des Chenopodiaceae, lobortis', 1,2);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (8,'concombre','est une plante potagère herbacée, rampante, de la même famille que la calebasse africaine, le melon ou la courge', 1,2);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (9,'épinard','est une plante potagère, annuelle ou bisannuelle, de la famille des Chenopodiaceae, lobortis', 1,2);
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (10,'agneau','est une production agricole résultante de élevage du mouton', 1,3);
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (11,'porc','est la viande tirée un animal, le porc, ', 1,3);
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (12,'poulet','est une jeune volaille, mâle ou femelle, de la sous-espèce Gallus gallus domesticus', 1,3);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (13,'jambon','est appellation charcutière désignant la cuisse ou épaule entière un animal destinée à être préparée crue ou cuite', 1,3);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (14,'thons','est un genre de poissons de la famille des Scombridés', 1,4);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (15,'crevette','nom commun pour les petits crustacés aquatiques avec un exosquelette et dix pattes', 1,4);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (16,'Langoustine','est le nom vernaculaire donné à de nombreux crustacés', 1,4);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (17,'moule','est le nom commun utilisé pour les membres de plusieurs familles de mollusques bivalves', 1,4);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (18,'riz','est une céréale de la famille des poacées, cultivée dans les régions tropicales', 1,4);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (19,'cacahouète','graine de l’arachide, dont on extrait de l’huile ou que l’on consomme torréfié', 1,4);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (20,'chocolat','est un aliment plus ou moins sucré produit à partir de la fève de cacao', 1,4);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (13,'thon','est un genre de poissons de la famille des Scombridés', 1,4);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (14,'crevette','nom commun pour les petits crustacés aquatiques avec un exosquelette et dix pattes', 1,4);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (15,'langoustine','est le nom vernaculaire donné à de nombreux crustacés', 1,4);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (16,'moule','est le nom commun utilisé pour les membres de plusieurs familles de mollusques bivalves', 1,4);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (17,'riz','est une céréale de la famille des poacées, cultivée dans les régions tropicales', 1,5);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (18,'cacahuète','graine de l’arachide, dont on extrait de l’huile ou que l’on consomme torréfié', 1,5);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (19,'chocolat','est un aliment plus ou moins sucré produit à partir de la fève de cacao', 1,5);
 
 
 --JHI_USER TABLE--
@@ -39,7 +64,7 @@ INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATE
 INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (11,'HBE71LVM5GK','VPE75AMZ5ED','Stephanie','Barona','stephanie.aliquet@gmail.com','TRUE','fr', null, null,'system','2018-11-15 14:44:10.842','2018-11-15 14:44:10.842',' null','2018-11-15 14:44:10.842');
 INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (12,'CPN88LVC9DR','GYY80WGB8KV','Paul','Posso','eget@hotmail.com','TRUE','fr', null, null,'system','2018-11-15 14:44:10.842','2018-11-15 14:44:10.842',' null','2018-11-15 14:44:10.842');
 INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (13,'XRL46DKS6RM','ABI47OPY0GX','Camille','Benounnas','cbenounnas@gmail.com','TRUE','fr', null, null,'system','2018-11-15 14:44:10.842','2018-11-15 14:44:10.842',' null','2018-11-15 14:44:10.842');
-INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (14,'ZQF43SCA9CJ','JDR05BDR4QH','Solomon','Zamora','zamora76@hotmail.com','TRUE','fr', null, null,'system','2018-11-15 14:44:10.842','2018-11-15 14:44:10.842',' null','2018-11-15 14:44:10.842');
+INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (14,'ZQF43SCA9CJ','JDR05BDR4QH','Salomon','Zamora','zamora76@hotmail.com','TRUE','fr', null, null,'system','2018-11-15 14:44:10.842','2018-11-15 14:44:10.842',' null','2018-11-15 14:44:10.842');
 INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (15,'HUX35VUM4UG','XCB36OKG8ZE','Valentin','Otero','otero.val@gmail.com','TRUE','fr', null, null,'system','2018-11-15 14:44:10.842','2018-11-15 14:44:10.842',' null','2018-11-15 14:44:10.842');
 INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (16,'VAT60YTK7MQ','RWR23OHH0JJ','Iyas','Corini','corini.sed@gmail.com','TRUE','fr', null, null,'system','2018-11-15 14:44:10.842','2018-11-15 14:44:10.842',' null','2018-11-15 14:44:10.842');
 INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (17,'ENW39YLI6CR','SOP19WBZ1JA','Noel','Sarraj','sarraj098@hotmail.com','TRUE','fr', null, null,'system','2018-11-15 14:44:10.842','2018-11-15 14:44:10.842',' null','2018-11-15 14:44:10.842');
@@ -86,18 +111,20 @@ INSERT INTO GRADE (id,grade,nb_voter,seller_id,product_type_id) VALUES (24,1,554
 INSERT INTO GRADE (id,grade,nb_voter,seller_id,product_type_id) VALUES (25,0,498,7,11);
 
 --LOCATION TABLE--
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (1,'Lyon','France','69001','60 av Debourg','-66.88292','29.5606',22);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (2,'Grenoble','France','38000','18 Rue HUmbert II','149.78046','32.22434',30);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (3,'Saint-Etienne','France','42000','59 r Richelandière','-59.49224','60.68047',21);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (4,'Annecy','France','74000','1 av Berthollet','79.62294','-9.01214',15);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (5,'Valence','France','26000','58 av Lautagne','46.50841','-17.63177',18);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (6,'Chamberry','France','73018','108 r Aristide Bergès','6.41102','-77.02139',21);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (7,'Saint-Etienne','France','42000','6 A r Léon Lamaizière','92.44553','9.63696',20);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (8,'Montelimar','France','26200','bd Georges Pompidou','112.70701','-46.69864',18);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (9,'Grenoble','France','38000','26 av Malherbe','171.59357','6.22941',24);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (10,'Vienne','France','4758','34 av Leclerc','74.13311','70.87551',16);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (11,'Lyon','France','69002','30 r Trembles','29.57632','14.68857',28);
-INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (12,'Annecy','France','74000','3 Quater av Chevêne','-49.23681','46.76744',19);
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (1,'Lyon','France','69001','60 av Debourg','4.830183','45.731463',22);
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (2,'Grenoble','France','38000','18 Rue HUmbert II','5.723922','45.185617',30);
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (3,'Saint-Etienne','France','42000','59 r Richelandière','4.405465','45.437884',21); 45.437884, 4.405465
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (4,'Annecy','France','74000','1 av Berthollet','6.122455','45.902929',15); 45.902929, 6.122455
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (5,'Valence','France','26000','58 av Lautagne','4.906004','44.905298',18); 44.905298, 4.906004
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (6,'Chamberry','France','73018','108 r Aristide Bergès','5.901844','45.586631',21); 45.586631, 5.901844
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (7,'Saint-Etienne','France','42000','6 A r Léon Lamaizière','4.380768','45.466002',20); 45.466002, 4.380768
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (8,'Montelimar','France','26200','bd Georges Pompidou','4.773231','44.546744',18);
+44.546744, 4.773231
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (9,'Grenoble','France','38000','26 av Malherbe','5.734604','45.169706',24); 45.169706, 5.734604
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (10,'Vienne','France','4758','34 av Leclerc','4.864548','45.512369',16); 45.512369, 4.864548
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (11,'Lille','France','59800','109 Rue Colbert','3.044003','50.631416',28); 50.631416, 3.044003
+INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (12,'Marseille','France','13010','83 Avenue de la Timone','-49.23681','46.76744',19);
+13010 Marseille
 INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (13,'Grenoble','France','38000','36 cours Berriat','-55.08963','-84.42674',24);
 INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (14,'Valence','France','26000','58 av Lautagne','-168.5462','31.41882',21);
 INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (15,'Montelimar','France','26200','1 av Stéphane Mallarmé','-84.54906','37.64259',26);
