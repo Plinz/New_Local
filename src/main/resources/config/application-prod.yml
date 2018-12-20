@@ -52,7 +52,7 @@ spring:
         host: smtp.gmail.com
         port: 587
         username: newlocal.system@gmail.com
-        password: $GMAIL_SECRET_PASS
+        password: q3~*jhL2n"Apy#i.i{{y
         protocol: smtp
         tls: true
         properties.mail.smtp:
