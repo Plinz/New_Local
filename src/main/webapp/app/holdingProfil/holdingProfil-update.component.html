@@ -1,259 +1,235 @@
+<jhi-alert-error></jhi-alert-error>
 <div class="row justify-content-center">
-    <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-            <h2 id="jhi-holding-heading" jhiTranslate="newLocalApp.holding.home.createOrEditLabel">Create or edit a Holding</h2>
-            <div>
-              <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!holding.id">
-                    <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="holding.id" readonly />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.siret" for="field_siret">Siret</label>
-                    <input type="text" class="form-control" name="siret" id="field_siret"
-                        [(ngModel)]="holding.siret" required minlength="14" maxlength="14"/>
-                    <div [hidden]="!(editForm.controls.siret?.dirty && editForm.controls.siret?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.siret?.errors?.required" jhiTranslate="entity.validation.required">
-                        This field is required.
-                        </small>
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.siret?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 14 }">
-                        This field is required to be at least 14 characters.
-                        </small>
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.siret?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 14 }">
-                        This field cannot be longer than 14 characters.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.name" for="field_name">Name</label>
-                    <input type="text" class="form-control" name="name" id="field_name"
-                        [(ngModel)]="holding.name" required minlength="1" maxlength="100"/>
-                    <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.name?.errors?.required" jhiTranslate="entity.validation.required">
-                        This field is required.
-                        </small>
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.name?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
-                        This field is required to be at least 1 characters.
-                        </small>
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.name?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
-                        This field cannot be longer than 100 characters.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.description" for="field_description">Description</label>
-                    <input type="text" class="form-control" name="description" id="field_description"
-                        [(ngModel)]="holding.description" maxlength="300"/>
-                    <div [hidden]="!(editForm.controls.description?.dirty && editForm.controls.description?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.description?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 300 }">
-                        This field cannot be longer than 300 characters.
-                        </small>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.image" for="field_image">Image</label>
-                    <select class="form-control" id="field_image" name="image" [(ngModel)]="holding.imageId">
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="imageOption.id" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
-                    </select>
-                </div>
-
-             <!--   <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.location" for="field_location">Location</label>
-                    <select class="form-control" id="field_location" name="location" [(ngModel)]="holding.locationId"  required>
-                        <option *ngIf="!editForm.value.location" [ngValue]="null" selected></option>
-                        <option [ngValue]="locationOption.id" *ngFor="let locationOption of locations; trackBy: trackLocationById">{{locationOption.id}}</option>
-                    </select>
-                </div>
-                <div [hidden]="!(editForm.controls.location?.dirty && editForm.controls.location?.invalid)">
-                    <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.location?.errors?.required" jhiTranslate="entity.validation.required">
-                        This field is required.
-                    </small>
-                </div>
-             <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.owner" for="field_owner">Owner</label>
-                    <select class="form-control" id="field_owner" name="owner" [(ngModel)]="holding.ownerId"  required>
-                        <option *ngIf="!editForm.value.owner" [ngValue]="null" selected></option>
-                        <option [ngValue]="userOption.id" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
-                    </select>
-                </div>
-                <div [hidden]="!(editForm.controls.owner?.dirty && editForm.controls.owner?.invalid)">
-                    <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.owner?.errors?.required" jhiTranslate="entity.validation.required">
-                        This field is required.
-                    </small>
-                </div>
-                -->
-            
-                 <!--modifier une location-->
-
-                 <div class="form-group" *ngIf="holding.location">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.location.city" for="field_city">City</label>
-                    <input type="text" class="form-control" name="city" id="field_city"
-                        [(ngModel)]="holding.location.country" minlength="1" maxlength="100"/>
-                    <div [hidden]="!(editForm.controls.city?.dirty && editForm.controls.city?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.city?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
-                        This field is required to be at least 1 characters.
-                        </small>
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.city?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
-                        This field cannot be longer than 100 characters.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group" *ngIf="holding.location">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.location.country" for="field_country">Country</label>
-                    <input type="text" class="form-control" name="country" id="field_country"
-                        [(ngModel)]="holding.location.country" minlength="1" maxlength="100"/>
-                    <div [hidden]="!(editForm.controls.country?.dirty && editForm.controls.country?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.country?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
-                        This field is required to be at least 1 characters.
-                        </small>
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.country?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
-                        This field cannot be longer than 100 characters.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group" *ngIf="holding.location">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.location.zip" for="field_zip">Zip</label>
-                    <input type="text" class="form-control" name="zip" id="field_zip"
-                        [(ngModel)]="holding.location.zip" required minlength="1" maxlength="30"/>
-                    <div [hidden]="!(editForm.controls.zip?.dirty && editForm.controls.zip?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.zip?.errors?.required" jhiTranslate="entity.validation.required">
-                        This field is required.
-                        </small>
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.zip?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
-                        This field is required to be at least 1 characters.
-                        </small>
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.zip?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 30 }">
-                        This field cannot be longer than 30 characters.
-                        </small>
-                    </div>
-                </div>
-                <div class="form-group" *ngIf="holding.location">
-                    <label class="form-control-label" jhiTranslate="newLocalApp.location.address" for="field_address">Address</label>
-                    <input type="text" class="form-control" name="address" id="field_address"
-                        [(ngModel)]="holding.location.address" minlength="1" maxlength="200"/>
-                    <div [hidden]="!(editForm.controls.address?.dirty && editForm.controls.address?.invalid)">
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.address?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
-                        This field is required to be at least 1 characters.
-                        </small>
-                        <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.address?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 200 }">
-                        This field cannot be longer than 200 characters.
-                        </small>
-                    </div>
-                </div>
-
-                 <!--modifier une location-->
-                  <!--creer location-->
-                  <jhi-alert-error></jhi-alert-error>
-                <!--  <div class="form-group" [hidden]="!location.id">
-                      <label for="id" jhiTranslate="global.field.id">ID</label>
-                      <input type="text" class="form-control" id="id" name="id"
-                          [(ngModel)]="location.id" readonly />-->
-                  </div>
-                  <div class="form-group" *ngIf="location">
-                      <label class="form-control-label" jhiTranslate="newLocalApp.location.city" for="field_city">City</label>
-                      <input type="text" class="form-control" name="city" id="field_city"
-                          [(ngModel)]="location.city" minlength="1" maxlength="100"/>
-                      <div [hidden]="!(editForm.controls.city?.dirty && editForm.controls.city?.invalid)">
-                          <small class="form-text text-danger"
-                          [hidden]="!editForm.controls.city?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
-                          This field is required to be at least 1 characters.
-                          </small>
-                          <small class="form-text text-danger"
-                          [hidden]="!editForm.controls.city?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
-                          This field cannot be longer than 100 characters.
-                          </small>
-                      </div>
-                  </div>
-                  <div class="form-group" *ngIf="location">
-                      <label class="form-control-label" jhiTranslate="newLocalApp.location.country" for="field_country">Country</label>
-                      <input type="text" class="form-control" name="country" id="field_country"
-                          [(ngModel)]="location.country" minlength="1" maxlength="100"/>
-                      <div [hidden]="!(editForm.controls.country?.dirty && editForm.controls.country?.invalid)">
-                          <small class="form-text text-danger"
-                          [hidden]="!editForm.controls.country?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
-                          This field is required to be at least 1 characters.
-                          </small>
-                          <small class="form-text text-danger"
-                          [hidden]="!editForm.controls.country?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
-                          This field cannot be longer than 100 characters.
-                          </small>
-                      </div>
-                  </div>
-                  <div class="form-group" *ngIf="location">
-                      <label class="form-control-label" jhiTranslate="newLocalApp.location.zip" for="field_zip">Zip</label>
-                      <input type="text" class="form-control" name="zip" id="field_zip"
-                          [(ngModel)]="location.zip" required minlength="1" maxlength="30"/>
-                      <div [hidden]="!(editForm.controls.zip?.dirty && editForm.controls.zip?.invalid)">
-                          <small class="form-text text-danger"
-                          [hidden]="!editForm.controls.zip?.errors?.required" jhiTranslate="entity.validation.required">
-                          This field is required.
-                          </small>
-                          <small class="form-text text-danger"
-                          [hidden]="!editForm.controls.zip?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
-                          This field is required to be at least 1 characters.
-                          </small>
-                          <small class="form-text text-danger"
-                          [hidden]="!editForm.controls.zip?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 30 }">
-                          This field cannot be longer than 30 characters.
-                          </small>
-                      </div>
-                  </div>
-                  <div class="form-group" *ngIf="location">
-                      <label class="form-control-label" jhiTranslate="newLocalApp.location.address" for="field_address">Address</label>
-                      <input type="text" class="form-control" name="address" id="field_address"
-                          [(ngModel)]="location.address" minlength="1" maxlength="200"/>
-                      <div [hidden]="!(editForm.controls.address?.dirty && editForm.controls.address?.invalid)">
-                          <small class="form-text text-danger"
-                          [hidden]="!editForm.controls.address?.errors?.minlength" jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
-                          This field is required to be at least 1 characters.
-                          </small>
-                          <small class="form-text text-danger"
-                          [hidden]="!editForm.controls.address?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 200 }">
-                          This field cannot be longer than 200 characters.
-                          </small>
-                      </div>
-                  </div>
-  
-                 <!-- <div class="form-group">
-                      <label class="form-control-label" jhiTranslate="newLocalApp.location.user" for="field_user">User</label>
-                      <select class="form-control" id="field_user" name="user" [(ngModel)]="location.userId" >
-                          <option [ngValue]="null"></option>
-                          <option [ngValue]="userOption.id" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.id}}</option>
-                      </select>
-                  </div>
-              </div>-->
-            
-
-          <!--    finir location-->
-            <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-                </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+    <div class="col-8 mt-5">
+        <div class="row">
+            <div class="col-md-10">
+                <h2 id="jhi-stock-heading">Création d'une exploitation</h2>
+            </div>
+            <div class="col-md-2">
+                <button type="button" id="cancel-save" class=" btn btn-warning float-center jh-create-entity create-stock" (click)="previousState()">
+                       Retour à l'exploitation</span>
                 </button>
             </div>
-        </form>
+
+            <div class="col-md-12 mt-4">
+
+                <div class="card">
+                    <div class="card-body">
+
+                            <div class="row justify-content-center">
+                                    <div class="col-10">
+                                        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+                                            <div>                                
+                                                <div class="form-group" [hidden]="!holding.id">
+                                                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                                                    <input type="text" class="form-control" id="id" name="id" [(ngModel)]="holding.id" readonly />
+                                                </div>
+                                
+                                                <div class="form-group">
+                                                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.siret" for="field_siret">Siret</label>
+                                                    <input type="text" class="form-control" name="siret" id="field_siret" [(ngModel)]="holding.siret"
+                                                        required minlength="14" maxlength="14" />
+                                                    <div [hidden]="!(editForm.controls.siret?.dirty && editForm.controls.siret?.invalid)">
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.siret?.errors?.required"
+                                                            jhiTranslate="entity.validation.required">
+                                                            This field is required.
+                                                        </small>
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.siret?.errors?.minlength"
+                                                            jhiTranslate="entity.validation.minlength" translateValues="{ min: 14 }">
+                                                            This field is required to be at least 14 characters.
+                                                        </small>
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.siret?.errors?.maxlength"
+                                                            jhiTranslate="entity.validation.maxlength" translateValues="{ max: 14 }">
+                                                            This field cannot be longer than 14 characters.
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                
+                                                <div class="form-group">
+                                                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.name" for="field_name">Name</label>
+                                                    <input type="text" class="form-control" name="name" id="field_name" [(ngModel)]="holding.name"
+                                                        required minlength="1" maxlength="100" />
+                                                    <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.name?.errors?.required"
+                                                            jhiTranslate="entity.validation.required">
+                                                            This field is required.
+                                                        </small>
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.name?.errors?.minlength"
+                                                            jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
+                                                            This field is required to be at least 1 characters.
+                                                        </small>
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.name?.errors?.maxlength"
+                                                            jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
+                                                            This field cannot be longer than 100 characters.
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.description" for="field_description">Description</label>
+                                                    <input type="text" class="form-control" name="description" id="field_description" [(ngModel)]="holding.description"
+                                                        maxlength="300" />
+                                                    <div [hidden]="!(editForm.controls.description?.dirty && editForm.controls.description?.invalid)">
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.description?.errors?.maxlength"
+                                                            jhiTranslate="entity.validation.maxlength" translateValues="{ max: 300 }">
+                                                            This field cannot be longer than 300 characters.
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                
+                                                <div class="form-group">
+                                                    <label class="form-control-label" jhiTranslate="newLocalApp.holding.image" for="field_image">Image</label>
+                                                    <select class="form-control" id="field_image" name="image" [(ngModel)]="holding.imageId">
+                                                        <option [ngValue]="null"></option>
+                                                        <option [ngValue]="imageOption.id" *ngFor="let imageOption of images; trackBy: trackImageById">{{imageOption.id}}</option>
+                                                    </select>
+                                                </div>
+                                
+                                                <div class="form-group" *ngIf="holding.location">
+                                                    <label class="form-control-label" jhiTranslate="newLocalApp.location.city" for="field_city">City</label>
+                                                    <input type="text" class="form-control" name="city" id="field_city" [(ngModel)]="holding.location.country"
+                                                        minlength="1" maxlength="100" />
+                                                    <div [hidden]="!(editForm.controls.city?.dirty && editForm.controls.city?.invalid)">
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.city?.errors?.minlength"
+                                                            jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
+                                                            This field is required to be at least 1 characters.
+                                                        </small>
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.city?.errors?.maxlength"
+                                                            jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
+                                                            This field cannot be longer than 100 characters.
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" *ngIf="holding.location">
+                                                    <label class="form-control-label" jhiTranslate="newLocalApp.location.country" for="field_country">Country</label>
+                                                    <input type="text" class="form-control" name="country" id="field_country" [(ngModel)]="holding.location.country"
+                                                        minlength="1" maxlength="100" />
+                                                    <div [hidden]="!(editForm.controls.country?.dirty && editForm.controls.country?.invalid)">
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.country?.errors?.minlength"
+                                                            jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
+                                                            This field is required to be at least 1 characters.
+                                                        </small>
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.country?.errors?.maxlength"
+                                                            jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
+                                                            This field cannot be longer than 100 characters.
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" *ngIf="holding.location">
+                                                    <label class="form-control-label" jhiTranslate="newLocalApp.location.zip" for="field_zip">Zip</label>
+                                                    <input type="text" class="form-control" name="zip" id="field_zip" [(ngModel)]="holding.location.zip"
+                                                        required minlength="1" maxlength="30" />
+                                                    <div [hidden]="!(editForm.controls.zip?.dirty && editForm.controls.zip?.invalid)">
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.zip?.errors?.required"
+                                                            jhiTranslate="entity.validation.required">
+                                                            This field is required.
+                                                        </small>
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.zip?.errors?.minlength"
+                                                            jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
+                                                            This field is required to be at least 1 characters.
+                                                        </small>
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.zip?.errors?.maxlength"
+                                                            jhiTranslate="entity.validation.maxlength" translateValues="{ max: 30 }">
+                                                            This field cannot be longer than 30 characters.
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" *ngIf="holding.location">
+                                                    <label class="form-control-label" jhiTranslate="newLocalApp.location.address" for="field_address">Address</label>
+                                                    <input type="text" class="form-control" name="address" id="field_address" [(ngModel)]="holding.location.address"
+                                                        minlength="1" maxlength="200" />
+                                                    <div [hidden]="!(editForm.controls.address?.dirty && editForm.controls.address?.invalid)">
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.address?.errors?.minlength"
+                                                            jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
+                                                            This field is required to be at least 1 characters.
+                                                        </small>
+                                                        <small class="form-text text-danger" [hidden]="!editForm.controls.address?.errors?.maxlength"
+                                                            jhiTranslate="entity.validation.maxlength" translateValues="{ max: 200 }">
+                                                            This field cannot be longer than 200 characters.
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" *ngIf="location">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.location.city" for="field_city">City</label>
+                                                <input type="text" class="form-control" name="city" id="field_city" [(ngModel)]="location.city"
+                                                    minlength="1" maxlength="100" />
+                                                <div [hidden]="!(editForm.controls.city?.dirty && editForm.controls.city?.invalid)">
+                                                    <small class="form-text text-danger" [hidden]="!editForm.controls.city?.errors?.minlength"
+                                                        jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
+                                                        This field is required to be at least 1 characters.
+                                                    </small>
+                                                    <small class="form-text text-danger" [hidden]="!editForm.controls.city?.errors?.maxlength"
+                                                        jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
+                                                        This field cannot be longer than 100 characters.
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" *ngIf="location">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.location.country" for="field_country">Country</label>
+                                                <input type="text" class="form-control" name="country" id="field_country" [(ngModel)]="location.country"
+                                                    minlength="1" maxlength="100" />
+                                                <div [hidden]="!(editForm.controls.country?.dirty && editForm.controls.country?.invalid)">
+                                                    <small class="form-text text-danger" [hidden]="!editForm.controls.country?.errors?.minlength"
+                                                        jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
+                                                        This field is required to be at least 1 characters.
+                                                    </small>
+                                                    <small class="form-text text-danger" [hidden]="!editForm.controls.country?.errors?.maxlength"
+                                                        jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
+                                                        This field cannot be longer than 100 characters.
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" *ngIf="location">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.location.zip" for="field_zip">Zip</label>
+                                                <input type="text" class="form-control" name="zip" id="field_zip" [(ngModel)]="location.zip" required
+                                                    minlength="1" maxlength="30" />
+                                                <div [hidden]="!(editForm.controls.zip?.dirty && editForm.controls.zip?.invalid)">
+                                                    <small class="form-text text-danger" [hidden]="!editForm.controls.zip?.errors?.required"
+                                                        jhiTranslate="entity.validation.required">
+                                                        This field is required.
+                                                    </small>
+                                                    <small class="form-text text-danger" [hidden]="!editForm.controls.zip?.errors?.minlength"
+                                                        jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
+                                                        This field is required to be at least 1 characters.
+                                                    </small>
+                                                    <small class="form-text text-danger" [hidden]="!editForm.controls.zip?.errors?.maxlength"
+                                                        jhiTranslate="entity.validation.maxlength" translateValues="{ max: 30 }">
+                                                        This field cannot be longer than 30 characters.
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" *ngIf="location">
+                                                <label class="form-control-label" jhiTranslate="newLocalApp.location.address" for="field_address">Address</label>
+                                                <input type="text" class="form-control" name="address" id="field_address" [(ngModel)]="location.address"
+                                                    minlength="1" maxlength="200" />
+                                                <div [hidden]="!(editForm.controls.address?.dirty && editForm.controls.address?.invalid)">
+                                                    <small class="form-text text-danger" [hidden]="!editForm.controls.address?.errors?.minlength"
+                                                        jhiTranslate="entity.validation.minlength" translateValues="{ min: 1 }">
+                                                        This field is required to be at least 1 characters.
+                                                    </small>
+                                                    <small class="form-text text-danger" [hidden]="!editForm.controls.address?.errors?.maxlength"
+                                                        jhiTranslate="entity.validation.maxlength" translateValues="{ max: 200 }">
+                                                        This field cannot be longer than 200 characters.
+                                                    </small>
+                                                </div>
+                                            </div>
+                                
+                                            <!--    finir location-->
+                                            <div class="mt-5 text-right">
+                                                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                                                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                                                </button>
+                                                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                                                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                            </div>
+                                
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

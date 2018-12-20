@@ -1,71 +1,50 @@
-<div container><br>
-        <div class="row justify-content-center ">
-                <div class="w-75 p-3 border border-secondary" *ngIf="holding" >
-                        <h2><span jhiTranslate="newLocalApp.holding.detail.title">Holding</span> </h2>
-                        <hr>
-                        <jhi-alert-error></jhi-alert-error>
-                        <div class="card-group" >
-                                <div  class="card border border-secondary" style="max-width: 40%; max-height: 40%;" >
-                                        <div class="card-header bg-light h-3" >
-                                          <h4>
-                                          <strong>{{holding.name}}</strong>
-                                         </h4>
-                                        </div>
-                                    <!-- <img class="card-img-bottom img-responsive img-thumbnail h-97" src="{{holding.image.imagePath}}" alt="Card image cap"/> -->
-
-                                    <div *ngIf="holding.image">
-                                            <img src="{{holding.image.imagePath}}" style="max-width: 100%;" alt="Card image cap"/>
-                                        </div>
-
-
-
-
-
-                                </div>
-                                <div class="card border border-secondary" style="max-width: 60%; max-height: 60%;">
-                                    <div class="card-header">
-                                            
-                                            <h4 class="card-title"><b>Details</b></h4>
-                                            
-                                      </div>
-                                    <div class="card-body">
-                                      <h5>
-                                      <span jhiTranslate="newLocalApp.holding.siret">Siret</span> {{holding.siret}}<br><br>
-                                      <span jhiTranslate="newLocalApp.holding.description">Description</span> {{holding.description}}<br><br>
-                                      <span jhiTranslate="newLocalApp.location.city">Ville</span>{{holding.location?.city}}<br><br>
-                                      <span jhiTranslate="newLocalApp.location.country">Country</span>{{holding.location?.country}}<br><br>
-                                      <span jhiTranslate="newLocalApp.location.zip">Zip</span>{{holding.location?.zip}}<br><br>
-                                      <span jhiTranslate="newLocalApp.location.address">Address</span>{{holding.location?.address}}<br><br>
-                                    </h5>
-                                    </div>
-                                  </div>
-    
-                </div>
-                <div class="row">
-
-                    <div class="col-md-9">
-               
-                                <!--  <img class="img-responsive img-portfolio img-hover" src="../../../content/images/hipster192.png">
-                             -->
-                     </div>
-
-                     <div class="col-md-3">
-                         <br>
-                            <button type="submit"
-                            (click)="previousState()"
-                            class="btn btn-info">
-                        <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-                    </button>
-            
-                    <button type="button"
-                            [routerLink]="['/holdingprofil', holding.id, 'edit']"
-                            class="btn btn-primary">
-                        <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-                    </button>
-                 </div>
-             
-    </div>
-
+<div class="row justify-content-center">
+    <div class="col-8 mt-5">
+        <div class="row">
+            <div class="col-md-10">
+                <h2 id="jhi-stock-heading">Exploitation: {{holding.name}}</h2>
             </div>
+            <div class="col-md-2">
+                <button type="submit" (click)="previousState()" class=" btn btn-warning float-center jh-create-entity create-stock">
+                    <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Retour aux exploitations</span>
+                </button>
+            </div>
+
+            <div class="col-md-12 mt-4">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class=row>
+                            <div class="col-md-6">
+                                <div *ngIf="holding.image">
+                                    <img src="{{holding.image.imagePath}}" style="max-width: 100%;" alt="Card image cap" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5>
+                                    <span jhiTranslate="newLocalApp.holding.siret">Siret</span> {{holding.siret}}<br><br>
+                                    <span jhiTranslate="newLocalApp.holding.description">Description</span>
+                                    {{holding.description}}<br><br>
+                                    <span jhiTranslate="newLocalApp.location.city">Ville</span>{{holding.location?.city}}<br><br>
+                                    <span jhiTranslate="newLocalApp.location.country">Country</span>{{holding.location?.country}}<br><br>
+                                    <span jhiTranslate="newLocalApp.location.zip">Zip</span>{{holding.location?.zip}}<br><br>
+                                    <span jhiTranslate="newLocalApp.location.address">Address</span>{{holding.location?.address}}<br><br>
+                                </h5>
+
+                                <div class="text-right pr-5">
+                                    <button type="button" [routerLink]="['/holdingprofil', holding.id, 'edit']" class="btn btn-primary">
+                                        <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">
+                                            Edit</span>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-                     

@@ -25,7 +25,19 @@ export class SettingsComponent implements OnInit {
         private languageService: JhiLanguageService,
         private languageHelper: JhiLanguageHelper,
         private passwordService: PasswordService
-    ) {}
+    ) {
+        this.settingsAccount = {
+            id: 0,
+            activated: null,
+            email: '',
+            firstName: '',
+            langKey: '',
+            lastName: '',
+            login: '',
+            imageUrl: '',
+            authorite: ''
+        };
+    }
 
     ngOnInit() {
         this.principal.identity().then(account => {
