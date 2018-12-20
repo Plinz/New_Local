@@ -84,7 +84,7 @@ public class LocalizationUtils {
 		if (localizationsFrance != null){
 			LocalizationFrance loc = localizationsFrance.parallelStream().min((l1, l2) -> 
 			Double.compare(this.distance(l1.lat, l1.lon, location.getLat(), location.getLon()), this.distance(l2.lat, l2.lon, location.getLat(), location.getLon()))
-			).get();
+			).orElse(null);
 			if (loc != null){
 				location.setCity(loc.city);
 				location.setZip(loc.zip);

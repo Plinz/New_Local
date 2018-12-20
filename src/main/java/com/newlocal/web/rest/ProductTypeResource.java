@@ -150,7 +150,6 @@ public class ProductTypeResource {
     @GetMapping("/product-types/currentUser")
     @Timed
     public ResponseEntity<List<ProductTypeDTO>> getProductTypesByCurrentUser(){
-        log.debug("REST request to get ProductTypes of the current user : {}");
         List<ProductTypeDTO> productTypes = productTypeService.findByCurrentUser();
         return ResponseEntity.ok().body(productTypes);
     }

@@ -15,9 +15,7 @@ public class UserDAO {
     public long getUserIdByCurrentLogin() {
 
         if(SecurityUtils.getCurrentUserLogin().isPresent()) {
-
             String query = "select id from jhi_user where login = '" + SecurityUtils.getCurrentUserLogin().get() + "'";
-
             return this.jdbcTemplate.queryForObject(query, long.class);
         }else{
             return 0;
