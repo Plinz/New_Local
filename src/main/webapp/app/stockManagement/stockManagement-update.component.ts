@@ -256,11 +256,14 @@ export class StockManagementUpdateComponent implements OnInit {
                                     this.stats[i] = `Prix de vente moyen : ${this.stats[i]} €`;
                                     break;
                                 case 2:
+                                    this.stats[i] = `Prix de vente le plus haut : ${this.stats[i]} €`;
+                                    break;
+                                /*case 2:
                                     this.stats[i] = `Prix de vente médian : ${this.stats[i]} €`;
                                     break;
                                 case 3:
                                     this.stats[i] = `Prix de vente le plus haut : ${this.stats[i]} €`;
-                                    break;
+                                    break;*/
                                 default:
                                     break;
                             }

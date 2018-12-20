@@ -62,8 +62,8 @@ INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (16,'
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (17,'riz','est une céréale de la famille des poacées, cultivée dans les régions tropicales', 1,5);
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (18,'cacahuète','graine de l’arachide, dont on extrait de l’huile ou que l’on consomme torréfié', 1,5);
 INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (19,'chocolat','est un aliment plus ou moins sucré produit à partir de la fève de cacao', 1,5);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (20,'Fraise','est un fruit rouge', 1,1);
-INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (21,'Noix','est un fruit rouge', 1,1);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (20,'fraise','est un fruit rouge', 1,1);
+INSERT INTO PRODUCT_TYPE (id,name,description,image_id,category_id) VALUES (21,'noix','est un fruit à coque', 1,1);
 
 --JHI_USER TABLE--
 INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (7,'Florian','$2y$10$DIQaTZ3ML7nYaZDY7cZfwutBo4obqHF.KJcSZ1x4QI1Yv54907DdO','Florian','Gourdeau','florian.gourdeau@gmail.com','TRUE','fr', null, null,'system',DATE '2018-11-15 14:44:10.842',DATE '2018-11-15 14:44:10.842',' null',DATE'2018-11-15 14:44:10.842');
