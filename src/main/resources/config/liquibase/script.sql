@@ -120,4 +120,4 @@ INSERT INTO WAREHOUSE (id,name,description,tel,image_id,location_id) VALUES (5,'
 
 --STOCK TABLE--
 INSERT INTO STOCK (id,name,description,quantity_init,quantity_remaining,price_unit,on_sale_date,expiry_date,bio,available,image_id,product_type_id,holding_id,seller_id,warehouse_id) VALUES (1,'Fraise bio','Fraise bio de ma ferme',10000,10000,0.008, DATE '2018-07-01', DATE '2018-10-02','true','true', 26, 20, 1, 9, 1);
-INSERT INTO STOCK (id,name,description,quantity_init,quantity_remaining,price_unit,on_sale_date,expiry_date,bio,available,image_id,product_type_id,holding_id,seller_id,warehouse_id) VALUES (2,'Noix de Grenoble','Noix typique de grenoble',50000,50000,0.031, DATE '2018-09-03',DATE '2019-02-15','true','true', 26,21,2,19,1);
+INSERT INTO STOCK (id,name,description,quantity_init,quantity_remaining,price_unit,on_sale_date,expiry_date,bio,available,image_id,product_type_id,holding_id,seller_id,warehouse_id) VALUES (2,'Noix de Grenoble','Noix typique de grenoble',50000,50000,0.031, DATE '2018-09-03',DATE '2019-02-15','true','true', 27,21,2,19,1);
