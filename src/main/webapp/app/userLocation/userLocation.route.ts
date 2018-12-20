@@ -7,6 +7,7 @@ import { StockDetailComponent } from 'app/entities/stock';
 import { StockResolve } from 'app/entities/stock';
 import { from } from 'rxjs';
 import { LocationResolve } from 'app/entities/location/location.route';
+import { HomeComponent } from '../home/home.component';
 
 export const userLocationRoute: Routes = [
     {
@@ -33,5 +34,13 @@ export const userLocationRoute: Routes = [
             pageTitle: 'newLocalApp.userLocation.home.title'
         },
         canActivate: [UserRouteAccessService]
+    },
+    {
+        path: '',
+        component: HomeComponent,
+        data: {
+            authorities: [],
+            pageTitle: 'home.title'
+        }
     }
 ];

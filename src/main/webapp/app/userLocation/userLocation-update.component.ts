@@ -12,9 +12,14 @@ import { ITEMS_PER_PAGE } from 'app/shared';
 import { LocationService } from 'app/entities/location/location.service';
 import { isModuleDeclaration } from 'typescript';
 
+import { ViewEncapsulation } from '@angular/core';
+
+import { MatSnackBar, MatSnackBarConfig, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material';
+
 @Component({
     selector: 'jhi-usernewlocation',
-    templateUrl: './userLocation-update.component.html'
+    templateUrl: './userLocation-update.component.html',
+    encapsulation: ViewEncapsulation.None
 })
 export class UserNewLocationComponent implements OnInit, OnDestroy {
     settingsAccount: any;
@@ -22,6 +27,14 @@ export class UserNewLocationComponent implements OnInit, OnDestroy {
     isSaving: boolean;
     testForm: boolean;
     test = false;
+    message: string;
+    actionButtonLabel: string;
+    action: boolean;
+    setAutoHide: boolean;
+    autoHide: number;
+    horizontalPosition: MatSnackBarHorizontalPosition;
+    verticalPosition: MatSnackBarVerticalPosition;
+    addExtraClass: boolean;
 
     constructor(
         private account: AccountService,
@@ -29,7 +42,9 @@ export class UserNewLocationComponent implements OnInit, OnDestroy {
         private jhiAlertService: JhiAlertService,
         private locationService: LocationService,
         private userService: UserService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        public snackBar: MatSnackBar,
+        private router: Router
     ) {}
     ngOnInit() {
         this.isSaving = false;
@@ -43,12 +58,19 @@ export class UserNewLocationComponent implements OnInit, OnDestroy {
     }
 
     save() {
+        this.openSnackbar();
         this.isSaving = true;
         this.subscribeToSaveResponse(this.locationService.create(this.newLocation));
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<ILocation>>) {
-        result.subscribe((res: HttpResponse<ILocation>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
+        result.subscribe(
+            (res: HttpResponse<ILocation>) => {
+                this.onSaveSuccess();
+                this.router.navigate(['/']);
+            },
+            (res: HttpErrorResponse) => this.onSaveError()
+        );
     }
 
     form() {
@@ -63,7 +85,6 @@ export class UserNewLocationComponent implements OnInit, OnDestroy {
 
     private onSaveSuccess() {
         this.isSaving = false;
-        this.previousState();
     }
 
     private onSaveError() {
@@ -94,4 +115,24 @@ export class UserNewLocationComponent implements OnInit, OnDestroy {
         };
     }
     ngOnDestroy() {}
+
+    openSnackbar() {
+        // SnackBar
+        this.message = 'Ajout de la nouvelle localisation ';
+        this.actionButtonLabel = 'Fermer';
+        this.action = true;
+        this.setAutoHide = true;
+        this.autoHide = 3000;
+        this.horizontalPosition = 'right';
+        this.verticalPosition = 'top';
+        this.addExtraClass = false;
+
+        // this.snackBar.open('Message archived', 'Undo', {duration: 3000});
+        const config: MatSnackBarConfig = new MatSnackBarConfig();
+        config.verticalPosition = this.verticalPosition;
+        config.horizontalPosition = this.horizontalPosition;
+        config.duration = this.setAutoHide ? this.autoHide : 0;
+        // config.extraClasses = this.addExtraClass ? ['test'] : undefined;
+        this.snackBar.open(this.message, this.action ? this.actionButtonLabel : undefined, config);
+    }
 }

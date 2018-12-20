@@ -614,7 +614,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     openSnackbar(produit: string) {
         // SnackBar
         this.message = 'Ajout du produit: ' + produit;
-        this.actionButtonLabel = 'Enlever';
+        this.actionButtonLabel = 'Fermer';
         this.action = true;
         this.setAutoHide = true;
         this.autoHide = 3000;

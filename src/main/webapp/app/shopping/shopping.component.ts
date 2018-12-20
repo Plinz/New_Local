@@ -82,7 +82,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
                 this.purchases = []; */
                 this.btimeout = true;
             }
-        }, 3000);
+        }, 30000);
     }
 
     startTimeout() {
