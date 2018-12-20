@@ -11,6 +11,8 @@ import { PurchaseService } from '../entities/purchase/purchase.service';
 import { Moment } from 'moment';
 import * as moment from 'moment';
 import { saveAs } from 'file-saver';
+import { NavbarService } from '../layouts/navbar/navbar.service';
+import { StockService } from 'app/entities/stock';
 
 @Component({
     selector: 'jhi-purchase',
@@ -32,13 +34,15 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     factureName: string;
 
     constructor(
+        private stockService: StockService,
         private dataUtils: JhiDataUtils,
         private purchaseService: PurchaseService,
         private cartService: CartService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
         private principal: Principal,
-        private location: Location
+        private location: Location,
+        private navbarService: NavbarService
     ) {
         this.isOkpanier = true;
         this.total = 0;
@@ -91,6 +95,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         this.fintimeout = false;
         this.purchases = this.carts;
         this.confirmCreate();
+        this.navbarService.clearCount();
     }
 
     abandonner() {
@@ -170,21 +175,34 @@ export class ShoppingComponent implements OnInit, OnDestroy {
         return qcart === qlist;
     }
 
-    modifier(i: number) {
-        const tmp: number = this.carts[i].quantity;
+    modifier(i: string) {
+        const j: number = +i;
 
-        this.carts[i].quantity = this.listBtM[i].b;
-        this.cartService
-            .update(this.carts[i])
-            .subscribe((res: HttpResponse<ICart>) => this.onSaveSuccess(i), (res: HttpErrorResponse) => this.onSaveError(tmp));
+        this.stockService.getRemaning(this.carts[j].stock.id).subscribe(
+            (res: HttpResponse<String>) => {
+                const rem: number = +res.body;
+                const a: number = +this.listBtM[j].b;
+
+                if (rem - (a - this.carts[j].quantity) > 0) {
+                    alert('ojjj');
+                    this.carts[j].quantity = this.listBtM[j].b;
+                    this.cartService
+                        .update(this.carts[j])
+                        .subscribe((rest: HttpResponse<ICart>) => this.onSaveSuccess(), (rest: HttpErrorResponse) => this.onSaveError(j));
+                } else {
+                    this.onSaveError(j);
+                }
+            },
+            (res: HttpErrorResponse) => this.onSaveError(j)
+        );
     }
 
-    onSaveSuccess(i: number) {
+    onSaveSuccess() {
         this.calculTotal();
     }
 
     onSaveError(i: number) {
-        this.carts[i].quantity = i;
+        this.listBtM[i].b = this.carts[i].quantity;
         this.listBtM[i].err = true;
     }
 

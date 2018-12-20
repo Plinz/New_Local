@@ -233,4 +233,9 @@ public class StockService {
     public List<String> prixMax() {
         return stockRepository.prixMax();
     }
+
+    @Transactional(readOnly = true)
+    public List<String> getRemaning(Long id) {
+        return stockRepository.getRemaning(id);
+    }
 }

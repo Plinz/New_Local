@@ -28,7 +28,7 @@
                                 <th>Produit</th>
                                 <th>Prix(Unitaire)</th>
                                 <th>Prix(Total)</th>
-                                <th>Quantité</th>
+                                <th>Quantité (en g)</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -52,12 +52,12 @@
                                 <td data-th="Price">{{cart.stock?.priceUnit * cart.quantity}}$</td>
                                 <td data-th="Quantity">
                                     <input type="number" [(ngModel)]="listBtM[i].b" (keypress)="nada($event)" class="form-control text-center"
-                                        min="1">
+                                        min="500" step="500">
                                     <!--value="{{cart.quantity}}"-->
                                     <button class="btn btn-warning btn-sm" (click)="modifier(i)" *ngIf="!btncheck(cart.quantity,listBtM[i].b)">
                                         <span> Modifier</span>
                                     </button>
-                                    <div *ngIf="(listBtM[i].err === false)">
+                                    <div *ngIf="(listBtM[i].err === true)">
                                         <small class="text-muted" color="red">Rupture de stock</small>
                                     </div>
                                 </td>

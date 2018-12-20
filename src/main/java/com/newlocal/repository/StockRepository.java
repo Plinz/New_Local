@@ -79,4 +79,7 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
 
     @Query(value="select max(stock.priceUnit) as maxPriceUnit from Stock stock ")
     List<String> prixMax();
+
+    @Query(value="select stock.quantityRemaining from Stock stock where stock.id=:id")
+    List<String> getRemaning(@Param("id") Long id);
 }

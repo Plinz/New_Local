@@ -23,6 +23,7 @@ export class NavbarService {
 
     clearCount() {
         this.count = 0;
+        this.subject.next(this.count);
     }
 
     getCount(): Observable<number> {

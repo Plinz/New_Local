@@ -139,4 +139,8 @@ export class StockService {
     getPrixMax(): Observable<HttpResponse<String>> {
         return this.http.get<String>(`${this.resourceUrl}/prixmax`, { observe: 'response' });
     }
+
+    getRemaning(id: number): Observable<HttpResponse<String>> {
+        return this.http.get<String>(`${this.resourceUrl}/remaning/${id}`, { observe: 'response' });
+    }
 }
