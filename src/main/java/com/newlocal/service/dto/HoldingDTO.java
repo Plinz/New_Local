@@ -41,7 +41,8 @@ public class HoldingDTO implements Serializable {
     private UserDTO owner;
     
     public HoldingDTO(){
-    	
+        this.siret = "00000000000000";
+        this.name = "null";
     }
     
     public HoldingDTO(Holding holding){

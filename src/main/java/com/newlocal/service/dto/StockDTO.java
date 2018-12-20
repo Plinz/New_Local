@@ -69,7 +69,14 @@ public class StockDTO implements Serializable {
     private WarehouseDTO warehouse;
     
     public StockDTO(){
-    	
+        this.name = "null";
+        this.quantityInit = 0;
+        this.quantityRemaining = 0;
+        this.priceUnit = 0.0;
+        this.onSaleDate = Instant.now();
+        this.expiryDate = Instant.now();
+        this.bio = false;
+        this.available = false;
     }
     
     public StockDTO(Stock stock){

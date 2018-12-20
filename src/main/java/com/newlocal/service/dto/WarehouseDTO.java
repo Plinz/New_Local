@@ -36,7 +36,8 @@ public class WarehouseDTO implements Serializable {
     private LocationDTO location;
     
     public WarehouseDTO(){
-    	
+        this.name = "null";
+        this.tel = "0000";
     }
     
     public WarehouseDTO(Warehouse warehouse){
