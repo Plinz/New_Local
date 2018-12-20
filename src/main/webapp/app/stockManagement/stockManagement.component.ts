@@ -342,7 +342,8 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         tmp.result.then(() => this.checkboxsuppr(), () => '');
     }
 
-    onChangeCat(value: number) {
-        this.optionCategory = value;
+    onChangeCat(value: string) {
+        const tmp: number = +value;
+        this.optionCategory = tmp;
     }
 }
