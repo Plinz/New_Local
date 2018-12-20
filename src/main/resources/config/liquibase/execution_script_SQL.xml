@@ -7,7 +7,7 @@
         insert all the data
     -->
     <changeSet author="flo" id="execution_script_SQL">
-        <sqlFile dbms="h2"
+        <sqlFile dbms="postgresql"
                  encoding="utf8"
                  endDelimiter=";"
                  path="script.sql"
