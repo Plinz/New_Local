@@ -157,7 +157,6 @@ public class HoldingResource {
     @GetMapping("/holdings/currentUser")
     @Timed
     public ResponseEntity<List<HoldingDTO>> getHoldingsByCurrentUser(){
-        log.debug("REST request to get Holdings of the current user : {}");
         List<HoldingDTO> holdings = holdingService.findByCurrentUser();
         return ResponseEntity.ok().body(holdings);
     }

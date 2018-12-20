@@ -117,7 +117,6 @@ public class StockService {
      */
     @Transactional(readOnly = true)
     public List<StockDTO> getProductBio() {
-        log.debug("Request to search for Product Bio {}");
         return stockRepository.getProductBio().stream().map(StockDTO::new).collect(Collectors.toList());
     }
 
@@ -126,7 +125,6 @@ public class StockService {
      */
     @Transactional(readOnly = true)
     public List<StockDTO> getNewStock() {
-        log.debug("Request to search a new stock {}");
         return stockRepository.findAllStocks(new Sort(Sort.Direction.DESC, "onSaleDate"))
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
@@ -136,7 +134,6 @@ public class StockService {
      */
     @Transactional(readOnly = true)
     public List<StockDTO> getBestPurchase() {
-        log.debug("Request to search the best purchase {}");
         return stockRepository.getBestPurchase()
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
@@ -146,7 +143,6 @@ public class StockService {
      */
     @Transactional(readOnly = true)
     public List<StockDTO> getBestGrade() {
-        log.debug("Request to search the best grade {}");
         return stockRepository.getBestGrade()
         		.stream().map(StockDTO::new).collect(Collectors.toList());
     }
@@ -192,8 +188,6 @@ public class StockService {
     @Transactional(readOnly = true)
     public List<String> getStatsStock(Long productTypeId, Boolean bio) {
         List<String> mesStats = null;
-
-        log.debug("Request to get the stats on the productType of the stock {}");
         List<Object[]> mesObjets = stockRepository.getStatsStock(productTypeId, bio);
 
         if (mesObjets != null) {
@@ -232,5 +226,10 @@ public class StockService {
     @Transactional(readOnly = true)
     public List<String> prixMax() {
         return stockRepository.prixMax();
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getRemaning(Long id) {
+        return stockRepository.getRemaning(id);
     }
 }

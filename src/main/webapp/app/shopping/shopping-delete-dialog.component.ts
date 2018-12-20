@@ -6,6 +6,7 @@ import { JhiEventManager } from 'ng-jhipster';
 
 import { ICart } from '../shared/model/cart.model';
 import { CartService } from '../entities/cart/cart.service';
+import { NavbarService } from '../layouts/navbar/navbar.service';
 
 @Component({
     selector: 'jhi-purchase-delete-dialog',
@@ -14,7 +15,12 @@ import { CartService } from '../entities/cart/cart.service';
 export class ShoppingDeleteDialogComponent {
     cart: ICart;
 
-    constructor(private cartService: CartService, public activeModal: NgbActiveModal, private eventManager: JhiEventManager) {}
+    constructor(
+        private cartService: CartService,
+        public activeModal: NgbActiveModal,
+        private eventManager: JhiEventManager,
+        private navbarService: NavbarService
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
@@ -28,6 +34,7 @@ export class ShoppingDeleteDialogComponent {
             });
             this.activeModal.dismiss(true);
         });
+        this.navbarService.sendDecrement();
     }
 }
 

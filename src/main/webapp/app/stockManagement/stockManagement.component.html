@@ -127,7 +127,7 @@
 
                                     <td class="text-center">
                                         <div class="btn-group flex-btn-group-container">
-                                            <button *ngIf="count==2" type="submit" [routerLink]="['/stockManagement', stock.id, 'edit']"
+                                            <button *ngIf="count==2" type="submit" [routerLink]="['/stock', stock.id, 'edit']"
                                                 class="btn btn-primary btn-sm">
                                                 <fa-icon [icon]="'pencil-alt'"></fa-icon>
                                                 <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
@@ -151,8 +151,8 @@
                                     <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                                 </button>
                             </div>
-
                         </div>
+                        
                     </div>
                 </div>
             </div>

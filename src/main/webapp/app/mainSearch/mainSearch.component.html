@@ -31,7 +31,7 @@
                 <ng-template ngbPanelTitle><span><b>Exploitations</b></span></ng-template>
                 <ng-template ngbPanelContent>
                     <select class="custom-select-sm form-control form-control-sm" (change)="onChangeHold($event.target.value)">
-                        <option value="" disabled selected>Explotation</option>
+                        <option value="" disabled selected>Exploitation</option>
                         <option value="-1">Tout</option>
                         <option *ngFor="let h of holdings;" value="{{h.id}}">{{h.name}}</option>
                     </select>
@@ -75,7 +75,7 @@
 
     <div id="mainSidenav" [ngStyle]="{'marginLeft':bclik ? '250px' : '0px' }">
         <div>
-            <div class="row" *ngIf="hasLocation() && (!isAuthenticated() || isLocationFromBase())">
+            <div class="row" *ngIf="hasLocation() && (!isAuthenticated() || isLocationFromBase()|| !bnon)">
                 <span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
             </div>
             <div class="row" *ngIf="!hasLocation() && !isAuthenticated()">
@@ -109,15 +109,25 @@
                 </button>
             </div>
 
-            <div class="row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase()">
+            <div class="row" *ngIf="hasLocation() && isAuthenticated() && !isLocationFromBase() && bnon">
                 <span style="font-size:30px;cursor:pointer" (click)="openNav()">&#9776; Filtre</span>
                 <p class="grey-text mb-0 col-sm-8 mt-2 ml-5">Voulez-vous utiliser votre localisation comme localisation
                     principale
                 </p>
+                <button class="btn btn-info btn-sm col-sm-1" (click)="nonLocation()">
+                    <span class="d-none d-md-inline">Non</span>
+                </button>
+                <div class="pl-3"></div>
                 <button class="btn btn-info btn-sm col-sm-1" (click)="setLocationForUser()">
                     <span class="d-none d-md-inline">Oui</span>
                 </button>
             </div>
+
+            <!-- <div *ngIf="!(cat == null || cat == undefined)">
+                <button type="submit" (click)="previousState()" class="btn btn-info mt-3">
+                    <fa-icon [icon]="'times'"></fa-icon>&nbsp;<span>{{cat}}</span>
+                </button>
+            </div> -->
         </div>
         <!-- Main du site-->
         <div>
@@ -174,7 +184,7 @@
                     </div>
 
 
-                    <div *ngIf="stocks && stocks.length >19">
+                    <div *ngIf="stocks && (stocks.length >19 || page != 1)">
                         <div class="row justify-content-center mt-4">
                             <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
                         </div>

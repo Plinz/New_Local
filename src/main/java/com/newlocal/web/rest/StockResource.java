@@ -321,4 +321,15 @@ public class StockResource {
             throw new BadRequestAlertException("A new stock cannot already have an ID", ENTITY_NAME, "idexists");
         }
     }
+
+    @GetMapping("/stocks/remaning/{id}")
+    @Timed
+    public ResponseEntity<String> getRemaning(@PathVariable Long id) {
+        List<String> str = stockService.getRemaning(id);
+        if( str.size() > 0) {
+            return new ResponseEntity<String>(str.get(0), HttpStatus.OK);
+        }else{
+            throw new BadRequestAlertException("A new stock cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+    }
 }

@@ -42,7 +42,7 @@ public class LocationDTO implements Serializable {
     private UserDTO user;
     
     public LocationDTO(){
-    	
+    	this.zip = "00000";
     }
 
     public LocationDTO(Location location) {

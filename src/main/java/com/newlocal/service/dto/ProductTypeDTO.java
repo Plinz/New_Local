@@ -31,7 +31,7 @@ public class ProductTypeDTO implements Serializable {
     private ImageDTO image;
     
     public ProductTypeDTO(){
-    	
+    	this.name = "null";
     }
     
     public ProductTypeDTO(ProductType productType){
