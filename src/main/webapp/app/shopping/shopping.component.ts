@@ -184,7 +184,6 @@ export class ShoppingComponent implements OnInit, OnDestroy {
                 const a: number = +this.listBtM[j].b;
 
                 if (rem - (a - this.carts[j].quantity) > 0) {
-                    alert('ojjj');
                     this.carts[j].quantity = this.listBtM[j].b;
                     this.cartService
                         .update(this.carts[j])
