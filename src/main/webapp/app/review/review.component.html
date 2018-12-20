@@ -93,14 +93,14 @@
                         <!--General-->
                         <th>Nom</th>
                         <th>N°lot</th>
-                        <th>Prix(unité ou Kg) </th>
-                        <th>Quantité total</th>
+                        <th>Prix(Kg) </th>
+                        <th>Quantité total(g)</th>
                         <!---->
-                        <th>Quantité vendu</th>
-                        <th>Gain</th>
+                        <th>Quantité vendu(g)</th>
+                        <th>Gain(€)</th>
                         <!---->
-                        <th>Quantité restante</th>
-                        <th>Perte</th>
+                        <th>Quantité restante(g)</th>
+                        <th>Perte(€)</th>
                     </tr>
                 </thead>
                 <tbody *ngFor="let stock of stocks ;">
@@ -111,10 +111,10 @@
                         <td>{{stock.quantityInit}}</td>
                         <!---->
                         <td>{{stock.quantityInit - stock.quantityRemaining}}</td>
-                        <td>{{((stock.quantityInit-stock.quantityRemaining)*stock.priceUnit)}}</td>
+                        <td>{{(((stock.quantityInit-stock.quantityRemaining)/1000)*stock.priceUnit)}}</td>
                         <!---->
                         <td>{{stock.quantityRemaining}}</td>
-                        <td>{{stock.quantityRemaining*stock.priceUnit}}</td>
+                        <td>{{(stock.quantityRemaining/1000)*stock.priceUnit}}</td>
                     </tr>
                 </tbody>
             </table>

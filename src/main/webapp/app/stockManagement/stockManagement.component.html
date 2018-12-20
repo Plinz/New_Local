@@ -121,7 +121,7 @@
                                     <td>{{stock.expiryDate | date:'medium'}}</td>
                                     <td>{{stock.priceUnit}}</td>
                                     <td *ngIf="count!=2">{{
-                                        ((stock.quantityInit-stock.quantityRemaining)*stock.priceUnit) }} </td>
+                                        (((stock.quantityInit-stock.quantityRemaining)/1000)*stock.priceUnit) }} </td>
                                     <td *ngIf="count!=2">{{ (stock.quantityInit-stock.quantityRemaining)}}</td>
                                     <td>{{stock.quantityInit}}</td>
 

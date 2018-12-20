@@ -81,6 +81,10 @@ INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATE
 INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (19,'Benjamin','$2y$10$28uQFnyas9sg8rnCpZHEx.1Pg0OxZwirhx6jncZ2NoxI2pDpNH2ZS','Benjamin','Gontard','benjamin.gontard2912@gmail.com','TRUE','fr', null, null,'system','2018-11-15 14:44:10.842','2018-11-15 14:44:10.842',' null','2018-11-15 14:44:10.842');
 INSERT INTO JHI_USER (ID,LOGIN,PASSWORD_HASH,FIRST_NAME,LAST_NAME,EMAIL,ACTIVATED,LANG_KEY,ACTIVATION_KEY,RESET_KEY,CREATED_BY,CREATED_DATE,RESET_DATE,LAST_MODIFIED_BY,LAST_MODIFIED_DATE) VALUES (20,'Ian','$2y$10$VvNYpXnIb.G2ou/rJnLDXeF39wJ6mYgth7D0iQnsxAvPaz1Gm2dC.','Ian','Viteri','viteriI92@hotmail.com','TRUE','fr', null, null,'system','2018-11-15 14:44:10.842','2018-11-15 14:44:10.842',' null','2018-11-15 14:44:10.842');
 
+--GRADE TABLE--
+INSERT INTO GRADE (id,grade,nb_voter,seller_id,product_type_id) VALUES (1,4,36,9,20);
+INSERT INTO GRADE (id,grade,nb_voter,seller_id,product_type_id) VALUES (2,3,75,19,21);
+
 --LOCATION TABLE--
 INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (1,'Lyon','France','69001','60 av Debourg','4.830183','45.731463',null);
 INSERT INTO LOCATION (id,city,country,zip,address,lon,lat,user_id) VALUES (2,'Grenoble','France','38000','18 Rue HUmbert II','5.723922','45.185617',null);
@@ -115,5 +119,5 @@ INSERT INTO WAREHOUSE (id,name,description,tel,image_id,location_id) VALUES (4,'
 INSERT INTO WAREHOUSE (id,name,description,tel,image_id,location_id) VALUES (5,'Lille','Entrepot de Lille','09 81 69 79 12', 1,11);
 
 --STOCK TABLE--
-INSERT INTO STOCK (id,name,description,quantity_init,quantity_remaining,price_unit,on_sale_date,expiry_date,bio,available,image_id,product_type_id,holding_id,seller_id,warehouse_id) VALUES (1,'Fraise bio','Fraise bio de ma ferme',10000,10000,0.008,'2018-07-01','2018-10-02','true','true', 26, 20, 1, 9, 1);
-INSERT INTO STOCK (id,name,description,quantity_init,quantity_remaining,price_unit,on_sale_date,expiry_date,bio,available,image_id,product_type_id,holding_id,seller_id,warehouse_id) VALUES (2,'Noix de Grenoble','Noix typique de grenoble',50000,50000,0.031,'2018-09-03','2019-02-15','true','true', 27,21,2,19,1);
+INSERT INTO STOCK (id,name,description,quantity_init,quantity_remaining,price_unit,on_sale_date,expiry_date,bio,available,image_id,product_type_id,holding_id,seller_id,warehouse_id) VALUES (1,'Fraise bio','Fraise bio de ma ferme',10,10,8,'2018-07-01','2018-10-02','true','true', 26, 20, 1, 9, 1);
+INSERT INTO STOCK (id,name,description,quantity_init,quantity_remaining,price_unit,on_sale_date,expiry_date,bio,available,image_id,product_type_id,holding_id,seller_id,warehouse_id) VALUES (2,'Noix de Grenoble','Noix typique de grenoble',50,50,31,'2018-09-03','2019-02-15','true','true', 27,21,2,19,1);

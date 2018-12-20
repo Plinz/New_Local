@@ -26,8 +26,8 @@
                         <thead>
                             <tr>
                                 <th>Produit</th>
-                                <th>Prix(Unitaire)</th>
-                                <th>Prix(Total)</th>
+                                <th>Prix(Kg)</th>
+                                <th>Prix(Total €)</th>
                                 <th>Quantité (en g)</th>
                                 <th></th>
                             </tr>
@@ -49,7 +49,7 @@
                                     </div>
                                 </td>
                                 <td data-th="Price">{{cart.stock?.priceUnit}}$</td>
-                                <td data-th="Price">{{cart.stock?.priceUnit * cart.quantity}}$</td>
+                                <td data-th="Price">{{cart.stock?.priceUnit * (cart.quantity/1000)}}$</td>
                                 <td data-th="Quantity">
                                     <input type="number" [(ngModel)]="listBtM[i].b" (keypress)="nada($event)" class="form-control text-center"
                                         min="500" step="500">
@@ -189,7 +189,7 @@
                 <thead>
                     <tr>
                         <th>Produit</th>
-                        <th>Prix(Unitaire)</th>
+                        <th>Prix(Kg)</th>
                         <th>Prix(Total)</th>
                         <th>Quantité</th>
                         <th></th>
@@ -211,7 +211,7 @@
                             </div>
                         </td>
                         <td data-th="Price">{{pur.stock?.priceUnit}}$</td>
-                        <td data-th="Price">{{pur.stock?.priceUnit * pur.quantity}}$</td>
+                        <td data-th="Price">{{ pur.stock?.priceUnit * (pur.quantity/1000) }}$</td>
                         <td data-th="Quantity">
                             <span>{{pur.quantity}}</span>
                         </td>

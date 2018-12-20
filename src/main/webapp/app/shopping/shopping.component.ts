@@ -112,7 +112,7 @@ export class ShoppingComponent implements OnInit, OnDestroy {
     calculTotal() {
         this.total = 0;
         for (const k of this.carts) {
-            this.total = k.quantity * k.stock.priceUnit + this.total;
+            this.total = k.quantity / 1000 * k.stock.priceUnit + this.total;
         }
     }
 
