@@ -68,7 +68,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
     filterOptionHold: number;
     filterSearch: string;
     pageSize: number;
-
+    bnon: boolean;
     message: string;
     actionButtonLabel: string;
     action: boolean;
@@ -106,6 +106,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         this.bclik = false;
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.cat = null;
+        this.currentSearch = null;
         this.qtbuy = 500;
         this.filterOptionHold = -1;
         this.filterOptionWare = -1;
@@ -119,7 +120,9 @@ export class MainSearchComponent implements OnInit, OnDestroy {
 
         this.activatedRoute.queryParams.subscribe(params => {
             this.currentSearch = params['search'];
-            this.loadAll();
+            if (this.currentSearch != null) {
+                this.loadAll();
+            }
         });
 
         this.activatedRoute.queryParams.subscribe(params => {
@@ -129,6 +132,10 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                 this.optioncat = this.cat;
             }
         });
+
+        if (this.currentSearch === null && this.cat != null) {
+            this.loadStockCat('');
+        }
     }
 
     deg2rad(deg: number) {
@@ -247,33 +254,59 @@ export class MainSearchComponent implements OnInit, OnDestroy {
 
     loadAll() {
         if (this.currentSearch) {
+            let params = new HttpParams();
+            params = params.set('page', `${this.page - 1}`).set('size', `${this.pageSize}`);
+            params = params.set('quantityRemaining.greaterThan', '0');
+            params = params.set('available.equals', 'true');
+            params = params.set('query', this.currentSearch);
+
             this.stockService
-                .search({
-                    page: this.page - 1,
-                    query: this.currentSearch,
-                    size: this.itemsPerPage,
-                    sort: this.sort()
-                })
+                .filtersearch(params)
                 .subscribe(
                     (res: HttpResponse<IStock[]>) => this.paginateStocks(res.body, res.headers),
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
+
+            // this.stockService
+            //     .search({
+            //         page: this.page - 1,
+            //         query: this.currentSearch,
+            //         size: this.itemsPerPage,
+            //         sort: this.sort()
+            //     })
+            //     .subscribe(
+            //         (res: HttpResponse<IStock[]>) => this.paginateStocks(res.body, res.headers),
+            //         (res: HttpErrorResponse) => this.onError(res.message)
+            //     );
             return;
         }
-        this.stockService
-            .query({
-                page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.sort()
-            })
-            .subscribe(
-                (res: HttpResponse<IStock[]>) => this.paginateStocks(res.body, res.headers),
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
+        this.loadStockCat('');
+        // this.stockService
+        //     .query({
+        //         page: this.page - 1,
+        //         size: this.itemsPerPage,
+        //         sort: this.sort()
+        //     })
+        //     .subscribe(
+        //         (res: HttpResponse<IStock[]>) => this.paginateStocks(res.body, res.headers),
+        //         (res: HttpErrorResponse) => this.onError(res.message)
+        //     );
     }
 
     loadStockCat(cat: string) {
-        this.stockService.getStockCat(cat).subscribe(
+        // this.stockService.getStockCat(cat).subscribe(
+        //     (res: HttpResponse<IStock[]>) => {
+        //         this.stocks = res.body;
+        //     },
+        //     (res: HttpErrorResponse) => this.onError(res.message)
+        // );
+        let params = new HttpParams();
+        params = params.set('page', `${this.page - 1}`).set('size', `${this.pageSize}`);
+        params = params.set('quantityRemaining.greaterThan', '0');
+        params = params.set('available.equals', 'true');
+        params = params.set('categoryName.contains', cat);
+
+        this.stockService.filter(params).subscribe(
             (res: HttpResponse<IStock[]>) => {
                 this.stocks = res.body;
             },
@@ -327,7 +360,7 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
             }
         ]);
-        // this.loadAll();
+        this.loadAll();
     }
 
     search(query) {
@@ -344,13 +377,16 @@ export class MainSearchComponent implements OnInit, OnDestroy {
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
             }
         ]);
-        // this.loadAll();
+        this.loadAll();
     }
 
     ngOnInit() {
-        if (this.cat == null) {
-            this.loadAll();
+        this.bnon = true;
+        if (this.cat == null || this.cat === undefined) {
+            // this.loadAll();
+            this.loadStockCat('');
         }
+
         this.loadStockWarehouse();
         this.loadStockHolding();
 
@@ -593,5 +629,9 @@ export class MainSearchComponent implements OnInit, OnDestroy {
         config.duration = this.setAutoHide ? this.autoHide : 0;
         // config.extraClasses = this.addExtraClass ? ['test'] : undefined;
         this.snackBar.open(this.message, this.action ? this.actionButtonLabel : undefined, config);
+    }
+
+    nonLocation() {
+        this.bnon = false;
     }
 }

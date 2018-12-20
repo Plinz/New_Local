@@ -130,6 +130,12 @@ export class StockService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
+    filtersearch(p: HttpParams): Observable<EntityArrayResponseType> {
+        return this.http
+            .get<IStock[]>(this.resourceSearchUrl, { params: p, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
+
     getPrixMax(): Observable<HttpResponse<String>> {
         return this.http.get<String>(`${this.resourceUrl}/prixmax`, { observe: 'response' });
     }
