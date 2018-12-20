@@ -86,7 +86,10 @@ export class StockManagementComponent implements OnInit, OnDestroy {
                     sort: this.sort()
                 })
                 .subscribe(
-                    (res: HttpResponse<IStock[]>) => this.paginateStocks(res.body, res.headers),
+                    (res: HttpResponse<IStock[]>) => {
+                        this.paginateStocks(res.body, res.headers);
+                        this.checkboxcopie(false);
+                    },
                     (res: HttpErrorResponse) => this.onError(res.message)
                 );
             return;
@@ -94,6 +97,7 @@ export class StockManagementComponent implements OnInit, OnDestroy {
         this.stockService.findBySellerIsCurrentUser().subscribe(
             (res: HttpResponse<IStock[]>) => {
                 this.stocks = res.body;
+                this.checkboxcopie(false);
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
