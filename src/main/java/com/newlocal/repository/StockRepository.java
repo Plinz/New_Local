@@ -24,16 +24,16 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
     @Query("select stock from Stock stock where stock.seller.login = ?#{principal.username}")
     List<Stock> findBySellerIsCurrentUser();
 
-    @Query("select stock from Stock stock where stock.bio = true")
+    @Query("select stock from Stock stock where stock.bio = true and stock.available = true and stock.quantityRemaining > 0 and stock.expiryDate > CURDATE()")
     List<Stock> getProductBio();
 
     @Query("select stock from Stock stock")
     List<Stock> findAllStocks(Sort sort);
 
-    @Query(value="select * from stock where quantity_init-quantity_remaining = (SELECT MAX(quantity_init-quantity_remaining) FROM stock )",nativeQuery = true)
+    @Query(value="select * from Stock where quantity_remaining > 0 AND available = true AND expiry_date > CURDATE() AND stock.quantity_init-stock.quantity_remaining = (SELECT MAX(quantity_init-quantity_remaining) FROM stock )",nativeQuery = true)
     List<Stock> getBestPurchase();
 
-    @Query(value="SELECT * FROM ((STOCK JOIN GRADE ON STOCK.PRODUCT_TYPE_ID=GRADE.PRODUCT_TYPE_ID) JOIN PRODUCT_TYPE ON STOCK.PRODUCT_TYPE_ID=PRODUCT_TYPE.ID) WHERE GRADE.GRADE='5'",nativeQuery = true)
+    @Query(value="SELECT * FROM ((STOCK JOIN GRADE ON STOCK.PRODUCT_TYPE_ID=GRADE.PRODUCT_TYPE_ID) JOIN PRODUCT_TYPE ON STOCK.PRODUCT_TYPE_ID=PRODUCT_TYPE.ID) WHERE GRADE.GRADE > '0'",nativeQuery = true)
     List<Stock> getBestGrade();
 
     @Query(value="select min(price_unit) as minPriceUnit, avg(price_unit) as avgPriceUnit, max(price_unit) as maxPriceUnit " +
@@ -74,7 +74,7 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
 
     @Query("select distinct stock.warehouse from Stock stock")
     List<Warehouse> allWarehouse();
-    
+
     @Query("select stock from Stock stock where (stock.productType.category.name=:cat and stock.seller.lastName=:seller and stock.priceUnit>=:min and stock.priceUnit<=:max )")
     List<Stock> filterCatSeller(@Param("cat") String cat,@Param("seller") String seller,@Param("min") Double min,@Param("max") Double max);
 
