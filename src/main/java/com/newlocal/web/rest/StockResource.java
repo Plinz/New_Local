@@ -200,7 +200,10 @@ public class StockResource {
     public ResponseEntity<StockDTO> getProductBio() {
         log.debug("REST request to search a product Bio");
         List<StockDTO> stockBio = stockService.getProductBio();
-        StockDTO stockb = stockBio.get((new Random()).nextInt(stockBio.size()));
+        StockDTO stockb = null;
+        if (stockBio.size() > 0){
+          stockb = stockBio.get((new Random()).nextInt(stockBio.size()));
+        }
         return ResponseEntity.ok().body(stockb);
     }
 
@@ -212,7 +215,11 @@ public class StockResource {
     @Timed
     public ResponseEntity<StockDTO> getNewStock() {
         log.debug("REST request to search a new stock");
-        StockDTO stockNew = stockService.getNewStock().get(0);
+        List<StockDTO> stocksNew = stockService.getNewStock();
+        StockDTO stockNew = null;
+        if (stocksNew.size() > 0){
+          stockNew = stocksNew.get(0);
+        }
         return ResponseEntity.ok().body(stockNew);
     }
 
@@ -225,7 +232,10 @@ public class StockResource {
     public ResponseEntity<StockDTO> getBestPurchase() {
         log.debug("REST request to search the best purchase");
         List<StockDTO> stockBestPurchase = stockService.getBestPurchase();
-        StockDTO stockBest = stockBestPurchase.get((new Random()).nextInt(stockBestPurchase.size()));
+        StockDTO stockBest = null;
+        if (stockBestPurchase.size() > 0){
+          stockBest = stockBestPurchase.get((new Random()).nextInt(stockBestPurchase.size()));
+        }
         return ResponseEntity.ok().body(stockBest);
     }
 
@@ -239,7 +249,10 @@ public class StockResource {
     public ResponseEntity<StockDTO> getBestGrade() {
         log.debug("REST request to search the best grade");
         List<StockDTO> gradeList = stockService.getBestGrade();
-        StockDTO stockGrade = gradeList.get((new Random()).nextInt(gradeList.size()));
+        StockDTO stockGrade = null;
+        if (gradeList.size() > 0){
+          stockGrade = gradeList.get((new Random()).nextInt(gradeList.size()));
+        }
         return ResponseEntity.ok().body(stockGrade);
     }
 
