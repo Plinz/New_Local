@@ -22,7 +22,7 @@
         		<td th:text="${pur.stock.name}"></td>
         		<td th:text="${pur.quantity}"></td>
         		<td th:text="${pur.stock.priceUnit}"></td>
-        		<td th:text="${pur.stock.priceUnit}*${pur.quantity}"></td>
+        		<td th:text="${pur.stock.priceUnit}*${pur.quantity}/${1000}"></td>
         	</tr>
         	
         </table>
