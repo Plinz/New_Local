@@ -24,13 +24,13 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
     @Query("select stock from Stock stock where stock.seller.login = ?#{principal.username}")
     List<Stock> findBySellerIsCurrentUser();
 
-    @Query("select stock from Stock stock where stock.bio = true and stock.available = true and stock.quantityRemaining > 0 and stock.expiryDate > CURDATE()")
+    @Query("select stock from Stock stock where stock.bio = true and stock.available = true and stock.quantityRemaining > 0 and stock.expiryDate > current_date")
     List<Stock> getProductBio();
 
     @Query("select stock from Stock stock")
     List<Stock> findAllStocks(Sort sort);
 
-    @Query(value="select * from Stock where quantity_remaining > 0 AND available = true AND expiry_date > CURDATE() AND stock.quantity_init-stock.quantity_remaining = (SELECT MAX(quantity_init-quantity_remaining) FROM stock )",nativeQuery = true)
+    @Query(value="select * from Stock where quantity_remaining > 0 AND available = true AND expiry_date > current_date AND stock.quantity_init-stock.quantity_remaining = (SELECT MAX(quantity_init-quantity_remaining) FROM stock )",nativeQuery = true)
     List<Stock> getBestPurchase();
 
     @Query(value="SELECT * FROM ((STOCK JOIN GRADE ON STOCK.PRODUCT_TYPE_ID=GRADE.PRODUCT_TYPE_ID) JOIN PRODUCT_TYPE ON STOCK.PRODUCT_TYPE_ID=PRODUCT_TYPE.ID) WHERE GRADE.GRADE > '0'",nativeQuery = true)
@@ -41,7 +41,7 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
         "where product_type_id = :productTypeId " +
         "and bio = :bio " +
         "and available = true " +
-        "and expiry_date > CURDATE() " +
+        "and expiry_date > current_date) " +
         "and quantity_remaining > 0",nativeQuery = true)
     List<Object[]> getStatsStock(@Param("productTypeId") Long productTypeId, @Param("bio") Boolean bio);
 
