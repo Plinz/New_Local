@@ -1,35 +1,16 @@
 <body class="" style="background-color: white;">
     <header>
         <ngb-carousel>
-            <ng-template ngbSlide>
+            <ng-template ngbSlide *ngFor="let i of image ;">
                 <div class="text-center mt-3">
-                    <img class="imgCarousel" src="../../content/images/c1.png" height="200%" width="100%" alt="Random first slide">
+                    <img class="card-img-top" src="{{i.imagePath}}" alt="">
                     <div class="carousel-caption">
                         <h3></h3>
                         <p></p>
                     </div>
                 </div>
             </ng-template>
-            <ng-template ngbSlide>
-                <div class="text-center mt-3">
-                    <img class="imgCarousel" src="../../content/images/c2.png" height="200%" width="100%" style="max-width: width 9px; margin: 0% auto"
-                        alt="Random second slide">
-                    <div class="carousel-caption">
-                        <h3></h3>
-                        <p></p>
-                    </div>
-                </div>
 
-            </ng-template>
-            <ng-template ngbSlide>
-                <div class="text-center mt-3">
-                    <img class="imgCarousel" src="../../content/images/c3.png" height="200%" width="100%" alt="Random third slide">
-                    <div class="carousel-caption">
-                        <h3></h3>
-                        <p></p>
-                    </div>
-                </div>
-            </ng-template>
         </ngb-carousel>
     </header>
 
