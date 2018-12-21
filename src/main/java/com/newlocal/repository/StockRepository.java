@@ -41,7 +41,7 @@ public interface StockRepository extends JpaRepository<Stock, Long>, JpaSpecific
         "where product_type_id = :productTypeId " +
         "and bio = :bio " +
         "and available = true " +
-        "and expiry_date > CURDATE() " +
+        "and expiry_date > CURRENT_DATE " +
         "and quantity_remaining > 0",nativeQuery = true)
     List<Object[]> getStatsStock(@Param("productTypeId") Long productTypeId, @Param("bio") Boolean bio);
 
